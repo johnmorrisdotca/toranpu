@@ -20,6 +20,8 @@ All notable changes to this project are written here. The format follows
 - `newGame`, `rulesFor` and `playComputers`, to start and run any game by name.
 - Saved games as text (the table, the seed and the moves), read back by
   playing the moves through the rules again.
+- Every entry point also answers `require` through a `default` export
+  condition, so test runners that load ES modules through CommonJS find it.
 - `useCardGame`, a React hook (`@johnmorrisdotca/toranpu/react`).
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
