@@ -14,9 +14,12 @@ function isSpadesMove(value: unknown): value is SpadesMove {
 }
 
 const codec = cardGameCodec<SpadesGame, SpadesMove>("spades", startSpades, playSpades, isSpadesMove);
+/** A game of Spades as text: its table, its seed and its moves, never a hand. */
 export const encodeSpades = codec.encode;
+/** Text read back into the game of Spades it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodeSpades = codec.decode;
 
+/** Spades as one `CardGameRules`: everything a table asks of the game. */
 export const SPADES_RULES: CardGameRules<SpadesGame, SpadesMove> = {
   start: startSpades,
   moves: spadesMoves,

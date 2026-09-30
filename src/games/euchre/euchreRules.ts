@@ -14,9 +14,12 @@ function isEuchreMove(value: unknown): value is EuchreMove {
 }
 
 const codec = cardGameCodec<EuchreGame, EuchreMove>("euchre", startEuchre, playEuchre, isEuchreMove);
+/** A game of Euchre as text: its table, its seed and its moves, never a hand. */
 export const encodeEuchre = codec.encode;
+/** Text read back into the game of Euchre it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodeEuchre = codec.decode;
 
+/** Euchre as one `CardGameRules`: everything a table asks of the game. */
 export const EUCHRE_RULES: CardGameRules<EuchreGame, EuchreMove> = {
   start: startEuchre,
   moves: euchreMoves,

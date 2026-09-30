@@ -33,6 +33,7 @@ export type CardGameTable = {
  */
 export type CardGameKind = "hearts" | "bigTwo" | "president" | "goFish" | "crazyEights" | "spades" | "ginRummy" | "euchre" | "cribbage" | "ohHell";
 
+/** The ten kinds by name, for code that would rather not type a string twice. */
 export const CARD_GAME_KINDS = {
   hearts: "hearts",
   bigTwo: "bigTwo",
@@ -62,16 +63,26 @@ export const CARD_GAME_LIST: readonly CardGameKind[] = [
 
 /** How long each game lasts, in its own terms (see above). */
 export const HEARTS_SIZES = { short: 50, full: 100 } as const;
+/** How many deals a game of Big Two may last. */
 export const BIG_TWO_DEALS = [1, 3, 5] as const;
+/** How many rounds a game of President may last. */
 export const PRESIDENT_ROUNDS = [3, 5, 7] as const;
+/** Go Fish is one deal: its only size is 1. */
 export const GO_FISH_SIZES = [1] as const;
+/** The scores a game of Crazy Eights may be played to. */
 export const CRAZY_EIGHTS_SIZES = [50, 100, 200] as const;
+/** The scores a game of Spades may be played to. */
 export const SPADES_SIZES = [200, 300, 500] as const;
+/** The scores a game of Gin Rummy may be played to. */
 export const GIN_SIZES = [50, 100, 150] as const;
+/** The scores a game of Euchre may be played to. */
 export const EUCHRE_SIZES = [5, 10] as const;
+/** The scores a game of Cribbage may be played to: once round the board, or twice. */
 export const CRIBBAGE_SIZES = [61, 121] as const;
+/** How many deals a game of Oh Hell may last: up to seven cards, or up and back down. */
 export const OH_HELL_DEALS = [7, 13] as const;
 
+/** Every game's table: the fewest, the most and the usual number of players, the lengths of game offered and the usual one. */
 export const CARD_GAME_TABLES: Record<CardGameKind, CardGameTable> = {
   hearts: { fewestPlayers: 3, mostPlayers: 4, defaultPlayers: 4, sizes: [HEARTS_SIZES.short, HEARTS_SIZES.full], defaultSize: HEARTS_SIZES.full },
   bigTwo: { fewestPlayers: 2, mostPlayers: 4, defaultPlayers: 4, sizes: BIG_TWO_DEALS, defaultSize: 3 },

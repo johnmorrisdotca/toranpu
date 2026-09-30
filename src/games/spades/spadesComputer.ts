@@ -31,6 +31,7 @@ export type SpadesView = {
   playable: readonly CardId[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function spadesView(game: SpadesGame): SpadesView {
   const seat = game.toPlay ?? 0;
   return {
@@ -45,6 +46,7 @@ export function spadesView(game: SpadesGame): SpadesView {
   };
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function spadesComputer(game: SpadesGame): SpadesMove {
   const view = spadesView(game);
   if (view.phase === "bidding") return { bid: chooseBid(view.hand, view.bids[partnerOf(view.seat)]) };

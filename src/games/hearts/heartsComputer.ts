@@ -28,6 +28,7 @@ export type HeartsView = {
   playable: readonly CardId[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function heartsView(game: HeartsGame): HeartsView {
   const seat = game.toPlay ?? 0;
   return {
@@ -41,6 +42,7 @@ export function heartsView(game: HeartsGame): HeartsView {
   };
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function heartsComputer(game: HeartsGame): HeartsMove {
   const view = heartsView(game);
   if (view.phase === "passing") {
@@ -70,6 +72,7 @@ function passWorth(card: CardId, hand: readonly CardId[]): number {
   return height * 2 + (count <= 3 ? 30 - count * 5 : 0);
 }
 
+/** The three cards a computer passes from a hand of Hearts: the queen of spades and the high spades that catch her, high hearts, and cards from a short suit. */
 export function choosePass(hand: readonly CardId[]): CardId[] {
   return [...hand]
     .sort((a, b) => passWorth(b, hand) - passWorth(a, hand) || heartsHeight(b) - heartsHeight(a))

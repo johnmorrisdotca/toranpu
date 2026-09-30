@@ -22,7 +22,9 @@ import type { SpadesDealScore, SpadesGame, SpadesMove, SpadesPlay } from "./spad
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
+/** How many play Spades: four, in two partnerships. */
 export const SPADES_SEATS = 4;
+/** The tricks in a deal of Spades: thirteen. */
 export const SPADES_TRICKS = 13;
 /** The bid that means no tricks at all. */
 export const NIL = 0;
@@ -74,6 +76,7 @@ function dealSpades(game: Omit<SpadesGame, "hands" | "bids" | "trick" | "played"
   };
 }
 
+/** A new game of Spades for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Spades is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startSpades(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): SpadesGame | null {
   if (!(SPADES_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== SPADES_SEATS) return null;
@@ -121,6 +124,7 @@ export function spadesTrickWinner(trick: readonly SpadesPlay[]): number {
 /** The bids open to a player: nil, or one to thirteen tricks. */
 export const SPADES_BIDS: readonly number[] = Array.from({ length: SPADES_TRICKS + 1 }, (_, bid) => bid);
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function spadesMoves(game: SpadesGame): SpadesMove[] {
   if (game.phase === "bidding") return SPADES_BIDS.map((bid) => ({ bid }));
   return spadesPlayable(game).map((play) => ({ play }));
@@ -192,6 +196,7 @@ function endDeal(game: SpadesGame): SpadesGame {
   return dealSpades({ ...finished, deal: game.deal + 1 });
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playSpades(game: SpadesGame, move: SpadesMove): SpadesGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;

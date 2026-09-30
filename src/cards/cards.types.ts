@@ -6,6 +6,7 @@
  * any game's rules; a game keeps its own state and names cards by these.
  */
 
+/** One of the four suits, by name. */
 export type Suit = "spades" | "hearts" | "diamonds" | "clubs";
 
 /** Ace is 1 and King 13. A game that ranks the ace high (Hearts, Big Two) says so in its own rules. */
@@ -14,6 +15,7 @@ export type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 /** A suit's colour, which Klondike's alternating runs and Crazy Eights' matches both read. */
 export type SuitColour = "red" | "black";
 
+/** A card as an object: its suit and its rank. */
 export type Card = { suit: Suit; rank: Rank };
 
 /**

@@ -31,6 +31,7 @@ export type EuchreView = {
   playable: readonly CardId[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function euchreView(game: EuchreGame): EuchreView {
   const seat = game.toPlay ?? 0;
   return {
@@ -69,6 +70,7 @@ export function trumpWorth(hand: readonly CardId[], trump: CardSuit): number {
 /** The worth a side needs to make trumps: three tricks between two hands, one of them this one. */
 const MAKE = 2.1;
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function euchreComputer(game: EuchreGame): EuchreMove {
   const view = euchreView(game);
   const offered = euchreMoves(game);

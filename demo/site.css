@@ -1,0 +1,86 @@
+/* Toranpu's own: the card table, the cards, the deck and the API reference. Everything shared is in family.css, loaded before this. */
+:root { --intro-room: 9.5rem; --intro-room-wide: 5.5rem; --card: #fffdf8; --card-ink: #1b1b1b; --card-red: #c2272d; --card-edge: rgba(0,0,0,.18); --turn: var(--gold); --card-w: 58px; --card-h: 84px; }
+@media (max-width: 600px) { :root { --card-w: 46px; --card-h: 68px; } }
+
+/* Choosing a game. */
+.choose { display: grid; gap: 12px; margin-bottom: 16px; }
+.games { display: flex; flex-wrap: wrap; gap: 6px; }
+.blurb { margin: 0; color: var(--muted); min-height: 3em; }
+.blurb a { white-space: nowrap; }
+.setup label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); font-size: .9rem; }
+/* A select drawn by the page, so that it is 44px to the touch in every browser. */
+select.fam-field { -webkit-appearance: none; appearance: none; padding-right: 28px; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.setup input.fam-field { width: 8.5em; }
+
+/* The table. */
+.table { display: grid; gap: 14px; }
+.seats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+@media (max-width: 600px) { .seats { grid-template-columns: 1fr 1fr; } }
+.seat { background: rgba(0,0,0,.2); border-radius: 10px; padding: 6px 10px; min-width: 0; border: 2px solid transparent; }
+.seat[data-turn="true"] { border-color: var(--turn); }
+.seat .who { font-weight: 700; overflow-wrap: anywhere; }
+.seat .meta { font-size: .8rem; opacity: .85; }
+.piles { min-height: calc(var(--card-h) + 26px); display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: flex-start; }
+.pile { display: grid; gap: 4px; min-width: 0; }
+.pile .label { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; opacity: .85; }
+.pile .cards { display: flex; gap: 4px; flex-wrap: wrap; }
+.pile .big { font-size: 2rem; line-height: 1; }
+.status { font-weight: 600; min-height: 3em; margin: 0; }
+.hand { display: flex; flex-wrap: wrap; gap: 6px; min-height: calc(var(--card-h) + 12px); padding-top: 12px; }
+.moves { display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; }
+
+/* A card. */
+.card { width: var(--card-w); height: var(--card-h); border-radius: 8px; background: var(--card); color: var(--card-ink); display: flex; flex-direction: column; justify-content: space-between; padding: 5px 6px; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,.35); border: 2px solid transparent; font-size: 1.05rem; line-height: 1; user-select: none; flex: none; text-align: left; }
+.card[data-red="true"] { color: var(--card-red); }
+.card .pip { align-self: flex-end; font-size: 1.35rem; }
+.card[data-small="true"] { width: 40px; height: 58px; font-size: .8rem; padding: 3px 4px; }
+.card[data-small="true"] .pip { font-size: .95rem; }
+button.card { font-family: inherit; }
+button.card:disabled { opacity: .55; }
+button.card[data-idle="true"] { opacity: 1; }
+button.card[aria-pressed="true"] { transform: translateY(-10px); border-color: var(--turn); }
+@media (max-width: 600px) { .card { font-size: .9rem; } .card .pip { font-size: 1.1rem; } }
+@media (prefers-reduced-motion: no-preference) { button.card { transition: transform .12s ease; } }
+
+/* Under the table. */
+.under { display: grid; gap: 16px; margin-top: 18px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .under { grid-template-columns: repeat(2, minmax(0, 1fr)); } .under .wide { grid-column: 1 / -1; } }
+.under section { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); padding: 14px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.under section > * { min-width: 0; max-width: 100%; }
+.under h2 { margin: 0; font-size: 1.05rem; }
+.under p { margin: 0; color: var(--muted); font-size: .9rem; }
+.log { margin: 0; padding-left: 2.2em; max-height: 17rem; overflow: auto; color: var(--muted); font-size: .9rem; }
+.kept { min-height: 9.5rem; max-height: 17rem; background: var(--page); white-space: pre; user-select: all; }
+.kept[data-wrap="true"] { white-space: pre-wrap; overflow-wrap: anywhere; }
+.under .fam-tabs { border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.under .fam-field { background: var(--page); }
+.paste { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
+.paste .fam-field { flex: 1 1 12rem; }
+.under .fam-error { min-height: 1.2em; }
+
+/* The deck on its own: each hand a fan. */
+.deck-hands { display: grid; gap: 10px 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.fan-box { display: grid; gap: 2px; min-width: 0; }
+.fan-box .fam-label { min-width: 0; }
+.fan { display: flex; padding: 10px 0 14px 8px; min-height: 84px; }
+.fan .card { margin-left: calc(var(--overlap, 22px) * -1); transform-origin: 50% 140%; transform: rotate(calc((var(--at) - var(--mid)) * var(--turn-by, 3deg))); }
+.fan .card:first-child { margin-left: 0; }
+.fan .card { justify-content: flex-start; gap: 2px; }
+.fan .card .pip { align-self: flex-start; }
+.deck-code { overflow-wrap: anywhere; font-size: .8rem; }
+
+/* The API reference. */
+.api-contents ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 0 12px; font-size: .9rem; }
+.api-contents li a { display: inline-flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
+.api-contents p { margin: 0 0 4px; }
+.api-entry { margin-top: 28px; min-width: 0; }
+.api-entry h2 { font-size: 1.15rem; margin: 0 0 6px; overflow-wrap: anywhere; }
+.api-names { display: flex; flex-wrap: wrap; gap: 2px 12px; margin: 0 0 12px; font-size: .85rem; }
+.api-names a { font-family: var(--mono); display: inline-flex; align-items: center; min-height: 32px; }
+.api-entry article { border-top: 1px solid var(--rule); padding: 12px 0; display: grid; gap: 8px; min-width: 0; }
+.api-entry article > * { min-width: 0; max-width: 100%; }
+.api-entry h3 { margin: 0; font-size: 1rem; font-family: var(--mono); overflow-wrap: anywhere; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.api-entry h3 .fam-badge { font-family: var(--font); font-weight: 600; }
+.api-entry p { margin: 0; line-height: 1.5; max-width: 72ch; }
+.api-entry p.api-names { max-width: none; }
+.api-entry pre { white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -13,6 +13,7 @@ import { choices, rankOf, suitOf } from "../cards.ts";
  * from 3-4-5-6-7 up to 10-J-Q-K-A; a two never sits in one.
  */
 
+/** The kinds of play in Big Two, a single to a straight flush. */
 export type BigTwoKind = "single" | "pair" | "triple" | "straight" | "flush" | "fullHouse" | "fourKind" | "straightFlush";
 
 /** A play's kind and how strong it is among plays of the same number of cards. */

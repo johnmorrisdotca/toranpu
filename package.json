@@ -1,28 +1,76 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "1.1.0",
-  "description": "A deck of playing cards and ten card games with computer players: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy. Pure TypeScript rules, seeded deals, saved games as text. No dependencies.",
+  "version": "1.2.0",
+  "description": "Playing cards and a card game engine for JavaScript and TypeScript: a 52-card deck with a seeded shuffle, and the full rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy, each with a computer player. Saved games, a command line, English and Japanese. Zero dependencies.",
   "keywords": [
-    "playing-cards",
     "cards",
+    "playing-cards",
     "card-game",
+    "card-games",
+    "card-game-engine",
+    "game-engine",
     "deck",
+    "deck-of-cards",
+    "standard-deck",
+    "52-cards",
     "shuffle",
+    "seeded-shuffle",
+    "deal",
+    "hand",
     "hearts",
     "spades",
     "euchre",
     "cribbage",
+    "cribbage-scoring",
     "oh-hell",
     "crazy-eights",
     "go-fish",
     "big-two",
     "president",
+    "daifugo",
     "gin-rummy",
+    "rummy",
     "trick-taking",
+    "climbing-game",
+    "shedding-game",
+    "bidding",
+    "trumps",
+    "rules",
+    "rules-engine",
+    "game-rules",
     "computer-player",
+    "computer-opponent",
     "bot",
+    "game-ai",
+    "turn-based",
+    "tabletop",
+    "board-game",
+    "game",
+    "games",
+    "gamedev",
+    "seeded",
+    "deterministic",
+    "replay",
+    "save-game",
+    "immutable",
+    "pure-functions",
+    "simulation",
+    "cli",
+    "command-line",
+    "json",
+    "csv",
     "typescript",
-    "react"
+    "javascript",
+    "esm",
+    "react",
+    "hooks",
+    "vue",
+    "svelte",
+    "angular",
+    "japanese",
+    "i18n",
+    "zero-dependencies",
+    "itsutsu"
   ],
   "homepage": "https://johnmorrisdotca.github.io/toranpu/",
   "bugs": {
@@ -43,22 +91,77 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" },
-    "./deck": { "types": "./dist/deck.d.ts", "import": "./dist/deck.js", "default": "./dist/deck.js" },
-    "./react": { "types": "./dist/react.d.ts", "import": "./dist/react.js", "default": "./dist/react.js" },
-    "./hearts": { "types": "./dist/hearts.d.ts", "import": "./dist/hearts.js", "default": "./dist/hearts.js" },
-    "./spades": { "types": "./dist/spades.d.ts", "import": "./dist/spades.js", "default": "./dist/spades.js" },
-    "./euchre": { "types": "./dist/euchre.d.ts", "import": "./dist/euchre.js", "default": "./dist/euchre.js" },
-    "./cribbage": { "types": "./dist/cribbage.d.ts", "import": "./dist/cribbage.js", "default": "./dist/cribbage.js" },
-    "./ohHell": { "types": "./dist/ohHell.d.ts", "import": "./dist/ohHell.js", "default": "./dist/ohHell.js" },
-    "./crazyEights": { "types": "./dist/crazyEights.d.ts", "import": "./dist/crazyEights.js", "default": "./dist/crazyEights.js" },
-    "./goFish": { "types": "./dist/goFish.d.ts", "import": "./dist/goFish.js", "default": "./dist/goFish.js" },
-    "./bigTwo": { "types": "./dist/bigTwo.d.ts", "import": "./dist/bigTwo.js", "default": "./dist/bigTwo.js" },
-    "./president": { "types": "./dist/president.d.ts", "import": "./dist/president.js", "default": "./dist/president.js" },
-    "./ginRummy": { "types": "./dist/ginRummy.d.ts", "import": "./dist/ginRummy.js", "default": "./dist/ginRummy.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./deck": {
+      "types": "./dist/deck.d.ts",
+      "import": "./dist/deck.js",
+      "default": "./dist/deck.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "default": "./dist/react.js"
+    },
+    "./hearts": {
+      "types": "./dist/hearts.d.ts",
+      "import": "./dist/hearts.js",
+      "default": "./dist/hearts.js"
+    },
+    "./spades": {
+      "types": "./dist/spades.d.ts",
+      "import": "./dist/spades.js",
+      "default": "./dist/spades.js"
+    },
+    "./euchre": {
+      "types": "./dist/euchre.d.ts",
+      "import": "./dist/euchre.js",
+      "default": "./dist/euchre.js"
+    },
+    "./cribbage": {
+      "types": "./dist/cribbage.d.ts",
+      "import": "./dist/cribbage.js",
+      "default": "./dist/cribbage.js"
+    },
+    "./ohHell": {
+      "types": "./dist/ohHell.d.ts",
+      "import": "./dist/ohHell.js",
+      "default": "./dist/ohHell.js"
+    },
+    "./crazyEights": {
+      "types": "./dist/crazyEights.d.ts",
+      "import": "./dist/crazyEights.js",
+      "default": "./dist/crazyEights.js"
+    },
+    "./goFish": {
+      "types": "./dist/goFish.d.ts",
+      "import": "./dist/goFish.js",
+      "default": "./dist/goFish.js"
+    },
+    "./bigTwo": {
+      "types": "./dist/bigTwo.d.ts",
+      "import": "./dist/bigTwo.js",
+      "default": "./dist/bigTwo.js"
+    },
+    "./president": {
+      "types": "./dist/president.d.ts",
+      "import": "./dist/president.js",
+      "default": "./dist/president.js"
+    },
+    "./ginRummy": {
+      "types": "./dist/ginRummy.d.ts",
+      "import": "./dist/ginRummy.js",
+      "default": "./dist/ginRummy.js"
+    }
   },
   "files": [
     "dist",
+    "bin",
+    "docs/games.md",
+    "docs/strings-ja.md",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
@@ -72,8 +175,13 @@
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.check.json",
     "test": "vitest run",
+    "test:demo": "pnpm site && playwright test",
+    "test:cli": "pnpm build && node scripts/check-cli.mjs",
+    "test:package": "pnpm build && node scripts/check-package.mjs",
+    "test:frameworks": "pnpm build && node scripts/check-frameworks.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "site": "pnpm build && node scripts/site.mjs",
+    "docs:make": "node scripts/docs.mjs",
     "prepublishOnly": "pnpm check && pnpm build"
   },
   "peerDependencies": {
@@ -86,6 +194,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.63.0",
     "@types/react": "^19.0.0",
     "eslint": "^9.0.0",
     "react": "^19.0.0",
@@ -96,5 +205,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@10.11.0"
+  "packageManager": "pnpm@10.11.0",
+  "bin": {
+    "toranpu": "bin/toranpu.mjs"
+  }
 }

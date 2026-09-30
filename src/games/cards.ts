@@ -35,6 +35,7 @@ export function rankOf(card: CardId): CardRank {
   return (RANK_LETTERS.indexOf(card[0]) + 1) as CardRank;
 }
 
+/** A card's suit, as its letter: `S`, `H`, `D` or `C`. */
 export function suitOf(card: CardId): CardSuit {
   return card[1] as CardSuit;
 }

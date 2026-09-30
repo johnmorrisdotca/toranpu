@@ -23,14 +23,17 @@ export function shuffledDeck(seed: number): Card[] {
   return shuffled(freshDeck(), seededRandom(seed));
 }
 
+/** A card's colour: red for hearts and diamonds, black for spades and clubs. */
 export function colourOf(card: Card): SuitColour {
   return SUIT_DISPLAY[card.suit].colour;
 }
 
+/** Whether a card is a heart or a diamond. */
 export function isRed(card: Card): boolean {
   return colourOf(card) === "red";
 }
 
+/** Whether two card objects are the same card. */
 export function sameCard(a: Card, b: Card): boolean {
   return a.suit === b.suit && a.rank === b.rank;
 }
@@ -40,6 +43,7 @@ export function cardIndex(card: Card): number {
   return SUITS.indexOf(card.suit) * RANKS.length + (card.rank - 1);
 }
 
+/** The card at a place in a fresh deck, 0 to 51. Throws for a place that is not one. */
 export function cardAt(index: number): Card {
   if (!Number.isInteger(index) || index < 0 || index >= DECK_SIZE) throw new Error(`no card at ${index}`);
   return { suit: SUITS[Math.floor(index / RANKS.length)], rank: RANKS[index % RANKS.length] };

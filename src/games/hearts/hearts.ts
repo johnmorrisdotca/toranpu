@@ -20,7 +20,9 @@ import type { HeartsGame, HeartsMove, HeartsPlay } from "./hearts.types.ts";
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
+/** The queen of spades, worth thirteen points to whoever takes her. */
 export const QUEEN_OF_SPADES = "QS";
+/** The two of clubs, which leads the first trick of every deal. */
 export const TWO_OF_CLUBS = "2C";
 const PASSED = 3;
 /** Every point in a deal: thirteen hearts and the queen. */
@@ -80,6 +82,7 @@ function beginPlay(game: HeartsGame): HeartsGame {
   return { ...game, phase: "playing", toPlay: leader };
 }
 
+/** A new game of Hearts for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Hearts is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startHearts(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): HeartsGame | null {
   if (size !== HEARTS_SIZES.short && size !== HEARTS_SIZES.full) return null;
   if (players.length < 3 || players.length > 4) return null;
@@ -127,6 +130,7 @@ export function trickWinner(trick: readonly HeartsPlay[]): number {
   return best.seat;
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function heartsMoves(game: HeartsGame): HeartsMove[] {
   if (game.phase === "passing" && game.toPlay !== null) return choices(game.hands[game.toPlay], PASSED).map((pass) => ({ pass }));
   return heartsPlayable(game).map((play) => ({ play }));
@@ -168,6 +172,7 @@ function endDeal(game: HeartsGame): HeartsGame {
   return dealHearts({ ...finished, deal: game.deal + 1 });
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playHearts(game: HeartsGame, move: HeartsMove): HeartsGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;

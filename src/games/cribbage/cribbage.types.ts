@@ -7,6 +7,7 @@ export type CribbageMove = { crib: [CardId, CardId] } | { play: CardId };
 /** Both players laying two cards to the crib, the pegging, or the game over. */
 export type CribbagePhase = "crib" | "pegging" | "over";
 
+/** One card laid, and whose it was. */
 export type CribbagePlay = { seat: number; card: CardId };
 
 /** What one card played in the pegging scored, and why: "fifteen", "a pair", "a run of three", "go", "last card", "thirty-one". */

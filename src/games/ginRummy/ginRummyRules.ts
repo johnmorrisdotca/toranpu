@@ -14,9 +14,12 @@ function isGinMove(value: unknown): value is GinMove {
 }
 
 const codec = cardGameCodec<GinGame, GinMove>("ginRummy", startGin, playGin, isGinMove);
+/** A game of Gin Rummy as text: its table, its seed and its moves, never a hand. */
 export const encodeGin = codec.encode;
+/** Text read back into the game of Gin Rummy it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodeGin = codec.decode;
 
+/** Gin Rummy as one `CardGameRules`: everything a table asks of the game. */
 export const GIN_RUMMY_RULES: CardGameRules<GinGame, GinMove> = {
   start: startGin,
   moves: ginMoves,

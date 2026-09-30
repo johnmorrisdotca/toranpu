@@ -27,6 +27,7 @@ import type { CrazyEightsGame, CrazyEightsMove, CrazyEightsResult } from "./craz
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
+/** The rank that is wild in Crazy Eights. */
 export const EIGHT = 8;
 const SUITS_CALLED: readonly CardSuit[] = ["C", "D", "H", "S"];
 
@@ -70,6 +71,7 @@ function dealHand(game: Omit<CrazyEightsGame, "hands" | "stock" | "discard" | "s
   };
 }
 
+/** A new game of Crazy Eights for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Crazy Eights is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startCrazyEights(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): CrazyEightsGame | null {
   if (!(CRAZY_EIGHTS_SIZES as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 7) return null;
@@ -107,6 +109,7 @@ export function crazyPlayable(game: CrazyEightsGame): CardId[] {
   return from.filter((card) => crazyMatches(game, card));
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function crazyEightsMoves(game: CrazyEightsGame): CrazyEightsMove[] {
   if (game.phase === "over" || game.toPlay === null) return [];
   const plays = crazyPlayable(game).flatMap((card): CrazyEightsMove[] =>
@@ -166,6 +169,7 @@ function pass(game: CrazyEightsGame, seat: number): CrazyEightsGame | null {
   return endHand(game, held.flatMap((points, at) => (points === least ? [at] : [])), true);
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playCrazyEights(game: CrazyEightsGame, move: CrazyEightsMove): CrazyEightsGame | null {
   const seat = game.toPlay;
   if (game.phase === "over" || seat === null) return null;

@@ -25,6 +25,7 @@ import type { EuchreGame, EuchreHandScore, EuchreMove, EuchrePlay } from "./euch
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
+/** How many play Euchre: four, in two partnerships. */
 export const EUCHRE_SEATS = 4;
 const DEALT = 5;
 const SUITS: readonly CardSuit[] = ["C", "D", "H", "S"];
@@ -33,14 +34,17 @@ export const EUCHRE_DECK: readonly CardId[] = FULL_DECK.filter((card) => rankOf(
 const LEFT_OUT: readonly CardId[] = FULL_DECK.filter((card) => !EUCHRE_DECK.includes(card));
 const JACK = 11;
 
+/** A seat's partnership: 0 for seats 0 and 2, 1 for seats 1 and 3. */
 export function teamOf(seat: number): 0 | 1 {
   return (seat % 2) as 0 | 1;
 }
 
+/** The seat across the table. */
 export function partnerOf(seat: number): number {
   return (seat + 2) % EUCHRE_SEATS;
 }
 
+/** The seat that deals this hand: the first seat, then round to the left. */
 export function dealerOf(deal: number): number {
   return deal % EUCHRE_SEATS;
 }
@@ -92,6 +96,7 @@ function dealEuchre(game: Omit<EuchreGame, "hands" | "upcard" | "trump" | "maker
   };
 }
 
+/** A new game of Euchre for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Euchre is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startEuchre(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): EuchreGame | null {
   if (!(EUCHRE_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== EUCHRE_SEATS) return null;
@@ -119,6 +124,7 @@ export function euchreTrickWinner(trick: readonly EuchrePlay[], trump: CardSuit)
   return trick.reduce((best, play) => (power(play.card) > power(best.card) ? play : best)).seat;
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function euchreMoves(game: EuchreGame): EuchreMove[] {
   if (game.toPlay === null) return [];
   if (game.phase === "order") return [{ order: true }, { pass: true }];
@@ -196,6 +202,7 @@ function endHand(game: EuchreGame): EuchreGame {
   return dealEuchre({ ...finished, deal: game.deal + 1 });
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playEuchre(game: EuchreGame, move: EuchreMove): EuchreGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;

@@ -21,6 +21,7 @@ export type KeptCardGame<M> = {
   moves: readonly M[];
 };
 
+/** A game's keeping: `encode` writes it as text, `decode` reads it back or gives null. */
 export type CardGameCodec<S> = {
   encode: (game: S) => string;
   decode: (text: string | null) => S | null;

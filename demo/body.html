@@ -1,0 +1,58 @@
+      <section class="choose" aria-labelledby="choose-title">
+        <h2 id="choose-title" class="fam-sr" data-say="pageChoose"></h2>
+        <div class="games" id="games" data-testid="games"></div>
+        <p class="blurb"><span id="blurb" data-testid="blurb"></span> <a id="rules-link" data-say="pageRules"></a></p>
+        <div class="fam-row setup">
+          <label><span data-say="pagePlayers"></span> <select id="players" class="fam-field" data-testid="players"></select></label>
+          <label><span data-say="pageSeed"></span> <input id="seed" class="fam-field" data-mono="true" data-testid="seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
+          <button type="button" id="deal" class="fam-button" data-primary="true" data-testid="deal" data-say="pageDeal"></button>
+        </div>
+      </section>
+      <div class="fam-felt table" aria-live="polite">
+        <div class="seats" id="seats" data-testid="seats"></div>
+        <div class="piles" id="piles" data-testid="piles"></div>
+        <p class="status" id="status" data-testid="status"></p>
+        <div class="hand" id="hand" data-testid="hand" data-say-label="pageYourHand"></div>
+        <div class="moves" id="moves" data-testid="moves"></div>
+      </div>
+      __UNREVIEWED__
+      <div class="under">
+        <section aria-labelledby="log-title">
+          <h2 id="log-title" data-say="pageLog"></h2>
+          <ol class="log" id="log" data-testid="log" tabindex="0"></ol>
+        </section>
+        <section aria-labelledby="keep-title">
+          <h2 id="keep-title" data-say="pageKeep"></h2>
+          <p data-say="pageKeepNote"></p>
+          <div class="fam-tabs" role="tablist">
+            <button type="button" role="tab" data-form="code" data-testid="as-code" data-say="pageAsCode"></button>
+            <button type="button" role="tab" data-form="json" data-testid="as-json" data-say="pageAsJson"></button>
+            <button type="button" role="tab" data-form="text" data-testid="as-text" data-say="pageAsText"></button>
+            <button type="button" role="tab" data-form="csv" data-testid="as-csv" data-say="pageAsCsv"></button>
+          </div>
+          <pre class="kept" id="kept" data-testid="kept" tabindex="0"></pre>
+          <div class="fam-actions">
+            <button type="button" class="fam-button" id="copy" data-testid="copy" data-say="pageCopy"></button>
+          </div>
+          <label class="fam-label" for="paste" data-say="pagePaste"></label>
+          <div class="paste">
+            <input id="paste" class="fam-field" data-mono="true" data-testid="paste" autocomplete="off" autocapitalize="off" spellcheck="false" data-say-placeholder="pagePasteHint" />
+            <button type="button" class="fam-button" id="read" data-testid="read" data-say="pageRead"></button>
+          </div>
+          <span class="fam-error" id="read-error" data-testid="read-error" role="status"></span>
+        </section>
+        <section class="wide" aria-labelledby="deck-title">
+          <h2 id="deck-title" data-say="pageDeck"></h2>
+          <p data-say="pageDeckNote"></p>
+          <div class="fam-row setup">
+            <label><span data-say="pageDeckSeed"></span> <input id="deck-seed" class="fam-field" data-mono="true" data-testid="deck-seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
+            <label><span data-say="pageHands"></span> <select id="deck-hands" class="fam-field" data-testid="deck-hands"></select></label>
+            <label><span data-say="pageEach"></span> <select id="deck-each" class="fam-field" data-testid="deck-each"></select></label>
+            <button type="button" id="shuffle" class="fam-button" data-testid="shuffle" data-say="pageShuffle"></button>
+          </div>
+          <div class="deck-hands" id="fans" data-testid="fans"></div>
+          <p id="deck-left" data-testid="deck-left"></p>
+          <span class="fam-label" data-say="pageDeckCode"></span>
+          <code class="fam-notation deck-code" id="deck-code" data-testid="deck-code"></code>
+        </section>
+      </div>

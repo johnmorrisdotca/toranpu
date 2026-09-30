@@ -27,6 +27,7 @@ import type { CribbageCount, CribbageGame, CribbageHandScore, CribbageMove, Crib
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
+/** How many play Cribbage here: two. */
 export const CRIBBAGE_SEATS = 2;
 const DEALT = 6;
 const MOST = 31;
@@ -37,6 +38,7 @@ export function cardValue(card: CardId): number {
   return Math.min(10, rankOf(card));
 }
 
+/** The seat that deals this hand: the first seat, then the other, turn about. */
 export function dealerOf(deal: number): number {
   return deal % CRIBBAGE_SEATS;
 }
@@ -70,6 +72,7 @@ function dealCribbage(game: Omit<CribbageGame, "phase" | "hands" | "kept" | "cri
   };
 }
 
+/** A new game of Cribbage for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Cribbage is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startCribbage(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): CribbageGame | null {
   if (!(CRIBBAGE_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== CRIBBAGE_SEATS) return null;
@@ -88,6 +91,7 @@ export function cribPairs(hand: readonly CardId[]): [CardId, CardId][] {
   return pairs;
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function cribbageMoves(game: CribbageGame): CribbageMove[] {
   if (game.toPlay === null) return [];
   const hand = game.hands[game.toPlay];
@@ -234,6 +238,7 @@ function playCard(game: CribbageGame, seat: number, card: CardId): CribbageGame 
   return hands.every((held) => held.length === 0) ? show(next) : next;
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playCribbage(game: CribbageGame, move: CribbageMove): CribbageGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;

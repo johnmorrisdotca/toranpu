@@ -7,10 +7,13 @@ import type { Rank, RankDisplay, Suit, SuitDisplay } from "./cards.types.ts";
  */
 export const SUITS: readonly Suit[] = ["spades", "hearts", "diamonds", "clubs"];
 
+/** The ranks in order, ace low: 1 (the ace) to 13 (the king). */
 export const RANKS: readonly Rank[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
+/** How many cards a deck holds: fifty-two. */
 export const DECK_SIZE = SUITS.length * RANKS.length;
 
+/** How each suit is written and drawn: its symbol, its name and its colour. */
 export const SUIT_DISPLAY: Record<Suit, SuitDisplay> = {
   spades: { symbol: "♠", name: "spades", colour: "black" },
   hearts: { symbol: "♥", name: "hearts", colour: "red" },
@@ -18,6 +21,7 @@ export const SUIT_DISPLAY: Record<Suit, SuitDisplay> = {
   clubs: { symbol: "♣", name: "clubs", colour: "black" },
 };
 
+/** How each rank is written: short (`A`, `10`, `K`) and as a word (`ace`, `ten`, `king`). */
 export const RANK_DISPLAY: Record<Rank, RankDisplay> = {
   1: { short: "A", name: "ace" },
   2: { short: "2", name: "two" },

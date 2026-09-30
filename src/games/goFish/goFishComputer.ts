@@ -17,6 +17,7 @@ import type { GoFishEvent, GoFishGame, GoFishMove } from "./goFish.types.ts";
  * is not known to be without it. It never looks at a hand it is not holding.
  */
 
+/** What one seat can see of a game of Go Fish: its own hand, the table, and what has been said and shown. */
 export type GoFishView = {
   seat: number;
   hand: readonly CardId[];
@@ -26,6 +27,7 @@ export type GoFishView = {
   log: readonly GoFishEvent[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function goFishView(game: GoFishGame): GoFishView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], targets: goFishTargets(game), ranks: goFishRanks(game), counts: game.hands.map((hand) => hand.length), log: game.log };
@@ -34,6 +36,7 @@ export function goFishView(game: GoFishGame): GoFishView {
 /** What the table has said about each seat's hand: for each seat, the ranks it is known to hold and known to be without. */
 export type GoFishMemory = { holds: Set<CardRank>[]; lacks: Set<CardRank>[] };
 
+/** What the table's log says about every seat's hand, worked out from the asks, the answers and the books. */
 export function goFishMemory(log: readonly GoFishEvent[], seats: number): GoFishMemory {
   const holds = Array.from({ length: seats }, () => new Set<CardRank>());
   const lacks = Array.from({ length: seats }, () => new Set<CardRank>());
@@ -60,6 +63,7 @@ export function goFishMemory(log: readonly GoFishEvent[], seats: number): GoFish
   return { holds, lacks };
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function goFishComputer(game: GoFishGame): GoFishMove {
   const view = goFishView(game);
   const memory = goFishMemory(view.log, view.counts.length);

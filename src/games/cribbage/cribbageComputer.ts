@@ -25,6 +25,7 @@ export type CribbageView = {
   run: readonly CardId[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function cribbageView(game: CribbageGame): CribbageView {
   const seat = game.toPlay ?? 0;
   return { seat, dealer: dealerOf(game.deal), phase: game.phase, hand: game.hands[seat], count: game.count, run: game.run.map((play) => play.card) };
@@ -72,6 +73,7 @@ export function choosePeg(view: CribbageView): CardId {
   return playable.reduce((best, card) => (worth(card) > worth(best) ? card : best));
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function cribbageComputer(game: CribbageGame): CribbageMove {
   const view = cribbageView(game);
   if (view.phase === "crib") return { crib: chooseCrib(view.hand, view.seat === view.dealer) };

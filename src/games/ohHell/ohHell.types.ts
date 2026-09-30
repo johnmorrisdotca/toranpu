@@ -4,6 +4,7 @@ import type { CardId, CardSuit } from "../cardGames.types.ts";
 /** Bidding the exact number of tricks each seat will take, playing the deal out, or the game over. */
 export type OhHellPhase = "bidding" | "playing" | "over";
 
+/** One card laid, and whose it was. */
 export type OhHellPlay = { seat: number; card: CardId };
 
 /** A bid of tricks, nought up to the cards in hand, or one card played to the trick. */

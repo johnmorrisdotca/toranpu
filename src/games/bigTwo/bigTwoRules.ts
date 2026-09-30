@@ -10,9 +10,12 @@ import type { BigTwoGame } from "./bigTwo.types.ts";
 /** Big Two, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 
 const codec = cardGameCodec<BigTwoGame, ClimbMove>("bigTwo", startBigTwo, playBigTwo, isClimbMove);
+/** A game of Big Two as text: its table, its seed and its moves, never a hand. */
 export const encodeBigTwo = codec.encode;
+/** Text read back into the game of Big Two it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodeBigTwo = codec.decode;
 
+/** Big Two as one `CardGameRules`: everything a table asks of the game. */
 export const BIG_TWO_RULES: CardGameRules<BigTwoGame, ClimbMove> = {
   start: startBigTwo,
   moves: bigTwoMoves,

@@ -74,6 +74,7 @@ function newRound(game: Omit<PresidentGame, "hands" | "pile" | "passed" | "toPla
   return { ...game, ...freshTrick(held.map(sortPresident), owed[0].from), phase: "exchange", out: [], owed, swaps };
 }
 
+/** A new game of President for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table President is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startPresident(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): PresidentGame | null {
   if (!(PRESIDENT_ROUNDS as readonly number[]).includes(size)) return null;
   if (players.length < 3 || players.length > 8) return null;
@@ -100,6 +101,7 @@ export function presidentMayPlay(game: PresidentGame, cards: readonly CardId[]):
   return game.pile.cards.length === cards.length && presidentRank(cards[0]) > presidentRank(game.pile.cards[0]);
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function presidentMoves(game: PresidentGame): PresidentMove[] {
   if (game.toPlay === null) return [];
   const hand = game.hands[game.toPlay];
@@ -151,6 +153,7 @@ function climb(game: PresidentGame, seat: number, move: ClimbMove): PresidentGam
   return seatsIn(next).length <= 1 ? endRound(next) : afterTurn(next, seat);
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playPresident(game: PresidentGame, move: PresidentMove): PresidentGame | null {
   if (game.toPlay === null) return null;
   const next = "give" in move ? (game.phase === "exchange" ? give(game, move.give) : null) : game.phase === "playing" ? climb(game, game.toPlay, move) : null;
@@ -167,6 +170,7 @@ export function presidentWinners(game: PresidentGame): number[] {
 /** Each seat's title from a round's finishing order: 0 President, 1 Vice-President, the last two Vice-Beggar and Beggar, everybody else a Citizen. */
 export type PresidentTitle = "president" | "vicePresident" | "citizen" | "viceBeggar" | "beggar";
 
+/** A seat's title from a round's finishing order. */
 export function presidentTitle(order: readonly number[], seat: number): PresidentTitle {
   const place = order.indexOf(seat);
   const seats = order.length;

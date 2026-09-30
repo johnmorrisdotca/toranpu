@@ -24,11 +24,13 @@ export type GinView = {
   theirPicks: readonly CardId[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function ginView(game: GinGame): GinView {
   const seat = game.toPlay ?? 0;
   return { hand: game.hands[seat], phase: game.phase, top: game.discard.at(-1) ?? null, taken: game.taken, theirPicks: game.picked[1 - seat] ?? [] };
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function ginComputer(game: GinGame): GinMove {
   const view = ginView(game);
   if (view.phase === "draw") return view.top !== null && wanted(view.hand, view.top) ? { draw: "discard" } : { draw: "stock" };

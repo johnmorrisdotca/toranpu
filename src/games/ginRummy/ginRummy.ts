@@ -24,12 +24,14 @@ import type { GinGame, GinLayout, GinMeld, GinMove, GinResult } from "./ginRummy
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
+/** How many play Gin Rummy: two. */
 export const GIN_SEATS = 2;
 const DEALT = 10;
 /** The most deadwood a player may knock with. */
 export const KNOCK_MOST = 10;
 /** The bonus for gin, and for an undercut. */
 export const GIN_BONUS = 25;
+/** The bonus for an undercut: the defender has no more deadwood than the knocker. */
 export const UNDERCUT_BONUS = 25;
 /** The stock is played down to this many, and then the hand is drawn. */
 const STOCK_LEFT = 2;
@@ -39,6 +41,7 @@ export function deadwoodValue(card: CardId): number {
   return Math.min(10, rankOf(card));
 }
 
+/** What a list of cards counts as deadwood, added up. */
 export function deadwoodOf(cards: readonly CardId[]): number {
   return cards.reduce((sum, card) => sum + deadwoodValue(card), 0);
 }
@@ -124,6 +127,7 @@ function dealGin(game: Omit<GinGame, "hands" | "stock" | "discard" | "taken" | "
   return { ...game, phase: "draw", hands: hands.map(sortGin), stock: stock.slice(1), discard: [stock[0]], taken: null, picked: [[], []], throws: 0, toPlay: game.hand % GIN_SEATS };
 }
 
+/** A new game of Gin Rummy for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Gin Rummy is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startGin(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): GinGame | null {
   if (!(GIN_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== GIN_SEATS) return null;
@@ -136,6 +140,7 @@ export function canKnockWith(hand: readonly CardId[], card: CardId): boolean {
   return left !== null && deadwoodIn(left) <= KNOCK_MOST;
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function ginMoves(game: GinGame): GinMove[] {
   if (game.toPlay === null) return [];
   if (game.phase === "draw") return game.discard.length > 0 ? [{ draw: "stock" }, { draw: "discard" }] : [{ draw: "stock" }];
@@ -230,6 +235,7 @@ function throwCard(game: GinGame, seat: number, card: CardId, knocking: boolean)
   return { ...thrown, phase: "draw", toPlay: 1 - seat };
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playGin(game: GinGame, move: GinMove): GinGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;

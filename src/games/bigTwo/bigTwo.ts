@@ -43,6 +43,7 @@ function threeHanded(deck: readonly CardId[]): { hands: CardId[][] } {
   return { hands: hands.map((hand, seat) => (seat === holder ? [...hand, ...stock] : hand)) };
 }
 
+/** A new game of Big Two for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Big Two is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startBigTwo(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): BigTwoGame | null {
   if (!(BIG_TWO_DEALS as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 4) return null;
@@ -72,6 +73,7 @@ export function bigTwoMayPlay(game: BigTwoGame, cards: readonly CardId[]): boole
   return table !== null && bigTwoBeats(value, table);
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function bigTwoMoves(game: BigTwoGame): ClimbMove[] {
   if (game.phase === "over" || game.toPlay === null) return [];
   const plays = bigTwoPlays(game.hands[game.toPlay])
@@ -93,6 +95,7 @@ function endDeal(game: BigTwoGame, winner: number): BigTwoGame {
   return dealBigTwo({ ...finished, deal: game.deal + 1 });
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playBigTwo(game: BigTwoGame, move: ClimbMove): BigTwoGame | null {
   if (game.phase === "over" || game.toPlay === null) return null;
   const seat = game.toPlay;

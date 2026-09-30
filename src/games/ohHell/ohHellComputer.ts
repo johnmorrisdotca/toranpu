@@ -26,6 +26,7 @@ export type OhHellView = {
   playable: readonly CardId[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function ohHellView(game: OhHellGame): OhHellView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], trump: game.trump, bid: game.bids[seat], took: game.tricks[seat], trick: game.trick, seats: game.players.length, playable: ohHellPlayable(game) };
@@ -53,6 +54,7 @@ export function chooseOhHellBid(worth: number, allowed: readonly number[]): numb
   return allowed.reduce((best, bid) => (Math.abs(bid - worth) < Math.abs(best - worth) ? bid : best));
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function ohHellComputer(game: OhHellGame): OhHellMove {
   const view = ohHellView(game);
   if (game.phase === "bidding") return { bid: chooseOhHellBid(ohHellWorth(view.hand, view.trump, view.seats), ohHellBids(game)) };

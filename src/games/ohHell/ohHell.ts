@@ -22,6 +22,7 @@ import type { OhHellDealScore, OhHellGame, OhHellMove, OhHellPlay } from "./ohHe
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
+/** The most cards dealt to a hand of Oh Hell: seven. */
 export const OH_HELL_MOST_CARDS = 7;
 const MADE = 10;
 
@@ -37,6 +38,7 @@ export function dealSizes(size: number): number[] {
   return size <= OH_HELL_MOST_CARDS ? up : [...up, ...up.slice(0, -1).reverse()];
 }
 
+/** The seat that deals this deal: the first seat, then round to the left. */
 export function dealerOf(deal: number, seats: number): number {
   return deal % seats;
 }
@@ -68,6 +70,7 @@ function dealOhHell(game: Omit<OhHellGame, "phase" | "cards" | "hands" | "turned
   };
 }
 
+/** A new game of Oh Hell for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Oh Hell is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startOhHell(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): OhHellGame | null {
   if (!(OH_HELL_DEALS as readonly number[]).includes(size)) return null;
   if (players.length < 3 || players.length > 4) return null;
@@ -100,6 +103,7 @@ export function ohHellTrickWinner(trick: readonly OhHellPlay[], trump: string): 
   return trick.reduce((best, play) => (power(play.card) > power(best.card) ? play : best)).seat;
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function ohHellMoves(game: OhHellGame): OhHellMove[] {
   if (game.phase === "bidding") return ohHellBids(game).map((bid) => ({ bid }));
   return ohHellPlayable(game).map((play) => ({ play }));
@@ -140,6 +144,7 @@ function playCard(game: OhHellGame, seat: number, card: CardId): OhHellGame | nu
   return hands[0].length === 0 ? endDeal(after) : after;
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playOhHell(game: OhHellGame, move: OhHellMove): OhHellGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;

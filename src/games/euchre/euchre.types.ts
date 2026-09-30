@@ -15,6 +15,7 @@ export type EuchreMove = { order: true } | { pass: true } | { call: CardSuit } |
  */
 export type EuchrePhase = "order" | "call" | "discard" | "playing" | "over";
 
+/** One card laid, and whose it was. */
 export type EuchrePlay = { seat: number; card: CardId };
 
 /** What one hand did: which partnership made trumps, the tricks it took, and the points each partnership scored. */

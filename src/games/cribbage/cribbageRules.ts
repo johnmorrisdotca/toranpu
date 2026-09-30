@@ -15,9 +15,12 @@ function isCribbageMove(value: unknown): value is CribbageMove {
 }
 
 const codec = cardGameCodec<CribbageGame, CribbageMove>("cribbage", startCribbage, playCribbage, isCribbageMove);
+/** A game of Cribbage as text: its table, its seed and its moves, never a hand. */
 export const encodeCribbage = codec.encode;
+/** Text read back into the game of Cribbage it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodeCribbage = codec.decode;
 
+/** Cribbage as one `CardGameRules`: everything a table asks of the game. */
 export const CRIBBAGE_RULES: CardGameRules<CribbageGame, CribbageMove> = {
   start: startCribbage,
   moves: cribbageMoves,

@@ -9,6 +9,10 @@
  * - The cards the games deal, as two-letter ids ("QS", "TD"), and the helpers
  *   every game shares: dealing, seats, choices, the saved-game format.
  * - The deck as card objects, for a game of your own: `@johnmorrisdotca/toranpu/deck`.
+ * - Any game written out and read back (`toJSON`, `fromJSON`, `toCode`,
+ *   `toText`, `toCSV`), and the games, cards and moves in words, in English
+ *   and Japanese (`gameName`, `cardText`, `moveText`, `STRINGS`).
+ * - The command line as a function: `runCli`.
  */
 export * from "./play.ts";
 export * from "./games/cardGameRules.ts";
@@ -18,6 +22,11 @@ export * from "./games/cardGameCodec.ts";
 export * from "./games/cards.ts";
 export { seededRandom, shuffled } from "./random.ts";
 export type { Random } from "./random.ts";
+export * from "./save.ts";
+export * from "./words.ts";
+export * from "./strings.ts";
+export { runCli, cliLanguage, type CliResult, type CliSurroundings } from "./cli.ts";
+export { VERSION } from "./version.ts";
 
 export * as hearts from "./hearts.ts";
 export * as spades from "./spades.ts";

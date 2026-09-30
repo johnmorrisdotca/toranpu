@@ -82,6 +82,7 @@ function turnTo(game: GoFishGame, seat: number): GoFishGame {
   return { ...game, phase: "over", toPlay: null };
 }
 
+/** A new game of Go Fish for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Go Fish is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
 export function startGoFish(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): GoFishGame | null {
   if (!(GO_FISH_SIZES as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 6) return null;
@@ -119,12 +120,14 @@ export function goFishRanks(game: GoFishGame): CardRank[] {
   return [...new Set(game.hands[game.toPlay].map(rankOf))].sort((a, b) => a - b);
 }
 
+/** Every move the seat to play may make now; none once the game is over. */
 export function goFishMoves(game: GoFishGame): GoFishMove[] {
   if (game.phase === "over") return [];
   const ranks = goFishRanks(game);
   return goFishTargets(game).flatMap((ask) => ranks.map((rank) => ({ ask, rank })));
 }
 
+/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
 export function playGoFish(game: GoFishGame, move: GoFishMove): GoFishGame | null {
   const seat = game.toPlay;
   if (game.phase === "over" || seat === null) return null;

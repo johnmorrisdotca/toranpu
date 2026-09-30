@@ -17,6 +17,7 @@ import type { BigTwoGame } from "./bigTwo.types.ts";
  * table, how many cards each player holds, and nothing else.
  */
 
+/** What one seat can see of a game of Big Two: its own hand, the table, and what has been said and shown. */
 export type BigTwoView = {
   seat: number;
   hand: readonly CardId[];
@@ -26,6 +27,7 @@ export type BigTwoView = {
   legal: readonly ClimbMove[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function bigTwoView(game: BigTwoGame): BigTwoView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], pile: game.pile, counts: game.hands.map((hand) => hand.length), legal: bigTwoMoves(game) };
@@ -45,6 +47,7 @@ function broken(cards: readonly CardId[], hand: readonly CardId[]): number {
   return count;
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function bigTwoComputer(game: BigTwoGame): ClimbMove {
   const view = bigTwoView(game);
   const plays = view.legal.flatMap((move) => ("play" in move ? [move.play] : []));

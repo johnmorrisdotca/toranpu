@@ -13,9 +13,12 @@ function isPresidentMove(value: unknown): value is PresidentMove {
 }
 
 const codec = cardGameCodec<PresidentGame, PresidentMove>("president", startPresident, playPresident, isPresidentMove);
+/** A game of President as text: its table, its seed and its moves, never a hand. */
 export const encodePresident = codec.encode;
+/** Text read back into the game of President it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodePresident = codec.decode;
 
+/** President as one `CardGameRules`: everything a table asks of the game. */
 export const PRESIDENT_RULES: CardGameRules<PresidentGame, PresidentMove> = {
   start: startPresident,
   moves: presidentMoves,

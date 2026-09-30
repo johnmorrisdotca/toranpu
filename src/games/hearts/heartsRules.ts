@@ -14,9 +14,12 @@ function isHeartsMove(value: unknown): value is HeartsMove {
 }
 
 const codec = cardGameCodec<HeartsGame, HeartsMove>("hearts", startHearts, playHearts, isHeartsMove);
+/** A game of Hearts as text: its table, its seed and its moves, never a hand. */
 export const encodeHearts = codec.encode;
+/** Text read back into the game of Hearts it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodeHearts = codec.decode;
 
+/** Hearts as one `CardGameRules`: everything a table asks of the game. */
 export const HEARTS_RULES: CardGameRules<HeartsGame, HeartsMove> = {
   start: startHearts,
   moves: heartsMoves,

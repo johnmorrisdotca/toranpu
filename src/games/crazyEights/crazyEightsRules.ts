@@ -15,9 +15,12 @@ function isCrazyEightsMove(value: unknown): value is CrazyEightsMove {
 }
 
 const codec = cardGameCodec<CrazyEightsGame, CrazyEightsMove>("crazyEights", startCrazyEights, playCrazyEights, isCrazyEightsMove);
+/** A game of Crazy Eights as text: its table, its seed and its moves, never a hand. */
 export const encodeCrazyEights = codec.encode;
+/** Text read back into the game of Crazy Eights it records, by playing every move again through the rules; null for anything they cannot play out. */
 export const decodeCrazyEights = codec.decode;
 
+/** Crazy Eights as one `CardGameRules`: everything a table asks of the game. */
 export const CRAZY_EIGHTS_RULES: CardGameRules<CrazyEightsGame, CrazyEightsMove> = {
   start: startCrazyEights,
   moves: crazyEightsMoves,

@@ -33,6 +33,7 @@ export type CardGameState<K extends CardGameKind> = {
   restart: (options?: Partial<NewGameOptions>) => void;
 };
 
+/** A card game held in React state. See `CardGameState` for what it hands back; `computerDelay` is the milliseconds a computer waits before each move. */
 export function useCardGame<K extends CardGameKind>(kind: K, options: NewGameOptions, computerDelay = 700): CardGameState<K> {
   const rules = useMemo(() => rulesFor(kind), [kind]);
   const [game, setGame] = useState<GameOf<K> | null>(() => newGame(kind, options));

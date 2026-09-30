@@ -15,6 +15,7 @@ import type { CrazyEightsGame, CrazyEightsMove } from "./crazyEights.types.ts";
  * follow and how many cards each player holds, and nothing else.
  */
 
+/** What one seat can see of a game of Crazy Eights: its own hand, the table, and what has been said and shown. */
 export type CrazyEightsView = {
   seat: number;
   hand: readonly CardId[];
@@ -23,6 +24,7 @@ export type CrazyEightsView = {
   legal: readonly CrazyEightsMove[];
 };
 
+/** The part of the game the seat to play can see, which is all its computer is given. */
 export function crazyEightsView(game: CrazyEightsGame): CrazyEightsView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], counts: game.hands.map((hand) => hand.length), drawn: game.drawn, legal: crazyEightsMoves(game) };
@@ -35,6 +37,7 @@ export function longestSuit(hand: readonly CardId[]): CardSuit {
   return suits.reduce((best, suit) => (count(suit) > count(best) ? suit : best));
 }
 
+/** The move a computer in the seat to play makes: always one the rules allow. */
 export function crazyEightsComputer(game: CrazyEightsGame): CrazyEightsMove {
   const view = crazyEightsView(game);
   const plays = view.legal.flatMap((move) => ("play" in move ? [move] : []));
