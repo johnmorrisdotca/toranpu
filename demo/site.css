@@ -1,5 +1,5 @@
 /* Toranpu's own: the card table, the cards, the deck and the API reference. Everything shared is in family.css, loaded before this. */
-:root { --intro-room: 13rem; --intro-room-wide: 5.5rem; --card: #fffdf8; --card-ink: #1b1b1b; --card-red: #c2272d; --card-edge: rgba(0,0,0,.18); --turn: var(--gold); --card-w: 58px; --card-h: 84px; }
+:root { --intro-room: 9.5rem; --intro-room-wide: 5.5rem; --card: #fffdf8; --card-ink: #1b1b1b; --card-red: #c2272d; --card-edge: rgba(0,0,0,.18); --turn: var(--gold); --card-w: 58px; --card-h: 84px; }
 @media (max-width: 600px) { :root { --card-w: 46px; --card-h: 68px; } }
 
 /* Choosing a game. */

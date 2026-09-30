@@ -528,7 +528,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pagePasteHint: "ゲームのコードか JSON を貼り付けます",
     pageRead: "読み込む",
     pageReadBad: "保存したゲームではありません。ルールどおりに再現できません。",
-    pageApi: "API リファレンス（英語）",
+    pageApi: "API（英語）",
     pageApiIntro: "すべてのエントリーポイントのすべてのエクスポートを、シグネチャとドキュメントコメント付きで一覧にしています。サイトをビルドするときにソースから作ります。",
     pageBack: "卓に戻る",
     pageDeckSeed: "デッキのシード",

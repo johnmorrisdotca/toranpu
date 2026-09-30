@@ -156,7 +156,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `pagePasteHint` | Paste a game's code or its JSON | ゲームのコードか JSON を貼り付けます |
 | `pageRead` | Read | 読み込む |
 | `pageReadBad` | That is not a saved game: the rules cannot play it out. | 保存したゲームではありません。ルールどおりに再現できません。 |
-| `pageApi` | API reference | API リファレンス（英語） |
+| `pageApi` | API reference | API（英語） |
 | `pageApiIntro` | Every export of every entry point, with its signature and its doc comment. Made from the source when the site is built. | すべてのエントリーポイントのすべてのエクスポートを、シグネチャとドキュメントコメント付きで一覧にしています。サイトをビルドするときにソースから作ります。 |
 | `pageBack` | Back to the table | 卓に戻る |
 | `pageDeckSeed` | Deck seed | デッキのシード |
