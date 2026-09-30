@@ -15,6 +15,8 @@ import type { GoFishGame, GoFishMove } from "./goFish/goFish.types.ts";
 import { GO_FISH_RULES } from "./goFish/goFishRules.ts";
 import type { HeartsGame, HeartsMove } from "./hearts/hearts.types.ts";
 import { HEARTS_RULES } from "./hearts/heartsRules.ts";
+import type { OhHellGame, OhHellMove } from "./ohHell/ohHell.types.ts";
+import { OH_HELL_RULES } from "./ohHell/ohHellRules.ts";
 import type { PresidentGame, PresidentMove } from "./president/president.types.ts";
 import { PRESIDENT_RULES } from "./president/presidentRules.ts";
 import type { SpadesGame, SpadesMove } from "./spades/spades.types.ts";
@@ -31,6 +33,7 @@ export type CardGamePlays = {
   ginRummy: { game: GinGame; move: GinMove };
   euchre: { game: EuchreGame; move: EuchreMove };
   cribbage: { game: CribbageGame; move: CribbageMove };
+  ohHell: { game: OhHellGame; move: OhHellMove };
 };
 
 /**
@@ -48,4 +51,5 @@ export const CARD_GAME_RULES: { [K in CardGameKind]: CardGameRules<CardGamePlays
   ginRummy: GIN_RUMMY_RULES,
   euchre: EUCHRE_RULES,
   cribbage: CRIBBAGE_RULES,
+  ohHell: OH_HELL_RULES,
 };

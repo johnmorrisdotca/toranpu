@@ -1,5 +1,5 @@
 /**
- * Toranpu トランプ: a deck of playing cards and nine card games to play with
+ * Toranpu トランプ: a deck of playing cards and ten card games to play with
  * it, each with a computer player.
  *
  * - Every game by name: `newGame`, `rulesFor`, `playComputers`, and every
@@ -23,6 +23,7 @@ export * as hearts from "./hearts.ts";
 export * as spades from "./spades.ts";
 export * as euchre from "./euchre.ts";
 export * as cribbage from "./cribbage.ts";
+export * as ohHell from "./ohHell.ts";
 export * as crazyEights from "./crazyEights.ts";
 export * as goFish from "./goFish.ts";
 export * as bigTwo from "./bigTwo.ts";

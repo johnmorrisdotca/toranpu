@@ -1,7 +1,7 @@
 <h1 align="center">Toranpu <sub>トランプ</sub></h1>
 
-<p align="center"><strong>A deck of playing cards and nine card games, each with a computer player.</strong><br>
-Hearts, Spades, Euchre, Cribbage, Crazy Eights, Go Fish, Big Two, President and Gin Rummy, as pure TypeScript rules you can drop into any table.</p>
+<p align="center"><strong>A deck of playing cards and ten card games, each with a computer player.</strong><br>
+Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy, as pure TypeScript rules you can drop into any table.</p>
 
 <p align="center">
   <a href="https://github.com/johnmorrisdotca/toranpu/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/johnmorrisdotca/toranpu/actions/workflows/ci.yml/badge.svg"></a>
@@ -25,9 +25,9 @@ them through this package.
 
 ## Features
 
-- **Nine games, complete.** Every rule a table argues about is in: Hearts' pass
+- **Ten games, complete.** Every rule a table argues about is in: Hearts' pass
   and shooting the moon, Spades' nil and bags, Euchre's bowers and stick the
-  dealer, Cribbage's pegging and the show, Gin Rummy's layoffs and undercuts,
+  dealer, Cribbage's pegging and the show, Oh Hell's hook on the dealer's bid, Gin Rummy's layoffs and undercuts,
   President's card swaps, Big Two's five-card hands.
 - **A computer for every seat.** Each game has its own player, which sees only
   what its seat could see: its hand, the table and everything said aloud. It
@@ -125,6 +125,7 @@ writeCards(deck);                               // a 52-letter string, one lette
 | **Spades** | 4, partners | 200, 300 or 500 to win | Bids what its hand is worth, nil only on a hand of nothing, ducks bags once the contract is made, covers its partner's nil |
 | **Euchre** | 4, partners | 5 or 10 to win | Weighs the bowers, trump honours and outside aces before making trump, leads trump when its side made it |
 | **Cribbage** | 2 | 61 or 121 to win | Keeps the four worth most over every possible starter, counting its throw for or against its crib; pegs for points and never leads a five |
+| **Oh Hell** | 3–4 | 7 deals (one card up to seven) or 13 (and back down), highest score wins | Bids the tricks its high and long trumps and outside aces should take, the nearest it may; takes tricks as cheaply as it can until its bid is made, then sheds its dangerous cards |
 | **Crazy Eights** | 2–7 | 50, 100 or 200 to win | Saves its eights, stays in its longest suit, sheds its points |
 | **Go Fish** | 2–6 | 1: a single deal | Remembers everything asked and answered, and asks whoever it knows holds the rank |
 | **Big Two** | 2–4 | 1, 3 or 5 deals, fewest points wins | Sheds low cards first, beats cheaply without breaking up pairs, holds its aces and twos for the end |
@@ -142,6 +143,7 @@ Moves are small objects, one shape per kind of action:
 | Spades | `{ bid: n }` (0 is nil), `{ play: card }` |
 | Euchre | `{ order: true }`, `{ pass: true }`, `{ call: suit }`, `{ discard: card }`, `{ play: card }` |
 | Cribbage | `{ crib: [a, b] }`, `{ play: card }` |
+| Oh Hell | `{ bid: n }`, `{ play: card }` |
 | Crazy Eights | `{ play: card, suit? }` (the suit an eight calls), `{ draw: true }`, `{ pass: true }` |
 | Go Fish | `{ ask: seat, rank }` |
 | Big Two | `{ play: cards }`, `{ pass: true }` |
@@ -165,8 +167,8 @@ Everything is typed; your editor shows each function's full documentation.
 | `randomSeed()` | A fresh seed, 1 to 2³¹ − 1 |
 | `CARD_GAME_RULES` | Every game's rules, by kind |
 | `CARD_GAME_TABLES` | Every game's table: fewest, most and usual players, the sizes offered and the usual one |
-| `CARD_GAME_LIST`, `CARD_GAME_KINDS` | The nine kinds |
-| `hearts`, `spades`, `euchre`, `cribbage`, `crazyEights`, `goFish`, `bigTwo`, `president`, `ginRummy` | Each game's own exports, as a namespace |
+| `CARD_GAME_LIST`, `CARD_GAME_KINDS` | The ten kinds |
+| `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`, `goFish`, `bigTwo`, `president`, `ginRummy` | Each game's own exports, as a namespace |
 | `cardGameCodec(name, start, play, isMove)` | The save format, for a game of your own |
 | Card ids: `FULL_DECK`, `isCard`, `rankOf`, `suitOf`, `cardOf`, `cardWords`, `rankWords`, `suitWords` | Reading and naming `"QS"`-style cards |
 | Dealing: `shuffledDeck(seed, deal)`, `reshuffled`, `mixSeed`, `dealRound`, `without`, `choices`, `nextSeat` | What every game does before its own rules begin |
@@ -204,7 +206,7 @@ one game. They follow one naming pattern (shown for Hearts):
 | `HeartsGame`, `HeartsMove`, … | The game's types |
 | Game helpers | Scoring and ordering: `heartsPoints`, `trickWinner`, `spadesTrickWinner`, `euchreHeight`, `showCount` (Cribbage), `bestLayout` and `deadwoodOf` (Gin), `bigTwoBeats`, `presidentTitle` and more |
 
-Entry points: `hearts`, `spades`, `euchre`, `cribbage`, `crazyEights`,
+Entry points: `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`,
 `goFish`, `bigTwo`, `president`, `ginRummy`.
 
 ### `@johnmorrisdotca/toranpu/deck`

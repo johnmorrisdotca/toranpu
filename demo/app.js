@@ -8,6 +8,7 @@ const GAMES = {
   spades: { name: "Spades", blurb: "Partners across the table bid tricks together. Spades are always trump." },
   euchre: { name: "Euchre", blurb: "Five cards, four players in partnerships, and the jacks of trump's colour on top." },
   cribbage: { name: "Cribbage", blurb: "Lay two to the crib, peg to thirty-one, then count fifteens, pairs and runs." },
+  ohHell: { name: "Oh Hell", blurb: "Bid exactly how many tricks you will take. The hands grow from one card to seven, and the dealer may not make the bids add up." },
   crazyEights: { name: "Crazy Eights", blurb: "Match the suit or the rank. Eights are wild and name the next suit." },
   goFish: { name: "Go Fish", blurb: "Ask a player for a rank. Collect books of four. Go fish when they have none." },
   bigTwo: { name: "Big Two", blurb: "Beat the cards on the table with singles, pairs, triples or five-card hands. Twos are high." },
@@ -57,7 +58,7 @@ function words(move, seat, names) {
   if ("knock" in move) return `${mine ? "knock, discarding" : "knocks, discarding"} ${cardText(move.knock)}`;
   if ("order" in move) return mine ? "order it up" : "orders it up";
   if ("call" in move) return `${mine ? "call" : "calls"} ${SUITS[move.call][2]}`;
-  if ("bid" in move) return `${mine ? "bid" : "bids"} ${move.bid === 0 ? "nil" : move.bid}`;
+  if ("bid" in move) return `${mine ? "bid" : "bids"} ${move.bid === 0 && kind === "spades" ? "nil" : move.bid}`;
   if ("ask" in move) return `${mine ? "ask" : "asks"} ${names[move.ask]} for ${rankWords(move.rank)}`;
   return JSON.stringify(move);
 }

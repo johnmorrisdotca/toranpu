@@ -6,6 +6,14 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-30
+
+### Added
+
+- Oh Hell, for three or four: exact bids, the dealer barred from making them
+  add up, deals from one card up to seven (and back down in the long game),
+  with its computer player and save format (`@johnmorrisdotca/toranpu/ohHell`).
+
 ## [1.0.0] - 2026-09-30
 
 ### Added
@@ -26,5 +34,6 @@ All notable changes to this project are written here. The format follows
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/johnmorrisdotca/toranpu/releases/tag/v1.0.0
