@@ -6,6 +6,22 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-30
+
+### Added
+
+- **Solitaire: Klondike, FreeCell and Spider**, each its own entry point
+  (`@johnmorrisdotca/toranpu/klondike`, `/freecell`, `/spider`): the table as
+  plain data, the rules as pure functions, deals from a seed, moves written
+  as text and played back, a solver for each, and what a tap on a card
+  means. They came from itsutsu.com, and deal and solve exactly as they did
+  there: the tests hold them to deals and solving lines written down on the
+  site before the move.
+- `bestFirst`, the best-first search the three solvers share, exported for a
+  game of your own.
+
+Nothing that was exported has changed.
+
 ## [1.2.0] - 2026-09-30
 
 Nothing that was exported has changed: every game deals, plays and reads back

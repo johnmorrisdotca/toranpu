@@ -407,6 +407,51 @@ type CardGameRules<Game, Move> = {
 too few players, or a size it does not play to. `CARD_GAME_TABLES` says what
 each game offers.
 
+## Solitaire: Klondike, FreeCell and Spider
+
+Three games played alone, each its own entry point:
+`@johnmorrisdotca/toranpu/klondike`, `/freecell` and `/spider`. Each has the
+table as plain data, the rules as pure functions, a seed that deals the same
+cards everywhere, its moves written as a short string, a solver, and what a
+tap on a card means.
+
+```ts
+import { dealKlondike, dealOfSeed, deckOf, klondikeWon, movesFrom, playKlondike, solveKlondike } from "@johnmorrisdotca/toranpu/klondike";
+
+const table = dealKlondike(deckOf(dealOfSeed(2026))!, { draw: 1, passes: Infinity });
+movesFrom(table);                       // every legal move from here
+const next = playKlondike(table, { kind: "draw" });   // a new table, or null for a move the rules refuse
+const { moves } = solveKlondike(table); // a winning line, or null within the search's budget
+```
+
+- **Klondike**: seven columns, turn one card or three, and a limit on passes
+  through the stock if you want one (`{ draw: 3, passes: 3 }`).
+- **FreeCell**: eight columns, one to four free cells, and the longest run a
+  move may carry worked out from the free cells and empty columns.
+- **Spider**: two decks at one, two or four suits; a run from king to ace in
+  one suit goes home by itself.
+- **Seeds.** `dealOfSeed(seed)` (Klondike and FreeCell) and
+  `spiderDealOfSeed(seed, suits)` write a deal as text you can store or send;
+  `deckOf` and `spiderDeckOf` read it back and refuse anything that is not a
+  whole deck.
+- **Moves as text.** `encodeMoves` and `decodeMoves` write a game as a string
+  of short codes (`d` draws, `w1` carries the waste to column 1), and
+  `replay`, `replayFreeCell` and `replaySpider` play one back, table by table,
+  or say it cannot be played.
+- **Solvers.** `solveKlondike`, `solveFreeCell` and `solveSpider` search best
+  first for a winning line within a budget of tables, never of time, so the
+  same deal gets the same answer on a phone and on a server. That is what lets
+  a site deal only winnable games, or name "the first winnable deal after this
+  seed". `bestFirst` is the search itself, for a game of your own.
+- **Taps.** `moveFor`, `homeMove`, `finishingMoves` and `stuck` (and their
+  `freeCell…` and `spider…` forms) turn a tap on a card into the move a
+  person means, send cards home, and say when no move is left.
+
+These three came from [itsutsu.com](https://itsutsu.com), where people had
+already played their deals: a seed deals exactly the cards it dealt there, and
+the solvers find exactly the lines they found there, which the tests check
+against deals and lines written down on the site before the move.
+
 ## The deck
 
 ```ts
@@ -481,7 +526,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 1.2.0",
+  "generator": "toranpu 1.3.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -640,6 +685,10 @@ one game. They follow one naming pattern (shown for Hearts):
 Entry points: `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`,
 `goFish`, `bigTwo`, `president`, `ginRummy`.
 
+The solitaires, Klondike, FreeCell and Spider, are entry points too (by those names in lower case),
+with a pattern of their own (they have no seats and no computer player): see
+[Solitaire](#solitaire-klondike-freecell-and-spider) above.
+
 ### `@johnmorrisdotca/toranpu/deck`
 
 | Export | What it does |
@@ -730,7 +779,7 @@ only so far.
 
 ## Roadmap
 
-- Solitaire: Klondike, FreeCell and Spider, with a solver and winnable deals.
+- The solitaires on the demo site, and in the command line (`toranpu klondike --seed 7`).
 - Rummy 500, and Euchre's going alone.
 - A choice of computer strength for each game.
 - The rules page in Japanese.

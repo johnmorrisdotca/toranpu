@@ -1,7 +1,7 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "1.2.0",
-  "description": "Playing cards and a card game engine for JavaScript and TypeScript: a 52-card deck with a seeded shuffle, and the full rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy, each with a computer player. Saved games, a command line, English and Japanese. Zero dependencies.",
+  "version": "1.3.0",
+  "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, the rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy with computer players, and Klondike, FreeCell and Spider solitaire with solvers. Zero dependencies.",
   "keywords": [
     "cards",
     "playing-cards",
@@ -69,7 +69,13 @@
     "japanese",
     "i18n",
     "zero-dependencies",
-    "itsutsu"
+    "itsutsu",
+    "solitaire",
+    "klondike",
+    "freecell",
+    "spider-solitaire",
+    "patience",
+    "solitaire-solver"
   ],
   "homepage": "https://johnmorrisdotca.github.io/toranpu/",
   "bugs": {
@@ -154,6 +160,21 @@
       "types": "./dist/ginRummy.d.ts",
       "import": "./dist/ginRummy.js",
       "default": "./dist/ginRummy.js"
+    },
+    "./klondike": {
+      "types": "./dist/klondike.d.ts",
+      "import": "./dist/klondike.js",
+      "default": "./dist/klondike.js"
+    },
+    "./freecell": {
+      "types": "./dist/freecell.d.ts",
+      "import": "./dist/freecell.js",
+      "default": "./dist/freecell.js"
+    },
+    "./spider": {
+      "types": "./dist/spider.d.ts",
+      "import": "./dist/spider.js",
+      "default": "./dist/spider.js"
     }
   },
   "files": [
