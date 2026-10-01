@@ -8,6 +8,8 @@
  * of a casino back, a fine lattice inside a white border with a rosette in
  * the middle; they copy no maker's design.
  */
+import { cleanMarkup, safeImageUrl } from "./markup.ts";
+import { registeredBack, registeredBackNames } from "./registry.ts";
 import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl, UNSELECTABLE } from "./svg.ts";
 
 /** The backs, by name. */
@@ -37,6 +39,25 @@ export type CardBackOptions = {
   width?: number;
   /** What a screen reader says for it. Unless said (or said as ""), the back is decoration and says nothing. */
   title?: string;
+  /**
+   * Your own artwork for the whole back: SVG markup drawn in the 100 by 140 box, over the paper, in place of the lattice and
+   * the ornament. It is the page's own markup: scripts, handlers and foreign objects are taken out of it.
+   */
+  art?: string;
+  /**
+   * Your own picture for the whole back, in place of the lattice and the ornament: a `data:image/` address, an `https:`
+   * address, or an address on your own site. It fills the card inside its rounded edge. Drawn into a page it loads like any
+   * image; as an image of its own (`cardBackUrl`) only a `data:image/` address can load, which is how browsers treat a
+   * picture inside a picture.
+   */
+  image?: string;
+  /**
+   * Your logo, in the middle of the back: SVG markup drawn in a 100 by 100 box, or a picture's address as for `image`.
+   * Over the lattice it sits on a plate of the paper's colour; over your own `art` or `image` it sits as it is.
+   */
+  logo?: string;
+  /** How wide the logo is drawn, in units of the 100 wide card. Unless said, 34; at most 80. */
+  logoSize?: number;
 };
 
 /** The CSS custom properties a back drawn into a page takes its colours from, when no colour is given. */
@@ -44,9 +65,14 @@ export const CARD_BACK_PROPERTIES = { field: "--toranpu-back", ink: "--toranpu-b
 
 const isBack = (name: unknown): name is CardBackName => (CARD_BACKS as readonly unknown[]).includes(name);
 
+/** The backs a page may ask for by name: the package's own, and any the page registered (`registerCardBack`). */
+export function cardBackNames(): string[] {
+  return [...CARD_BACKS, ...registeredBackNames()];
+}
+
 /** A short key for the colours, so a pattern's id is the same for the same back and differs for another. */
 function key(name: CardBackName, options: CardBackOptions): string {
-  const text = `${name}|${options.colour ?? ""}|${options.ink ?? ""}|${options.paper ?? ""}`;
+  const text = `${name}|${options.colour ?? ""}|${options.ink ?? ""}|${options.paper ?? ""}${options.image === undefined ? "" : `|${options.image}`}`;
   let hash = 0;
   for (let i = 0; i < text.length; i++) hash = (Math.imul(hash, 31) + text.charCodeAt(i)) | 0;
   return `${name}-${(hash >>> 0).toString(36)}`;
@@ -84,8 +110,11 @@ function marked(cx: number, cy: number, words: string, field: string, paper: str
  * `--toranpu-back`, `--toranpu-back-ink` and `--toranpu-back-paper` where they
  * are set and no colour is given here; as an image, it keeps its own.
  */
-export function cardBackSvg(name: CardBackName | string = "classic-red", options: CardBackOptions = {}): string {
-  const back: CardBackName = isBack(name) ? name : "classic-red";
+export function cardBackSvg(name: CardBackName | string = "classic-red", given: CardBackOptions = {}): string {
+  // A back the page registered by name starts from its own options and the built-in back it names; what is asked for now wins.
+  const own = registeredBack(name);
+  const options: CardBackOptions = own === undefined ? given : { ...own, ...Object.fromEntries(Object.entries(given).filter(([, value]) => value !== undefined)) };
+  const back: CardBackName = own !== undefined ? (own.base !== undefined && isBack(own.base) ? own.base : "classic-red") : isBack(name) ? name : "classic-red";
   const look = CARD_BACK_LOOK[back];
   const { width, height, radius } = CARD_BOX;
   const id = `toranpu-back-${key(back, options)}`;
@@ -98,15 +127,26 @@ export function cardBackSvg(name: CardBackName | string = "classic-red", options
   const title = options.title === undefined || options.title === "" ? ` aria-hidden="true"` : ` role="img" aria-label="${escapeXml(options.title)}"`;
   const mark = typeof options.mark === "string" && options.mark.trim() !== "" ? options.mark.trim().slice(0, 12) : null;
   const parts: string[] = [`<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="#000" stroke-opacity=".18" stroke-width=".8"/>`];
+  const art = typeof options.art === "string" && options.art.trim() !== "" ? cleanMarkup(options.art) : null;
+  const image = art === null ? safeImageUrl(options.image) : null;
+  const own_art = art !== null || image !== null;
+  const logo = typeof options.logo === "string" && options.logo.trim() !== "" ? options.logo.trim() : null;
 
-  if (back === "ink-dots") {
+  if (art !== null) parts.push(`<g>${art}</g>`);
+  else if (image !== null) {
+    parts.push(
+      `<defs><clipPath id="${id}-clip"><rect x="3" y="3" width="${width - 6}" height="${height - 6}" rx="${radius - 2}"/></clipPath></defs>`,
+      `<image href="${escapeXml(image)}" x="3" y="3" width="${width - 6}" height="${height - 6}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id}-clip)"/>`,
+    );
+  } else if (back === "ink-dots") {
     parts.push(
       `<defs><pattern id="${id}" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="translate(2 2)"><circle cx="2" cy="2" r="1.35"${ink} fill-opacity=".85"/><circle cx="6" cy="6" r="1.35"${ink} fill-opacity=".32"/></pattern></defs>`,
       `<rect x="5" y="5" width="${width - 10}" height="${height - 10}" rx="4"${field}/>`,
       `<rect x="5" y="5" width="${width - 10}" height="${height - 10}" rx="4" fill="url(#${id})"/>`,
       `<rect x="8.5" y="8.5" width="${width - 17}" height="${height - 17}" rx="2.5" fill="none" stroke-width=".7" stroke-opacity=".6"${inkLine}/>`,
     );
-    if (mark !== null) parts.push(marked(50, 70, mark, field, paper, fieldText));
+    if (logo !== null) parts.push(logoOn(logo, field, paper, options.logoSize, true));
+    else if (mark !== null) parts.push(marked(50, 70, mark, field, paper, fieldText));
     else {
       parts.push(`<rect x="29" y="49" width="42" height="42" rx="7"${field}/><rect x="32" y="52" width="36" height="36" rx="5.5"${paper}/>`);
       const red = ` fill="#c2272d"`;
@@ -125,9 +165,31 @@ export function cardBackSvg(name: CardBackName | string = "classic-red", options
       diamond(15, 125, 3.2, ink),
       diamond(85, 125, 3.2, ink),
     );
-    parts.push(mark !== null ? marked(50, 70, mark, field, paper, fieldText) : rosette(50, 70, field, ink));
+    if (logo !== null) parts.push(logoOn(logo, field, paper, options.logoSize, true));
+    else parts.push(mark !== null ? marked(50, 70, mark, field, paper, fieldText) : rosette(50, 70, field, ink));
+  }
+  // Over the page's own art or picture the logo and the words sit as they are, with no plate under them.
+  if (own_art) {
+    if (logo !== null) parts.push(logoOn(logo, field, paper, options.logoSize, false));
+    else if (mark !== null) parts.push(marked(50, 70, mark, field, paper, fieldText));
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"${size}${title}${UNSELECTABLE}>${parts.join("")}</svg>`;
+}
+
+/** A logo in the middle of a back: markup in a 100 by 100 box, or a picture's address; on a paper plate with a ring in the field's colour, or as it is. */
+function logoOn(logo: string, field: string, paper: string, wanted: number | undefined, plate: boolean): string {
+  const side = typeof wanted === "number" && Number.isFinite(wanted) && wanted > 0 ? Math.min(80, wanted) : 34;
+  const x = round(50 - side / 2);
+  const y = round(70 - side / 2);
+  const picture = logo.startsWith("<") ? null : safeImageUrl(logo);
+  const drawn = logo.startsWith("<")
+    ? `<g transform="translate(${x} ${y}) scale(${round(side / 100, 4)})">${cleanMarkup(logo)}</g>`
+    : picture === null
+      ? ""
+      : `<image href="${escapeXml(picture)}" x="${x}" y="${y}" width="${round(side)}" height="${round(side)}" preserveAspectRatio="xMidYMid meet"/>`;
+  if (drawn === "") return "";
+  const radius = side / 2 + 4;
+  return plate ? `<circle cx="50" cy="70" r="${round(radius)}"${field}/><circle cx="50" cy="70" r="${round(radius - 2.5)}"${paper}/>${drawn}` : drawn;
 }
 
 /** A back as a data URL, for an <img src>, a CSS background or a canvas: the same drawing as `cardBackSvg`, with its own colours. */

@@ -144,3 +144,7 @@ input[type="range"] { width: 12rem; max-width: 100%; min-height: 44px; accent-co
 .hand-row .fam-label { padding-top: 14px; min-width: 0; }
 .hand-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
 @media (max-width: 520px) { .hand-row { grid-template-columns: 1fr; } .hand-row .fam-label { padding-top: 0; } }
+
+.brand-row { flex-wrap: wrap; gap: 18px 24px; }
+.brand-row figure { margin: 0; display: grid; justify-items: center; gap: 6px; color: var(--felt-ink); font-size: .8rem; }
+.brand-row code { font-size: .78rem; }

@@ -51,6 +51,10 @@ type Seen = {
   trump?: string | null;
   starter?: string;
   stock?: string[];
+  /** War: the last turn, every card laid in order and who took them; how many turns are played, and how many it may last. */
+  last?: { laid: { seat: number; card: string; down: boolean }[]; wars: number; winner: number | null } | null;
+  moves?: unknown[];
+  size?: number;
 };
 
 /** The first seat's name, until a page gives names: "You" in the table's language. */
@@ -58,15 +62,15 @@ const YOU = "\u0000you";
 const NAMES = [YOU, "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
 
 /**
- * <toranpu-table>: ANY OF THE TEN GAMES, READY TO PLAY. The seats round the felt, what lies on the table (the
+ * <toranpu-table>: ANY OF THE ELEVEN GAMES, READY TO PLAY. The seats round the felt, what lies on the table (the
  * trick, the pile to beat, the stock and the discard as `<toranpu-pile>`), the hand of whoever is to play, the
  * moves they may make, and computers in every other seat, playing their turns after a short pause.
  *
  *   <toranpu-table game="crazy-eights" players="3" cloth="blue" messiness="0.4"></toranpu-table>
  *
  * Attributes:
- *   game        any of the ten, by its key or in kebab case: hearts (unless said), spades, euchre, cribbage,
- *               oh-hell, crazy-eights, go-fish, big-two, president, gin-rummy
+ *   game        any of the eleven, by its key or in kebab case: hearts (unless said), spades, euchre, cribbage,
+ *               oh-hell, crazy-eights, go-fish, big-two, president, gin-rummy, war
  *   players     how many sit at the table, within the game's own range (its usual number unless said)
  *   people      how many of the seats are people's, the first ones; the rest are computers (1 unless said)
  *   names       the seats' names, separated by commas; the first is "You" unless said
@@ -74,14 +78,14 @@ const NAMES = [YOU, "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
  *   cloth       the felt: green (unless said), blue, red, black or wood
  *   messiness   how untidy the stock and the discard lie, 0 to 1 (0.3 unless said)
  *   delay       how long a computer thinks before it plays, in milliseconds (550 unless said)
- *   design, back, back-colour, mark, size, width, lang, sound   as on `<toranpu-card>`
+ *   design, back, back-colour, back-image, back-logo, mark, size, width, lang, sound   as on `<toranpu-card>`
  *
  * `deal()` deals again, with a new seed unless one is given; the `game` property is the game as it stands.
  * Each move is a `toranpu-table` event that bubbles, its detail `{ seat, move, over, winners }`.
  */
 export class ToranpuTable extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["game", "players", "people", "names", "seed", "cloth", "messiness", "delay", "design", "back", "back-colour", "mark", "size", "width", "lang", "sound"];
+    return ["game", "players", "people", "names", "seed", "cloth", "messiness", "delay", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang", "sound"];
   }
 
   #root: ShadowRoot | null = null;
@@ -91,9 +95,13 @@ export class ToranpuTable extends ElementBase {
   #picked: string[] = [];
   #timer: ReturnType<typeof setTimeout> | null = null;
 
-  /** The game as it stands, as the game's own rules hold it. */
+  /** The game as it stands, as the game's own rules hold it. Setting it to a game's key (`"hearts"`, `"crazy-eights"`) sets the `game` attribute, which deals that game. */
   get game(): unknown {
     return this.#game;
+  }
+  set game(kind: unknown) {
+    if (typeof kind === "string") this.setAttribute("game", kind);
+    else if (kind === null || kind === undefined) this.removeAttribute("game");
   }
 
   /** Deal again: the same game and table, with `seed`, or a new seed. */
@@ -177,7 +185,7 @@ export class ToranpuTable extends ElementBase {
     const me = toPlay !== null && !computers[toPlay] ? toPlay : Math.max(0, computers.findIndex((computer) => !computer));
     const cloth = TABLE_CLOTHS[(this.getAttribute("cloth") ?? "green") as TableCloth] ?? TABLE_CLOTHS.green;
     const messiness = Math.min(1, Math.max(0, Number(this.getAttribute("messiness") ?? 0.3) || 0));
-    const worn = ["design", "back", "back-colour", "mark", "lang"].filter((name) => this.hasAttribute(name)).map((name) => ` ${name}="${escape(this.getAttribute(name) ?? "")}"`).join("");
+    const worn = ["design", "back", "back-colour", "back-image", "back-logo", "mark", "lang"].filter((name) => this.hasAttribute(name)).map((name) => ` ${name}="${escape(this.getAttribute(name) ?? "")}"`).join("");
     const face = (card: string) => cardDrawing(card, false, this, design, language);
 
     const seats = names
@@ -214,11 +222,21 @@ export class ToranpuTable extends ElementBase {
     if (game.trump) piles.push(sign(t.pageTrump, suitSymbol(game.trump as never)));
     if (game.starter) piles.push(laid(t.pageStarter, [game.starter]));
     if (game.stock) piles.push(heap(fillIn(t.pageStock, { n: game.stock.length }), `count="${game.stock.length}" face-down`, "table-stock"));
+    // War: each player's pile face down, the turn the game is at, and the last turn's cards turned up, with who took them.
+    if (this.#kind === "war" && game.hands) {
+      game.hands.forEach((cards, seat) => cards.length > 0 && piles.push(heap(`${names[seat] ?? ""}: ${cards.length}`, `count="${cards.length}" face-down`, `table-war-${seat}`)));
+      piles.push(sign(t.pageWarTurn, `${game.moves?.length ?? 0} / ${game.size ?? 0}`));
+      if (game.last !== null && game.last !== undefined) {
+        const took = game.last.winner === null ? t.pageWarDraw : fillIn(t.pageWarTook, { player: names[game.last.winner] ?? "", n: game.last.laid.length });
+        piles.push(laid(took + (game.last.wars > 0 ? fillIn(t.pageWarWars, { n: game.last.wars }) : ""), game.last.laid.filter((one) => !one.down).map((one) => one.card)));
+      }
+    }
 
     const mine = !over && toPlay !== null && !computers[toPlay];
     const offered = mine ? (rules.moves(game as never) as object[]) : [];
     const usable = new Set(offered.flatMap(cardsOf));
-    const hand = (game.hands?.[me] ?? [])
+    // At War nobody holds a hand to choose from: each pile is turned a card at a time, and is drawn as a pile above.
+    const hand = (this.#kind === "war" ? [] : (game.hands?.[me] ?? []))
       .map((card) => `<button type="button" class="card" part="card" data-card="${card}" aria-pressed="${this.#picked.includes(card)}"${usable.has(card) ? "" : " disabled"} aria-label="${escape(cardText(card, language))}">${face(card)}</button>`)
       .join("");
     const same = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((card) => b.includes(card));

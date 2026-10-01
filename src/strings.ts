@@ -22,6 +22,7 @@ export type ToranpuStrings = {
   gameBigTwo: string;
   gamePresident: string;
   gameGinRummy: string;
+  gameWar: string;
   saysHearts: string;
   saysSpades: string;
   saysEuchre: string;
@@ -32,6 +33,7 @@ export type ToranpuStrings = {
   saysBigTwo: string;
   saysPresident: string;
   saysGinRummy: string;
+  saysWar: string;
   suitS: string;
   suitH: string;
   suitD: string;
@@ -56,6 +58,7 @@ export type ToranpuStrings = {
   offerBid: string;
   offerBidNil: string;
   offerAsk: string;
+  offerTurn: string;
   didPlay: string;
   didPlaySuit: string;
   didPassCards: string;
@@ -71,6 +74,7 @@ export type ToranpuStrings = {
   didBid: string;
   didBidNil: string;
   didAsk: string;
+  didTurn: string;
   hidPassCards: string;
   hidCrib: string;
   hidGive: string;
@@ -129,6 +133,11 @@ export type ToranpuStrings = {
   pageTrump: string;
   pageStarter: string;
   pageStock: string;
+  /** War at the table: the turn the game is at, who took the last turn's cards, and how many wars it took. */
+  pageWarTurn: string;
+  pageWarTook: string;
+  pageWarWars: string;
+  pageWarDraw: string;
   pageThinking: string;
   pageYourTurn: string;
   pageYourTurnPick: string;
@@ -195,6 +204,14 @@ export type ToranpuStrings = {
   rulesHearts: string;
   rulesSpadesTitle: string;
   rulesSpades: string;
+  /** The branding panel: a site's own backs, faces for the standard cards, and cards no deck has. */
+  pageBranding: string;
+  pageBrandingNote: string;
+  pageBrandingTurn: string;
+  pageBrandingTerritories: string;
+  pageBrandingKings: string;
+  pageBrandingBacks: string;
+  pageBrandingSlot: string;
   pageDesigns: string;
   pageDesignsNote: string;
   pageDesignPlain: string;
@@ -295,6 +312,7 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     gameBigTwo: "Big Two",
     gamePresident: "President",
     gameGinRummy: "Gin Rummy",
+    gameWar: "War",
     saysHearts: "Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins.",
     saysSpades: "Partners across the table bid tricks together. Spades are always trumps.",
     saysEuchre: "Five cards, four players in partnerships, and the jacks of trumps' colour on top.",
@@ -305,6 +323,7 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     saysBigTwo: "Beat the cards on the table with singles, pairs, triples or five-card hands. Twos are high.",
     saysPresident: "Shed your cards first to become President. The last out hands over their best cards.",
     saysGinRummy: "Draw and discard to make sets and runs, then knock when your deadwood is low.",
+    saysWar: "Both turn the top card and the higher takes both. A tie is war: three face down, one up. Win every card, or hold the most when the turns run out.",
     suitS: "spades",
     suitH: "hearts",
     suitD: "diamonds",
@@ -329,6 +348,7 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     offerBid: "Bid {n}",
     offerBidNil: "Bid nil",
     offerAsk: "Ask {player} for {rank}",
+    offerTurn: "Turn the cards over",
     didPlay: "plays {cards}",
     didPlaySuit: "plays {cards}, calling {suit}",
     didPassCards: "passes {cards}",
@@ -344,6 +364,7 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     didBid: "bids {n}",
     didBidNil: "bids nil",
     didAsk: "asks {player} for {rank}",
+    didTurn: "turns the cards over",
     hidPassCards: "passes cards: {n}",
     hidCrib: "lays cards in the crib: {n}",
     hidGive: "gives cards: {n}",
@@ -354,9 +375,9 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     seatName: "Seat {n}",
     cliUsage: `Usage: toranpu <command> [options]
 
-A deck of playing cards and ten card games, dealt from a seed.
+A deck of playing cards and eleven card games, dealt from a seed.
 
-  toranpu games                     the ten games, and the tables they play at
+  toranpu games                     the eleven games, and their tables
   toranpu deal --seed 42            four hands of thirteen from a seeded shuffle
   toranpu deal -n 2 -e 5 -s 42      two hands of five, and what is left
   toranpu deal hearts --seed 42     a game's own first deal, seat by seat
@@ -405,7 +426,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cliSavedGoing: "{game} for {n}, seed {seed}, {moves} moves. Not over: {player} to play.",
     cliPlayed: "{game} for {n}, seed {seed}: {moves} moves. Won by {players}.",
     cliScores: "Scores: {scores}",
-    pagePitch: "A deck of playing cards and ten card games, each with a computer player. Pick a game and play a hand.",
+    pagePitch: "A deck of playing cards and eleven card games, each with a computer player. Pick a game and play a hand.",
     pageName: "Toranpu is the everyday Japanese word for a deck of playing cards.",
     pageNameLink: "About the name",
     pageFoot: "Every deal here comes from its seed, so a seed can be shared. Nothing leaves this device.",
@@ -431,6 +452,10 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageTrump: "Trumps",
     pageStarter: "Starter",
     pageStock: "Stock: {n}",
+    pageWarTurn: "Turn",
+    pageWarTook: "{player} takes {n} cards",
+    pageWarWars: " · war ×{n}",
+    pageWarDraw: "Neither could finish the war: a draw",
     pageThinking: "{player} is thinking…",
     pageYourTurn: "Your turn.",
     pageYourTurnPick: "Your turn: pick a card, then choose what to do.",
@@ -494,6 +519,13 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     rulesHearts: "Pass three cards, then play\nFollow suit if you can\nEach heart: 1 point\nQueen of spades: 13\nFewest points wins",
     rulesSpadesTitle: "SPADES",
     rulesSpades: "Bid the tricks you will take\nFollow suit if you can\nSpades are always trumps\nMake your bid: 10 a trick\nFall short: lose your bid",
+    pageBranding: "Your own branding",
+    pageBrandingNote: "A site's own card backs, faces for the standard cards, and cards no deck has, all drawn and turned over by Toranpu. These are invented for this demo: a game of territories, each card a place with a soldier, a horse or a cannon. Every picture is ours.",
+    pageBrandingTurn: "Turn them over",
+    pageBrandingTerritories: "Cards no deck has, from a design the page registered",
+    pageBrandingKings: "Faces for the standard cards: only the kings are ours, and the rest are drawn plain",
+    pageBrandingBacks: "Backs: colours and a logo, art of your own, a picture, or the page's colours and words",
+    pageBrandingSlot: "A face and a back put into the card, and a face drawn by a function",
     pageDesigns: "Card designs",
     pageDesignsNote: "Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. Realistic is Byron Knoll's public-domain deck, with Fomin's kings, queens and jacks.",
     pageDesignPlain: "Plain",
@@ -583,6 +615,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     gameBigTwo: "ビッグツー",
     gamePresident: "大富豪",
     gameGinRummy: "ジン・ラミー",
+    gameWar: "戦争",
     saysHearts: "ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。",
     saysSpades: "向かい合ったパートナーと組んで、取るトリック数をビッドします。切り札はいつもスペードです。",
     saysEuchre: "手札は5枚。4人が2組に分かれ、切り札と同じ色のジャック2枚がいちばん強い札になります。",
@@ -593,6 +626,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     saysBigTwo: "場の札より強い札を、1枚・ペア・スリーカード・5枚の役で出します。いちばん強いのは2です。",
     saysPresident: "最初に手札をなくした人が大富豪です。最後になった人は、いちばん強い札を渡します。",
     saysGinRummy: "引いて捨てながらセットとランを作り、デッドウッドが少なくなったらノックします。",
+    saysWar: "同時に上の札をめくり、大きいほうが2枚とも取ります。同じ数なら「戦争」で、3枚を伏せて4枚目をめくります。全部の札を取るか、ターン数が尽きたとき枚数が多い人の勝ちです。",
     suitS: "スペード",
     suitH: "ハート",
     suitD: "ダイヤ",
@@ -617,6 +651,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     offerBid: "{n}とビッドする",
     offerBidNil: "ニルをビッドする",
     offerAsk: "{player}に{rank}を聞く",
+    offerTurn: "札をめくる",
     didPlay: "{cards}を出しました",
     didPlaySuit: "{cards}を出して{suit}を指定しました",
     didPassCards: "{cards}を渡しました",
@@ -632,6 +667,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     didBid: "{n}とビッドしました",
     didBidNil: "ニルをビッドしました",
     didAsk: "{player}に{rank}を聞きました",
+    didTurn: "札をめくりました",
     hidPassCards: "カードを{n}枚渡しました",
     hidCrib: "クリブにカードを{n}枚置きました",
     hidGive: "カードを{n}枚渡しました",
@@ -642,9 +678,9 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     seatName: "席{n}",
     cliUsage: `使い方: toranpu <コマンド> [オプション]
 
-トランプ1組と10種類のカードゲームです。配り方はシードで決まります。
+トランプ1組と11種類のカードゲームです。配り方はシードで決まります。
 
-  toranpu games                     10種類のゲームと、遊べる人数
+  toranpu games                     11種類のゲームと、遊べる人数
   toranpu deal --seed 42            シードでシャッフルして13枚ずつ4人に配ります
   toranpu deal -n 2 -e 5 -s 42      5枚ずつ2人に配り、残りも表示します
   toranpu deal hearts --seed 42     そのゲームの最初の配り方を席ごとに表示します
@@ -693,7 +729,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cliSavedGoing: "{game}（{n}人）、シード {seed}、{moves}手。進行中: 次は{player}の番です",
     cliPlayed: "{game}（{n}人）、シード {seed}: {moves}手。勝者は{players}",
     cliScores: "得点: {scores}",
-    pagePitch: "トランプ1組と、コンピュータと遊べる10種類のカードゲームです。ゲームを選んで、1回遊んでみてください。",
+    pagePitch: "トランプ1組と、コンピュータと遊べる11種類のカードゲームです。ゲームを選んで、1回遊んでみてください。",
     pageName: "「トランプ」は、プレイングカードを指すふだんの日本語です。",
     pageNameLink: "名前について（英語）",
     pageFoot: "配り方はすべてシードで決まるので、シードを伝えれば同じ配り方になります。データはこの端末の外に出ません。",
@@ -719,6 +755,10 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageTrump: "切り札",
     pageStarter: "スターター",
     pageStock: "山札 {n}枚",
+    pageWarTurn: "ターン",
+    pageWarTook: "{player}が{n}枚を取りました",
+    pageWarWars: "（戦争{n}回）",
+    pageWarDraw: "どちらも戦争を続けられず、引き分け",
     pageThinking: "{player}が考えています…",
     pageYourTurn: "あなたの番です。",
     pageYourTurnPick: "あなたの番です。札を選んでから、することを選んでください。",
@@ -782,6 +822,13 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     rulesHearts: "3枚渡してから始める\n同じスートを出す\nハート1枚：1点\nスペードのQ：13点\n点が少ない人の勝ち",
     rulesSpadesTitle: "スペード",
     rulesSpades: "取るトリック数を宣言\n同じスートを出す\nスペードは常に切り札\n宣言どおり：1トリック10点\n足りなければ宣言分を失う",
+    pageBranding: "独自のブランド",
+    pageBrandingNote: "サイト独自の裏面、標準のカードの表面、デッキにないカードを、すべてトランプが描いてめくります。ここにあるのはこのデモのための架空のカードで、兵士・馬・大砲のどれかが描かれた領地のカードです。絵はすべてこのデモ用に描いたものです。",
+    pageBrandingTurn: "裏返す",
+    pageBrandingTerritories: "デッキにないカード（ページで登録したデザイン）",
+    pageBrandingKings: "標準のカードの表面: キングだけが独自で、ほかは標準のまま描かれます",
+    pageBrandingBacks: "裏面: 色とロゴ、自前の絵、画像、ページ指定の色と文字",
+    pageBrandingSlot: "カードに差し込んだ表面と裏面、関数で描いた表面",
     pageDesigns: "カードのデザイン",
     pageDesignsNote: "「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。「リアル」は Byron Knoll がパブリックドメインとして公開したデッキで、キング・クイーン・ジャックは Fomin のものです。",
     pageDesignPlain: "シンプル",

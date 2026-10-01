@@ -1,4 +1,4 @@
-# The ten games, as Toranpu plays them
+# The eleven games, as Toranpu plays them
 
 Every card game is played a little differently from one table to the next.
 This page says which rules Toranpu plays, in our own words, so that you know
@@ -6,7 +6,7 @@ what your players will meet. Each game links to John McLeod's account of it at
 [pagat.com](https://www.pagat.com), which describes the variations as well;
 where a table often does otherwise, "Tables differ" says so.
 
-The rules were last checked against those pages on 2026-09-30. A test
+The rules were last checked against those pages on 2026-10-01. A test
 (`src/docs.test.js`) holds the figures on this page to the code.
 
 Throughout: the deal is one card at a time round the table, play goes to the
@@ -326,6 +326,40 @@ also common) and on the game and box bonuses added at the end of a match,
 which Toranpu does not play.
 
 Source: [pagat.com/rummy/ginrummy.html](https://www.pagat.com/rummy/ginrummy.html)
+
+## War
+
+**Two players. Size: how many turns of the cards a game may last, 25, 50, 100,
+200 or 1000. Nobody ever chooses a card.**
+
+- **The deal.** The whole deck, twenty-six cards each, face down. Nobody looks.
+- **A turn.** Both players turn their top card over. The higher takes both and
+  puts them under their pile. The ace is high and suits do not matter.
+- **War.** If the two cards are the same rank, it is war. Each player lays
+  three cards face down and turns the next one up, and the higher of those two
+  takes every card on the table. If those tie as well, the war goes on, three
+  more face down and one more up, as many times as it takes.
+- **A war you cannot finish.** A war needs four cards from each player. A
+  player who has fewer cannot finish it and loses, and the other takes every
+  card. If neither can, the one who runs out first, with fewer cards, loses;
+  with the same number each, the game is a draw.
+- **The winnings.** The cards a player wins go under their pile shuffled, so
+  that a game never runs round in a circle for ever. The shuffle comes from the
+  seed, so a saved game plays out the same again.
+- **The end.** The game ends when one player has every card, or when the turns
+  it was set up for run out: then the player holding more cards wins, and
+  equal piles share the win. Taking a turn is the only move there is, so a
+  computer's move is the same as a person's, and a table of computers plays
+  itself.
+
+**Tables differ** on how many cards go face down in a war: one is the usual
+rule in most books, and three is how children play it in many places, which is
+the rule Toranpu plays. Some tables let a player short of cards fight the war
+with what they have left, and some let the winner pick the order the winnings
+go back in. Toranpu plays the plain game, and the turn limit is its own, so
+that a game can end.
+
+Source: [pagat.com/war/war.html](https://www.pagat.com/war/war.html)
 
 ## Trademarks
 

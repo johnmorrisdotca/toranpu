@@ -1,7 +1,7 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.13.2",
-  "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, the rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy with computer players, and Klondike, FreeCell and Spider solitaire with solvers. Zero dependencies.",
+  "version": "2.14.0",
+  "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War with computer players, and Klondike, FreeCell and Spider solitaire. Backs, faces and custom cards in your own branding. Zero dependencies.",
   "keywords": [
     "cards",
     "playing-cards",
@@ -99,7 +99,13 @@
     "widget",
     "card-widget",
     "card-pile",
-    "card-fan"
+    "card-fan",
+    "war",
+    "war-card-game",
+    "branding",
+    "custom-cards",
+    "custom-card-faces",
+    "white-label"
   ],
   "homepage": "https://johnmorrisdotca.github.io/toranpu/",
   "bugs": {
@@ -235,6 +241,11 @@
       "import": "./dist/gin-rummy.js",
       "default": "./dist/gin-rummy.js"
     },
+    "./war": {
+      "types": "./dist/war.d.ts",
+      "import": "./dist/war.js",
+      "default": "./dist/war.js"
+    },
     "./klondike": {
       "types": "./dist/klondike.d.ts",
       "import": "./dist/klondike.js",
@@ -266,7 +277,7 @@
     "./dist/table-define.js"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

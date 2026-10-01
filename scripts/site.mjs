@@ -11,7 +11,7 @@ const icon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewB
 const frame = ({ title, description, links, body, scripts }) => `<!doctype html>
 <html lang="en">
   <head>
-    ${familyHead({ id, title, description, ogTitle: "Toranpu トランプ: ten card games with computer players", ogDescription: "A deck of playing cards and ten card games, each with a computer player." })}
+    ${familyHead({ id, title, description, ogTitle: "Toranpu トランプ: eleven card games with computer players", ogDescription: "A deck of playing cards and eleven card games, each with a computer player." })}
     <link rel="icon" href="${icon}" />
     <link rel="stylesheet" href="family.css" />
     <link rel="stylesheet" href="site.css" />
@@ -39,8 +39,8 @@ cpSync("dist", "site/dist", { recursive: true });
 writeFileSync(
   "site/index.html",
   frame({
-    title: "Toranpu トランプ: ten card games with computer players",
-    description: "Play a hand of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President or Gin Rummy against computer players, all run by the Toranpu TypeScript package. Free and open source.",
+    title: "Toranpu トランプ: eleven card games with computer players",
+    description: "Play a hand of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy or War against computer players, all run by the Toranpu TypeScript package. Free and open source.",
     links: [{ href: "api.html", say: "pageApi" }],
     body: readFileSync("demo/body.html", "utf8").replace("__UNREVIEWED__", familyUnreviewed({ id })).trimEnd(),
     scripts: `<script type="module" src="page.js"></script>`,

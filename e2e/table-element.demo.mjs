@@ -53,3 +53,19 @@ test("the table wears the cloth of the header's patches, and its piles the messi
   await expect(table(page)).not.toHaveAttribute("cloth", /./);
   await sound(page, errors);
 });
+
+test("War on the table element: two piles face down, the turn the game is at, and a button that turns the cards over", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  await page.locator(at("table-game")).selectOption("war");
+  await expect(table(page)).toHaveAttribute("data-game", "war");
+  await expect(inside(page, "table-seat")).toHaveCount(2);
+  await expect(inside(page, "table-war-0")).toHaveAttribute("count", "26");
+  await expect(table(page).locator(".hand .card")).toHaveCount(0);
+  await inside(page, "table-move").first().click();
+  await expect(table(page)).toContainText(/takes \d+ cards/);
+  await expect(table(page)).toContainText("Turn");
+  const held = await Promise.all([0, 1].map((seat) => inside(page, `table-war-${seat}`).getAttribute("count")));
+  expect(Number(held[0]) + Number(held[1])).toBeLessThanOrEqual(52);
+  await expect(page.locator(at("table-code"))).toContainText('<toranpu-table game="war" players="2"');
+  await sound(page, errors);
+});

@@ -10,6 +10,8 @@
 import { STRINGS, type Language } from "../strings.ts";
 import { cardText } from "../words.ts";
 import type { CardDesign } from "./cardFaces.types.ts";
+import { cleanMarkup } from "./markup.ts";
+import { designDraws, registeredDesign } from "./registry.ts";
 import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl, UNSELECTABLE } from "./svg.ts";
 import type { CardSuitLetter } from "./svg.types.ts";
 
@@ -24,8 +26,8 @@ export const JOKERS = ["RJ", "BJ"] as const;
 
 /** How a face is drawn. Every field may be left out. */
 export type CardFaceOptions = {
-  /** `"plain"` (unless said), `"four-colour"`, or a design handed in, such as `ENGLISH_PATTERN`. */
-  design?: "plain" | "four-colour" | CardDesign;
+  /** `"plain"` (unless said), `"four-colour"`, a design handed in, such as `ENGLISH_PATTERN`, or the name of a design the page has registered (`registerCardDesign`). */
+  design?: "plain" | "four-colour" | CardDesign | (string & {});
   /** The width to draw at, in pixels; the height is 1.4 times it. Unless said, the drawing fills what holds it. */
   width?: number;
   /** What a screen reader says. Unless said, the card's name in `language`, "queen of spades". An empty string makes it decoration. */
@@ -161,14 +163,24 @@ function court(rank: string, suit: CardSuitLetter, ink: string): string {
   ].join("");
 }
 
+/** The design an option names: a design handed in as it is, a registered one by its name, and the two drawn here as their names. */
+export function designOf(design: CardFaceOptions["design"]): "plain" | "four-colour" | CardDesign {
+  if (typeof design === "object" && design !== null) return design;
+  return registeredDesign(design) ?? (design === "four-colour" ? "four-colour" : "plain");
+}
+
 /** A face drawn by a design handed in, inside the card's paper: its art fitted to the 100 by 140 box by height, and centred. */
 function designed(design: CardDesign, card: string, language: Language): string | null {
-  const art = design.art[card];
-  if (art === undefined) return design.fallback === undefined ? null : designed(design.fallback, card, language);
+  const kept = registeredDesign(design.name) === design;
+  let art: string | null | undefined = Object.hasOwn(design.art, card) ? design.art[card] : undefined;
+  if (art === undefined && design.draw !== undefined) art = design.draw(card, { language });
+  if (art === undefined || art === null) return design.fallback === undefined ? null : designed(design.fallback, card, language);
+  // A design the page registered is the page's own markup, kept clean; the package's own designs are trusted as they are.
+  if (kept) art = cleanMarkup(art);
   const [width, height] = design.box;
   const scale = CARD_BOX.height / height;
   const left = (CARD_BOX.width - width * scale) / 2;
-  const joker = (JOKERS as readonly string[]).includes(card);
+  const joker = !kept && (JOKERS as readonly string[]).includes(card);
   const ink = card === "RJ" ? ` fill="#c2272d"` : ` fill="#1b1b1b"`;
   return `<g transform="translate(${round(left, 3)} 0) scale(${round(scale, 5)})">${art}</g>${joker ? jokerCorners(language, ink) : ""}`;
 }
@@ -185,17 +197,19 @@ function designed(design: CardDesign, card: string, language: Language): string 
  * image they keep their own.
  */
 export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string | null {
-  if (!isCardFace(card)) return null;
+  const design = designOf(options.design);
+  if (!isCardFace(card) && !(typeof design === "object" && designDraws(design, card))) return null;
   const language: Language = options.language === "ja" ? "ja" : "en";
   const { width, height, radius } = CARD_BOX;
   const paper = paint("fill", CARD_FACE_PROPERTIES.paper, undefined, CARD_FACE_COLOURS.paper);
-  const name = options.title ?? faceName(card, language);
+  const name = options.title ?? faceName(card, language, typeof design === "object" ? design : undefined);
   const label = name === "" ? ` aria-hidden="true"` : ` role="img" aria-label="${escapeXml(name)}"`;
   const size = typeof options.width === "number" && options.width > 0 ? ` width="${round(options.width)}" height="${round(options.width * 1.4)}"` : "";
-  const design = options.design ?? "plain";
-  const parts = [`<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="${CARD_FACE_COLOURS.edge}" stroke-opacity=".2" stroke-width=".8"/>`];
-  const drawn = typeof design === "object" && design !== null ? designed(design, card, language) : null;
+  const bare = typeof design === "object" && design.frame === "none";
+  const parts = bare ? [] : [`<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="${CARD_FACE_COLOURS.edge}" stroke-opacity=".2" stroke-width=".8"/>`];
+  const drawn = typeof design === "object" ? designed(design, card, language) : null;
   if (drawn !== null) parts.push(drawn);
+  else if (!isCardFace(card)) return null;
   else if (card === "R1" || card === "R2") parts.push(rulesCard(card, language, paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)));
   else if (card === "BL") parts.push(blankCard(paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)));
   else if (card === "RJ" || card === "BJ") {
@@ -216,14 +230,33 @@ export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"${size}${label}${UNSELECTABLE}>${parts.join("")}</svg>`;
 }
 
+/**
+ * A card's face from artwork of your own: `art` is SVG markup (or a whole `<svg>` document) drawn on the card's paper in
+ * a box 100 by 140, or in `box`, fitted to the card's height and centred; a whole `<svg>` is used as it is. It is how a
+ * page draws a card no deck has, for one card, with no design registered. `frame: "none"` leaves the paper out for art that
+ * fills the card. Scripts, handlers and foreign objects are taken out of the markup.
+ */
+export function cardFaceFromArt(art: string, options: Omit<CardFaceOptions, "design"> & { box?: readonly [number, number]; frame?: "paper" | "none" } = {}): string {
+  const clean = cleanMarkup(art);
+  if (clean.trim().startsWith("<svg")) return clean;
+  const design: CardDesign = { name: "page-art", box: options.box ?? [CARD_BOX.width, CARD_BOX.height], art: { art: clean }, frame: options.frame };
+  return cardFaceSvg("art", { ...options, design, title: options.title ?? "" }) ?? "";
+}
+
 /** A card's face as a data URL, for an <img src>, a CSS background or a canvas. `null` for anything that is not a card. */
 export function cardFaceUrl(card: string, options: CardFaceOptions = {}): string | null {
   const svg = cardFaceSvg(card, options);
   return svg === null ? null : svgDataUrl(svg);
 }
 
-/** A face's name in words: "queen of spades", "red joker"; in Japanese "スペードのクイーン", "赤のジョーカー". */
-export function faceName(card: string, language: Language = "en"): string {
+/**
+ * A face's name in words: "queen of spades", "red joker"; in Japanese "スペードのクイーン", "赤のジョーカー". A card
+ * of a design of the page's own, given as `design`, is named by that design's `label`, or by its id.
+ */
+export function faceName(card: string, language: Language = "en", design?: CardDesign): string {
+  const named = design?.label !== undefined && designDraws(design, card) ? design.label(card, language) : null;
+  if (typeof named === "string" && named !== "") return named;
+  if (!isCardFace(card)) return card;
   if (card === "RJ") return STRINGS[language].cardRedJoker;
   if (card === "BJ") return STRINGS[language].cardBlackJoker;
   if (card === "R1") return STRINGS[language].cardRulesHearts;
@@ -235,9 +268,12 @@ export function faceName(card: string, language: Language = "en"): string {
 /**
  * A design by its name, loaded when it is first asked for: `"english"` fetches
  * the English pattern (about 700 kB, 200 kB compressed) only then. `"plain"`
- * and `"four-colour"` are drawn here and need no loading; they give `null`.
+ * and `"four-colour"` are drawn here and need no loading; they give `null`. A
+ * design the page registered under the name is given as it is.
  */
 export async function loadCardDesign(name: CardDesignName | string): Promise<CardDesign | null> {
+  const own = registeredDesign(name);
+  if (own !== undefined) return own;
   if (name === "english") return (await import("../designs/english.ts")).ENGLISH_PATTERN;
   if (name === "realistic") return (await import("../designs/realistic.ts")).REALISTIC;
   return null;

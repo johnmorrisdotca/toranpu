@@ -204,7 +204,9 @@ export function runCli(args: readonly string[], around: CliSurroundings = {}): C
 
   const { game } = playComputers(kind, start);
   const winners = rules.winners(game);
-  const scores = (game as unknown as { scores?: number[]; penalties?: number[]; books?: unknown[][] }).scores ?? (game as unknown as { penalties?: number[] }).penalties ?? (game as unknown as { books: unknown[][] }).books.map((books) => books.length);
+  // What each seat finished with: its score, or its penalty, or its books; at War, the cards it holds.
+  const held = game as unknown as { scores?: number[]; penalties?: number[]; books?: unknown[][]; hands: unknown[][] };
+  const scores = held.scores ?? held.penalties ?? (held.books ?? held.hands).map((each) => each.length);
   if (json) return { code: 0, out: print({ ...savedGame(kind, game), over: rules.over(game), winners, scores }), err };
   if (csv) return { code: 0, out: toCSV(kind, game), err };
   if (asked.flags.has("text")) return { code: 0, out: toText(kind, game, language), err };

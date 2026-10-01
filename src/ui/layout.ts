@@ -5,6 +5,7 @@
  */
 import { cardFromCode, cardId } from "../cards/deck.ts";
 import { seededRandom } from "../random.ts";
+import { customCardKnown } from "./registry.ts";
 
 /** One card's place: across and down in card widths from where the first lies, and its turn in degrees. */
 export type CardPlace = { x: number; y: number; rotate: number };
@@ -101,18 +102,22 @@ function withinLimits(ids: readonly string[]): boolean {
  * `null` for anything else, or for more extras than one pack holds.
  */
 export function readHand(text: string | null | undefined): string[] | null {
-  const words = String(text ?? "").trim().toUpperCase().split(/[\s,;+]+/).filter(Boolean);
-  if (words.length === 0) return [];
+  const originals = String(text ?? "").trim().split(/[\s,;+]+/).filter(Boolean);
+  if (originals.length === 0) return [];
   // The extras by their words: each JOKER the next of red and black, each RULES the next rules card, BLANK the blank.
   let jokers = 0;
   let rules = 0;
-  const ids = words.map((word) => {
+  const standard = (id: string) => /^[A2-9TJQK][SHDC]$/.test(id) || EXTRAS.includes(id);
+  const ids = originals.map((original) => {
+    const word = original.toUpperCase();
     if (word === "JOKER" || word === "JK") return jokers++ % 2 === 0 ? "RJ" : "BJ";
     if (word === "RULES") return rules++ % 2 === 0 ? "R1" : "R2";
     if (word === "BLANK") return "BL";
-    return word.replace(/^10(?=[SHDC]$)/, "T");
+    const plain = word.replace(/^10(?=[SHDC]$)/, "T");
+    // A card no deck has, which a design the page registered draws, keeps its own spelling.
+    return standard(plain) || !customCardKnown(original) ? plain : original;
   });
-  if (ids.every((id) => /^[A2-9TJQK][SHDC]$/.test(id) || EXTRAS.includes(id))) return withinLimits(ids) ? ids : null;
+  if (ids.every((id) => standard(id) || customCardKnown(id))) return withinLimits(ids) ? ids : null;
   const raw = String(text ?? "").trim();
   if (/^[A-Za-z]+$/.test(raw)) {
     const cards: string[] = [];

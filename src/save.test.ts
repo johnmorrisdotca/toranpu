@@ -130,6 +130,6 @@ describe("a record", () => {
   it.each(CARD_GAME_LIST)("%s: every row of the CSV names an action, and the cards a move names", (kind) => {
     const rows = toCSV(kind, finished(kind)).trimEnd().split("\r\n").slice(1);
     expect(rows.length).toBeGreaterThan(10);
-    for (const row of rows) expect(row.split(",")[3], row).toMatch(/^(play|pass|bid|crib|give|draw|discard|knock|order|call|ask)$/);
+    for (const row of rows) expect(row.split(",")[3], row).toMatch(/^(play|pass|bid|crib|give|draw|discard|knock|order|call|ask|turn)$/);
   });
 });

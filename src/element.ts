@@ -18,12 +18,18 @@
  *
  * Or with no call at all: importing `@johnmorrisdotca/toranpu/element/define`
  * registers them by being imported.
+ *
+ * Your own faces and backs: `registerCardDesign` and `registerCardBack` (also from `/card-faces` and `/card-backs`) keep
+ * them by name, so `design="frontier"` and `back="frontier"` work on every element of the page; a card also takes
+ * an element in `slot="face"` or `slot="back"`, or a `face` function.
  */
 import { ToranpuCard } from "./ui/cardElement.ts";
 import { ToranpuHand } from "./ui/handElement.ts";
 import { ToranpuPile } from "./ui/pileElement.ts";
 
 export { ToranpuCard } from "./ui/cardElement.ts";
+export type { CardFaceContext, CardFaceRenderer } from "./ui/cardElement.ts";
+export { registerDesign as registerCardDesign, registerBack as registerCardBack } from "./ui/registry.ts";
 export { BUNDLE_BACKS, ToranpuHand } from "./ui/handElement.ts";
 export type { HandTurnOptions } from "./ui/handElement.ts";
 export { ToranpuPile } from "./ui/pileElement.ts";

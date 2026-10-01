@@ -2,7 +2,7 @@ import type { Rank } from "../cards/cards.types.ts";
 
 /**
  * THE CARD GAMES' VOCABULARY: Hearts, Spades, Euchre, Cribbage, Oh Hell,
- * Crazy Eights, Go Fish, Big Two, President and Gin Rummy, each a table of people and
+ * Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War, each a table of people and
  * computers in any mix, and every one answering the same questions
  * (`CardGameRules`), so one table can play any of them.
  */

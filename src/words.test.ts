@@ -8,8 +8,8 @@ import { cardShort, cardText, cardsShort, gameName, gameSays, moveText, namesLis
 
 describe("the games in words", () => {
   it("names every game in both languages", () => {
-    expect(CARD_GAME_LIST.map((kind) => gameName(kind))).toEqual(["Hearts", "Spades", "Euchre", "Cribbage", "Oh Hell", "Crazy Eights", "Go Fish", "Big Two", "President", "Gin Rummy"]);
-    expect(CARD_GAME_LIST.map((kind) => gameName(kind, "ja"))).toEqual(["ハーツ", "スペード", "ユーカー", "クリベッジ", "オー・ヘル", "クレイジーエイト", "ゴーフィッシュ", "ビッグツー", "大富豪", "ジン・ラミー"]);
+    expect(CARD_GAME_LIST.map((kind) => gameName(kind))).toEqual(["Hearts", "Spades", "Euchre", "Cribbage", "Oh Hell", "Crazy Eights", "Go Fish", "Big Two", "President", "Gin Rummy", "War"]);
+    expect(CARD_GAME_LIST.map((kind) => gameName(kind, "ja"))).toEqual(["ハーツ", "スペード", "ユーカー", "クリベッジ", "オー・ヘル", "クレイジーエイト", "ゴーフィッシュ", "ビッグツー", "大富豪", "ジン・ラミー", "戦争"]);
     for (const kind of CARD_GAME_LIST) for (const language of ["en", "ja"] as const) expect(gameSays(kind, language).length).toBeGreaterThan(20);
   });
 });

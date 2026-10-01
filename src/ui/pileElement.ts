@@ -1,6 +1,6 @@
 import { STRINGS, fillIn } from "../strings.ts";
 import { faceName } from "./cardFaces.ts";
-import { followLanguage, cardDrawing, designNamed, ElementBase, languageOf, widthOf } from "./elementKit.ts";
+import { attributeText, followLanguage, cardDrawing, designNamed, ElementBase, languageOf, widthOf } from "./elementKit.ts";
 import { pileLayout, readHand } from "./layout.ts";
 
 /** The most cards a face-down pile is counted to, so a pile given an absurd count draws in no time. */
@@ -28,26 +28,29 @@ const MOST_IN_A_PILE = 1000;
  */
 export class ToranpuPile extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["cards", "count", "face-down", "messiness", "seed", "depth", "design", "back", "back-colour", "mark", "size", "width", "lang"];
+    return ["cards", "count", "face-down", "messiness", "seed", "depth", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang"];
   }
 
   #root: ShadowRoot | null = null;
   #forget: (() => void) | null = null;
 
-  /** The pile's cards, bottom first. Setting them draws the pile afresh. */
+  /** The pile's cards, bottom first. Setting them, to a list or to text such as `"3C 9D"`, draws the pile afresh. */
   get cards(): string[] {
     return readHand(this.getAttribute("cards")) ?? [];
   }
-  set cards(cards: readonly string[]) {
-    this.setAttribute("cards", cards.join(" "));
+  set cards(cards: string | readonly string[]) {
+    this.setAttribute("cards", attributeText(cards) ?? "");
   }
 
-  /** How many cards the pile holds: its cards, or its `count` when it has none. */
+  /** How many cards the pile holds: its cards, or its `count` when it has none. Setting it sets the `count` attribute, for a face-down pile. */
   get count(): number {
     const cards = this.cards;
     if (cards.length > 0) return cards.length;
     const count = Math.floor(Number(this.getAttribute("count")));
     return Number.isFinite(count) && count > 0 ? Math.min(MOST_IN_A_PILE, count) : 0;
+  }
+  set count(count: number | string) {
+    this.setAttribute("count", String(count));
   }
 
   connectedCallback(): void {
@@ -85,7 +88,7 @@ export class ToranpuPile extends ElementBase {
     const words = STRINGS[language];
     const top = cards[cards.length - 1];
     this.setAttribute("role", "img");
-    this.setAttribute("aria-label", count === 0 ? words.pileEmpty : down || top === undefined ? fillIn(words.pileFaceDown, { n: count }) : fillIn(words.pileFaceUp, { n: count, card: faceName(top, language) }));
+    this.setAttribute("aria-label", count === 0 ? words.pileEmpty : down || top === undefined ? fillIn(words.pileFaceDown, { n: count }) : fillIn(words.pileFaceUp, { n: count, card: faceName(top, language, typeof design === "object" && design !== null ? design : undefined) }));
     // Room on every side for the most any card could be nudged or turned at the MESSIEST a pile can be, at this depth, whatever
     // the pile holds and however messy it is now: so a pile is one predictable box, the same size squared up as scattered, as
     // cards come and go, and nothing beside it moves when the messiness changes. The cards lie in the middle of it.

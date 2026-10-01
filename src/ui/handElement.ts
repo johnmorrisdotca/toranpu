@@ -1,7 +1,7 @@
 import { STRINGS, fillIn } from "../strings.ts";
 import { namesList } from "../words.ts";
 import { faceName } from "./cardFaces.ts";
-import { followLanguage, cardDrawing, cardIds, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markedCards, markerHtml, MARKER_STYLE, pageSounds, spinElement, widthOf, type SpinOptions } from "./elementKit.ts";
+import { attributeText, followLanguage, cardDrawing, cardIds, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markedCards, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./elementKit.ts";
 import { arrangeCards, handLayout, mixCards, partedHandLayout, readHand, replaceCard, tossCard, type CardLands, type CardOrder, type CardPlace } from "./layout.ts";
 
 /** How a hand's cards are turned face down or face up. */
@@ -64,7 +64,7 @@ const sameState = (a: HandState, b: HandState) => JSON.stringify(a) === JSON.str
  */
 export class ToranpuHand extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["cards", "order", "receive", "deal-after", "face-down", "turned", "scrunched", "parted", "marked", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
+    return ["cards", "order", "receive", "deal-after", "face-down", "turned", "scrunched", "parted", "marked", "closed", "reveal", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang"];
   }
 
   #root: ShadowRoot | null = null;
@@ -81,12 +81,12 @@ export class ToranpuHand extends ElementBase {
   #dealing: { cards: string[]; target: HandState } | null = null;
   #dealTimer: ReturnType<typeof setTimeout> | null = null;
 
-  /** The cards of the hand, as ids. Setting them lays the hand out afresh. */
+  /** The cards of the hand, as ids. Setting them, to a list or to text such as `"AS KH"`, lays the hand out afresh. */
   get cards(): string[] {
     return readHand(this.getAttribute("cards")) ?? [];
   }
-  set cards(cards: readonly string[]) {
-    this.setAttribute("cards", cards.join(" "));
+  set cards(cards: string | readonly string[]) {
+    this.setAttribute("cards", attributeText(cards) ?? "");
   }
 
   /** Turn every card face down where it lies: all at once, or one after another. */
@@ -441,11 +441,11 @@ export class ToranpuHand extends ElementBase {
     const marked = markedCards(this);
     const downIn = (card: string, state: HandState) => (card !== "" && state.turned.includes(card) ? !state.down : state.down);
     const named = (card: string) => {
-      const name = cardLabel(card, downIn(card, target), language);
+      const name = cardLabel(card, downIn(card, target), language, design);
       return marked.has(card) ? fillIn(words.cardMarked, { card: name }) : name;
     };
     const allDown = cards.every((card) => downIn(card, target));
-    const label = target.scrunched ? (downIn(top ?? "", target) || top === undefined ? words.handScrunched : fillIn(words.handSquared, { card: faceName(top, language) })) : allDown && marked.size === 0 ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map(named), language) });
+    const label = target.scrunched ? (downIn(top ?? "", target) || top === undefined ? words.handScrunched : fillIn(words.handSquared, { card: faceName(top, language, typeof design === "object" && design !== null ? design : undefined) })) : allDown && marked.size === 0 ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map(named), language) });
     this.setAttribute("aria-label", label);
     const reveals = this.hasAttribute("reveal") && !target.scrunched;
     this.setAttribute("role", reveals ? "button" : "group");
@@ -591,3 +591,5 @@ const HAND_STYLE = `
 @media (prefers-reduced-motion: reduce) { .hand[data-moving="true"] .slot, .hand[data-moving="true"] .turn { transition: none; } }
 ${MARKER_STYLE}
 `;
+
+reflectMethod(ToranpuHand, "mark");

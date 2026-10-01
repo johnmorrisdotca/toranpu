@@ -4,10 +4,11 @@
  * the first time one asks), the language an element speaks, one set of
  * sounds for the page, and the drawing of one card face up or face down.
  */
-import { CARD_BACKS, cardBackSvg, type CardBackOptions } from "./cardBacks.ts";
+import { cardBackNames, cardBackSvg, type CardBackOptions } from "./cardBacks.ts";
 import { createCardSounds, type CardSounds } from "./cardSounds.ts";
 import { cardFaceSvg, faceName, loadCardDesign } from "./cardFaces.ts";
 import type { CardDesign } from "./cardFaces.types.ts";
+import { onBrandChange, registeredDesign } from "./registry.ts";
 import { STRINGS, type Language } from "../strings.ts";
 import { readHand } from "./layout.ts";
 
@@ -18,11 +19,13 @@ const loadedDesigns = new Map<string, CardDesign | null>();
 const loadingDesigns = new Map<string, Promise<CardDesign | null>>();
 
 /**
- * A design as an element names it: `plain` and `four-colour` at once; a
- * drawn set (`english`, `realistic`) once it has been fetched, and until then
- * `null`, with `ready` settling when it arrives.
+ * A design as an element names it: `plain` and `four-colour` at once; one the
+ * page registered at once; a drawn set (`english`, `realistic`) once it has
+ * been fetched, and until then `null`, with `ready` settling when it arrives.
  */
 export function designNamed(name: string | null): { design: "plain" | "four-colour" | CardDesign | null; ready: Promise<unknown> | null } {
+  const own = registeredDesign(name);
+  if (own !== undefined) return { design: own, ready: null };
   if (name === "four-colour") return { design: "four-colour", ready: null };
   if (name !== "english" && name !== "realistic") return { design: "plain", ready: null };
   const loaded = loadedDesigns.get(name);
@@ -44,15 +47,19 @@ export function pageSounds(): CardSounds {
   return sounds;
 }
 
-/** A back as an element names it, with its colour and words. */
+/** A back as an element names it: a built-in one or one the page registered, with the colour, words, picture and logo the element gives it. */
 export function backOptions(element: Element): { name: string; options: CardBackOptions } {
   const asked = element.getAttribute("back") ?? "classic-red";
-  const name = (CARD_BACKS as readonly string[]).includes(asked) ? asked : "classic-red";
+  const name = cardBackNames().includes(asked) ? asked : "classic-red";
   const options: CardBackOptions = {};
   const colour = element.getAttribute("back-colour");
   const mark = element.getAttribute("mark");
+  const image = element.getAttribute("back-image");
+  const logo = element.getAttribute("back-logo");
   if (colour !== null) options.colour = colour;
   if (mark !== null) options.mark = mark;
+  if (image !== null) options.image = image;
+  if (logo !== null) options.logo = logo;
   return { name, options };
 }
 
@@ -68,8 +75,8 @@ export function cardDrawing(card: string, faceDown: boolean, element: Element, d
 }
 
 /** What a screen reader says for a card: its name, or that it is face down. */
-export function cardLabel(card: string, faceDown: boolean, language: Language): string {
-  return faceDown ? STRINGS[language].cardFaceDown : faceName(card, language);
+export function cardLabel(card: string, faceDown: boolean, language: Language, design?: "plain" | "four-colour" | CardDesign | null): string {
+  return faceDown ? STRINGS[language].cardFaceDown : faceName(card, language, typeof design === "object" && design !== null ? design : undefined);
 }
 
 /** The sizes every element takes, as a card's width in pixels. */
@@ -99,18 +106,23 @@ const speakers = new Set<() => void>();
 let listening: MutationObserver | null = null;
 /**
  * Redraw an element when the page changes its language (`<html lang>`), as a
- * language chooser does, until `forget` is called. One watcher serves every
- * element on the page.
+ * language chooser does, or registers a design or a back (so an element on the
+ * page before the page's own branding is registered draws again with it), until
+ * `forget` is called. One watcher serves every element on the page.
  */
 export function followLanguage(redraw: () => void): () => void {
   speakers.add(redraw);
+  const unbrand = onBrandChange(redraw);
   if (listening === null && typeof MutationObserver !== "undefined" && typeof document !== "undefined") {
     listening = new MutationObserver(() => {
       for (const one of [...speakers]) one();
     });
     listening.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   }
-  return () => speakers.delete(redraw);
+  return () => {
+    speakers.delete(redraw);
+    unbrand();
+  };
 }
 
 /** Cards as an element's method is given them, one or several, in any spelling `readHand` reads, as ids. */
@@ -162,4 +174,32 @@ export function spinElement(element: HTMLElement, options: SpinOptions = {}, del
     () => undefined,
     () => undefined,
   );
+}
+
+/**
+ * LET A FRAMEWORK SET AN ATTRIBUTE THAT IS ALSO A METHOD. React, Vue and Svelte set a property, not an attribute, on a
+ * custom element that has one of the name (`<toranpu-card flip>` is `card.flip = true`), and `flip` is a method too, so
+ * the assignment would replace the method and leave the attribute unset. This makes the name an accessor: reading it
+ * still gives the method, so `card.flip()` goes on working, and writing it sets the attribute (`true` or `""` turns it
+ * on, `false`, `null` and `undefined` take it away, any other value is the attribute's text).
+ */
+export function reflectMethod(element: { prototype: object }, name: string): void {
+  const method = (element.prototype as Record<string, unknown>)[name];
+  Object.defineProperty(element.prototype, name, {
+    configurable: true,
+    get() {
+      return method;
+    },
+    set(this: Element, value: unknown) {
+      if (value === false || value === null || value === undefined) this.removeAttribute(name);
+      else this.setAttribute(name, value === true ? "" : String(value));
+    },
+  });
+}
+
+/** An attribute's new text from what a property was given: a list is joined with spaces, and nothing at all takes the attribute away (null). */
+export function attributeText(value: unknown): string | null {
+  if (value === null || value === undefined || value === false) return null;
+  if (Array.isArray(value)) return value.join(" ");
+  return value === true ? "" : String(value);
 }

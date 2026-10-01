@@ -1,7 +1,7 @@
 <h1 align="center">Toranpu <sub>トランプ</sub></h1>
 
-<p align="center"><strong>A deck of playing cards and ten card games, each with a computer player.</strong><br>
-Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy: the rules as pure functions, seeded deals, saved games, and a table that runs anywhere.</p>
+<p align="center"><strong>A deck of playing cards and eleven card games, each with a computer player.</strong><br>
+Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War: the rules as pure functions, seeded deals, saved games, and a table that runs anywhere, in your own card backs and faces if you like.</p>
 
 <p align="center">
   <a href="https://github.com/johnmorrisdotca/toranpu/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/johnmorrisdotca/toranpu/actions/workflows/ci.yml/badge.svg"></a>
@@ -14,17 +14,17 @@ Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, Presi
 <p align="center"><a href="https://johnmorrisdotca.github.io/toranpu/"><strong>Play a hand against the computer →</strong></a></p>
 
 <p align="center">
-  <img src="docs/desktop.jpg" alt="A game of Hearts for four a few tricks in, under the demo's header with its language chooser and five cloth patches: the ten games to choose from, a trick on the felt, and your hand of eleven with the cards you may not play dimmed" width="720">
+  <img src="docs/desktop.jpg" alt="A game of Hearts for four a few tricks in, under the demo's header with its language chooser, five cloth patches and Help switch: the eleven games to choose from, a trick on the felt, and your hand of eleven with the cards you may not play dimmed" width="720">
   <img src="docs/phone.jpg" alt="A game of Go Fish for three on a phone in dark mode, in Japanese: the stock, your hand of nine and the buttons that ask a computer for a rank" width="220">
 </p>
 
 A playing card library and a card game engine for JavaScript and TypeScript:
-a standard 52-card deck with a seeded shuffle, and the full rules of ten
+a standard 52-card deck with a seeded shuffle, and the full rules of eleven
 classic card games, each with a computer opponent (a bot) for every seat.
 
 - **What is different.** The games are complete, down to the rules a table
   argues about, and every one answers the same few questions, so one table
-  plays all ten. The computers see only what their seat could see. A game is
+  plays all eleven. The computers see only what their seat could see. A game is
   its seed and its moves, so it can be saved, shared, replayed and checked.
 - **What it costs a project.** Nothing: no dependencies, and one import. One
   game on its own is about 8 kB.
@@ -60,7 +60,7 @@ Or with nothing to install, [play a hand in the demo](https://johnmorrisdotca.gi
 
 - **Anybody building a card table.** The rules, the deal, the turn order, the
   scoring and the computer players are done. You draw the cards.
-- **Games sites and apps.** Ten games behind one interface, playable by
+- **Games sites and apps.** Eleven games behind one interface, playable by
   people, computers or any mix, with saves that cannot be tampered with.
 - **Bots and research.** Pure functions over plain data: play a million games
   in a loop, pit your own player against the ones here, replay any game from
@@ -263,18 +263,18 @@ reaches has to be the game the seed and those taps must give.
   `sideEffects: false`, so a bundler drops what you do not import.
 - **Sizes.** The deck alone is about 3 kB minified (1.4 kB gzipped). One game
   from its own entry point is 7 to 12 kB (Hearts is 9 kB, 3.5 kB gzipped).
-  All ten, with the words in two languages and the command line, are about
+  All eleven, with the words in two languages and the command line, are about
   95 kB (30 kB gzipped). What is drawn is apart from the games: the backs
   alone are about 2 kB gzipped, the three elements with the plain faces and
   the backs about 68 kB (21 kB gzipped), and the English pattern (166 kB
   gzipped) and the sounds (50 kB) are fetched only by a page that uses them.
-- **Where it runs.** Every current browser, Node 20 and later, Deno and Bun.
+- **Where it runs.** Every current browser, Node 22 and later, Deno and Bun.
 
 ## Architecture
 
 Each game is a folder of its own under `src/games/`: its rules as pure
 functions, its types, its computer player, and the code that keeps a table as
-text. The ten card games and three solitaires share the deck, the saving and
+text. The eleven card games and three solitaires share the deck, the saving and
 the words. Drawing sits apart under `ui/`, so the rules run with no DOM, and
 every game and every browser part is an entry point of its own, so a page
 loads only what it uses.
@@ -296,7 +296,7 @@ src/
 ├── gin-rummy.ts       the "/gin-rummy" entry: Gin Rummy, with its rules, computer player and saved-game format
 ├── go-fish.ts         the "/go-fish" entry: Go Fish, with its rules, computer player and saved-game format
 ├── hearts.ts          the "/hearts" entry: Hearts, with its rules, computer player and saved-game format
-├── index.ts           the main entry: the deck, the ten games' front door, saving, words and the command line
+├── index.ts           the main entry: the deck, the eleven games' front door, saving, words and the command line
 ├── klondike.ts        the "/klondike" entry: Klondike, with its table, rules, moves as text, solver and what a tap means
 ├── oh-hell.ts         the "/oh-hell" entry: Oh Hell, with its rules, computer player and saved-game format
 ├── play.ts            the friendly front door: start any game by name, let the computers play, play yours
@@ -309,8 +309,9 @@ src/
 ├── spider.ts          the "/spider" entry: Spider, at one, two or four suits, the same way
 ├── strings.ts         every word Toranpu says to a person, in English and Japanese
 ├── table-define.ts    the "/table/define" entry: registers <toranpu-table> by being imported
-├── table.ts           the "/table" entry: the <toranpu-table> element, any of the ten games ready to play on a page
+├── table.ts           the "/table" entry: the <toranpu-table> element, any of the eleven games ready to play on a page
 ├── version.ts         the version of this package, as package.json has it
+├── war.ts             the "/war" entry: War, with its rules, computer player and saved-game format
 ├── words.ts           the games, the cards and the moves in words, English or Japanese
 ├── cards/  the deck's vocabulary and what any game does with a deck before its own rules begin
 │   ├── cards.constants.ts  the suits and ranks, in the order a fresh deck is sorted
@@ -393,22 +394,29 @@ src/
 │   │   ├── spades.types.ts    Spades' types
 │   │   ├── spadesComputer.ts  Spades' computer player
 │   │   └── spadesRules.ts     Spades kept as its table, seed and moves, and what a table asks of its rules
-│   └── spider/  Spider
-│       ├── code.ts          a Spider game written down: the deal and the moves as short strings
-│       ├── intent.ts        what a person meant by a drag or a tap, read against the rules, as a move
-│       ├── rules.ts         the rules of Spider, pure
-│       ├── solve.ts         the Spider solver
-│       └── spider.types.ts  the vocabulary of a Spider table
+│   ├── spider/  Spider
+│   │   ├── code.ts          a Spider game written down: the deal and the moves as short strings
+│   │   ├── intent.ts        what a person meant by a drag or a tap, read against the rules, as a move
+│   │   ├── rules.ts         the rules of Spider, pure
+│   │   ├── solve.ts         the Spider solver
+│   │   └── spider.types.ts  the vocabulary of a Spider table
+│   └── war/  War
+│       ├── war.ts          the rules of War: a turn through however many wars it takes, and the end
+│       ├── war.types.ts    War's types
+│       ├── warComputer.ts  War's computer player, which turns the cards over, there being nothing else to do
+│       └── warRules.ts     War kept as its table, seed and moves, and what a table asks of its rules
 └── ui/  everything that draws or plays something on a page
     ├── cardBacks.ts        the backs of the cards
-    ├── cardElement.ts      <toranpu-card>: one card on any page, in any design and with any back
+    ├── cardElement.ts      <toranpu-card>: one card on any page, in any design and with any back, or your own face as a slot
     ├── cardFaces.ts        the faces of the cards, drawn as SVG
     ├── cardFaces.types.ts  a set of drawn cards: its name, its box and each card's drawing
     ├── cardSounds.ts       the sounds of a card table
     ├── elementKit.ts       what the custom elements share: a base class, the designs, the language
     ├── handElement.ts      <toranpu-hand>: a hand of cards, fanned or squared up
     ├── layout.ts           where cards lie: the arithmetic behind the elements, with no DOM
+    ├── markup.ts           a page's own artwork made safe to draw: scripts and handlers taken out, picture addresses checked
     ├── pileElement.ts      <toranpu-pile>: a stock or a discard pile, as neat or as messy as asked
+    ├── registry.ts         the designs and backs a page registered, by name, and what tells elements to draw again
     ├── svg.ts              what every drawing shares: the card's box, the suits as shapes, safe SVG helpers
     ├── svg.types.ts        a suit as one letter, as a card's id writes it
     └── tableElement.ts     the <toranpu-table> element itself, and the cloths it may be laid in
@@ -444,34 +452,36 @@ issue and we will add you.
 
 ### The family
 
-Toranpu has siblings, each made for the same site, each MIT, each at
-[github.com/johnmorrisdotca](https://github.com/johnmorrisdotca):
+Toranpu is one of sixteen packages, each made for the same site, each MIT, each
+at [github.com/johnmorrisdotca](https://github.com/johnmorrisdotca):
 
-- [Korokoro](https://github.com/johnmorrisdotca/korokoro) (コロコロ, the sound
-  of something small rolling along): fair dice for the table, with the odds of
-  every throw.
-- [Kyuubu](https://github.com/johnmorrisdotca/kyuubu) (キューブ, how Japanese
-  says "cube"): a turning cube for the browser, 2×2 to 7×7, drawn in CSS 3D.
-- [Hitotsu](https://github.com/johnmorrisdotca/hitotsu) (一つ, "one"): the
-  colour-card game, with the house rules people actually play.
-- [Tane](https://github.com/johnmorrisdotca/tane) (種, a seed, the kind you
-  plant): seeded random numbers and daily seeds. Toranpu's deals come from the
-  same generator, and Tane's specification has the vectors to check it by.
-- [Narabe](https://github.com/johnmorrisdotca/narabe) (並べ, "line them up"):
-  one rules engine for forty-eight abstract board games.
-- [Tenka](https://github.com/johnmorrisdotca/tenka) (天下, "under heaven"):
-  world conquest for two to six, on a map of the real world.
-- [Kumimoji](https://github.com/johnmorrisdotca/kumimoji) (組み文字, "letters
-  put together"): the crossword tile race, in English and Japanese.
+- [Korokoro](https://github.com/johnmorrisdotca/korokoro) (コロコロ, the sound of something small rolling): dice, with notation, exact odds and games.
+- [Kyuubu](https://github.com/johnmorrisdotca/kyuubu) (キューブ, how Japanese says "cube"): a turning cube for the browser, 2×2 to 7×7.
+- [Hitotsu](https://github.com/johnmorrisdotca/hitotsu) (一つ, "one"): a colour-card game, named for the call a player makes with one card left.
+- [Toranpu](https://github.com/johnmorrisdotca/toranpu) (トランプ, the everyday Japanese word for a deck of playing cards): card games as pure rules.
+- [Tane](https://github.com/johnmorrisdotca/tane) (種, a seed, the kind you plant): seeded random numbers and daily seeds. Toranpu's deals come from the same generator, and Tane's specification has the vectors to check it by.
+- [Narabe](https://github.com/johnmorrisdotca/narabe) (並べ, "line them up"): a rules engine for gomoku, Reversi, Go, checkers and many more.
+- [Tenka](https://github.com/johnmorrisdotca/tenka) (天下, "under heaven"): a world-conquest game for two to six.
+- [Kumimoji](https://github.com/johnmorrisdotca/kumimoji) (組み文字, "letters put together"): a crossword tile race in English and Japanese.
+- [Tsunagi](https://github.com/johnmorrisdotca/tsunagi) (繋ぎ, "joining"): a line-joining puzzle.
+- [Jarajara](https://github.com/johnmorrisdotca/jarajara) (ジャラジャラ, the rattle of mahjong tiles being shuffled): mahjong tiles and a matching solitaire.
+- [Suido](https://github.com/johnmorrisdotca/suido) (水道, "waterworks"): a pipe puzzle.
+- [Domino](https://github.com/johnmorrisdotca/domino) (ドミノ, the Japanese word for dominoes): dominoes and Mexican Train.
+- [Kotoba](https://github.com/johnmorrisdotca/kotoba) (言葉, "words"): word lists and word-game rules.
+- [Sugoroku](https://github.com/johnmorrisdotca/sugoroku) (双六, backgammon's Japanese name): backgammon and its variants.
+- [Kazu](https://github.com/johnmorrisdotca/kazu) (数, "number"): grid number puzzles, Sudoku and five more.
+- [Meikyuu](https://github.com/johnmorrisdotca/meikyuu) (迷宮, "labyrinth"): mazes to draw a line through.
+
+**This package is Toranpu.** The demos of all sixteen share one header and footer, so each links the rest.
 
 ## Features
 
-- **Ten games, complete.** Every rule a table argues about is in: Hearts'
+- **Eleven games, complete.** Every rule a table argues about is in: Hearts'
   pass and shooting the moon, Spades' nil and bags, Euchre's bowers and stick
   the dealer, Cribbage's pegging and the show, Oh Hell's hook on the dealer's
   bid, Gin Rummy's layoffs and undercuts, President's card swaps, Big Two's
-  five-card hands. [The ten games](./docs/games.md) says which rules are
-  played, with a source for each.
+  five-card hands, and War down to the wars inside wars. [The eleven
+  games](./docs/games.md) says which rules are played, with a source for each.
 - **A computer for every seat.** Each game has its own player, which sees
   only what its seat could see: its hand, the table and everything said
   aloud. It never peeks, and the tests hold it to that.
@@ -507,6 +517,11 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   [Card designs](#card-designs).
 - **Card backs**, drawn as SVG: a classic red, a classic blue and ink with
   dots, recoloured or marked with a site's name. See [Card backs](#card-backs).
+- **Your own branding.** Card backs from your own colours, art, picture or
+  logo; faces for the standard cards in your own art; and wholly new cards,
+  such as a territory card with a place and a soldier, a horse or a cannon,
+  by a design you register, a slot or a function. See
+  [Your own branding](#your-own-branding).
 - **An optional React hook**, `useCardGame`.
 
 ## The games
@@ -526,6 +541,7 @@ words, with a source. In short:
 | **Big Two** | 2–4 | 1, 3 or 5 deals, fewest points wins | Sheds low cards first, beats cheaply without breaking up pairs, holds its aces and twos for the end |
 | **President** | 3–8 | 3, 5 or 7 rounds, most points wins | Hands back its lowest cards, leads low, keeps its twos and aces back |
 | **Gin Rummy** | 2 | 50, 100 or 150 to win | Takes the discard only into a meld, throws the card that leaves least deadwood, never feeds the other player's melds, knocks as soon as it may |
+| **War** | 2 | 25, 50, 100, 200 or 1000 turns, the most cards winning when they run out | Turns the cards over: there is nothing else to do, so a table of computers plays itself |
 
 Cards are two-letter ids in play: rank `A 2 3 4 5 6 7 8 9 T J Q K`, then suit
 `S H D C`. `"QS"` is the queen of spades and `"TD"` the ten of diamonds.
@@ -544,6 +560,7 @@ Moves are small objects, one shape per kind of action:
 | Big Two | `{ play: cards }`, `{ pass: true }` |
 | President | `{ give: cards }`, `{ play: cards }`, `{ pass: true }` |
 | Gin Rummy | `{ draw: "stock" }`, `{ draw: "discard" }`, `{ discard: card }`, `{ knock: card }` |
+| War | `{ turn: true }` |
 
 `rules.moves(game)` always lists every move the player to move may make, so a
 table never needs to know the rules to offer them.
@@ -719,6 +736,10 @@ cardBackUrl("ink-dots", { colour: "#8f2826", mark: "五つ" });  // "data:image/
 | `mark` | up to twelve characters in the middle, such as a site's name, in place of the ornament | none |
 | `width` | pixels wide; the height is 1.4 times it | none: it fills what holds it |
 | `title` | what a screen reader says | nothing: it is decoration |
+| `art` | your own artwork for the whole back: SVG markup in the 100 by 140 box, in place of the lattice and the ornament | none |
+| `image` | your own picture for the whole back: a `data:image/` address, an `https:` address or one on your own site | none |
+| `logo` | your logo in the middle: SVG markup in a 100 by 100 box, or a picture's address; on a plate over the lattice, as it is over your own `art` or `image` | none |
+| `logoSize` | how wide the logo is drawn, in units of the card's 100: at most 80 | `34` |
 
 A colour that is not one is ignored rather than written into the drawing, and
 the mark is escaped, so neither can put markup into a page. Drawn into a page
@@ -726,6 +747,10 @@ with no colour given, a back takes the CSS custom properties
 `--toranpu-back`, `--toranpu-back-ink` and `--toranpu-back-paper` where they
 are set, so a site's theme can recolour every back at once; as an image it
 keeps its own colours. Each back is under 5 kB of SVG.
+
+Your own back can be kept under a name, so that `back="frontier"` asks for it
+on every card, hand, pile and table of the page: see
+[Your own branding](#your-own-branding).
 
 ## Card designs
 
@@ -754,7 +779,7 @@ cardFaceSvg("R1");                                    // a rules card: the rules
 
 | Option of `cardFaceSvg` and `cardFaceUrl` | Means | Unless said |
 | --- | --- | --- |
-| `design` | `"plain"`, `"four-colour"`, or a design handed in: `ENGLISH_PATTERN`, or what `loadCardDesign` gives | `"plain"` |
+| `design` | `"plain"`, `"four-colour"`, a design handed in (`ENGLISH_PATTERN`, or what `loadCardDesign` gives), or the name of a design the page registered | `"plain"` |
 | `width` | pixels wide; the height is 1.4 times it | none: it fills what holds it |
 | `title` | what a screen reader says; `""` for none | the card's name in `language` |
 | `language` | `"en"` or `"ja"`, for the card's name and a joker's corner word | `"en"` |
@@ -784,7 +809,8 @@ cardFaceSvg("R1");                                    // a rules card: the rules
 - **A design of your own** is `{ name, box: [width, height], art: { KS: "<path …/>", … } }`:
   each card's drawing inside an `<svg>` of that box. A card it has no drawing
   for is drawn by its `fallback` design if it names one (the realistic design
-  names the English pattern), and otherwise plain.
+  names the English pattern), and otherwise plain. It can draw cards no deck
+  has too, and be registered by name: see [Your own branding](#your-own-branding).
 - Plain and four colour take the CSS custom properties under
   [The drawings](#the-drawings) when put into a page. The English pattern
   keeps its own colours, as a printed deck does.
@@ -792,6 +818,120 @@ cardFaceSvg("R1");                                    // a rules card: the rules
 The English pattern's 54 files, their licence and what was done to them are
 listed in [docs/credits.md](./docs/credits.md). The plain and four-colour
 faces were drawn for Toranpu.
+
+## Your own branding
+
+A site's own cards: its own backs, its own faces for the standard cards, and
+cards no deck has. Toranpu draws them all, turns them over and lays them out
+in hands, piles and tables, so a game of your own, or a standard game in your
+own colours, looks like yours and not like a library's. The demo's panel does
+this with invented cards, a game of territories each showing a place and a
+soldier, a horse or a cannon, every picture drawn for the demo.
+
+Nobody's trademark or artwork ships with Toranpu, and none should be put in a
+page that is not yours to put it in. What follows only draws what you give it.
+
+**A back of your own.** Colours and a logo, your own art, or a picture:
+
+```ts
+import { cardBackSvg, registerCardBack } from "@johnmorrisdotca/toranpu/card-backs";
+
+registerCardBack("frontier", { base: "classic-blue", colour: "#2f4a3a", ink: "#e7d9a8", logo: shield });   // a logo on the lattice
+registerCardBack("frontier-art", { art: ridges, logo: shield });                                          // art of your own, the logo on it
+cardBackSvg("frontier", { width: 70 });                                                                    // or draw it straight away
+```
+
+```html
+<toranpu-card back="frontier" card="KS" face-down flip></toranpu-card>
+<toranpu-hand cards="AS KH" back="frontier-art" face-down></toranpu-hand>
+<toranpu-card back-image="/art/back.jpg" back-logo="/art/logo.svg" card="KS" face-down></toranpu-card>
+```
+
+A registered back is its options with the built-in back it starts from
+(`base`, the classic red unless said); an option given later wins. `back-image`
+and `back-logo` on an element are the page's own picture and logo by address,
+for a page that registers nothing.
+
+**Faces of your own, for the standard cards or for cards no deck has.** A
+design is `{ name, box, art, draw?, label?, frame?, fallback? }`. A card
+it draws takes any id of letters, digits, `-`, `_`, `.` or `:` (up to forty),
+and a hand or a pile written as text reads those ids beside the usual ones.
+
+```ts
+import { registerCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
+
+registerCardDesign({
+  name: "frontier",
+  box: [100, 140],
+  art: { KS: kingOfSpades },                                  // a face for a standard card, as SVG
+  draw: (card, { language }) => territory(card, language),    // cards no deck has; null for a card that is not one
+  label: (card, language) => nameOf(card, language),          // what a screen reader says; null leaves the usual name
+});
+```
+
+```html
+<toranpu-card card="ridgeway-horse" design="frontier" flip></toranpu-card>
+<toranpu-hand cards="AS KS ridgeway-horse wild" design="frontier"></toranpu-hand>
+<toranpu-table game="hearts" design="frontier" back="frontier"></toranpu-table>
+```
+
+| Field of a design | Means | Unless said |
+| --- | --- | --- |
+| `name` | kebab case, up to forty characters; never one of the package's own (`plain`, `four-colour`, `english`, `realistic`) | required |
+| `box` | the width and height each card's drawing is made in, fitted to the card's height and centred | required |
+| `art` | each card's drawing by its id, inside an `<svg>` of `box`: `KS`, or any id of your own | required, empty if every card is drawn by `draw` |
+| `draw(card, { language })` | a card's drawing worked out from its id, in `"en"` or `"ja"`, or `null` where the design has no such card | none |
+| `label(card, language)` | what a screen reader says for the card; `null` leaves it to the card's usual name, or its id | the usual name, or the id |
+| `frame` | `"paper"` draws the card's paper and edge under the art; `"none"` for art that fills the whole card and draws its own edge | `"paper"` |
+| `fallback` | the design that draws a card this one does not | plain |
+
+A card the design does not draw is drawn plain if it is a standard card, and
+is nothing if it is not, so a mistyped id shows as an empty card with no name
+rather than somebody else's. Registering a design or a back again under the
+same name replaces it, and every element on the page draws again with it, even
+one on the page before the registering. `registerCardDesign` and
+`registerCardBack` are also exported from `@johnmorrisdotca/toranpu/element`,
+for a page that loads only the tags. Names are listed by
+`registeredCardDesigns()` and `registeredCardBacks()`, and forgotten by
+`unregisterCardDesign(name)` and `unregisterCardBack(name)`.
+
+**A face put into the card.** An element in the card with `slot="face"` (or
+`slot="back"`) is drawn as that side, in the card's box, on the card's
+paper, in place of the card's own. It is in the page only while the card lies
+that way up, as the drawn face is. The card's `label` attribute says what a
+screen reader hears, as the card has no name in any deck. Style it with
+`::part(face)` and `::part(back)`.
+
+```html
+<toranpu-card label="Harbour, soldier" flip>
+  <svg slot="face" viewBox="0 0 100 140">…</svg>
+  <img slot="back" src="/art/back.svg" alt="">
+</toranpu-card>
+```
+
+**A face drawn by a function.** The card's `face` property is a function from
+a card's id and its context (`{ language, design }`) to SVG markup, drawn on
+the card's paper in a box 100 by 140 (or a whole `<svg>`), or to an element,
+or to `null` to draw the card as its design does:
+
+```js
+card.face = (id, { language }) => `<text x="50" y="70" text-anchor="middle">${id}</text>`;
+```
+
+`cardFaceFromArt(art, options?)` does the same for one picture with no design
+registered: the card's paper under your art, as an SVG document.
+
+**What is kept out.** The markup you give is your own, and it is drawn into
+shadow roots and other people's pages as a string, so what could run or fetch
+is taken out of it first: `<script>`, `<foreignObject>`, frames, animation
+elements and `<style>`, every `on…` handler, and any `href` that is not a
+picture or a `#fragment` of the drawing (`cleanMarkup`). A picture's address is
+a `data:image/` address, an `https:` or `http:` address, an address on your own
+site, or a file name; `javascript:` and every other kind is refused
+(`safeImageUrl`). That is a guard for your own code, not a sanitiser for
+strangers' files: never give it what a visitor typed. As an image of its own
+(`cardBackUrl`, `cardFaceUrl`), a drawing can load only a `data:image/`
+picture, which is how browsers treat a picture inside a picture.
 
 ## One card on any page
 
@@ -814,10 +954,11 @@ document.addEventListener("toranpu-flip", (event) => console.log(event.detail));
 
 | Attribute of `<toranpu-card>` | What it does |
 | --- | --- |
-| `card` | the card: `QS`, `TD`, `RJ`, `BJ` |
-| `design` | `plain` (unless said), `four-colour` or `english`, fetched the first time a card asks for it |
-| `back` | `classic-red` (unless said), `classic-blue` or `ink-dots` |
-| `back-colour`, `mark` | the back's colour and the words in its middle, as `cardBackSvg` takes them |
+| `card` | the card: `QS`, `TD`, `RJ`, `BJ`; or the id of a card of a design the page registered |
+| `design` | `plain` (unless said), `four-colour` or `english`, fetched the first time a card asks for it; or the name of a design the page registered |
+| `back` | `classic-red` (unless said), `classic-blue` or `ink-dots`; or the name of a back the page registered |
+| `back-colour`, `back-image`, `back-logo`, `mark` | the back's colour, a picture for the whole back, a logo in its middle, and the words in its middle, as `cardBackSvg` takes them |
+| `label` | what a screen reader says for a card of your own, which has no name in any deck |
 | `face-down` | shows the back. While the card lies face down its face is not in the page at all |
 | `flip` | a tap, Enter or Space turns it over, with a turn a device asking for less motion skips. The card is then a button |
 | `marked` | a dot on its corner, seen face up and face down, to follow it as it moves |
@@ -826,6 +967,14 @@ document.addEventListener("toranpu-flip", (event) => console.log(event.detail));
 | `sound` | the turn makes a sound (see [Card sounds](#card-sounds)) |
 | `lang` | `ja` for the card's name in Japanese; the page's language unless said |
 
+- `slot="face"` and `slot="back"` put your own element in as a side, and a
+  `face` property that is a function draws the face from the card's id: see
+  [Your own branding](#your-own-branding).
+- A framework that sets a property rather than an attribute (React 19, Vue 3
+  and Svelte 5 do, when the element has a property of that name) is covered:
+  `flip` is a method and an attribute, and `card.flip = true` sets the
+  attribute while `card.flip()` goes on turning the card. So do `mark` on a
+  hand, `cards` on a hand or a pile, `count` on a pile and `game` on a table.
 - `faceDown` is a property too, `flip()` a method that turns it as a tap
   does, and `spin(options?)` spins it where it lies, as on a hand. Each turn is a `toranpu-flip` event that bubbles, its `detail`
   `{ card, faceDown }`.
@@ -885,7 +1034,7 @@ table.
 | `closed` | how closed the hand lies, from `0` (a clear fan) to `1` (squared up, only the top card showing): see [A closed hand that opens with a tap](#a-closed-hand-that-opens-with-a-tap) |
 | `reveal` | a tap, Enter or Space opens a closed hand into a fan, and closes it again |
 | `deal-after` | given new cards, how many milliseconds this hand waits before it gathers the old ones in and opens on the new: give each seat a little more than the one before, and the hands are dealt in turn round the table |
-| `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
+| `design`, `back`, `back-colour`, `back-image`, `back-logo`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
 
 | Method | What it does |
 | --- | --- |
@@ -996,7 +1145,7 @@ and a card put on top moves none of those under it.
 | `messiness` | from `0` (squared up, each card's edge showing under the one above) to `1` (very messy): unless said, `0.3` |
 | `seed` | the pile's own seed, a whole number: unless said, `1` |
 | `depth` | how many cards under the top are drawn at most, so a pile of fifty costs what a pile of ten does: unless said, `10` |
-| `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang` | as on `<toranpu-card>` |
+| `design`, `back`, `back-colour`, `back-image`, `back-logo`, `mark`, `size`, `width`, `lang` | as on `<toranpu-card>` |
 
 - A pile keeps its size as cards come and go: the room round it is set by
   its messiness and depth, never by what it holds, so nothing next to it
@@ -1050,7 +1199,7 @@ the iframe as it will be framed.
 
 ## A whole table on a page
 
-Any of the ten games, ready to play, in one tag: the seats round the felt,
+Any of the eleven games, ready to play, in one tag: the seats round the felt,
 what lies on the table (the trick, the pile to beat, the stock and the
 discard), the hand of whoever is to play and the moves they may make, with
 computers in the other seats, playing after a short pause.
@@ -1062,7 +1211,7 @@ computers in the other seats, playing after a short pause.
 
 | Attribute of `<toranpu-table>` | What it does |
 | --- | --- |
-| `game` | any of the ten, by its key or in kebab case: `hearts` (unless said), `spades`, `euchre`, `cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`, `gin-rummy` |
+| `game` | any of the eleven, by its key or in kebab case: `hearts` (unless said), `spades`, `euchre`, `cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`, `gin-rummy`, `war` |
 | `players` | how many sit at the table, within the game's own range (its usual number unless said) |
 | `people` | how many seats, the first ones, are people's; the rest are computers (1 unless said) |
 | `names` | the seats' names, separated by commas; the first is "You" unless said |
@@ -1070,13 +1219,13 @@ computers in the other seats, playing after a short pause.
 | `cloth` | the felt: `green` (unless said), `blue`, `red`, `black` or `wood`, the family's five |
 | `messiness` | how untidy the stock and the discard lie, from 0 to 1 (0.3 unless said) |
 | `delay` | how long a computer thinks before it plays, in milliseconds (550 unless said) |
-| `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
+| `design`, `back`, `back-colour`, `back-image`, `back-logo`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
 
 - `deal(seed?)` deals again; the `game` property is the game as it stands,
   in the game's own form (`toCode` and the rest save it).
 - Each move is a `toranpu-table` event that bubbles, its `detail`
   `{ seat, move, over, winners }`.
-- The table carries the rules of all ten games, so it is an entry point of
+- The table carries the rules of all eleven games, so it is an entry point of
   its own: a page that wants only a card or a hand imports `element`.
 
 ## Words
@@ -1135,7 +1284,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.13.2",
+  "generator": "toranpu 2.14.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -1157,7 +1306,7 @@ The JSON:
 | --- | --- |
 | `format` | 1. It goes up only when a reader of the old shape would be wrong about the new one |
 | `generator` | what wrote it, for people |
-| `game` | which of the ten |
+| `game` | which of the eleven |
 | `size` | how long the game lasts, in its own terms |
 | `players` | one name a seat |
 | `computers` | one a seat: `true` where a computer plays |
@@ -1184,9 +1333,9 @@ npm install -g @johnmorrisdotca/toranpu    # then `toranpu`, or use npx with not
 ```
 Usage: toranpu <command> [options]
 
-A deck of playing cards and ten card games, dealt from a seed.
+A deck of playing cards and eleven card games, dealt from a seed.
 
-  toranpu games                     the ten games, and the tables they play at
+  toranpu games                     the eleven games, and their tables
   toranpu deal --seed 42            four hands of thirteen from a seeded shuffle
   toranpu deal -n 2 -e 5 -s 42      two hands of five, and what is left
   toranpu deal hearts --seed 42     a game's own first deal, seat by seat
@@ -1258,9 +1407,9 @@ is made from the source by `pnpm site`. What follows is the map.
 | `randomSeed()` | A fresh seed, 1 to 2³¹ − 1 |
 | `CARD_GAME_RULES` | Every game's rules, by kind |
 | `CARD_GAME_TABLES` | Every game's table: fewest, most and usual players, the sizes offered and the usual one |
-| `CARD_GAME_LIST`, `CARD_GAME_KINDS` | The ten kinds |
-| `HEARTS_SIZES`, `SPADES_SIZES`, `EUCHRE_SIZES`, `CRIBBAGE_SIZES`, `OH_HELL_DEALS`, `CRAZY_EIGHTS_SIZES`, `GO_FISH_SIZES`, `BIG_TWO_DEALS`, `PRESIDENT_ROUNDS`, `GIN_SIZES` | The sizes each game offers |
-| `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`, `goFish`, `bigTwo`, `president`, `ginRummy` | Each game's own exports, as a namespace |
+| `CARD_GAME_LIST`, `CARD_GAME_KINDS` | The eleven kinds |
+| `HEARTS_SIZES`, `SPADES_SIZES`, `EUCHRE_SIZES`, `CRIBBAGE_SIZES`, `OH_HELL_DEALS`, `CRAZY_EIGHTS_SIZES`, `GO_FISH_SIZES`, `BIG_TWO_DEALS`, `PRESIDENT_ROUNDS`, `GIN_SIZES`, `WAR_ROUNDS` | The sizes each game offers |
+| `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`, `goFish`, `bigTwo`, `president`, `ginRummy`, `war` | Each game's own exports, as a namespace |
 | `toJSON`, `fromJSON`, `toCode`, `fromCode`, `toText`, `toCSV`, `savedGame`, `recordOf`, `SAVE_FORMAT`, `CSV_COLUMNS` | A game written out and read back: see [Export and import](#export-and-import) |
 | `gameName`, `gameSays`, `cardText`, `cardShort`, `cardsShort`, `suitName`, `suitSymbol`, `rankName`, `namesList`, `moveText` | The games, the cards and the moves in words: see [Words](#words) |
 | `STRINGS`, `fillIn`, `languageOf` | Every string in English and Japanese, and the two helpers that read it |
@@ -1293,7 +1442,7 @@ one game. They follow one naming pattern (shown for Hearts):
 
 Entry points, each a game's name in kebab case: `hearts`, `spades`, `euchre`,
 `cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`,
-`gin-rummy`. A game's key in a saved game stays as it was (`ohHell`), so a game
+`gin-rummy`, `war`. A game's key in a saved game stays as it was (`ohHell`), so a game
 saved before 2.0 still reads.
 
 The solitaires, Klondike, FreeCell and Spider, are entry points too (by those names in lower case),
@@ -1341,12 +1490,15 @@ to play the recordings your own way.
 | --- | --- |
 | `cardBackSvg(name?, options?)` | A back as a whole SVG document |
 | `cardBackUrl(name?, options?)` | The same as a data URL |
+| `registerCardBack(name, back)` | Keeps your own back under a name, for `back="…"` on every element of the page |
+| `unregisterCardBack(name)`, `registeredCardBacks()` | Forgets one; lists the names registered |
+| `cardBackNames()` | The package's three backs' names and the ones registered |
 | `CARD_BACKS` | The three backs' names |
 | `CARD_BACK_LOOK` | Each back's own field, ink and paper colours |
 | `CARD_BACK_PROPERTIES` | The CSS custom properties a back in a page takes its colours from |
 | `CARD_BOX`, `SUIT_PATHS` | The card's 100 by 140 box, and the four suits drawn as paths in a box of 100 |
 
-Types: `CardBackName`, `CardBackOptions`, `CardSuitLetter`.
+Types: `CardBackName`, `CardBackOptions`, `RegisteredCardBack`, `CardSuitLetter`.
 
 ### `@johnmorrisdotca/toranpu/card-faces`
 
@@ -1354,13 +1506,18 @@ Types: `CardBackName`, `CardBackOptions`, `CardSuitLetter`.
 | --- | --- |
 | `cardFaceSvg(card, options?)` | A face as a whole SVG document, or `null` for what is not a card |
 | `cardFaceUrl(card, options?)` | The same as a data URL |
-| `loadCardDesign(name)` | A design by name, fetched when first asked for: `"english"` |
+| `loadCardDesign(name)` | A design by name, fetched when first asked for: `"english"`; a design the page registered is given as it is |
+| `registerCardDesign(design)` | Keeps your own design under its name, for `design="…"` on every element of the page |
+| `unregisterCardDesign(name)`, `registeredCardDesigns()` | Forgets one; lists the names registered |
+| `cardFaceFromArt(art, options?)` | One face from artwork of your own, on the card's paper, as an SVG document |
+| `cleanMarkup(markup)`, `safeImageUrl(url)` | Markup with what could run or fetch taken out; a picture's address, or `null` |
+| `CUSTOM_CARD_ID` | What the id of a card of your own may look like |
 | `CARD_DESIGNS` | The designs' names: plain, four colour, the English pattern and realistic |
 | `JOKERS` | The jokers' ids, `RJ` and `BJ` |
 | `EXTRA_CARDS` | The extras of a deck no game deals: the jokers, the rules cards R1 (Hearts) and R2 (Spades), and the blank BL |
 | `EXTRA_LIMITS` | The most of each a hand holds: four jokers, two rules cards, two blanks |
 | `isCardFace(text)` | Whether a face can be drawn for it |
-| `faceName(card, language?)` | A face's name in words, jokers included |
+| `faceName(card, language?, design?)` | A face's name in words, jokers included; a card of a design of your own by that design's label |
 | `pipPlaces(count)` | Where a number card's pips go, and which are drawn upside down |
 | `CARD_FACE_COLOURS`, `CARD_FACE_PROPERTIES` | The faces' own colours, and the CSS custom properties that change them |
 
@@ -1384,6 +1541,7 @@ other card.
 | `defineToranpuElements()` | Registers the elements under their tags, once |
 | `ToranpuCard` | The `<toranpu-card>` element's class |
 | `ToranpuHand` | The `<toranpu-hand>` element's class |
+| `registerCardDesign(design)`, `registerCardBack(name, back)` | As from `card-faces` and `card-backs`: your own faces and backs, by name |
 | `ToranpuPile` | The `<toranpu-pile>` element's class |
 | `BUNDLE_BACKS` | How many backs a scrunched hand shows, whatever its size: 3 |
 | `TORANPU_TAGS` | The elements' tags |
@@ -1397,7 +1555,7 @@ other card.
 | `tossCard(cards, card)` | The hand without that card |
 | `replaceCard(cards, card, next, lands?)` | The hand with that card out and the next card at the `"front"` or the `"end"` |
 
-Types: `CardPlace`, `HandLayoutOptions`, `PartOptions`, `PileLayoutOptions`, `HandTurnOptions`, `SpinOptions`, `CardOrder`, `CardLands`.
+Types: `CardFaceRenderer`, `CardFaceContext`, `CardPlace`, `HandLayoutOptions`, `PartOptions`, `PileLayoutOptions`, `HandTurnOptions`, `SpinOptions`, `CardOrder`, `CardLands`.
 
 ### `@johnmorrisdotca/toranpu/element/define`
 
@@ -1496,6 +1654,10 @@ The elements take three more:
 | A seed | a whole number; the games draw 1 to 2,147,483,647 | `randomSeed` |
 | The deck the games deal | fifty-two cards, no jokers (the faces draw two) | `DECK_SIZE` |
 | A saved game's format | 1 | `SAVE_FORMAT` |
+| The id of a card of your own | letters, digits, `-`, `_`, `.` or `:`, up to 40 | `CUSTOM_CARD_ID` |
+| The name of a design or a back you register | kebab case, up to 40 characters, never one of the package's own | `registerCardDesign`, `registerCardBack` |
+| Words in the middle of a back | twelve characters | `mark` |
+| A picture or logo for a back | a `data:image/`, `https:` or same-site address; as an image of its own only `data:image/` loads | `safeImageUrl` |
 | Languages | English and Japanese | `STRINGS` |
 
 A very long game is a long save: a game of Hearts to 100 is about six hundred
@@ -1504,13 +1666,24 @@ moves and nine thousand characters of code.
 ## Browser and runtime support
 
 Any browser with ES2020 modules: Chrome, Edge, Firefox and Safari from 2020
-on, and Node 20 or later, Deno and Bun. Nothing is polyfilled because nothing
+on, and Node 22 or later, Deno and Bun. Nothing is polyfilled because nothing
 needs to be. The elements need custom elements and shadow DOM, which every
 current browser has, and a hand shrinks to fit its room with container
 queries (Chrome and Edge 105, Safari 16, Firefox 110, all from 2022); the
 drawings and sounds work anywhere SVG and the Web Audio API do. The demo and
 the elements are tested in Chromium and in WebKit, Safari's engine, at phone
 size with touch.
+
+## Accessibility
+
+A card is named for a screen reader ("king of spades", "スペードのキング"), or
+"a card, face down"; a card of your own is named by its design's `label`, or the
+element's `label` attribute. A hand reads out all its cards, a pile its count
+and its top card, and a table keeps a `polite` line saying whose turn it is. A
+card with `flip` is a button: Tab reaches it, and Enter or Space turns it over,
+with a ring in `--toranpu-focus`. Motion (the turn, a hand moving, a spin) is
+skipped on a device that asks for less. The cards are pictures and never text,
+so a drag or a long press cannot select a letter on one.
 
 ## Languages
 

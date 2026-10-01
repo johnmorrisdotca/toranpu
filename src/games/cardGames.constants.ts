@@ -27,13 +27,14 @@ export type CardGameTable = {
  * - Euchre, four in two partnerships: the score that wins, 5 or 10.
  * - Cribbage, for two: the score that wins, 61 (once round the board) or 121.
  * - Oh Hell, three or four each for themselves: how many deals, 7 (one card up to seven) or 13 (and back down).
+ * - War, for two: how many turns of the cards it may last, 25, 50, 100, 200 or 1000, the most cards winning when they run out.
  *
  * Every seat may be a person's or a computer's, so a table of one person and
  * three computers is a game of Hearts as much as four people round a phone.
  */
-export type CardGameKind = "hearts" | "bigTwo" | "president" | "goFish" | "crazyEights" | "spades" | "ginRummy" | "euchre" | "cribbage" | "ohHell";
+export type CardGameKind = "hearts" | "bigTwo" | "president" | "goFish" | "crazyEights" | "spades" | "ginRummy" | "euchre" | "cribbage" | "ohHell" | "war";
 
-/** The ten kinds by name, for code that would rather not type a string twice. */
+/** The eleven kinds by name, for code that would rather not type a string twice. */
 export const CARD_GAME_KINDS = {
   hearts: "hearts",
   bigTwo: "bigTwo",
@@ -45,6 +46,7 @@ export const CARD_GAME_KINDS = {
   euchre: "euchre",
   cribbage: "cribbage",
   ohHell: "ohHell",
+  war: "war",
 } as const satisfies Record<CardGameKind, CardGameKind>;
 
 /** Every card game. */
@@ -59,6 +61,7 @@ export const CARD_GAME_LIST: readonly CardGameKind[] = [
   CARD_GAME_KINDS.bigTwo,
   CARD_GAME_KINDS.president,
   CARD_GAME_KINDS.ginRummy,
+  CARD_GAME_KINDS.war,
 ];
 
 /** How long each game lasts, in its own terms (see above). */
@@ -81,6 +84,8 @@ export const EUCHRE_SIZES = [5, 10] as const;
 export const CRIBBAGE_SIZES = [61, 121] as const;
 /** How many deals a game of Oh Hell may last: up to seven cards, or up and back down. */
 export const OH_HELL_DEALS = [7, 13] as const;
+/** How many turns of the cards a game of War may last before the player holding more cards wins. */
+export const WAR_ROUNDS = [25, 50, 100, 200, 1000] as const;
 
 /** Every game's table: the fewest, the most and the usual number of players, the lengths of game offered and the usual one. */
 export const CARD_GAME_TABLES: Record<CardGameKind, CardGameTable> = {
@@ -94,4 +99,5 @@ export const CARD_GAME_TABLES: Record<CardGameKind, CardGameTable> = {
   euchre: { fewestPlayers: 4, mostPlayers: 4, defaultPlayers: 4, sizes: EUCHRE_SIZES, defaultSize: 10 },
   cribbage: { fewestPlayers: 2, mostPlayers: 2, defaultPlayers: 2, sizes: CRIBBAGE_SIZES, defaultSize: 121 },
   ohHell: { fewestPlayers: 3, mostPlayers: 4, defaultPlayers: 4, sizes: OH_HELL_DEALS, defaultSize: 13 },
+  war: { fewestPlayers: 2, mostPlayers: 2, defaultPlayers: 2, sizes: WAR_ROUNDS, defaultSize: 100 },
 };

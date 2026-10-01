@@ -21,6 +21,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `gameBigTwo` | Big Two | ビッグツー |
 | `gamePresident` | President | 大富豪 |
 | `gameGinRummy` | Gin Rummy | ジン・ラミー |
+| `gameWar` | War | 戦争 |
 | `saysHearts` | Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins. | ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。 |
 | `saysSpades` | Partners across the table bid tricks together. Spades are always trumps. | 向かい合ったパートナーと組んで、取るトリック数をビッドします。切り札はいつもスペードです。 |
 | `saysEuchre` | Five cards, four players in partnerships, and the jacks of trumps' colour on top. | 手札は5枚。4人が2組に分かれ、切り札と同じ色のジャック2枚がいちばん強い札になります。 |
@@ -31,6 +32,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `saysBigTwo` | Beat the cards on the table with singles, pairs, triples or five-card hands. Twos are high. | 場の札より強い札を、1枚・ペア・スリーカード・5枚の役で出します。いちばん強いのは2です。 |
 | `saysPresident` | Shed your cards first to become President. The last out hands over their best cards. | 最初に手札をなくした人が大富豪です。最後になった人は、いちばん強い札を渡します。 |
 | `saysGinRummy` | Draw and discard to make sets and runs, then knock when your deadwood is low. | 引いて捨てながらセットとランを作り、デッドウッドが少なくなったらノックします。 |
+| `saysWar` | Both turn the top card and the higher takes both. A tie is war: three face down, one up. Win every card, or hold the most when the turns run out. | 同時に上の札をめくり、大きいほうが2枚とも取ります。同じ数なら「戦争」で、3枚を伏せて4枚目をめくります。全部の札を取るか、ターン数が尽きたとき枚数が多い人の勝ちです。 |
 | `suitS` | spades | スペード |
 | `suitH` | hearts | ハート |
 | `suitD` | diamonds | ダイヤ |
@@ -55,6 +57,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `offerBid` | Bid {n} | {n}とビッドする |
 | `offerBidNil` | Bid nil | ニルをビッドする |
 | `offerAsk` | Ask {player} for {rank} | {player}に{rank}を聞く |
+| `offerTurn` | Turn the cards over | 札をめくる |
 | `didPlay` | plays {cards} | {cards}を出しました |
 | `didPlaySuit` | plays {cards}, calling {suit} | {cards}を出して{suit}を指定しました |
 | `didPassCards` | passes {cards} | {cards}を渡しました |
@@ -70,6 +73,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `didBid` | bids {n} | {n}とビッドしました |
 | `didBidNil` | bids nil | ニルをビッドしました |
 | `didAsk` | asks {player} for {rank} | {player}に{rank}を聞きました |
+| `didTurn` | turns the cards over | 札をめくりました |
 | `hidPassCards` | passes cards: {n} | カードを{n}枚渡しました |
 | `hidCrib` | lays cards in the crib: {n} | クリブにカードを{n}枚置きました |
 | `hidGive` | gives cards: {n} | カードを{n}枚渡しました |
@@ -100,7 +104,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `cliSavedGoing` | {game} for {n}, seed {seed}, {moves} moves. Not over: {player} to play. | {game}（{n}人）、シード {seed}、{moves}手。進行中: 次は{player}の番です |
 | `cliPlayed` | {game} for {n}, seed {seed}: {moves} moves. Won by {players}. | {game}（{n}人）、シード {seed}: {moves}手。勝者は{players} |
 | `cliScores` | Scores: {scores} | 得点: {scores} |
-| `pagePitch` | A deck of playing cards and ten card games, each with a computer player. Pick a game and play a hand. | トランプ1組と、コンピュータと遊べる10種類のカードゲームです。ゲームを選んで、1回遊んでみてください。 |
+| `pagePitch` | A deck of playing cards and eleven card games, each with a computer player. Pick a game and play a hand. | トランプ1組と、コンピュータと遊べる11種類のカードゲームです。ゲームを選んで、1回遊んでみてください。 |
 | `pageName` | Toranpu is the everyday Japanese word for a deck of playing cards. | 「トランプ」は、プレイングカードを指すふだんの日本語です。 |
 | `pageNameLink` | About the name | 名前について（英語） |
 | `pageFoot` | Every deal here comes from its seed, so a seed can be shared. Nothing leaves this device. | 配り方はすべてシードで決まるので、シードを伝えれば同じ配り方になります。データはこの端末の外に出ません。 |
@@ -126,6 +130,10 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageTrump` | Trumps | 切り札 |
 | `pageStarter` | Starter | スターター |
 | `pageStock` | Stock: {n} | 山札 {n}枚 |
+| `pageWarTurn` | Turn | ターン |
+| `pageWarTook` | {player} takes {n} cards | {player}が{n}枚を取りました |
+| `pageWarWars` |  · war ×{n} | （戦争{n}回） |
+| `pageWarDraw` | Neither could finish the war: a draw | どちらも戦争を続けられず、引き分け |
 | `pageThinking` | {player} is thinking… | {player}が考えています… |
 | `pageYourTurn` | Your turn. | あなたの番です。 |
 | `pageYourTurnPick` | Your turn: pick a card, then choose what to do. | あなたの番です。札を選んでから、することを選んでください。 |
@@ -189,6 +197,13 @@ a game; `cli` is the command line; `page` is the demo.
 | `rulesHearts` | Pass three cards, then play<br>Follow suit if you can<br>Each heart: 1 point<br>Queen of spades: 13<br>Fewest points wins | 3枚渡してから始める<br>同じスートを出す<br>ハート1枚：1点<br>スペードのQ：13点<br>点が少ない人の勝ち |
 | `rulesSpadesTitle` | SPADES | スペード |
 | `rulesSpades` | Bid the tricks you will take<br>Follow suit if you can<br>Spades are always trumps<br>Make your bid: 10 a trick<br>Fall short: lose your bid | 取るトリック数を宣言<br>同じスートを出す<br>スペードは常に切り札<br>宣言どおり：1トリック10点<br>足りなければ宣言分を失う |
+| `pageBranding` | Your own branding | 独自のブランド |
+| `pageBrandingNote` | A site's own card backs, faces for the standard cards, and cards no deck has, all drawn and turned over by Toranpu. These are invented for this demo: a game of territories, each card a place with a soldier, a horse or a cannon. Every picture is ours. | サイト独自の裏面、標準のカードの表面、デッキにないカードを、すべてトランプが描いてめくります。ここにあるのはこのデモのための架空のカードで、兵士・馬・大砲のどれかが描かれた領地のカードです。絵はすべてこのデモ用に描いたものです。 |
+| `pageBrandingTurn` | Turn them over | 裏返す |
+| `pageBrandingTerritories` | Cards no deck has, from a design the page registered | デッキにないカード（ページで登録したデザイン） |
+| `pageBrandingKings` | Faces for the standard cards: only the kings are ours, and the rest are drawn plain | 標準のカードの表面: キングだけが独自で、ほかは標準のまま描かれます |
+| `pageBrandingBacks` | Backs: colours and a logo, art of your own, a picture, or the page's colours and words | 裏面: 色とロゴ、自前の絵、画像、ページ指定の色と文字 |
+| `pageBrandingSlot` | A face and a back put into the card, and a face drawn by a function | カードに差し込んだ表面と裏面、関数で描いた表面 |
 | `pageDesigns` | Card designs | カードのデザイン |
 | `pageDesignsNote` | Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. Realistic is Byron Knoll's public-domain deck, with Fomin's kings, queens and jacks. | 「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。「リアル」は Byron Knoll がパブリックドメインとして公開したデッキで、キング・クイーン・ジャックは Fomin のものです。 |
 | `pageDesignPlain` | Plain | シンプル |
@@ -274,9 +289,9 @@ a game; `cli` is the command line; `page` is the demo.
 ```
 Usage: toranpu <command> [options]
 
-A deck of playing cards and ten card games, dealt from a seed.
+A deck of playing cards and eleven card games, dealt from a seed.
 
-  toranpu games                     the ten games, and the tables they play at
+  toranpu games                     the eleven games, and their tables
   toranpu deal --seed 42            four hands of thirteen from a seeded shuffle
   toranpu deal -n 2 -e 5 -s 42      two hands of five, and what is left
   toranpu deal hearts --seed 42     a game's own first deal, seat by seat
@@ -309,9 +324,9 @@ and in Japanese:
 ```
 使い方: toranpu <コマンド> [オプション]
 
-トランプ1組と10種類のカードゲームです。配り方はシードで決まります。
+トランプ1組と11種類のカードゲームです。配り方はシードで決まります。
 
-  toranpu games                     10種類のゲームと、遊べる人数
+  toranpu games                     11種類のゲームと、遊べる人数
   toranpu deal --seed 42            シードでシャッフルして13枚ずつ4人に配ります
   toranpu deal -n 2 -e 5 -s 42      5枚ずつ2人に配り、残りも表示します
   toranpu deal hearts --seed 42     そのゲームの最初の配り方を席ごとに表示します

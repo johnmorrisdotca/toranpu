@@ -6,10 +6,57 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.14.0] - 2026-10-01
+
+### Added
+
+- **Your own branding.** A page's own card backs, faces and cards no deck has.
+  `registerCardBack(name, options)` and `registerCardDesign(design)` keep them by
+  name, so `back="frontier"` and `design="frontier"` work on every card, hand,
+  pile and table of the page, and an element already on the page draws again with
+  what is registered after it. A back takes `art` (SVG of your own for the whole
+  back), `image` (a picture), `logo` (in the middle, on a plate over the lattice
+  or bare over your own art) and `logoSize`; an element takes `back-image` and
+  `back-logo`. A design draws standard cards in your own art, and cards no deck
+  has (a territory card, any id of letters, digits, `-`, `_`, `.` or `:`), from
+  `art` or from `draw(card, { language })`, named for a screen reader by
+  `label`, with `frame: "none"` for art that fills the card. A hand or pile
+  written as text reads those ids beside the usual ones.
+- **A face or a back put into a card.** An element with `slot="face"` or
+  `slot="back"` inside `<toranpu-card>` is drawn as that side, and a `face`
+  property that is a function draws the face from the card's id. A `label`
+  attribute names a card of your own. `cardFaceFromArt(art, options?)` draws one
+  face from artwork alone.
+- `cleanMarkup` and `safeImageUrl`: everything a page hands in is cleaned first,
+  so scripts, handlers, foreign objects and addresses that are not pictures never
+  reach the page.
+- **War**, the eleventh game: two players, a turn of the cards, wars three cards
+  deep inside wars, a player who cannot finish a war losing, and a limit of 25,
+  50, 100, 200 or 1000 turns so that a game can end, the player holding more
+  cards winning. Its rules, a computer player (War has no choices, so it turns the
+  cards over), seeded deals, saved games as text, its words in English and
+  Japanese, the `/war` entry point, the command line, `<toranpu-table game="war">`
+  and a place in the demo.
+- An Accessibility section in the README, and the sixteen packages of the
+  family listed.
+- A Help switch in the demo, beside the language chooser in the family header, shared by every demo. Off (the default) the page is as it was; on, each option row says in one plain line what it does, in English or Japanese, and every button in it has the same words as its hover text. Kept on the device.
+
 ### Changed
 
-- **A Help switch in the demo.** Beside the language chooser in the family header, shared by every demo. Off (the default) the page is as it was; on, each option row (the game, the players and seed, the card backs and designs, the hand's buttons, the piles, the table, the embed and the deck) says in one plain line what it does, in English or Japanese, and every button in it has the same words as its hover text. Kept on the device.
-
+- React 19, Vue 3 and Svelte 5 set a property, not an attribute, on a custom
+  element that has a property of that name. `flip` on a card and `mark` on a hand
+  are methods as well as attributes, `cards` on a hand or pile took only a list,
+  and `count` on a pile and `game` on a table could not be set at all. Each now
+  sets its attribute, the methods go on working, and a list or text is taken for
+  `cards`.
+- Node 22 or later (`engines`), as the CI matrix has always tested. Node 20 is
+  end of life.
+- The family's SECURITY.md and CODE_OF_CONDUCT.md, with a copy of the master text
+  kept in `scripts/community` and held by a test; CONTRIBUTING.md carries the
+  family's house rules.
+- The GitHub release's notes are the version's section of this changelog.
+- Nothing that was exported before has changed: every deal, rule, saved game and
+  drawing of the ten games and the three solitaires is as it was.
 
 ## [2.13.2] - 2026-10-01
 

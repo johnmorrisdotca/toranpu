@@ -6,6 +6,7 @@ import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
 import { dealt, moved, table as soundTable, wire as wireSound } from "./sound.js";
 import { wire as wireBacks } from "./backs.js";
 import { wire as wireDesigns } from "./designs.js";
+import { wire as wireBranding } from "./branding.js";
 import { wire as wireOneCard } from "./onecard.js";
 import { wire as wireHands } from "./hands.js";
 import { wire as wirePiles } from "./piles.js";
@@ -16,7 +17,7 @@ import { look, lookQuery, onLook, wear } from "./look.js";
 const $ = (id) => document.getElementById(id);
 const NAMES = ["You", "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
 const RULES = "https://github.com/johnmorrisdotca/toranpu/blob/main/docs/games.md";
-const ANCHORS = { hearts: "hearts", spades: "spades", euchre: "euchre", cribbage: "cribbage", ohHell: "oh-hell", crazyEights: "crazy-eights", goFish: "go-fish", bigTwo: "big-two", president: "president", ginRummy: "gin-rummy" };
+const ANCHORS = { hearts: "hearts", spades: "spades", euchre: "euchre", cribbage: "cribbage", ohHell: "oh-hell", crazyEights: "crazy-eights", goFish: "go-fish", bigTwo: "big-two", president: "president", ginRummy: "gin-rummy", war: "war" };
 const SEED_MOST = 2147483647;
 
 // The page's words are the package's own table, under the names the shared header and footer ask for.
@@ -132,6 +133,15 @@ function drawPiles(names) {
   if (g.trump) piles.push(sign(t().pageTrump, suitSymbol(g.trump)));
   if (g.starter) piles.push(pile(t().pageStarter, [g.starter], false));
   if (g.stock) piles.push(heap(fillIn(t().pageStock, { n: g.stock.length }), { count: g.stock.length, "face-down": true, "data-testid": "stock-pile" }));
+  // War: each player's pile face down, the turn the game is at, and the last turn's cards turned up, with who took them.
+  if (kind === "war") {
+    g.hands.forEach((cards, seat) => cards.length > 0 && piles.push(heap(`${names[seat]}: ${cards.length}`, { count: cards.length, "face-down": true, "data-testid": `war-pile-${seat}` })));
+    piles.push(sign(t().pageWarTurn, `${g.moves.length} / ${g.size}`));
+    if (g.last !== null) {
+      const took = g.last.winner === null ? t().pageWarDraw : fillIn(t().pageWarTook, { player: names[g.last.winner], n: g.last.laid.length });
+      piles.push(pile(took + (g.last.wars > 0 ? fillIn(t().pageWarWars, { n: g.last.wars }) : ""), g.last.laid.filter((one) => !one.down).map((one) => one.card), false));
+    }
+  }
   $("piles").replaceChildren(...piles);
 }
 
@@ -165,7 +175,8 @@ function drawTable() {
 
   const mine = !over && toPlay !== null && !computers[toPlay];
   const offered = mine ? r.moves(game) : [];
-  const hand = game.hands?.[me] ?? [];
+  // At War nobody holds a hand to choose from: each pile is turned a card at a time.
+  const hand = kind === "war" ? [] : (game.hands?.[me] ?? []);
   const usable = new Set(offered.flatMap(cardsOf));
   $("hand").replaceChildren(
     ...hand.map((card) => {
@@ -338,6 +349,7 @@ afterLanguage.push(wireDesigns((key) => t()[key], () => language.lang));
 afterLanguage.push(wireOneCard(() => language.lang));
 afterLanguage.push(wireHands());
 wirePiles();
+wireBranding();
 afterLanguage.push(wireTable(() => language.lang));
 afterLanguage.push(wireEmbeds(() => t()));
 onLook(writeAddress);

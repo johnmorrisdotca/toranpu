@@ -22,6 +22,7 @@ const NAME_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
   bigTwo: "gameBigTwo",
   president: "gamePresident",
   ginRummy: "gameGinRummy",
+  war: "gameWar",
 };
 
 const SAYS_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
@@ -35,6 +36,7 @@ const SAYS_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
   bigTwo: "saysBigTwo",
   president: "saysPresident",
   ginRummy: "saysGinRummy",
+  war: "saysWar",
 };
 
 const SUIT_KEYS: Record<CardSuit, keyof ToranpuStrings> = { S: "suitS", H: "suitH", D: "suitD", C: "suitC" };
@@ -104,7 +106,7 @@ export type MoveTextOptions = {
 };
 
 /**
- * A move in words, for any of the ten games: `moveText("hearts", { play: "QS" })`
+ * A move in words, for any of the eleven games: `moveText("hearts", { play: "QS" })`
  * is "Play Q♠", and with `{ form: "did" }` it is "plays Q♠". `kind` is needed
  * because a bid of nought is "nil" in Spades and "0" in Oh Hell.
  */
@@ -123,6 +125,7 @@ export function moveText<K extends CardGameKind>(kind: K, move: MoveOf<K>, optio
     const suit = given.suit as CardSuit | undefined;
     return suit === undefined ? say("Play", { cards: cardsShort(cards(given.play)) }) : say("PlaySuit", { cards: cardsShort(cards(given.play)), suit: suitName(suit, language) });
   }
+  if ("turn" in given) return say("Turn");
   if ("pass" in given) return say("Pass");
   if ("draw" in given) return given.draw === "discard" ? say("TakeDiscard") : say("Draw");
   if ("discard" in given) return say("Discard", { cards: cardsShort(cards(given.discard)) });

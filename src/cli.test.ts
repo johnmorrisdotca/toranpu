@@ -37,9 +37,9 @@ describe("the help and the version", () => {
 });
 
 describe("games", () => {
-  it("lists the ten, with their tables", () => {
+  it("lists the eleven, with their tables", () => {
     const out = lines(run("games").out);
-    expect(out).toHaveLength(10);
+    expect(out).toHaveLength(11);
     expect(out[0]).toBe("hearts       Hearts (3–4 players; 50 / 100): Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins.");
     expect(out[1]).toMatch(/^spades {7}Spades \(4 players; 200 \/ 300 \/ 500\)/);
     expect(lines(run("games --lang ja").out)[8]).toMatch(/^president {4}大富豪（3–8人、3 \/ 5 \/ 7）/);
@@ -53,7 +53,7 @@ describe("games", () => {
     const csv = run("games --csv").out.split("\r\n");
     expect(csv[0]).toBe("game,name,nameJa,fewestPlayers,mostPlayers,defaultPlayers,sizes,defaultSize");
     expect(csv[1]).toBe("hearts,Hearts,ハーツ,3,4,4,50 100,100");
-    expect(csv).toHaveLength(12);
+    expect(csv).toHaveLength(13);
   });
 });
 
@@ -124,6 +124,18 @@ describe("play", () => {
     expect(data.scores).toHaveLength(kind === "spades" || kind === "euchre" ? 2 : players.length);
     // What it printed is a saved game.
     expect(fromJSON(run(`play ${kind} --seed 7 --json`).out)?.game).toEqual(game);
+  });
+
+  it("war: what each seat finishes with is its cards, and together they are the deck", () => {
+    for (const size of [25, 100]) {
+      const data = JSON.parse(run(`play war --seed 11 --size ${size} --json`).out);
+      expect(data.scores).toHaveLength(2);
+      expect(data.scores[0] + data.scores[1]).toBe(52);
+      expect(data.moves.length).toBeLessThanOrEqual(size);
+    }
+    expect(run("play 戦争 -s 11").out).toBe(run("play war -s 11").out);
+    expect(run("play war -s 11 --size 7").code).toBe(2);
+    expect(run("play war -s 11 -p 3").code).toBe(2);
   });
 
   it("takes the table asked for", () => {

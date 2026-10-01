@@ -1,5 +1,5 @@
 /**
- * Toranpu トランプ: a deck of playing cards and ten card games to play with
+ * Toranpu トランプ: a deck of playing cards and eleven card games to play with
  * it, each with a computer player.
  *
  * - Every game by name: `newGame`, `rulesFor`, `playComputers`, and every
@@ -38,3 +38,4 @@ export * as goFish from "./go-fish.ts";
 export * as bigTwo from "./big-two.ts";
 export * as president from "./president.ts";
 export * as ginRummy from "./gin-rummy.ts";
+export * as war from "./war.ts";

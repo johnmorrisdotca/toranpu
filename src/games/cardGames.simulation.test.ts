@@ -17,13 +17,17 @@ import type { CardGameRules } from "./cardGames.types.ts";
  * - A computer never makes a move the rules would refuse, and never finds
  *   itself with nothing to do.
  * - A computer beats players who choose at random, far more often than a
- *   random player would: a strategy, not a coin.
+ *   random player would: a strategy, not a coin. (Not War, which has no choices.)
  * - A game kept half way reads back as exactly that game, and reloading it
  *   can never re-deal: the same seed and moves make the same cards.
 
  */
 
 type AnyRules = CardGameRules<unknown, unknown>;
+
+/** Games where nobody ever chooses: one move, and the cards decide. A computer cannot beat random play at them, because there is no play to be better at. */
+const NO_DECISIONS: readonly CardGameKind[] = ["war"];
+const WITH_DECISIONS = CARD_GAME_LIST.filter((kind) => !NO_DECISIONS.includes(kind));
 const rulesOf = (kind: CardGameKind) => CARD_GAME_RULES[kind] as AnyRules;
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -67,7 +71,7 @@ describe("the card games, played out", () => {
     }
   });
 
-  it.each(CARD_GAME_LIST)("%s: a computer beats players choosing at random", (kind) => {
+  it.each(WITH_DECISIONS)("%s: a computer beats players choosing at random", (kind) => {
     const rules = rulesOf(kind);
     const spec = CARD_GAME_TABLES[kind];
     const count = spec.defaultPlayers;

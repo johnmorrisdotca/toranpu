@@ -21,6 +21,8 @@ import type { PresidentGame, PresidentMove } from "./president/president.types.t
 import { PRESIDENT_RULES } from "./president/presidentRules.ts";
 import type { SpadesGame, SpadesMove } from "./spades/spades.types.ts";
 import { SPADES_RULES } from "./spades/spadesRules.ts";
+import type { WarGame, WarMove } from "./war/war.types.ts";
+import { WAR_RULES } from "./war/warRules.ts";
 
 /** Each card game's game and move, so its rules can be named with their own types. */
 export type CardGamePlays = {
@@ -34,6 +36,7 @@ export type CardGamePlays = {
   euchre: { game: EuchreGame; move: EuchreMove };
   cribbage: { game: CribbageGame; move: CribbageMove };
   ohHell: { game: OhHellGame; move: OhHellMove };
+  war: { game: WarGame; move: WarMove };
 };
 
 /**
@@ -52,4 +55,5 @@ export const CARD_GAME_RULES: { [K in CardGameKind]: CardGameRules<CardGamePlays
   euchre: EUCHRE_RULES,
   cribbage: CRIBBAGE_RULES,
   ohHell: OH_HELL_RULES,
+  war: WAR_RULES,
 };

@@ -1,7 +1,7 @@
 // The documents that are made from the source, or that quote it, checked against it.
 // Plain JavaScript, so that reading files needs no Node types. `pnpm docs:make` rewrites what is made.
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import process from "node:process";
 
 import { describe, expect, it } from "vitest";
@@ -221,7 +221,7 @@ describe("the README on card backs", () => {
 
   it("the tables name every back and every option, and the drawings' custom properties are the ones used", () => {
     expect(table("| Back | Looks like |").map((row) => row[0].replaceAll("`", ""))).toEqual([...cardBacks.CARD_BACKS]);
-    expect(table("| Option of `cardBackSvg`").map((row) => row[0].replaceAll("`", ""))).toEqual(["colour", "ink", "paper", "mark", "width", "title"]);
+    expect(table("| Option of `cardBackSvg`").map((row) => row[0].replaceAll("`", ""))).toEqual(["colour", "ink", "paper", "mark", "width", "title", "art", "image", "logo", "logoSize"]);
     const properties = table("| Custom property | Colours |").map((row) => row[0].replaceAll("`", ""));
     expect(properties).toEqual([...Object.values(cardBacks.CARD_BACK_PROPERTIES), ...Object.values(cardFaces.CARD_FACE_PROPERTIES)]);
     const faces = table("| Custom property | Colours |").slice(3);
@@ -295,7 +295,17 @@ describe("the README on a hand", () => {
     const named = table("| Attribute of `<toranpu-hand>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
     expect(new Set(named)).toEqual(new Set([...element.ToranpuHand.observedAttributes, "sound"]));
     const methods = table("| Method | What it does |").flatMap((row) => [...row[0].matchAll(/`(\w+)\(/g)].map((m) => m[1]));
-    const own = Object.getOwnPropertyNames(element.ToranpuHand.prototype).filter((name) => typeof Object.getOwnPropertyDescriptor(element.ToranpuHand.prototype, name).value === "function" && !["constructor", "connectedCallback", "disconnectedCallback", "attributeChangedCallback"].includes(name));
+    // A method that is also an attribute (`mark`) is an accessor that gives the method back, so a framework can set the attribute.
+    const isMethod = (name) => {
+      const given = Object.getOwnPropertyDescriptor(element.ToranpuHand.prototype, name);
+      if (typeof given.value === "function") return true;
+      try {
+        return given.get !== undefined && typeof given.get.call({}) === "function";
+      } catch {
+        return false;
+      }
+    };
+    const own = Object.getOwnPropertyNames(element.ToranpuHand.prototype).filter((name) => isMethod(name) && !["constructor", "connectedCallback", "disconnectedCallback", "attributeChangedCallback"].includes(name));
     expect(methods.sort()).toEqual(own.sort());
   });
 
@@ -378,8 +388,8 @@ describe("the README's tables", () => {
 
   it("the moves table names every shape of move a game makes, and no other", () => {
     const rows = table("| Game | Moves |");
-    expect(rows.map((row) => row[0])).toEqual(["Hearts", "Spades", "Euchre", "Cribbage", "Oh Hell", "Crazy Eights", "Go Fish", "Big Two", "President", "Gin Rummy"]);
-    const kinds = ["hearts", "spades", "euchre", "cribbage", "ohHell", "crazyEights", "goFish", "bigTwo", "president", "ginRummy"];
+    expect(rows.map((row) => row[0])).toEqual(["Hearts", "Spades", "Euchre", "Cribbage", "Oh Hell", "Crazy Eights", "Go Fish", "Big Two", "President", "Gin Rummy", "War"]);
+    const kinds = ["hearts", "spades", "euchre", "cribbage", "ohHell", "crazyEights", "goFish", "bigTwo", "president", "ginRummy", "war"];
     rows.forEach((row, at) => {
       const named = new Set([...row[1].matchAll(/\{ (\w+):/g)].map((m) => m[1]));
       const made = new Set();
@@ -423,8 +433,8 @@ describe("the README's tables", () => {
 describe("docs/games.md", () => {
   it("has a section and a source for every game, in the order the package lists them", () => {
     const headings = [...games.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
-    expect(headings.slice(0, 10)).toEqual(CARD_GAME_LIST.map((kind) => gameName(kind)));
-    for (const name of headings.slice(0, 10)) {
+    expect(headings.slice(0, 11)).toEqual(CARD_GAME_LIST.map((kind) => gameName(kind)));
+    for (const name of headings.slice(0, 11)) {
       const section = games.slice(games.indexOf(`## ${name}\n`), games.indexOf("\n## ", games.indexOf(`## ${name}\n`) + 4));
       expect(section, name).toMatch(/Sources?: \[pagat\.com\//);
       expect(section, name).toContain("**Tables differ**");
@@ -686,5 +696,73 @@ describe("the family's look", () => {
       });
     }
     expect(seen).toBeGreaterThan(18);
+  });
+});
+
+describe("the README's promises", () => {
+  const section = (heading) => {
+    const from = readme.indexOf(`\n## ${heading}\n`);
+    if (from < 0) throw new Error(`no section “${heading}”`);
+    const next = readme.indexOf("\n## ", from + 4);
+    return readme.slice(from, next < 0 ? undefined : next);
+  };
+
+  it("has the sections a package of this family has, each with something in it", () => {
+    for (const heading of ["In 30 seconds", "Who it is for", "Use it in your project", "Architecture", "Features", "The games", "Your own branding", "The command line", "API", "Theming", "Limits", "Browser and runtime support", "Accessibility", "Languages", "Roadmap", "Contributing"]) {
+      expect(section(heading).length, heading).toBeGreaterThan(heading.length + 40);
+    }
+    for (const heading of ["Changes", "Licence"]) expect(readme, heading).toContain(`\n## ${heading}\n`);
+  });
+
+  it("links only to files that exist, and to anchors a heading makes", () => {
+    const targets = [...readme.matchAll(/\]\((?!https?:|#|mailto:)([^)\s#]+)/g)].map((match) => match[1]);
+    expect(targets.length).toBeGreaterThan(5);
+    for (const target of targets) expect(existsSync(target), target).toBe(true);
+    for (const picture of readme.matchAll(/src="(docs\/[^"]+)"/g)) expect(existsSync(picture[1]), picture[1]).toBe(true);
+    const slug = (heading) => heading.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, "").trim().replace(/\s/g, "-");
+    const made = new Set([...readme.matchAll(/^#{1,6} (.+)$/gm)].map((match) => slug(match[1])));
+    for (const link of readme.matchAll(/\]\(#([^)]+)\)/g)) expect(made.has(link[1]), link[1]).toBe(true);
+  });
+
+  it("lists every package of the family, with its kana, as the demo's footer does", () => {
+    const template = readFileSync("scripts/family-template.mjs", "utf8");
+    const family = [...template.matchAll(/\{ id: "([\w-]+)", name: "(\w+)", kana: "([^"]+)" \}/g)].map((match) => ({ id: match[1], name: match[2], kana: match[3] }));
+    expect(family.length).toBeGreaterThanOrEqual(16);
+    const block = readme.slice(readme.indexOf("### The family"), readme.indexOf("\n## ", readme.indexOf("### The family")));
+    for (const { id, name, kana } of family) expect(block, id).toContain(`- [${name}](https://github.com/johnmorrisdotca/${id}) (${kana}`);
+    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty"];
+    expect(block).toContain(`one of ${words[family.length]} packages`);
+    expect([...block.matchAll(/^- \[/gm)]).toHaveLength(family.length);
+  });
+
+  it("says Node 22 or later everywhere it names a Node, and `engines` agrees", () => {
+    expect(pkg.engines.node).toBe(">=22");
+    expect(readme).not.toMatch(/Node 20/);
+    expect(readme).toMatch(/Node 22 (and|or) later/);
+    expect(readFileSync("CONTRIBUTING.md", "utf8")).toContain("Needs Node 22 or later.");
+  });
+
+  it("keeps SECURITY.md and CODE_OF_CONDUCT.md equal to the family's master text, a copy of which is kept in scripts/community", () => {
+    for (const file of ["SECURITY.md", "CODE_OF_CONDUCT.md"]) expect(readFileSync(file, "utf8"), file).toBe(readFileSync(`scripts/community/${file}`, "utf8"));
+  });
+
+  it("tells a contributor the family's house rules", () => {
+    const contributing = readFileSync("CONTRIBUTING.md", "utf8");
+    expect(contributing).toContain("## House rules, shared by every package of the family");
+    for (const script of ["test:package", "test:cli", "test:demo", "test:frameworks", "docs:make"]) expect(contributing, script).toContain(`pnpm ${script}`);
+  });
+
+  it("documents the branding it has: every option of a back, every field of a design, every export", () => {
+    const branding = section("Your own branding");
+    for (const name of ["registerCardBack", "registerCardDesign", "cardFaceFromArt", "cleanMarkup", "safeImageUrl", "registeredCardDesigns", "registeredCardBacks", "unregisterCardDesign", "unregisterCardBack", "back-image", "back-logo", 'slot="face"', 'slot="back"', "label"]) expect(branding, name).toContain(name);
+    for (const name of ["registerCardBack", "registerCardDesign", "cardFaceFromArt", "cleanMarkup", "safeImageUrl", "registeredCardDesigns", "registeredCardBacks", "unregisterCardDesign", "unregisterCardBack", "CUSTOM_CARD_ID", "cardBackNames"]) {
+      expect(typeof (cardFaces[name] ?? cardBacks[name]), name).not.toBe("undefined");
+    }
+    expect(typeof element.registerCardDesign).toBe("function");
+    expect(typeof element.registerCardBack).toBe("function");
+    const fields = table("| Field of a design | Means |").map((row) => row[0].replace(/`/g, "").replace(/\(.*\)/, ""));
+    expect(fields).toEqual(["name", "box", "art", "draw", "label", "frame", "fallback"]);
+    const types = readFileSync("src/ui/cardFaces.types.ts", "utf8");
+    for (const field of fields) expect(types, field).toMatch(new RegExp(`\\b${field}\\??:`));
   });
 });

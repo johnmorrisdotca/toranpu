@@ -160,7 +160,7 @@ export function toCSV<K extends CardGameKind>(kind: K, game: GameOf<K>): string 
   const rows = [CSV_COLUMNS.join(",")];
   (recordOf(kind, game) ?? []).forEach(({ seat, move }, at) => {
     const given = move as Record<string, unknown>;
-    const action = ["play", "pass", "bid", "crib", "give", "draw", "discard", "knock", "order", "call", "ask"].find((key) => key in given) ?? "";
+    const action = ["play", "pass", "bid", "crib", "give", "draw", "discard", "knock", "order", "call", "ask", "turn"].find((key) => key in given) ?? "";
     const cards = Object.values(given).flatMap((value) => (Array.isArray(value) ? value : [value])).filter((value): value is string => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
     rows.push([String(at + 1), String(seat + 1), field(players[seat] as string), action, cards.join(" "), field(JSON.stringify(move)), field(moveText(kind, move, { form: "did", players }))].join(","));
   });
