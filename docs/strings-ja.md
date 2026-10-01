@@ -161,6 +161,15 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageBack` | Back to the table | 卓に戻る |
 | `pageDeckSeed` | Deck seed | デッキのシード |
 | `pageToPlay` | {player} to play. | {player}の番です。 |
+| `pageSound` | Sound | 音 |
+| `pageSounds` | Card sounds | カードの音 |
+| `pageSoundsNote` | Recordings of real cards, made only when a table asks for one. Tap a sound to hear it. Sound, by the Deal button, plays them at the table as the game goes. | 本物のカードを録音した音です。卓が求めたときだけ鳴ります。押すと聞けます。「配る」の横の「音」をオンにすると、ゲームの進行に合わせて卓で鳴ります。 |
+| `pageSoundShuffle` | Shuffle | シャッフル |
+| `pageSoundDeal` | Deal | 配る |
+| `pageSoundFlip` | Turn over | めくる |
+| `pageSoundPlay` | Play a card | 札を出す |
+| `pageSoundGather` | Gather | 集める |
+| `pageSoundFan` | Fan | 広げる |
 
 ## The command line's help
 

@@ -1,7 +1,7 @@
 // Builds the static demo for GitHub Pages into ./site: the table's page and the API reference,
 // each put together from the family's shared header and footer and this package's own body,
 // the two stylesheets, and the compiled library.
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 
 import { apiBody } from "./api.mjs";
 import { FAMILY_SCRIPT, familyFooter, familyHead, familyHeader, familyUnreviewed } from "./family-template.mjs";
@@ -30,7 +30,7 @@ ${body}
 
 rmSync("site", { recursive: true, force: true });
 mkdirSync("site", { recursive: true });
-for (const file of ["family.css", "site.css", "page.js"]) cpSync(`demo/${file}`, `site/${file}`);
+for (const file of readdirSync("demo").filter((name) => /\.(css|js)$/.test(name))) cpSync(`demo/${file}`, `site/${file}`);
 cpSync("dist", "site/dist", { recursive: true });
 
 writeFileSync(

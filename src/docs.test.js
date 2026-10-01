@@ -6,8 +6,13 @@ import process from "node:process";
 
 import { describe, expect, it } from "vitest";
 
+import * as cardSounds from "./card-sounds.ts";
 import * as deck from "./deck.ts";
 import * as toranpu from "./index.ts";
+import * as soundData from "./sounds.ts";
+
+/** The entry points that are not a game: the front door, the deck, the hook, and what a table looks and sounds like. */
+const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData };
 
 const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText, fromCode, fromJSON, gameName, moveText, newGame, playComputers, rulesFor, runCli, toCSV, toCode, toJSON, toText } = toranpu;
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
@@ -17,6 +22,17 @@ const games = readFileSync("docs/games.md", "utf8");
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 const says = (code) => expect(readme, code).toContain(code);
 const blocks = (language, doc = readme) => [...doc.matchAll(new RegExp(`\`\`\`${language}\\n([\\s\\S]*?)\`\`\``, "g"))].map((m) => m[1]);
+/**
+ * Run a README block as it is written: the block that starts with `first`, its imports taken out and
+ * the names they brought handed in as `names`. What the block's last line says is returned.
+ */
+async function run(first, names) {
+  const block = blocks("ts").find((one) => one.startsWith(first));
+  if (block === undefined) throw new Error(`no block starting “${first}”`);
+  const body = block.split("\n").filter((line) => !line.startsWith("import ")).join("\n");
+  const AsyncFunction = (async () => {}).constructor;
+  return new AsyncFunction(...Object.keys(names), body)(...Object.values(names));
+}
 /** The rows of the first table after a heading: each row's cells. */
 function table(heading, doc = readme) {
   const from = doc.indexOf(heading);
@@ -146,6 +162,47 @@ describe("the README on the deck, on words and on export", () => {
   });
 });
 
+describe("the README on card sounds", () => {
+  it("the snippet plays what it says, and its mute button mutes", async () => {
+    const started = [];
+    const fakeWindow = {
+      atob,
+      AudioContext: class {
+        state = "running";
+        currentTime = 0;
+        sampleRate = 44100;
+        destination = {};
+        createGain = () => ({ gain: { value: 1 }, connect() {} });
+        createBufferSource = () => ({ buffer: null, playbackRate: { value: 1 }, connect() {}, start: (at) => started.push(at) });
+        decodeAudioData = () => Promise.resolve({ duration: 0.3 });
+        resume = () => Promise.resolve();
+        close = () => Promise.resolve();
+      },
+    };
+    const muteButton = {};
+    const made = [];
+    const createCardSounds = (options) => {
+      const sounds = cardSounds.createCardSounds({ ...options, window: fakeWindow });
+      made.push(sounds);
+      return sounds;
+    };
+    await run('import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";', { createCardSounds, muteButton });
+    await new Promise((done) => setTimeout(done, 20));
+    // A shuffle, eight slides for thirteen cards, and a card played.
+    expect(started).toHaveLength(1 + cardSounds.MOST_SOUNDS_AT_ONCE + 1);
+    expect(Math.min(...started.slice(1, 9))).toBeCloseTo(0.9, 5);
+    muteButton.onclick();
+    expect(made[0].muted).toBe(true);
+    made[0].play("play");
+    await new Promise((done) => setTimeout(done, 20));
+    expect(started).toHaveLength(10);
+  });
+
+  it("the kinds table names every kind, in order", () => {
+    expect(table("| Kind | What it is |").map((row) => row[0].replaceAll("`", ""))).toEqual([...cardSounds.CARD_SOUND_KINDS]);
+  });
+});
+
 describe("the README on the command line", () => {
   it("prints the help as it is", () => {
     expect(readme).toContain(`\`\`\`\n${STRINGS.en.cliUsage}\`\`\``);
@@ -197,9 +254,9 @@ describe("the README's tables", () => {
     const source = (dir) => readdirSync(dir, { recursive: true }).filter((name) => String(name).endsWith(".ts") && !String(name).includes(".test.")).map((name) => readFileSync(`${dir}/${name}`, "utf8")).join("\n");
     const types = [...source("src").matchAll(/^export type (\w+)/gm)].map((m) => m[1]);
     for (const name of Object.keys(toranpu)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
-    for (const name of Object.keys(deck)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the deck's ${name}`).toBe(true);
-    const everything = new Set([...Object.keys(toranpu), ...Object.keys(deck), ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])), ...types, "useCardGame"]);
-    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay"].includes(name));
+    for (const [entry, module] of Object.entries(TABLE_ENTRIES)) for (const name of Object.keys(module)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `${entry}'s ${name}`).toBe(true);
+    const everything = new Set([...Object.keys(toranpu), ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)), ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])), ...types, "useCardGame"]);
+    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan"].includes(name));
     expect(named.length).toBeGreaterThan(120);
     for (const name of named) expect(everything.has(name), `the README names ${name}`).toBe(true);
   });
@@ -392,7 +449,7 @@ describe("package.json", () => {
     for (const file of pointed) expect(/^\.?\/?(dist|bin)\//.test(file), file).toBe(true);
     expect(pkg.publishConfig.exports).toBeUndefined();
     expect(pkg.dependencies).toBeUndefined();
-    expect(Object.keys(pkg.exports).filter((key) => !["." , "./deck", "./react"].includes(key)).map((key) => key.slice(2))).toEqual([...CARD_GAME_LIST.map(entryOf), ...SOLITAIRES]);
+    expect(Object.keys(pkg.exports).filter((key) => ![".", "./react", ...Object.keys(TABLE_ENTRIES)].includes(key)).map((key) => key.slice(2))).toEqual([...CARD_GAME_LIST.map(entryOf), ...SOLITAIRES]);
   });
 
   it("has keywords that are many, lower case and not repeated, and a description that fits", () => {

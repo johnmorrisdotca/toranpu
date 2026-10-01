@@ -63,6 +63,9 @@ button.card[aria-pressed="true"] { transform: translateY(-10px); border-color: v
 .paste .fam-field { flex: 1 1 12rem; }
 .under .fam-error { min-height: 1.2em; }
 
+/* A snippet of code under a demo of what it does. */
+.snippet { margin: 0; background: var(--page); white-space: pre-wrap; overflow-wrap: anywhere; font-size: .8rem; }
+
 /* The deck on its own: each hand a fan. */
 .deck-hands { display: grid; gap: 10px 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
 .fan-box { display: grid; gap: 2px; min-width: 0; }

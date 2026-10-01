@@ -335,6 +335,8 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   one-character codes (a whole deck is a 52-letter string) and card names.
 - **A command line.** `toranpu deal`, `toranpu play hearts`, `toranpu check`.
   See [The command line](#the-command-line).
+- **Card sounds**, recorded from real cards: shuffle, deal, turn over, play,
+  gather and fan, off until a table asks. See [Card sounds](#card-sounds).
 - **An optional React hook**, `useCardGame`.
 
 ## The games
@@ -470,6 +472,54 @@ is written as fifty-two letters, `A`–`Z` then `a`–`z`, in the order of a fre
 pack (spades, hearts, diamonds, clubs, each ace to king), so a deal is safe in
 an address, a JSON body and a file name.
 
+## Card sounds
+
+Recordings of real cards for a table to play: the deck shuffled, a card dealt,
+turned over or laid down, a trick gathered in, a hand fanned. Nothing sounds
+unless a table asks, and nothing is fetched until the first sound.
+
+```ts
+import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";
+
+const sounds = createCardSounds();                 // silent until asked: nothing is fetched yet
+sounds.play("shuffle");
+sounds.play("deal", { count: 13, delay: 900 });     // thirteen cards, one after another, after the shuffle
+sounds.play("play");                               // a card laid on the table
+muteButton.onclick = () => sounds.setMuted(!sounds.muted);
+```
+
+| Kind | What it is |
+| --- | --- |
+| `shuffle` | the deck shuffled |
+| `deal` | a card slid to a hand; `{ count }` deals several, one every `gap` milliseconds |
+| `flip` | a card turned over |
+| `play` | a card laid on the table |
+| `gather` | a trick or a pile swept in |
+| `fan` | a hand spread open |
+
+| Option of `createCardSounds` | Means | Unless said |
+| --- | --- | --- |
+| `muted` | start muted; nothing plays and nothing is fetched until `setMuted(false)` | `false` |
+| `volume` | from 0 to 1, and a property to change later | `0.6` |
+| `load` | where the recordings come from | the package's own `/sounds` |
+| `window` | the window to make sound in; `null` for silence | the page's |
+
+- **What it costs.** The player is about 3 kB. The thirteen recordings are
+  50 kB of AAC (68 kB as the module that carries them), fetched by the first
+  sound played and never before: a muted table, or one that never asks, never
+  downloads them. Thirteen cards dealt are eight slides, not a wall of noise.
+- **A browser only lets a page make sound after somebody has touched it**, so
+  a sound asked for by code before any tap is silent, and `load()` fetches and
+  decodes the recordings ahead of the first one.
+- If the recordings cannot be fetched or decoded, a short sound made in the
+  browser stands in. Nothing throws where there is no audio, as on a server or
+  in a test.
+
+The demo's table has a **Sound** switch by its Deal button, off until pressed,
+and a panel that plays each sound. Card sounds from Kenney's
+[Casino Audio](https://kenney.nl/assets/casino-audio), CC0;
+[docs/credits.md](./docs/credits.md) names the files and what was done to them.
+
 ## Words
 
 ```ts
@@ -526,7 +576,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.0.0",
+  "generator": "toranpu 2.1.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -708,6 +758,23 @@ with a pattern of their own (they have no seats and no computer player): see
 `useCardGame(kind, options, computerDelay = 700)` returns
 `{ game, toPlay, computerToPlay, moves, over, winners, play, restart }`.
 Computers move by themselves, one move every `computerDelay` milliseconds.
+
+### `@johnmorrisdotca/toranpu/card-sounds`
+
+| Export | What it does |
+| --- | --- |
+| `createCardSounds(options?)` | A table's sounds: `play(kind, { count?, gap?, delay? })`, `load()`, `muted` and `setMuted`, `volume`, `close()` |
+| `CARD_SOUND_KINDS` | The six kinds: `shuffle`, `deal`, `flip`, `play`, `gather`, `fan` |
+| `soundTimes(count, gap?)` | When each of several sounds starts, at most `MOST_SOUNDS_AT_ONCE` (8) |
+
+Types: `CardSoundKind`, `CardSounds`, `CardSoundsOptions`,
+`PlayCardSoundOptions`, `CardSoundData`, `CardSoundWindow`.
+
+### `@johnmorrisdotca/toranpu/sounds`
+
+`CARD_SOUND_DATA`, the recordings as base64 AAC by name (`deal-2`), and their
+type `CardSoundFile`. `createCardSounds` loads it by itself; import it only
+to play the recordings your own way.
 
 ## Theming
 

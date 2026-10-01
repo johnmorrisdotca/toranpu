@@ -6,6 +6,7 @@
           <label><span class="both"><span data-say="pagePlayers"></span><span class="ghost" data-ghost-say="pagePlayers" aria-hidden="true"></span></span> <select id="players" class="fam-field" data-testid="players"></select></label>
           <label><span class="both"><span data-say="pageSeed"></span><span class="ghost" data-ghost-say="pageSeed" aria-hidden="true"></span></span> <input id="seed" class="fam-field" data-mono="true" data-testid="seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
           <button type="button" id="deal" class="fam-button" data-primary="true" data-testid="deal"><span class="both"><span data-say="pageDeal"></span><span class="ghost" data-ghost-say="pageDeal" aria-hidden="true"></span></span></button>
+          <button type="button" id="sound" class="fam-button" aria-pressed="false" data-testid="sound"><span class="both"><span data-say="pageSound"></span><span class="ghost" data-ghost-say="pageSound" aria-hidden="true"></span></span></button>
         </div>
       </section>
       <div class="fam-felt table" aria-live="polite">
@@ -40,6 +41,17 @@
             <button type="button" class="fam-button" id="read" data-testid="read" data-say="pageRead"></button>
           </div>
           <span class="fam-error" id="read-error" data-testid="read-error" role="status"></span>
+        </section>
+        <section aria-labelledby="sounds-title" id="sounds">
+          <h2 id="sounds-title" data-say="pageSounds"></h2>
+          <p data-say="pageSoundsNote"></p>
+          <div class="fam-actions" id="sound-kinds" data-testid="sound-kinds"></div>
+          <pre class="snippet" tabindex="0">import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";
+
+const sounds = createCardSounds();
+sounds.play("shuffle");
+sounds.play("deal", { count: 13, delay: 900 });
+sounds.setMuted(true);</pre>
         </section>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>

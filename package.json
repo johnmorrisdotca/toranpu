@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, the rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy with computer players, and Klondike, FreeCell and Spider solitaire with solvers. Zero dependencies.",
   "keywords": [
     "cards",
@@ -75,7 +75,11 @@
     "freecell",
     "spider-solitaire",
     "patience",
-    "solitaire-solver"
+    "solitaire-solver",
+    "card-sounds",
+    "sound-effects",
+    "audio",
+    "web-audio"
   ],
   "homepage": "https://johnmorrisdotca.github.io/toranpu/",
   "bugs": {
@@ -110,6 +114,16 @@
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js",
       "default": "./dist/react.js"
+    },
+    "./card-sounds": {
+      "types": "./dist/card-sounds.d.ts",
+      "import": "./dist/card-sounds.js",
+      "default": "./dist/card-sounds.js"
+    },
+    "./sounds": {
+      "types": "./dist/sounds.d.ts",
+      "import": "./dist/sounds.js",
+      "default": "./dist/sounds.js"
     },
     "./hearts": {
       "types": "./dist/hearts.d.ts",
@@ -182,6 +196,7 @@
     "bin",
     "docs/games.md",
     "docs/strings-ja.md",
+    "docs/credits.md",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
@@ -202,7 +217,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "site": "pnpm build && node scripts/site.mjs",
     "docs:make": "node scripts/docs.mjs",
-    "prepublishOnly": "pnpm check && pnpm build"
+    "prepublishOnly": "pnpm check && pnpm build",
+    "sounds": "node scripts/sounds.mjs"
   },
   "peerDependencies": {
     "react": ">=18"

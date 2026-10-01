@@ -164,6 +164,15 @@ export type ToranpuStrings = {
   pageBack: string;
   pageDeckSeed: string;
   pageToPlay: string;
+  pageSound: string;
+  pageSounds: string;
+  pageSoundsNote: string;
+  pageSoundShuffle: string;
+  pageSoundDeal: string;
+  pageSoundFlip: string;
+  pageSoundPlay: string;
+  pageSoundGather: string;
+  pageSoundFan: string;
 };
 
 /** Every string, in both languages. */
@@ -350,6 +359,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageBack: "Back to the table",
     pageDeckSeed: "Deck seed",
     pageToPlay: "{player} to play.",
+    pageSound: "Sound",
+    pageSounds: "Card sounds",
+    pageSoundsNote: "Recordings of real cards, made only when a table asks for one. Tap a sound to hear it. Sound, by the Deal button, plays them at the table as the game goes.",
+    pageSoundShuffle: "Shuffle",
+    pageSoundDeal: "Deal",
+    pageSoundFlip: "Turn over",
+    pageSoundPlay: "Play a card",
+    pageSoundGather: "Gather",
+    pageSoundFan: "Fan",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -533,6 +551,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageBack: "卓に戻る",
     pageDeckSeed: "デッキのシード",
     pageToPlay: "{player}の番です。",
+    pageSound: "音",
+    pageSounds: "カードの音",
+    pageSoundsNote: "本物のカードを録音した音です。卓が求めたときだけ鳴ります。押すと聞けます。「配る」の横の「音」をオンにすると、ゲームの進行に合わせて卓で鳴ります。",
+    pageSoundShuffle: "シャッフル",
+    pageSoundDeal: "配る",
+    pageSoundFlip: "めくる",
+    pageSoundPlay: "札を出す",
+    pageSoundGather: "集める",
+    pageSoundFan: "広げる",
   },
 };
 

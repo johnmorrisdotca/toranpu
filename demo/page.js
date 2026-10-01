@@ -3,6 +3,7 @@
 // Moves are matched to the cards you pick. Every word comes from the package's own table.
 import { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, cardShort, cardText, fillIn, fromJSON, gameName, gameSays, isCard, moveText, namesList, newGame, randomSeed, rulesFor, suitSymbol, toCSV, toCode, toJSON, toText } from "./dist/index.js";
 import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
+import { dealt, moved, wire as wireSound } from "./sound.js";
 
 const $ = (id) => document.getElementById(id);
 const NAMES = ["You", "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
@@ -72,6 +73,7 @@ function makeMove(move) {
   const next = rules().play(game, move);
   if (next === null) return;
   log.push({ seat, move, mine: !rules().seats(game).computers[seat] });
+  moved(game, next, move);
   game = next;
   picked = [];
   drawAll();
@@ -279,9 +281,11 @@ function deal(next = kind, { count, seed } = {}) {
   picked = [];
   log = [];
   drawAll();
+  dealt(game);
 }
 
 $("deal").addEventListener("click", () => deal());
+wireSound((key) => t()[key]);
 $("players").addEventListener("change", () => deal(kind, { seed: game.seed }));
 $("seed").addEventListener("change", () => {
   const seed = whole($("seed").value.trim(), 1, SEED_MOST);

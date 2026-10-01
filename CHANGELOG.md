@@ -6,6 +6,24 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-30
+
+### Added
+
+- **Card sounds**, recorded from real cards: the deck shuffled, a card dealt,
+  turned over or played, a trick gathered in, a hand fanned.
+  `createCardSounds()` from the new `@johnmorrisdotca/toranpu/card-sounds`
+  entry point plays them when a table asks, with a mute and a volume, and
+  thirteen cards dealt are heard as eight slides. Nothing sounds and nothing
+  is fetched until the first sound; the recordings (50 kB) are their own entry
+  point, `@johnmorrisdotca/toranpu/sounds`. They come from Kenney's Casino
+  Audio pack, CC0, and [docs/credits.md](./docs/credits.md) names each file,
+  its source and what was done to it.
+- The demo's table has a Sound switch by its Deal button, off until pressed
+  and remembered on the device, and a panel that plays each sound.
+
+Nothing that was exported has changed.
+
 ## [2.0.0] - 2026-09-30
 
 ### Changed
@@ -119,7 +137,10 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.0.0...v2.1.0
+[2.0.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.3.0...v2.0.0
+[1.3.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/johnmorrisdotca/toranpu/releases/tag/v1.0.0
