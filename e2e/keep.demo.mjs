@@ -148,9 +148,12 @@ test("changing language moves nothing below the header", async ({ page }) => {
   await settled(page);
   // Where the game picker starts, and how tall the seats over the table are: neither may move with the language.
   const top = () => page.evaluate(() => [".choose", ".seats"].map((at) => { const box = document.querySelector(at).getBoundingClientRect(); return [Math.round(box.top + window.scrollY), Math.round(box.height)]; }));
+  // What each language lays out, for the message when they differ: each game button's width, and the line's height.
+  const parts = () => page.evaluate(() => ({ buttons: [...document.querySelectorAll(".games > button")].map((b) => Math.round(b.getBoundingClientRect().width)), line: Math.round(document.querySelector(".blurb").getBoundingClientRect().height), fonts: [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family) }));
   const english = await top();
+  const englishParts = await parts();
   await tap(page, '[data-lang="ja"]');
-  expect(await top()).toEqual(english);
+  expect(await top(), JSON.stringify({ english: englishParts, japanese: await parts() })).toEqual(english);
   await sound(page, errors);
 });
 
