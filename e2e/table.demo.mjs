@@ -70,6 +70,8 @@ test("Go Fish, played to the end by pressing buttons: the winner is the one the 
 });
 
 test("War: nobody chooses a card, the one button turns the cards over, and the game is played to its end", async ({ page }) => {
+  // A whole game of War is played move by move on the screen: WebKit on a CI runner takes about half a minute of it.
+  test.setTimeout(120_000);
   const errors = await open(page, "?game=war&seed=2026");
   await settled(page);
   let s = await state(page);
