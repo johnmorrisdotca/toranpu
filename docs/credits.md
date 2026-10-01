@@ -116,7 +116,11 @@ published on Google Code as vector-playing-cards
 **What was done to them**, by `scripts/designs-realistic.mjs`: each file was
 made smaller with svgo (457 kB of SVG became 87 kB), its outline taken off so
 that Toranpu draws the card's paper, and every id given the card's own prefix.
-The drawings are otherwise as Knoll made them. Each card is fitted to
+One change to the drawings themselves: Knoll's large diamond pips are about a
+sixth taller than his other suits' (72 units against 62), so from the seven up
+they touched and overlapped; on the 2 to the 10 of diamonds each large pip is
+drawn at 84% of its size about its own centre, heart-sized, every pip in its
+place. The drawings are otherwise as Knoll made them. Each card is fitted to
 Toranpu's 100 by 140 card by its height, and centred.
 
 ## Drawn for Toranpu

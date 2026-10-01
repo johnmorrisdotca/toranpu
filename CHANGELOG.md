@@ -6,6 +6,15 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.12.1] - 2026-10-01
+
+### Fixed
+
+- **The realistic design's diamonds no longer collide.** Knoll's large
+  diamond pips are drawn about a sixth taller than his other suits', so from
+  the seven of diamonds up they touched and overlapped. Each is now drawn at
+  heart size about its own centre; no pip moves and no other card changes.
+
 ## [2.12.0] - 2026-10-01
 
 ### Added
@@ -385,7 +394,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.1...HEAD
+[2.12.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.0...v2.12.1
 [2.12.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.9.0...v2.10.0

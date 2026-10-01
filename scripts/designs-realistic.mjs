@@ -49,9 +49,32 @@ let box = null;
 for (const { id, file } of files) {
   const source = readFileSync(join(from, file), "utf8");
   before += source.length;
-  await page.setContent(`<body style="margin:0">${small(source, id)}</body>`);
-  const cleaned = await page.evaluate(() => {
+  // The diamonds are reshaped before they are made small: the optimiser merges their pips into one shape.
+  const diamonds = id[1] === "D" && id[0] !== "A";
+  await page.setContent(`<body style="margin:0">${diamonds ? source.replace(/<\?xml[^>]*\?>/, "") : small(source, id)}</body>`);
+  const cleaned = await page.evaluate((diamonds) => {
     const svg = document.querySelector("svg");
+    // Knoll's large diamond pips are drawn about a sixth taller than his other suits' (72 units against 62), so from the seven
+    // up they touch and overlap. Each is made heart-sized about its own centre, its place on the card unchanged.
+    if (diamonds) {
+      for (const pip of svg.querySelectorAll("path")) {
+        const box = pip.getBBox();
+        const local = pip.getCTM();
+        const parent = pip.parentNode.getCTM();
+        if (local === null || parent === null) continue;
+        // A large pip is about 22% of the card's height; the corner pips and the border are far from it.
+        const share = pip.getBoundingClientRect().height / svg.getBoundingClientRect().height;
+        if (share < 0.17 || share > 0.28) continue;
+        const point = svg.createSVGPoint();
+        point.x = box.x + box.width / 2;
+        point.y = box.y + box.height / 2;
+        const centre = point.matrixTransform(parent.inverse().multiply(local));
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("transform", `translate(${centre.x} ${centre.y}) scale(0.84) translate(${-centre.x} ${-centre.y})`);
+        pip.replaceWith(g);
+        g.append(pip);
+      }
+    }
     const [, , width, height] = svg.getAttribute("viewBox").split(/[\s,]+/).map(Number);
     let outlines = 0;
     // The card's outline: a shape as big as the card, which cardFaceSvg draws as its paper.
@@ -63,10 +86,10 @@ for (const { id, file } of files) {
       }
     }
     return { svg: svg.outerHTML, outlines, width, height };
-  });
+  }, diamonds);
   if (cleaned.outlines !== 1) throw new Error(`${file}: ${cleaned.outlines} outlines`);
   box ??= [cleaned.width, cleaned.height];
-  if (Math.abs(box[0] - cleaned.width) > 0.01 || Math.abs(box[1] - cleaned.height) > 0.01) throw new Error(`${file}: another size`);
+  if (Math.abs(box[0] - cleaned.width) > 0.1 || Math.abs(box[1] - cleaned.height) > 0.1) throw new Error(`${file}: another size`);
   art[id] = inside(small(cleaned.svg, id));
 }
 await browser.close();

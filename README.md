@@ -962,7 +962,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.12.0",
+  "generator": "toranpu 2.12.1",
   "game": "goFish",
   "size": 1,
   "players": [
