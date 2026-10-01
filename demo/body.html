@@ -74,6 +74,25 @@ sounds.setMuted(true);</pre>
           <div class="spread" id="design-spread" data-testid="design-spread"></div>
           <pre class="snippet" id="design-code" data-testid="design-code" tabindex="0"></pre>
         </section>
+        <section class="wide" aria-labelledby="one-card-title" id="one-card-panel">
+          <h2 id="one-card-title" data-say="pageOneCard"></h2>
+          <p data-say="pageOneCardNote"></p>
+          <div class="fam-row setup">
+            <label><span data-say="pageCardPick"></span> <select id="one-card-pick" class="fam-field" data-testid="one-card-pick"></select></label>
+          </div>
+          <div class="one-card">
+            <div class="one-card-show">
+              <span class="fam-label" data-say="pageAsElement"></span>
+              <toranpu-card id="one-card" data-testid="one-card" card="KS" size="large" flip sound></toranpu-card>
+              <pre class="snippet" id="one-card-code" data-testid="one-card-code" tabindex="0"></pre>
+            </div>
+            <div class="one-card-show">
+              <span class="fam-label" data-say="pageAsPicture"></span>
+              <img id="one-card-img" data-testid="one-card-img" width="104" height="146" alt="" />
+              <pre class="snippet" id="one-card-url" data-testid="one-card-url" tabindex="0"></pre>
+            </div>
+          </div>
+        </section>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>
           <p data-say="pageDeckNote"></p>

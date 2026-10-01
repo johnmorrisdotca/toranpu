@@ -59,4 +59,22 @@ writeFileSync(
     </script>`,
   }),
 );
-console.log(`site/ is ready (${api.total} exports in api.html): serve it, or let the Pages workflow publish it.`);
+// Every card and back as a picture of its own, for an <img> on any page: cards/<design>/<id>.svg and backs/<name>.svg.
+const faces = await import("../dist/card-faces.js");
+const backs = await import("../dist/card-backs.js");
+const { ENGLISH_PATTERN } = await import("../dist/designs/english.js");
+const { FULL_DECK } = await import("../dist/index.js");
+let pictures = 0;
+for (const [name, design] of [["plain", "plain"], ["four-colour", "four-colour"], ["english", ENGLISH_PATTERN]]) {
+  mkdirSync(`site/cards/${name}`, { recursive: true });
+  for (const card of [...FULL_DECK, ...faces.JOKERS]) {
+    writeFileSync(`site/cards/${name}/${card}.svg`, faces.cardFaceSvg(card, { design }));
+    pictures += 1;
+  }
+}
+mkdirSync("site/backs", { recursive: true });
+for (const name of backs.CARD_BACKS) {
+  writeFileSync(`site/backs/${name}.svg`, backs.cardBackSvg(name));
+  pictures += 1;
+}
+console.log(`site/ is ready (${api.total} exports in api.html, ${pictures} pictures of cards and backs): serve it, or let the Pages workflow publish it.`);

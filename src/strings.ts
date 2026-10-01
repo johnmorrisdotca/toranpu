@@ -188,6 +188,12 @@ export type ToranpuStrings = {
   pageDesignPlain: string;
   pageDesignFourColour: string;
   pageDesignEnglish: string;
+  cardFaceDown: string;
+  pageOneCard: string;
+  pageOneCardNote: string;
+  pageCardPick: string;
+  pageAsElement: string;
+  pageAsPicture: string;
 };
 
 /** Every string, in both languages. */
@@ -398,6 +404,12 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDesignPlain: "Plain",
     pageDesignFourColour: "Four colour",
     pageDesignEnglish: "English pattern",
+    cardFaceDown: "a card, face down",
+    pageOneCard: "One card on any page",
+    pageOneCardNote: "A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL.",
+    pageCardPick: "Card",
+    pageAsElement: "As an element",
+    pageAsPicture: "As a picture",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -605,6 +617,12 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDesignPlain: "シンプル",
     pageDesignFourColour: "4色",
     pageDesignEnglish: "イングリッシュ・パターン",
+    cardFaceDown: "伏せたカード",
+    pageOneCard: "どのページにもカードを1枚",
+    pageOneCardNote: "上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。",
+    pageCardPick: "カード",
+    pageAsElement: "要素として",
+    pageAsPicture: "画像として",
   },
 };
 

@@ -6,6 +6,32 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-09-30
+
+### Added
+
+- **One card on any page**: `<toranpu-card card="KS">`, a custom element in
+  any design and with any back, from the new
+  `@johnmorrisdotca/toranpu/element` entry point (`defineToranpuElements()`)
+  or registered by importing `@johnmorrisdotca/toranpu/element/define`, one
+  script tag from a CDN. With `flip`, a tap, Enter or Space turns it over,
+  with a turn that a device asking for less motion skips, a `toranpu-flip`
+  event and, with `sound`, the sound of it. While a card lies face down its
+  face is not in the page. It takes `size` (small, medium, large) or
+  `width`, `lang`, and the back's colour and words.
+- Every card in each design, and every back, is on the demo site as an SVG
+  file of its own, for an `<img>` on any page:
+  `cards/<design>/<card>.svg` and `backs/<back>.svg`.
+- `handLayout`, `pileLayout` and `readHand`: where the cards of a hand or a
+  pile lie, and a hand written as text, for the elements to come and for a
+  table of your own.
+- The demo has a One card panel: the card in the look chosen above, turned
+  over by a tap, and its picture, with the code for each.
+
+Nothing that was exported has changed. `package.json` now names
+`dist/element-define.js` in `sideEffects`, the one module that registers
+something when it is imported.
+
 ## [2.3.0] - 2026-09-30
 
 ### Added
@@ -185,7 +211,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.0.0...v2.1.0

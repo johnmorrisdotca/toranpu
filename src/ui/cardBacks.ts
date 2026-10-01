@@ -35,7 +35,7 @@ export type CardBackOptions = {
   mark?: string;
   /** The width to draw at, in pixels; the height is 1.4 times it. Unless said, the drawing has no size and fills what holds it. */
   width?: number;
-  /** What a screen reader says for it. Unless said, the back is decoration and says nothing. */
+  /** What a screen reader says for it. Unless said (or said as ""), the back is decoration and says nothing. */
   title?: string;
 };
 
@@ -95,7 +95,7 @@ export function cardBackSvg(name: CardBackName | string = "classic-red", options
   const paper = paint("fill", CARD_BACK_PROPERTIES.paper, options.paper, look.paper);
   const fieldText = field;
   const size = typeof options.width === "number" && options.width > 0 ? ` width="${round(options.width)}" height="${round(options.width * 1.4)}"` : "";
-  const title = options.title === undefined ? ` aria-hidden="true"` : ` role="img" aria-label="${escapeXml(options.title)}"`;
+  const title = options.title === undefined || options.title === "" ? ` aria-hidden="true"` : ` role="img" aria-label="${escapeXml(options.title)}"`;
   const mark = typeof options.mark === "string" && options.mark.trim() !== "" ? options.mark.trim().slice(0, 12) : null;
   const parts: string[] = [`<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="#000" stroke-opacity=".18" stroke-width=".8"/>`];
 

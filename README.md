@@ -338,6 +338,8 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   See [The command line](#the-command-line).
 - **Card sounds**, recorded from real cards: shuffle, deal, turn over, play,
   gather and fan, off until a table asks. See [Card sounds](#card-sounds).
+- **One card on any page**: `<toranpu-card>`, turned over by a tap, or any
+  card as a picture. See [One card on any page](#one-card-on-any-page).
 - **Card designs**: plain, four colour and the traditional English pattern
   with drawn kings, queens and jacks, jokers included. See
   [Card designs](#card-designs).
@@ -610,6 +612,56 @@ The English pattern's 54 files, their licence and what was done to them are
 listed in [docs/credits.md](./docs/credits.md). The plain and four-colour
 faces were drawn for Toranpu.
 
+## One card on any page
+
+A card as an element, in any design and with any back, turned over by a tap.
+One script tag and one element, with nothing to install:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/element-define.js"></script>
+<toranpu-card card="KS" design="english" back="classic-blue" flip></toranpu-card>
+```
+
+Or from your own bundle, choosing when the elements are registered:
+
+```ts
+import { defineToranpuElements } from "@johnmorrisdotca/toranpu/element";
+
+defineToranpuElements();
+document.addEventListener("toranpu-flip", (event) => console.log(event.detail));   // { card: "KS", faceDown: true }
+```
+
+| Attribute of `<toranpu-card>` | What it does |
+| --- | --- |
+| `card` | the card: `QS`, `TD`, `RJ`, `BJ` |
+| `design` | `plain` (unless said), `four-colour` or `english`, fetched the first time a card asks for it |
+| `back` | `classic-red` (unless said), `classic-blue` or `ink-dots` |
+| `back-colour`, `mark` | the back's colour and the words in its middle, as `cardBackSvg` takes them |
+| `face-down` | shows the back. While the card lies face down its face is not in the page at all |
+| `flip` | a tap, Enter or Space turns it over, with a turn a device asking for less motion skips. The card is then a button |
+| `size` | `small` (46 pixels wide), `medium` (70, unless said) or `large` (104) |
+| `width` | its width in pixels, in place of `size` |
+| `sound` | the turn makes a sound (see [Card sounds](#card-sounds)) |
+| `lang` | `ja` for the card's name in Japanese; the page's language unless said |
+
+- `faceDown` is a property too, and `flip()` a method that turns it as a tap
+  does. Each turn is a `toranpu-flip` event that bubbles, its `detail`
+  `{ card, faceDown }`.
+- A screen reader hears the card's name ("king of spades", "スペードのキング"),
+  or "a card, face down".
+- It is drawn in its own shadow DOM, so the page's styles cannot upset it,
+  and it takes the custom properties under [The drawings](#the-drawings), so
+  the page's theme still colours it. Imported on a server, the elements are
+  defined and do nothing.
+
+**As a picture.** Every card and back is on the demo site as an SVG file of
+its own, for an `<img>` anywhere:
+`https://johnmorrisdotca.github.io/toranpu/cards/<design>/<card>.svg` (such
+as [`cards/english/KS.svg`](https://johnmorrisdotca.github.io/toranpu/cards/english/KS.svg))
+and `https://johnmorrisdotca.github.io/toranpu/backs/<back>.svg`. Or drawn by
+the page itself, with no request at all, as a data URL from `cardFaceUrl`
+and `cardBackUrl`.
+
 ## Words
 
 ```ts
@@ -666,7 +718,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.3.0",
+  "generator": "toranpu 2.4.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -900,6 +952,26 @@ Types: `CardDesign`, `CardDesignName`, `CardFaceOptions`.
 `ENGLISH_PATTERN`, the English pattern as a `CardDesign`: all fifty-two cards
 and both jokers in a box 360 by 540.
 
+### `@johnmorrisdotca/toranpu/element`
+
+| Export | What it does |
+| --- | --- |
+| `defineToranpuElements()` | Registers the elements under their tags, once |
+| `ToranpuCard` | The `<toranpu-card>` element's class |
+| `TORANPU_TAGS` | The elements' tags |
+| `ELEMENT_SIZES` | The card widths `size` names: small 46, medium 70, large 104 |
+| `handLayout(count, options?)` | Where each card of a hand lies, fanned or squared up |
+| `pileLayout(count, options?)` | Where each card of a pile lies, neat or messy, from a seed |
+| `readHand(text)` | A hand written as ids (`"AS KH 10D"`) or one-letter codes, as its cards |
+
+Types: `CardPlace`, `HandLayoutOptions`, `PileLayoutOptions`.
+
+### `@johnmorrisdotca/toranpu/element/define`
+
+The same exports, and the elements registered by importing it: the one
+module of the package with an effect of its own, and named in
+`sideEffects` so a bundler keeps it.
+
 ## Theming
 
 The games draw nothing: the table looks however you draw it. What Toranpu
@@ -958,6 +1030,14 @@ colours as an image:
 ```css
 .my-table { --toranpu-back: #3d4d38; }   /* every back on this table, moss green */
 ```
+
+The elements take three more:
+
+| Custom property | Sizes or times | Unless set |
+| --- | --- | --- |
+| `--toranpu-card-width` | a card's width, where the element has no `size` or `width` | `70px` |
+| `--toranpu-flip-ms` | how long a card takes to turn over | `450ms` |
+| `--toranpu-focus` | the ring round a card that has the keyboard's focus | `#b5452c` |
 
 ## Limits
 

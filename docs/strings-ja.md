@@ -185,6 +185,12 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageDesignPlain` | Plain | シンプル |
 | `pageDesignFourColour` | Four colour | 4色 |
 | `pageDesignEnglish` | English pattern | イングリッシュ・パターン |
+| `cardFaceDown` | a card, face down | 伏せたカード |
+| `pageOneCard` | One card on any page | どのページにもカードを1枚 |
+| `pageOneCardNote` | A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL. | 上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。 |
+| `pageCardPick` | Card | カード |
+| `pageAsElement` | As an element | 要素として |
+| `pageAsPicture` | As a picture | 画像として |
 
 ## The command line's help
 

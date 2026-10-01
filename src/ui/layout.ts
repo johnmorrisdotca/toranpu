@@ -1,0 +1,118 @@
+/**
+ * WHERE CARDS LIE: the arithmetic behind the elements, kept apart from the DOM
+ * so that it is the same in every browser and is tested without one. A hand
+ * fanned or squared up, a pile neat or messy, and a hand written as text.
+ */
+import { cardFromCode, cardId } from "../cards/deck.ts";
+import { seededRandom } from "../random.ts";
+
+/** One card's place: across and down in card widths from where the first lies, and its turn in degrees. */
+export type CardPlace = { x: number; y: number; rotate: number };
+
+/** How a hand is laid out. */
+export type HandLayoutOptions = {
+  /** How far open, from 0 (squared up: only the top card shows) to 1 (a clear fan). Unless said, 1. */
+  open?: number;
+  /** How far apart neighbours lie when the hand is open, in card widths. Unless said, 0.42. */
+  step?: number;
+  /** How far the cards turn across the whole fan when it is open, in degrees. Unless said, 4 a card, at most 40. */
+  turn?: number;
+  /** How much of each card under the top one still shows when the hand is squared up, in card widths. Unless said, 0.04. */
+  peek?: number;
+};
+
+/**
+ * Where each card of a hand of `count` lies: a fan when open, a squared-up
+ * stack with a sliver of each card showing when closed, and every shape in
+ * between. The middle card turns least; the first lies at x 0.
+ */
+export function handLayout(count: number, options: HandLayoutOptions = {}): CardPlace[] {
+  const whole = Math.max(0, Math.floor(Number.isFinite(count) ? count : 0));
+  const open = clamp01(options.open ?? 1);
+  const step = Math.max(0, options.step ?? 0.42);
+  const peek = Math.max(0, options.peek ?? 0.04);
+  const turn = options.turn ?? Math.min(40, 4 * Math.max(0, whole - 1));
+  const middle = (whole - 1) / 2;
+  const each = peek + (step - peek) * open;
+  return Array.from({ length: whole }, (_, at) => {
+    const off = whole <= 1 ? 0 : (at - middle) / Math.max(1, whole - 1);
+    const rotate = turn * off * open;
+    // A fan's ends dip a little, as cards held in a hand do.
+    const y = whole <= 1 ? 0 : 0.06 * (2 * off) ** 2 * open;
+    return { x: round(at * each), y: round(y), rotate: round(rotate) };
+  });
+}
+
+/** How a pile is laid out. */
+export type PileLayoutOptions = {
+  /** From 0 (squared up neatly) to 1 (very messy). Unless said, 0.3. */
+  messiness?: number;
+  /** The pile's own seed: the same seed always lays the same pile the same way. Unless said, 1. */
+  seed?: number;
+  /** How many cards under the top one are drawn at most, so a pile of fifty-two costs no more than one of ten. Unless said, 10. */
+  depth?: number;
+};
+
+/**
+ * Where each card of a pile of `count` lies, bottom first, the top card last:
+ * at 0 messiness a neat stack whose edge shows a card's thickness for each
+ * card under the top, and towards 1 a heap, each card nudged and turned a
+ * little more. Seeded, so the same pile always looks the same, and adding a
+ * card on top moves none of those under it. Only the top `depth` cards under
+ * the top one are given places; a pile is never drawn deeper than that.
+ */
+export function pileLayout(count: number, options: PileLayoutOptions = {}): CardPlace[] {
+  const whole = Math.max(0, Math.floor(Number.isFinite(count) ? count : 0));
+  const mess = clamp01(options.messiness ?? 0.3);
+  const depth = Math.max(0, Math.floor(options.depth ?? 10));
+  const shown = Math.min(whole, depth + 1);
+  const seed = Number.isFinite(options.seed) ? (options.seed as number) : 1;
+  const places: CardPlace[] = [];
+  for (let at = 0; at < shown; at++) {
+    // The card's place in the whole pile, counted from the bottom, decides its nudge, so a card keeps its place as others land on it.
+    const index = whole - shown + at;
+    const random = seededRandom((seed * 2654435761 + index * 40503) >>> 0);
+    const below = shown - 1 - at;
+    // A neat pile still shows its thickness, down and to the right, a little for every card.
+    const edge = 0.012 * below;
+    const nudge = 0.09 * mess;
+    const x = edge * 0.6 + (random() * 2 - 1) * nudge;
+    const y = edge + (random() * 2 - 1) * nudge * 0.8;
+    const rotate = (random() * 2 - 1) * 14 * mess ** 1.3;
+    places.push({ x: round(x), y: round(y), rotate: round(rotate) });
+  }
+  return places;
+}
+
+/**
+ * A hand written as text, as its cards: the two-letter ids separated by spaces
+ * or commas (`"AS KH 10D TC RJ"`, with `10` for ten as well as `T`), or the
+ * deck's one-letter codes run together (`"pvOZ"`). `null` for anything else.
+ */
+export function readHand(text: string | null | undefined): string[] | null {
+  const words = String(text ?? "").trim().toUpperCase().split(/[\s,;+]+/).filter(Boolean);
+  if (words.length === 0) return [];
+  const ids = words.map((word) => word.replace(/^10(?=[SHDC]$)/, "T"));
+  if (ids.every((id) => /^[A2-9TJQK][SHDC]$/.test(id) || id === "RJ" || id === "BJ")) return ids;
+  const raw = String(text ?? "").trim();
+  if (/^[A-Za-z]+$/.test(raw)) {
+    const cards: string[] = [];
+    for (const code of raw) {
+      const card = cardFromCode(code);
+      if (card === null) return null;
+      cards.push(cardId(card));
+    }
+    return cards;
+  }
+  return null;
+}
+
+function clamp01(value: number): number {
+  return Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 1;
+}
+
+/** A number kept to three places, so a layout reads the same everywhere. */
+function round(value: number): number {
+  const kept = Math.round(value * 1000) / 1000;
+  return Object.is(kept, -0) ? 0 : kept;
+}

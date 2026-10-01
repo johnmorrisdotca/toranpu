@@ -9,13 +9,14 @@ import { describe, expect, it } from "vitest";
 import * as cardBacks from "./card-backs.ts";
 import * as cardFaces from "./card-faces.ts";
 import * as english from "./designs/english.ts";
+import * as element from "./element.ts";
 import * as cardSounds from "./card-sounds.ts";
 import * as deck from "./deck.ts";
 import * as toranpu from "./index.ts";
 import * as soundData from "./sounds.ts";
 
 /** The entry points that are not a game: the front door, the deck, the hook, and what a table looks and sounds like. */
-const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks, "./card-faces": cardFaces, "./card-faces/english": english };
+const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks, "./card-faces": cardFaces, "./card-faces/english": english, "./element": element, "./element/define": element };
 
 const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText, fromCode, fromJSON, gameName, moveText, newGame, playComputers, rulesFor, runCli, toCSV, toCode, toJSON, toText } = toranpu;
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
@@ -257,6 +258,24 @@ describe("the README on card designs", () => {
   });
 });
 
+describe("the README on one card", () => {
+  it("names every attribute the element watches, and sound", () => {
+    const named = table("| Attribute of `<toranpu-card>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
+    expect(new Set(named)).toEqual(new Set([...element.ToranpuCard.observedAttributes, "sound"]));
+  });
+
+  it("gives the sizes the element draws, and the elements' custom properties as their stylesheet has them", () => {
+    expect(readme).toContain("`small` (46 pixels wide), `medium` (70, unless said) or `large` (104)");
+    expect(element.ELEMENT_SIZES).toEqual({ small: 46, medium: 70, large: 104 });
+    const style = readFileSync("src/ui/cardElement.ts", "utf8");
+    for (const [property, , fallback] of table("| Custom property | Sizes or times |")) {
+      const name = property.replaceAll("`", "");
+      const value = fallback.replaceAll("`", "");
+      expect(style.includes(`var(${name}, ${value})`) || readFileSync("src/ui/elementKit.ts", "utf8").includes(`var(${name}, \${ELEMENT_SIZES.medium}px)`), name).toBe(true);
+    }
+  });
+});
+
 describe("the README on the command line", () => {
   it("prints the help as it is", () => {
     expect(readme).toContain(`\`\`\`\n${STRINGS.en.cliUsage}\`\`\``);
@@ -310,7 +329,7 @@ describe("the README's tables", () => {
     for (const name of Object.keys(toranpu)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
     for (const [entry, module] of Object.entries(TABLE_ENTRIES)) for (const name of Object.keys(module)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `${entry}'s ${name}`).toBe(true);
     const everything = new Set([...Object.keys(toranpu), ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)), ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])), ...types, "useCardGame"]);
-    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options", "plain", "english", "art", "box", "KS", "RJ", "BJ"].includes(name));
+    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options", "plain", "english", "art", "box", "KS", "RJ", "BJ", "faceDown", "flip", "card", "size", "width", "design", "back", "mark", "lang", "sound", "sideEffects"].includes(name));
     expect(named.length).toBeGreaterThan(120);
     for (const name of named) expect(everything.has(name), `the README names ${name}`).toBe(true);
   });
