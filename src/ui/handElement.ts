@@ -2,7 +2,7 @@ import { STRINGS, fillIn } from "../strings.ts";
 import { namesList } from "../words.ts";
 import { faceName } from "./cardFaces.ts";
 import { followLanguage, cardDrawing, designNamed, ElementBase, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./elementKit.ts";
-import { handLayout, readHand, type CardPlace } from "./layout.ts";
+import { arrangeCards, handLayout, mixCards, readHand, replaceCard, tossCard, type CardLands, type CardOrder, type CardPlace } from "./layout.ts";
 
 /** How a hand's cards are turned face down or face up. */
 export type HandTurnOptions = {
@@ -30,9 +30,13 @@ export const BUNDLE_BACKS = 3;
  * Attributes, all optional:
  *   cards       the hand: ids separated by spaces or commas (`AS KH 10D`), or the deck's one-letter codes
  *   face-down   every card shows its back; their faces are not in the page
- *   scrunched   squared up into one face-down bundle: no faces, and no count, in the page
+ *   scrunched   squared up into one bundle that never says how many; with face-down (as scrunch() leaves it), no faces
+ *               in the page either; face up, its top card showing
  *   closed      how closed the hand lies, from 0 (a clear fan) to 1 (squared up, only the top card showing)
  *   reveal      a tap, Enter or Space opens a closed hand into a fan, and closes it again
+ *   order       "rank" sorts the hand low to high, the ace high; "suit" groups it by suit, each in rank order;
+ *               left out, the cards lie as they were dealt (`arrangeCards`)
+ *   receive     where a card given by replace() lands: "front", or "end" (unless said)
  *   deal-after  given new cards, how many milliseconds the hand waits before it gathers the old ones in and
  *               opens on the new; a table gives each seat a little more, so the hands are dealt in turn
  *   design, back, back-colour, mark, size, width, lang, sound   as on `<toranpu-card>`
@@ -46,7 +50,7 @@ export const BUNDLE_BACKS = 3;
  */
 export class ToranpuHand extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["cards", "deal-after", "face-down", "scrunched", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
+    return ["cards", "order", "receive", "deal-after", "face-down", "scrunched", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
   }
 
   #root: ShadowRoot | null = null;
@@ -78,18 +82,101 @@ export class ToranpuHand extends ElementBase {
 
   /** Turn every card face up again. */
   show(options: HandTurnOptions = {}): Promise<void> {
+    this.#scrunchTurned = false;
     return this.#change(() => this.toggleAttribute("face-down", false), options, "flip");
   }
 
-  /** Square the hand up into one face-down bundle that shows neither the cards nor how many. */
+  /**
+   * Square the hand up into one face-down bundle that shows neither the cards nor how many. Turned
+   * face up (`show()`), the bundle stays squared, its top card showing and still no count.
+   */
   scrunch(): Promise<void> {
-    return this.#change(() => this.toggleAttribute("scrunched", true), {}, "gather");
+    return this.#change(() => {
+      this.#scrunchTurned = !this.hasAttribute("face-down");
+      this.toggleAttribute("scrunched", true);
+      this.toggleAttribute("face-down", true);
+    }, {}, "gather");
   }
 
-  /** Lay a squared-up hand out again, as it was. */
+  /** Lay a squared-up hand out again: face up if the scrunch turned it down, otherwise as it now faces. */
   spread(): Promise<void> {
-    return this.#change(() => this.toggleAttribute("scrunched", false), {}, "fan");
+    return this.#change(() => {
+      this.toggleAttribute("scrunched", false);
+      if (this.#scrunchTurned) this.toggleAttribute("face-down", false);
+      this.#scrunchTurned = false;
+    }, {}, "fan");
   }
+
+  /** Whether the last scrunch turned a face-up hand down, so that spreading it turns it back; a turn by hand since forgets it. */
+  #scrunchTurned = false;
+
+  /** Sort the hand by rank, low to high with the ace high, the cards sliding to their places. */
+  sort(): Promise<void> {
+    return this.#reorder("rank");
+  }
+
+  /** Group the hand by suit (spades, hearts, clubs, diamonds), each suit in rank order. */
+  group(): Promise<void> {
+    return this.#reorder("suit");
+  }
+
+  /** Lay the hand out again in the order it was dealt. */
+  unsort(): Promise<void> {
+    return this.#reorder("dealt");
+  }
+
+  #reorder(order: CardOrder): Promise<void> {
+    this.#moving = !lessMotion();
+    return new Promise((done) => {
+      this.#settle?.();
+      this.#settle = done;
+      const before = this.getAttribute("order") ?? "dealt";
+      if (order === "dealt") this.removeAttribute("order");
+      else this.setAttribute("order", order);
+      if (isOn(this, "sound") && before !== order) pageSounds().play("fan");
+      if (before === order) this.#finish();
+    });
+  }
+
+  /** Mix the hand up: the same cards in another order, each sliding to its new place. A sorted hand is unsorted first. */
+  mixUp(): Promise<void> {
+    if (new Set(this.cards).size < 2) return Promise.resolve();
+    return this.#change(() => {
+      this.removeAttribute("order");
+      this.setAttribute("cards", mixCards(this.cards).join(" "));
+    }, {}, "gather", true);
+  }
+
+  /** Toss a card out of the hand: it lifts away, and the rest close up. Nothing happens for a card the hand does not hold. */
+  toss(card: string): Promise<void> {
+    return this.#tossThen(card, (cards) => tossCard(cards, card));
+  }
+
+  /**
+   * Toss a card out and take another in its stead: the new one drops in at the front or the end, as `lands`
+   * says, or as the hand's `receive` attribute says, or at the end.
+   */
+  replace(card: string, next: string, lands?: CardLands): Promise<void> {
+    const where: CardLands = lands ?? (this.getAttribute("receive") === "front" ? "front" : "end");
+    return this.#tossThen(card, (cards) => replaceCard(cards, card, next, where));
+  }
+
+  #tossThen(card: string, make: (cards: string[]) => string[]): Promise<void> {
+    const cards = this.cards;
+    if (!cards.includes(card)) return Promise.resolve();
+    const lay = () => this.#change(() => this.setAttribute("cards", make(this.cards).join(" ")), {}, "play", true);
+    const at = this.#onScreen.indexOf(card);
+    const slot = at === -1 || lessMotion() ? null : (this.#root?.querySelectorAll<HTMLElement>(".slot")[at] ?? null);
+    if (slot === null) return lay();
+    // The card lifts up and away, turning a little as it goes; then the hand closes up after it.
+    slot.style.transition = `transform ${TOSS_MS}ms ease-in, opacity ${TOSS_MS}ms ease-in`;
+    slot.style.transform = "translateY(-115%) rotate(-14deg)";
+    slot.style.opacity = "0";
+    return new Promise((done) => setTimeout(() => void lay().then(done), TOSS_MS));
+  }
+
+  /** The cards as they lie on screen now, in their order: where a reordering moves each one from. */
+  #onScreen: string[] = [];
 
   /** Open a closed hand into a clear fan. */
   open(): Promise<void> {
@@ -101,19 +188,24 @@ export class ToranpuHand extends ElementBase {
     return this.#change(() => this.setAttribute("closed", String(closed)), {}, "gather");
   }
 
-  #change(apply: () => void, options: HandTurnOptions, sound: "flip" | "gather" | "fan"): Promise<void> {
+  #change(apply: () => void, options: HandTurnOptions, sound: "flip" | "gather" | "fan" | "play", always = false): Promise<void> {
     const before = this.#state();
     this.#stagger = options.oneByOne === true ? Math.max(0, options.gap ?? 110) : 0;
     this.#moving = !lessMotion();
     return new Promise((done) => {
       this.#settle?.();
       this.#settle = done;
+      // One change, however many attributes it sets: drawn and told once.
+      this.#batching = true;
+      this.#batched = false;
       apply();
+      this.#batching = false;
+      if (this.#batched && this.#root !== null) this.#draw();
       const after = this.#state();
       const count = this.cards.length;
-      if (isOn(this, "sound") && (before.down !== after.down || before.scrunched !== after.scrunched || before.open !== after.open)) pageSounds().play(sound, sound === "flip" ? { count, gap: this.#stagger || 25 } : {});
+      if (isOn(this, "sound") && (always || before.down !== after.down || before.scrunched !== after.scrunched || before.open !== after.open)) pageSounds().play(sound, sound === "flip" ? { count, gap: this.#stagger || 25 } : {});
       // A change that changed nothing settles at once.
-      if (before.down === after.down && before.scrunched === after.scrunched && before.open === after.open) this.#finish();
+      if (!always && before.down === after.down && before.scrunched === after.scrunched && before.open === after.open) this.#finish();
     });
   }
 
@@ -153,10 +245,28 @@ export class ToranpuHand extends ElementBase {
     this.#forget = null;
   }
 
+  /** Whether a method is setting several attributes as one change, and whether any was set meanwhile. */
+  #batching = false;
+  #batched = false;
+
   attributeChangedCallback(name: string, before: string | null, after: string | null): void {
     if (this.#root === null) return;
-    if (name === "cards" && this.#redeal(before, after)) return;
-    if (name === "deal-after") return;
+    if (this.#batching) {
+      this.#batched = true;
+      return;
+    }
+    if (name === "cards") {
+      const old = readHand(before) ?? [];
+      const next = readHand(after) ?? [];
+      // The same cards in another order: they slide to their new places, never gathered and dealt again.
+      if (old.length > 0 && old.join(" ") !== next.join(" ") && [...old].sort().join() === [...next].sort().join()) {
+        this.#moving = !lessMotion();
+        this.#draw();
+        return;
+      }
+      if (this.#redeal(before, after)) return;
+    }
+    if (name === "deal-after" || name === "receive") return;
     this.#draw();
   }
 
@@ -209,7 +319,8 @@ export class ToranpuHand extends ElementBase {
 
   #draw(): void {
     const root = this.#root as ShadowRoot;
-    const cards = this.#dealing?.cards ?? this.cards;
+    const order = this.getAttribute("order");
+    const cards = arrangeCards(this.#dealing?.cards ?? this.cards, order === "rank" || order === "suit" ? order : "dealt");
     const language = languageOf(this);
     const { design, ready } = designNamed(this.getAttribute("design"));
     if (ready !== null) void ready.then(() => this.#draw());
@@ -224,7 +335,8 @@ export class ToranpuHand extends ElementBase {
 
     // What a screen reader hears: the cards, or that they are face down and how many, or only that it is a bundle.
     const words = STRINGS[language];
-    const label = target.scrunched ? words.handScrunched : target.down ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map((card) => faceName(card, language)), language) });
+    const top = cards[cards.length - 1];
+    const label = target.scrunched ? (target.down || top === undefined ? words.handScrunched : fillIn(words.handSquared, { card: faceName(top, language) })) : target.down ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map((card) => faceName(card, language)), language) });
     this.setAttribute("aria-label", label);
     const reveals = this.hasAttribute("reveal") && !target.scrunched;
     this.setAttribute("role", reveals ? "button" : "group");
@@ -239,6 +351,9 @@ export class ToranpuHand extends ElementBase {
     // The cards are drawn where they start, then moved to where they end; a face is drawn only while some card may show it.
     const bundle = from.scrunched && target.scrunched;
     const count = bundle ? BUNDLE_BACKS : cards.length;
+    // A bundle face up shows its top card: the hand's last, on top, with the cards before it under it (the earliest
+    // repeated where the hand is shorter than the bundle), so it still says nothing of how many there are.
+    const bundleCards = Array.from({ length: BUNDLE_BACKS }, (_, at) => cards[Math.max(0, cards.length - BUNDLE_BACKS + at)] ?? "");
     // ONE FRAME FOR EVERY STATE: the hand keeps the room its whole fan takes, open or closed, face up or
     // squared into a bundle, and each state lies in the middle of it. So closing gathers the cards to
     // where the hand lies and opening spreads them from there, and the hand never changes size when an
@@ -247,12 +362,31 @@ export class ToranpuHand extends ElementBase {
     const widest = (places: CardPlace[]) => Math.max(0, ...places.map((spot) => spot.x));
     const frame = Math.max(widest(fan), widest(this.#places(count, from)), widest(this.#places(count, target)));
     const centred = (places: CardPlace[]) => places.map((spot) => ({ ...spot, x: Math.round((spot.x + (frame - widest(places)) / 2) * 1000) / 1000 }));
-    const startPlaces = centred(this.#places(count, from));
     const endPlaces = centred(this.#places(count, target));
-    const facesNeeded = !bundle && (!from.down || !target.down) && !(target.scrunched && !moving);
+    // The same cards moved about (sorted, mixed up), or a card tossed out or given: each card that was on the table
+    // starts from the place it lay in, so it is seen to slide to its new one, and a card given drops in from above.
+    // Cards that have nothing to do with the ones before (a new deal) are simply laid where they go.
+    const startAt = centred(this.#places(count, from));
+    const before = [...this.#onScreen];
+    const related = !bundle && before.length > 0 && cards.some((card) => before.includes(card));
+    const prior = related ? centred(this.#places(before.length, from)) : startAt;
+    const startPlaces = related
+      ? cards.map((card, at) => {
+          const was = before.indexOf(card);
+          if (was !== -1) {
+            before[was] = "";
+            return prior[was] as CardPlace;
+          }
+          const lands = endPlaces[at] as CardPlace;
+          return { ...lands, y: lands.y - 0.9 };
+        })
+      : startAt;
+    this.#onScreen = bundle ? [] : [...cards];
+    // Faces are in the page only while some card may show one: never for a bundle face down at both ends, nor once a hand is still face down.
+    const facesNeeded = (!from.down || !target.down) && !(target.down && target.scrunched && !moving);
     const slots = Array.from({ length: count }, (_, at) => {
-      const card = bundle ? "" : (cards[at] as string);
-      const face = facesNeeded && !bundle ? cardDrawing(card, false, this, design, language) : "";
+      const card = bundle ? (facesNeeded ? (bundleCards[at] as string) : "") : (cards[at] as string);
+      const face = facesNeeded && card !== "" ? cardDrawing(card, false, this, design, language) : "";
       const back = cardDrawing(card || "AS", true, this, design, language);
       return `<div class="slot" part="card" data-at="${at}"><div class="turn"><div class="side face"${face === "" ? "" : ` data-card="${card}"`}>${face}</div><div class="side back">${back}</div></div></div>`;
     });
@@ -275,7 +409,7 @@ export class ToranpuHand extends ElementBase {
       slot.style.setProperty("--r", `${spot.rotate}deg`);
       slot.dataset.down = String(down);
     };
-    all.forEach((slot, at) => place(slot, (moving ? startPlaces : endPlaces)[at], moving ? from.down || from.scrunched : target.down || target.scrunched));
+    all.forEach((slot, at) => place(slot, (moving ? startPlaces : endPlaces)[at], moving ? from.down : target.down));
     this.#shown = target;
     if (!moving) {
       this.#announce(target);
@@ -287,7 +421,7 @@ export class ToranpuHand extends ElementBase {
     void hand.offsetWidth;
     all.forEach((slot, at) => {
       slot.style.setProperty("--delay", `${stagger * at}ms`);
-      place(slot, endPlaces[at], target.down || target.scrunched);
+      place(slot, endPlaces[at], target.down);
     });
     const length = 480 + stagger * Math.max(0, count - 1);
     this.#timer = setTimeout(() => {
@@ -316,6 +450,9 @@ export class ToranpuHand extends ElementBase {
     this.dispatchEvent(new CustomEvent("toranpu-hand", { bubbles: true, composed: true, detail: { faceDown: state.down, scrunched: state.scrunched, open: state.open } }));
   }
 }
+
+/** How long a tossed card takes to lift away, before the hand closes up after it. */
+const TOSS_MS = 300;
 
 /** How long the old cards of a new deal take to gather in, before the new ones open: the cards' move (.45 s) and a breath. */
 const DEAL_GATHER_MS = 470;

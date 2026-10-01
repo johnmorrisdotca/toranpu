@@ -6,6 +6,28 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.10.0] - 2026-10-01
+
+### Added
+
+- **Sort, group, mix up.** A hand sorts by rank (`sort()`, ace high), groups
+  by suit (`group()`: spades, hearts, clubs, diamonds, each in rank order),
+  goes back to the order dealt (`unsort()`), or mixes up (`mixUp()`), each
+  card sliding from where it lay to its new place. The `order` attribute
+  holds it; `arrangeCards` and `mixCards` do the same to any list.
+- **Toss a card, replace a card.** `toss(card)` lifts a card away and the
+  rest close up; `replace(card, next, lands?)` takes another in its stead,
+  dropped in at the front or the end (`receive` on the hand, the end unless
+  said). `tossCard` and `replaceCard` do the same to any list.
+
+### Changed
+
+- **A scrunched hand turned face up stays squared**, its top card showing and
+  still no count; `spread()` lays it out face up again if the scrunch had
+  turned it down. `scrunch()` now sets `face-down` as well as `scrunched`,
+  so the attribute `scrunched` alone is a squared hand face up.
+- A method that sets several attributes is drawn, and told to the page, once.
+
 ## [2.9.0] - 2026-10-01
 
 ### Added
@@ -327,7 +349,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.9.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.10.0...HEAD
+[2.10.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.1...v2.9.0
 [2.8.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.7.0...v2.8.0

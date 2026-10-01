@@ -45,7 +45,7 @@ test("Hide a hand: hidden one by one, shown, scrunched and spread, it ends as it
   expect(await page.evaluate(() => window.seen)).toEqual([
     { faceDown: true, scrunched: false, open: 1 },
     { faceDown: false, scrunched: false, open: 1 },
-    { faceDown: false, scrunched: true, open: 1 },
+    { faceDown: true, scrunched: true, open: 1 },
     { faceDown: false, scrunched: false, open: 1 },
   ]);
   await expect.poll(() => hand.evaluate((one) => one.shadowRoot.querySelectorAll(".slot").length)).toBe(5);

@@ -209,12 +209,25 @@ export type ToranpuStrings = {
   handLabel: string;
   handFaceDown: string;
   handScrunched: string;
+  /** A hand squared up face up: its top card, and never how many. */
+  handSquared: string;
   pageHide: string;
   pageHideNote: string;
   pageHideAll: string;
   pageHideOneByOne: string;
   pageShowHand: string;
   pageScrunch: string;
+  /** The demo hand: sorted by rank, grouped by suit, and back as dealt. */
+  pageSort: string;
+  pageGroup: string;
+  pageUnsort: string;
+  /** The demo hand: mixed up, a card tossed out, a card replaced, and where a new one lands. */
+  pageMix: string;
+  pageToss: string;
+  pageReplace: string;
+  pageLands: string;
+  pageAtEnd: string;
+  pageAtFront: string;
   pageSpread: string;
   pageNewHand: string;
   pageReveal: string;
@@ -468,6 +481,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     handLabel: "Hand: {cards}",
     handFaceDown: "a hand face down, cards: {n}",
     handScrunched: "a hand of cards, squared up face down",
+    handSquared: "a hand of cards, squared up, {card} on top",
     pageHide: "Hide a hand",
     pageHideNote: "Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read.",
     pageHideAll: "Face down",
@@ -475,6 +489,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageShowHand: "Face up",
     pageScrunch: "Scrunch",
     pageSpread: "Spread out",
+    pageMix: "Mix up",
+    pageToss: "Toss a card",
+    pageReplace: "Replace a card",
+    pageLands: "New card goes",
+    pageAtEnd: "at the end",
+    pageAtFront: "at the front",
+    pageSort: "Sort",
+    pageGroup: "Group by suit",
+    pageUnsort: "As dealt",
     pageNewHand: "Another hand",
     pageReveal: "A closed hand that opens with a tap",
     pageRevealNote: "The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it.",
@@ -724,6 +747,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     handLabel: "手札：{cards}",
     handFaceDown: "伏せた手札（{n}枚）",
     handScrunched: "伏せてまとめた手札",
+    handSquared: "まとめた手札（いちばん上は{card}）",
     pageHide: "手札を隠す",
     pageHideNote: "手札をその場で伏せます。全部いっぺんにも、1枚ずつにもできます。表に戻すこともできます。「まとめる」は手札を伏せて1つの束にし、カードも枚数もわからないようにします。",
     pageHideAll: "伏せる",
@@ -731,6 +755,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageShowHand: "表にする",
     pageScrunch: "まとめる",
     pageSpread: "広げる",
+    pageMix: "混ぜる",
+    pageToss: "1枚捨てる",
+    pageReplace: "1枚入れ替える",
+    pageLands: "新しいカード",
+    pageAtEnd: "最後に",
+    pageAtFront: "先頭に",
+    pageSort: "並べ替え",
+    pageGroup: "スートごと",
+    pageUnsort: "配られた順",
     pageNewHand: "別の手札",
     pageReveal: "タップで開く手札",
     pageRevealNote: "手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。",

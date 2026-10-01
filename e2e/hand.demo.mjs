@@ -202,3 +202,129 @@ test.describe("the deck's seats, dealt again with motion", () => {
     await sound(page, errors);
   });
 });
+
+test("a scrunched hand turned face up stays squared, its top card showing and still no count; spread out, it is face up", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const before = await read(page, "hide-hand");
+  const cards = (await page.locator(at("hide-hand")).getAttribute("cards")).split(" ");
+  await tap(page, at("hand-scrunch"));
+  await settled(page, "hide-hand");
+  await tap(page, at("hand-show"));
+  await settled(page, "hide-hand");
+  let s = await read(page, "hide-hand");
+  expect(s).toMatchObject({ count: 3, down: 0 });
+  expect(s.label).toMatch(/^a hand of cards, squared up, .+ on top$/);
+  expect(s.width).toBe(before.width);
+  const top = await page.locator(at("hide-hand")).evaluate((hand) => hand.shadowRoot.querySelector('.slot[data-at="2"] .face').dataset.card);
+  expect(top).toBe(cards[cards.length - 1]);
+  // Face down again, it is the bundle that says nothing.
+  await tap(page, at("hand-hide"));
+  await settled(page, "hide-hand");
+  s = await read(page, "hide-hand");
+  expect(s).toMatchObject({ count: 3, faces: 0, down: 3, label: "a hand of cards, squared up face down" });
+  await tap(page, at("hand-show"));
+  await settled(page, "hide-hand");
+  await tap(page, at("hand-spread"));
+  await settled(page, "hide-hand");
+  expect(await read(page, "hide-hand")).toMatchObject({ count: 7, faces: 7, down: 0 });
+  await sound(page, errors);
+});
+
+test("a hand sorted by rank, grouped by suit, and laid out as dealt again", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const hand = page.locator(at("hide-hand"));
+  const dealt = (await hand.getAttribute("cards")).split(" ");
+  const shownOrder = () => hand.evaluate((element) => [...element.shadowRoot.querySelectorAll(".slot .face")].map((face) => face.dataset.card));
+  const { arrangeCards } = await import("../dist/element.js");
+  await tap(page, at("hand-sort"));
+  await settled(page, "hide-hand");
+  expect(await shownOrder()).toEqual(arrangeCards(dealt, "rank"));
+  await expect(hand).toHaveAttribute("order", "rank");
+  await tap(page, at("hand-group"));
+  await settled(page, "hide-hand");
+  expect(await shownOrder()).toEqual(arrangeCards(dealt, "suit"));
+  await expect(page.locator(at("hide-code"))).toContainText('order="rank"');
+  await tap(page, at("hand-unsort"));
+  await settled(page, "hide-hand");
+  expect(await shownOrder()).toEqual(dealt);
+  await expect(hand).not.toHaveAttribute("order", /./);
+  await sound(page, errors);
+});
+
+test.describe("a hand sorted, with motion", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("sorted, each card slides from where it lay to its new place", async ({ page }) => {
+    const errors = await open(page, "?seed=1");
+    const hand = page.locator(at("hide-hand"));
+    const before = await read(page, "hide-hand");
+    const dealt = (await hand.getAttribute("cards")).split(" ");
+    await tap(page, at("hand-sort"));
+    // Straight after: moving, and each card still where it lay when dealt.
+    const start = await hand.evaluate((element) => ({ moving: element.shadowRoot.querySelector('.hand[data-moving="true"]') !== null }));
+    expect(start.moving).toBe(true);
+    await settled(page, "hide-hand");
+    const after = await read(page, "hide-hand");
+    expect(after.xs).toEqual(before.xs);
+    expect(after.width).toBe(before.width);
+    void dealt;
+    await sound(page, errors);
+  });
+});
+
+test("mixed up, the hand holds the same cards in another order; a card tossed is gone; a card replaced lands at the front or the end", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const hand = page.locator(at("hide-hand"));
+  const cards = async () => (await hand.getAttribute("cards")).split(" ");
+  const shown = () => hand.evaluate((element) => [...element.shadowRoot.querySelectorAll(".slot .face")].map((face) => face.dataset.card));
+  const dealt = await cards();
+  await tap(page, at("hand-mix"));
+  await settled(page, "hide-hand");
+  const mixed = await cards();
+  expect(mixed).not.toEqual(dealt);
+  expect([...mixed].sort()).toEqual([...dealt].sort());
+  expect(await shown()).toEqual(mixed);
+
+  const middle = mixed[Math.floor(mixed.length / 2)];
+  await tap(page, at("hand-toss"));
+  await expect.poll(cards).toEqual(mixed.filter((card) => card !== middle));
+  await settled(page, "hide-hand");
+  expect(await shown()).toEqual(await cards());
+  await expect(page.locator(at("hide-code"))).toContainText(`hand.toss("${middle}");`);
+
+  // At the end, unless asked; then at the front.
+  let before = await cards();
+  await tap(page, at("hand-replace"));
+  await expect.poll(async () => (await cards()).length).toBe(before.length);
+  let after = await cards();
+  expect(after.slice(0, -1)).toEqual(before.filter((card) => card !== before[Math.floor(before.length / 2)]));
+  expect(before).not.toContain(after[after.length - 1]);
+  await page.locator(at("hand-receive")).selectOption("front");
+  await expect(hand).toHaveAttribute("receive", "front");
+  before = after;
+  await tap(page, at("hand-replace"));
+  await expect.poll(async () => (await cards())[0]).not.toBe(before[0]);
+  after = await cards();
+  expect(after.slice(1)).toEqual(before.filter((card) => card !== before[Math.floor(before.length / 2)]));
+  await settled(page, "hide-hand");
+  expect(await shown()).toEqual(after);
+  await sound(page, errors);
+});
+
+test.describe("a card tossed, with motion", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("lifts away before the hand closes up after it", async ({ page }) => {
+    const errors = await open(page, "?seed=1");
+    const hand = page.locator(at("hide-hand"));
+    const count = (await hand.getAttribute("cards")).split(" ").length;
+    await tap(page, at("hand-toss"));
+    // Straight after: still all the cards, one of them lifting away.
+    const lifting = await hand.evaluate((element) => [...element.shadowRoot.querySelectorAll(".slot")].filter((slot) => slot.style.opacity === "0").length);
+    expect(lifting).toBe(1);
+    expect((await hand.getAttribute("cards")).split(" ").length).toBe(count);
+    await expect.poll(async () => (await hand.getAttribute("cards")).split(" ").length).toBe(count - 1);
+    await settled(page, "hide-hand");
+    await sound(page, errors);
+  });
+});

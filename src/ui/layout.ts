@@ -135,3 +135,69 @@ function round(value: number): number {
   const kept = Math.round(value * 1000) / 1000;
   return Object.is(kept, -0) ? 0 : kept;
 }
+
+/** How a hand's cards are laid out: as they were dealt, by rank, or grouped by suit. */
+export type CardOrder = "dealt" | "rank" | "suit";
+
+/** The ranks low to high, the ace high, as a sorted hand reads left to right. */
+const RANKS = "23456789TJQKA";
+/** The suits in the order a grouped hand lays them: spades, hearts, clubs, diamonds, so no two of a colour lie side by side. */
+const SUITS = "SHCD";
+
+/**
+ * A hand laid out another way, as a new list (the one given is left alone): `"rank"` sorts it low to
+ * high, the ace high, a rank's cards in suit order; `"suit"` groups it by suit, spades, hearts, clubs,
+ * diamonds, each in rank order; `"dealt"` keeps the order given. The extras (jokers, rules cards, the
+ * blank) come last, in the order dealt. Cards of the same id keep their order, so a sort is stable.
+ *
+ * ```ts
+ * arrangeCards(["QH", "2S", "AH", "2H"], "rank"); // ["2S", "2H", "QH", "AH"]
+ * arrangeCards(["QH", "2S", "AH", "2H", "KS"], "suit"); // ["2S", "KS", "2H", "QH", "AH"]
+ * ```
+ */
+export function arrangeCards(cards: readonly string[], by: CardOrder): string[] {
+  if (by !== "rank" && by !== "suit") return [...cards];
+  const key = (card: string, at: number): [number, number, number] => {
+    const rank = RANKS.indexOf(card[0] ?? "");
+    const suit = SUITS.indexOf(card[1] ?? "");
+    if (card.length !== 2 || rank === -1 || suit === -1) return [1, 0, at];
+    return [0, by === "rank" ? rank * 4 + suit : suit * 13 + rank, at];
+  };
+  return cards
+    .map((card, at) => ({ card, key: key(card, at) }))
+    .sort((a, b) => a.key[0] - b.key[0] || a.key[1] - b.key[1] || a.key[2] - b.key[2])
+    .map((each) => each.card);
+}
+
+/**
+ * A hand mixed up, as a new list: the same cards in another order, never the order given (where a hand
+ * has two cards or more that differ), so a mix is always seen to change something. `random` is any
+ * source of numbers in [0, 1); unless given, `Math.random`.
+ */
+export function mixCards(cards: readonly string[], random: () => number = Math.random): string[] {
+  const mixed = [...cards];
+  if (new Set(cards).size < 2) return mixed;
+  do {
+    for (let at = mixed.length - 1; at > 0; at--) {
+      const other = Math.floor(random() * (at + 1));
+      [mixed[at], mixed[other]] = [mixed[other] as string, mixed[at] as string];
+    }
+  } while (mixed.join(" ") === cards.join(" "));
+  return mixed;
+}
+
+/** A hand without one card, as a new list: the first of that card taken out, or the hand unchanged where it holds none. */
+export function tossCard(cards: readonly string[], card: string): string[] {
+  const at = cards.indexOf(card);
+  return at === -1 ? [...cards] : [...cards.slice(0, at), ...cards.slice(at + 1)];
+}
+
+/** Where a card a hand is given goes: to the front, or the end. */
+export type CardLands = "front" | "end";
+
+/** A hand with one card tossed out and another given in its stead, at the front or the end: as a new list. Unchanged where it holds no such card. */
+export function replaceCard(cards: readonly string[], card: string, next: string, lands: CardLands = "end"): string[] {
+  if (!cards.includes(card)) return [...cards];
+  const rest = tossCard(cards, card);
+  return lands === "front" ? [next, ...rest] : [...rest, next];
+}

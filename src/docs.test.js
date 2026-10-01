@@ -285,10 +285,10 @@ describe("the README on a hand", () => {
     expect(methods.sort()).toEqual(own.sort());
   });
 
-  it("the gap it gives is the one the hand takes, and the bundle shows as many backs as it says", () => {
+  it("the gap it gives is the one the hand takes, and the bundle shows as many cards as it says", () => {
     expect(readme).toContain("`gap` milliseconds apart (110 unless said)");
     expect(readFileSync("src/ui/handElement.ts", "utf8")).toContain("options.gap ?? 110");
-    expect(readme).toContain("one face-down bundle of three backs whatever the hand");
+    expect(readme).toContain("one bundle of three cards whatever the hand");
     expect(element.BUNDLE_BACKS).toBe(3);
   });
 });

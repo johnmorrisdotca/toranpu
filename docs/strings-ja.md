@@ -203,6 +203,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `handLabel` | Hand: {cards} | 手札：{cards} |
 | `handFaceDown` | a hand face down, cards: {n} | 伏せた手札（{n}枚） |
 | `handScrunched` | a hand of cards, squared up face down | 伏せてまとめた手札 |
+| `handSquared` | a hand of cards, squared up, {card} on top | まとめた手札（いちばん上は{card}） |
 | `pageHide` | Hide a hand | 手札を隠す |
 | `pageHideNote` | Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read. | 手札をその場で伏せます。全部いっぺんにも、1枚ずつにもできます。表に戻すこともできます。「まとめる」は手札を伏せて1つの束にし、カードも枚数もわからないようにします。 |
 | `pageHideAll` | Face down | 伏せる |
@@ -210,6 +211,15 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageShowHand` | Face up | 表にする |
 | `pageScrunch` | Scrunch | まとめる |
 | `pageSpread` | Spread out | 広げる |
+| `pageMix` | Mix up | 混ぜる |
+| `pageToss` | Toss a card | 1枚捨てる |
+| `pageReplace` | Replace a card | 1枚入れ替える |
+| `pageLands` | New card goes | 新しいカード |
+| `pageAtEnd` | at the end | 最後に |
+| `pageAtFront` | at the front | 先頭に |
+| `pageSort` | Sort | 並べ替え |
+| `pageGroup` | Group by suit | スートごと |
+| `pageUnsort` | As dealt | 配られた順 |
 | `pageNewHand` | Another hand | 別の手札 |
 | `pageReveal` | A closed hand that opens with a tap | タップで開く手札 |
 | `pageRevealNote` | The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it. | 手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。 |

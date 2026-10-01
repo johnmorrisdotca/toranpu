@@ -713,7 +713,9 @@ that neither the cards nor how many there are can be read.
 | --- | --- |
 | `cards` | the hand: ids separated by spaces or commas (`AS KH 10D`), or the deck's one-letter codes |
 | `face-down` | every card shows its back, and no face is in the page |
-| `scrunched` | squared up into one face-down bundle of three backs whatever the hand, and nothing in the page says how many |
+| `scrunched` | squared up into one bundle of three cards whatever the hand, so nothing says how many; with `face-down` (as `scrunch()` leaves it) no face is in the page either, and face up its top card shows |
+| `order` | `rank` sorts the hand low to high, the ace high; `suit` groups it by suit (spades, hearts, clubs, diamonds), each in rank order; left out, the cards lie as dealt |
+| `receive` | where a card given by `replace()` lands: `front`, or `end` unless said |
 | `closed` | how closed the hand lies, from `0` (a clear fan) to `1` (squared up, only the top card showing): see [A closed hand that opens with a tap](#a-closed-hand-that-opens-with-a-tap) |
 | `reveal` | a tap, Enter or Space opens a closed hand into a fan, and closes it again |
 | `deal-after` | given new cards, how many milliseconds this hand waits before it gathers the old ones in and opens on the new: give each seat a little more than the one before, and the hands are dealt in turn round the table |
@@ -725,6 +727,10 @@ that neither the cards nor how many there are can be read.
 | `show({ oneByOne?, gap? })` | turns them face up again |
 | `scrunch()`, `spread()` | squares the hand into a bundle, and lays it out again |
 | `open()`, `close(closed?)` | fans a closed hand, and squares it again (all the way unless said) |
+| `sort()`, `group()`, `unsort()` | sorts by rank, groups by suit, and lays the hand out as dealt again: each card slides to its new place |
+| `mixUp()` | mixes the hand up, the same cards in another order, never the one it was in |
+| `toss(card)` | tosses a card out: it lifts away and the rest close up |
+| `replace(card, next, lands?)` | tosses a card out and takes the next card in its stead, dropped in at the front or the end (`lands`, else `receive`, else the end) |
 
 - Each returns a promise that settles when the cards have stopped moving, and
   each change is a `toranpu-hand` event that bubbles, its `detail`
@@ -742,6 +748,19 @@ that neither the cards nor how many there are can be read.
     hand.setAttribute("deal-after", String(seat * 150)); // seat 1 at once, seat 2 after 150 ms, …
     hand.cards = newHands[seat];
   });
+  ```
+- **A scrunched hand turned face up stays squared.** `scrunch()` squares the
+  hand and turns it down, so it says nothing; `show()` then turns the bundle
+  over where it lies, its top card showing and still no count; `spread()`
+  lays it out again, face up if the scrunch had turned it down.
+- **Sort, group, mix, toss, replace.** The cards move as a person would move
+  them: sorted or mixed, each slides from where it lay to its new place; a
+  tossed card lifts away and the rest close up; a card given drops in.
+
+  ```js
+  await hand.group();                    // spades, hearts, clubs, diamonds, each in rank order
+  await hand.toss("QH");                 // the queen of hearts lifts away
+  await hand.replace("2C", "AS", "front"); // the two of clubs out, the ace of spades in at the front
   ```
 - **A hand keeps one box.** Open, closed, squared up or face down, it keeps
   the room its whole fan takes and lies in the middle of it, so nothing moves
@@ -908,7 +927,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.9.0",
+  "generator": "toranpu 2.10.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -1158,6 +1177,10 @@ and both jokers in a box 360 by 540.
 | `handLayout(count, options?)` | Where each card of a hand lies, fanned or squared up |
 | `pileLayout(count, options?)` | Where each card of a pile lies, neat or messy, from a seed |
 | `readHand(text)` | A hand written as ids (`"AS KH 10D"`) or one-letter codes, as its cards |
+| `arrangeCards(cards, by)` | A hand by `"rank"`, grouped by `"suit"`, or as `"dealt"`, as a new list; the extras last |
+| `mixCards(cards, random?)` | The same cards in another order, never the one given |
+| `tossCard(cards, card)` | The hand without that card |
+| `replaceCard(cards, card, next, lands?)` | The hand with that card out and the next card at the `"front"` or the `"end"` |
 
 Types: `CardPlace`, `HandLayoutOptions`, `PileLayoutOptions`, `HandTurnOptions`.
 
