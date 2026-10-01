@@ -279,6 +279,7 @@
     "test:frameworks": "pnpm build && node scripts/check-frameworks.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "site": "pnpm build && node scripts/site.mjs",
+    "pictures": "pnpm site && node e2e/shots.mjs docs readme",
     "docs:make": "node scripts/docs.mjs",
     "prepublishOnly": "pnpm check && pnpm build",
     "sounds": "node scripts/sounds.mjs"

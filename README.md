@@ -14,8 +14,8 @@ Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, Presi
 <p align="center"><a href="https://johnmorrisdotca.github.io/toranpu/"><strong>Play a hand against the computer →</strong></a></p>
 
 <p align="center">
-  <img src="docs/desktop.jpg" alt="A game of Hearts for four in the demo: the ten games to choose from, your seat and the three computers', and your hand of thirteen with one card picked to pass" width="720">
-  <img src="docs/phone.jpg" alt="The demo on a phone in dark mode, in Japanese: the ten games to choose from, with Go Fish chosen, and the seats at its table" width="220">
+  <img src="docs/desktop.jpg" alt="A game of Hearts for four a few tricks in, under the demo's header with its language chooser and five cloth patches: the ten games to choose from, a trick on the felt, and your hand of eleven with the cards you may not play dimmed" width="720">
+  <img src="docs/phone.jpg" alt="A game of Go Fish for three on a phone in dark mode, in Japanese: the stock, your hand of nine and the buttons that ask a computer for a rank" width="220">
 </p>
 
 A playing card library and a card game engine for JavaScript and TypeScript:
