@@ -31,7 +31,7 @@ test("One card: the script tag and the element give a king of spades that turns 
   expect(errors).toEqual([]);
 });
 
-test("Hide a hand: hidden one by one, shown, scrunched and spread, it ends as it began", async ({ page }) => {
+test("Hand controls: hidden one by one, shown, scrunched and spread, two cards turned, parted, marked and spun", async ({ page }) => {
   const html = block('<toranpu-hand id="mine"');
   await page.addInitScript(() => {
     window.seen = [];
@@ -40,14 +40,11 @@ test("Hide a hand: hidden one by one, shown, scrunched and spread, it ends as it
   const errors = await run(page, html);
   const hand = page.locator("#mine");
   // The example ends spread out and face up, after passing through every state.
-  await expect(hand).toHaveAttribute("aria-label", "Hand: ace of spades, king of hearts, queen of diamonds, jack of clubs, ten of spades");
-  await expect.poll(() => page.evaluate(() => window.seen.length)).toBe(4);
-  expect(await page.evaluate(() => window.seen)).toEqual([
-    { faceDown: true, scrunched: false, open: 1 },
-    { faceDown: false, scrunched: false, open: 1 },
-    { faceDown: true, scrunched: true, open: 1 },
-    { faceDown: false, scrunched: false, open: 1 },
-  ]);
+  // The example ends face up and spread, two cards turned over by themselves, parted at the queen, the king marked.
+  await expect(hand).toHaveAttribute("aria-label", "Hand: ace of spades, a card, face down, marked, a card, face down, jack of clubs, ten of spades");
+  await expect.poll(() => page.evaluate(() => window.seen.length)).toBe(6);
+  const lies = (faceDown, scrunched, turned = [], parted = null) => ({ faceDown, scrunched, open: 1, turned, parted });
+  expect(await page.evaluate(() => window.seen)).toEqual([lies(true, false), lies(false, false), lies(false, true), lies(false, false), lies(false, false, ["KH", "QD"]), lies(false, false, ["KH", "QD"], "QD")]);
   await expect.poll(() => hand.evaluate((one) => one.shadowRoot.querySelectorAll(".slot").length)).toBe(5);
   expect(await hand.evaluate((one) => one.hasAttribute("scrunched") || one.hasAttribute("face-down"))).toBe(false);
   expect(errors).toEqual([]);

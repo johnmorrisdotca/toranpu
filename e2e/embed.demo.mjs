@@ -66,7 +66,7 @@ test("framed by another site, the page tells it its height and each change", asy
   await page.goto("http://another.test/");
   await expect.poll(() => page.evaluate(() => window.told.find((one) => one.toranpu === "height")?.height ?? 0)).toBeGreaterThan(150);
   await page.frameLocator("iframe").locator("#turn").click();
-  await expect.poll(() => page.evaluate(() => window.told.filter((one) => one.toranpu === "hand"))).toEqual([{ toranpu: "hand", faceDown: true, scrunched: false, open: 1 }]);
+  await expect.poll(() => page.evaluate(() => window.told.filter((one) => one.toranpu === "hand"))).toEqual([{ toranpu: "hand", faceDown: true, scrunched: false, open: 1, turned: [], parted: null }]);
 });
 
 test("the demo's panel writes the iframe and the tag for the hand typed, at the size chosen", async ({ page }) => {

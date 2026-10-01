@@ -343,7 +343,7 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   gather and fan, off until a table asks. See [Card sounds](#card-sounds).
 - **A hand on any page**: `<toranpu-hand>`, turned face down all at once or
   one by one, or scrunched into a bundle that shows nothing, or held closed
-  to open into a fan on a tap. See [Hide a hand](#hide-a-hand) and
+  to open into a fan on a tap. See [Hand controls](#hand-controls) and
   [A closed hand](#a-closed-hand-that-opens-with-a-tap).
 - **Embedding**: any hand on any page, as an iframe or one tag, at three
   sizes. See [Embed a hand](#embed-a-hand).
@@ -670,13 +670,14 @@ document.addEventListener("toranpu-flip", (event) => console.log(event.detail));
 | `back-colour`, `mark` | the back's colour and the words in its middle, as `cardBackSvg` takes them |
 | `face-down` | shows the back. While the card lies face down its face is not in the page at all |
 | `flip` | a tap, Enter or Space turns it over, with a turn a device asking for less motion skips. The card is then a button |
+| `marked` | a dot on its corner, seen face up and face down, to follow it as it moves |
 | `size` | `small` (46 pixels wide), `medium` (70, unless said) or `large` (104) |
 | `width` | its width in pixels, in place of `size` |
 | `sound` | the turn makes a sound (see [Card sounds](#card-sounds)) |
 | `lang` | `ja` for the card's name in Japanese; the page's language unless said |
 
-- `faceDown` is a property too, and `flip()` a method that turns it as a tap
-  does. Each turn is a `toranpu-flip` event that bubbles, its `detail`
+- `faceDown` is a property too, `flip()` a method that turns it as a tap
+  does, and `spin(options?)` spins it where it lies, as on a hand. Each turn is a `toranpu-flip` event that bubbles, its `detail`
   `{ card, faceDown }`.
 - A screen reader hears the card's name ("king of spades", "スペードのキング"),
   or "a card, face down".
@@ -693,12 +694,15 @@ and `https://johnmorrisdotca.github.io/toranpu/backs/<back>.svg`. Or drawn by
 the page itself, with no request at all, as a data URL from `cardFaceUrl`
 and `cardBackUrl`.
 
-## Hide a hand
+## Hand controls
 
 `<toranpu-hand>` is a hand of cards on any page, fanned, in any design and
-with any back. It can be turned face down where it lies, all at once or one
-card after another, and back; or squared up into one face-down bundle, so
-that neither the cards nor how many there are can be read.
+with any back, and everything a person does with a hand where it lies: turn
+it face down, all at once or one card after another, or turn chosen cards
+over; gather it into one bundle that never says how many; part it at one card
+to bring that card out; sort it, group it, mix it up, toss a card or swap
+one; mark a card to follow it while it is face down; and spin a card on the
+table.
 
 ```html
 <toranpu-hand id="mine" cards="AS KH QD JC 10S" design="english"></toranpu-hand>
@@ -708,8 +712,13 @@ that neither the cards nor how many there are can be read.
   const hand = document.getElementById("mine");
   await hand.hide({ oneByOne: true });   // face down, one card after another; settles once all are down
   await hand.show();                     // face up again, all at once
-  await hand.scrunch();                  // one face-down bundle: no faces and no count in the page
+  await hand.scrunch();                  // one bundle: no faces and no count in the page
   await hand.spread();                   // laid out again as it was
+  await hand.show();                     // face up
+  await hand.toggle(["KH", "QD"]);       // just those two turned over
+  await hand.partAt("QD");               // the queen lifted out, the cards either side drawn away
+  hand.mark("KH");                       // a dot on the king's corner, face up or face down
+  await hand.spin("KH", { direction: "anticlockwise" });
 </script>
 ```
 
@@ -717,8 +726,11 @@ that neither the cards nor how many there are can be read.
 | --- | --- |
 | `cards` | the hand: ids separated by spaces or commas (`AS KH 10D`), or the deck's one-letter codes |
 | `face-down` | every card shows its back, and no face is in the page |
-| `scrunched` | squared up into one bundle of three cards whatever the hand, so nothing says how many; with `face-down` (as `scrunch()` leaves it) no face is in the page either, and face up its top card shows |
-| `order` | `rank` sorts the hand low to high, the ace high; `suit` groups it by suit (spades, hearts, clubs, diamonds), each in rank order; left out, the cards lie as dealt |
+| `turned` | cards that show the other side from the rest: face up in a hand face down, face down in one face up |
+| `scrunched` | squared up into one bundle of three cards whatever the hand, so nothing says how many; face down no face is in the page either, and face up its top card shows |
+| `parted` | the card the hand is parted at: lifted out, upright and wholly in view, the cards either side drawn away from it |
+| `marked` | cards that carry a mark, a dot on the corner seen face up and face down alike (`--toranpu-marker` colours it) |
+| `order` | `rank` sorts the hand low to high, the ace high; `suit` groups it by suit (spades, hearts, clubs, diamonds), each in rank order; `face` puts the number cards, ace to ten, before the face cards; left out, the cards lie as dealt |
 | `receive` | where a card given by `replace()` lands: `front`, or `end` unless said |
 | `closed` | how closed the hand lies, from `0` (a clear fan) to `1` (squared up, only the top card showing): see [A closed hand that opens with a tap](#a-closed-hand-that-opens-with-a-tap) |
 | `reveal` | a tap, Enter or Space opens a closed hand into a fan, and closes it again |
@@ -729,16 +741,20 @@ that neither the cards nor how many there are can be read.
 | --- | --- |
 | `hide({ oneByOne?, gap? })` | turns every card face down: at once, or one by one, `gap` milliseconds apart (110 unless said) |
 | `show({ oneByOne?, gap? })` | turns them face up again |
-| `scrunch()`, `spread()` | squares the hand into a bundle, and lays it out again |
+| `toggle(cards?, { oneByOne?, gap? })` | turns the cards named (one id or a list) over, each to its other side; every card unless named |
+| `scrunch()`, `spread()` | squares the hand into a bundle, each card keeping its side, and lays it out again |
+| `partAt(card)`, `unpart()` | parts the hand at a card, a group either side of it (one at an end), and closes it up again |
 | `open()`, `close(closed?)` | fans a closed hand, and squares it again (all the way unless said) |
-| `sort()`, `group()`, `unsort()` | sorts by rank, groups by suit, and lays the hand out as dealt again: each card slides to its new place |
+| `sort()`, `group(by?)`, `unsort()` | sorts by rank, groups by suit (or with `"face"`, number cards then face cards), and lays the hand out as dealt again: each card slides to its new place |
 | `mixUp()` | mixes the hand up, the same cards in another order, never the one it was in |
 | `toss(card)` | tosses a card out: it lifts away and the rest close up |
 | `replace(card, next, lands?)` | tosses a card out and takes the next card in its stead, dropped in at the front or the end (`lands`, else `receive`, else the end) |
+| `mark(cards)`, `unmark(cards?)` | marks the cards named, and takes the marks off them (or off every card) |
+| `spin(cards?, { direction?, turns?, ms? })` | spins the cards named, or all, where they lie: fast, then slowing to a stop as they were, `turns` whole turns later (3 unless said), `clockwise` unless said `anticlockwise` |
 
 - Each returns a promise that settles when the cards have stopped moving, and
   each change is a `toranpu-hand` event that bubbles, its `detail`
-  `{ faceDown, scrunched, open }`. The `cards` property reads and sets the
+  `{ faceDown, scrunched, open, turned, parted }`. The `cards` property reads and sets the
   hand as a list.
 - The cards turn over in place and slide together; a device that asks for less
   motion gets the end at once.
@@ -753,10 +769,17 @@ that neither the cards nor how many there are can be read.
     hand.cards = newHands[seat];
   });
   ```
-- **A scrunched hand turned face up stays squared.** `scrunch()` squares the
-  hand and turns it down, so it says nothing; `show()` then turns the bundle
-  over where it lies, its top card showing and still no count; `spread()`
-  lays it out again, face up if the scrunch had turned it down.
+- **Scrunch only gathers.** `scrunch()` squares the hand where it lies, each
+  card keeping its side: a hand face down becomes a bundle that says nothing,
+  one face up shows its top card and still no count. (Before 2.13 it also
+  turned the hand face down; `hide()` then `scrunch()` does that now.)
+- **Turn over, part, mark, spin.** `toggle()` turns any cards over, so a hand
+  can lie half face up. `partAt()` brings one card out: it lifts upright and
+  wholly in view, and the cards either side are drawn away into a group on
+  each side, closing up so the hand keeps its room wherever it can. A mark is
+  a dot on a card's corner, seen face up and face down, to follow a card as it
+  moves about; a screen reader hears "king of hearts, marked". A spin turns a
+  card about its own middle, slowing as a card on a cloth does.
 - **Sort, group, mix, toss, replace.** The cards move as a person would move
   them: sorted or mixed, each slides from where it lay to its new place; a
   tossed card lifts away and the rest close up; a card given drops in.
@@ -867,10 +890,10 @@ with a line saying how to write one, and only what looks like a colour is
 taken as one. The page tracks nothing, loads nothing from anywhere else and
 keeps nothing on the visitor's device. It tells the page that frames it its
 height, `{ toranpu: "height", height }`, so a frame can be made to fit, and
-each change, `{ toranpu: "hand", faceDown, scrunched, open }` or
+each change, `{ toranpu: "hand", faceDown, scrunched, open, turned, parted }` or
 `{ toranpu: "flip", card, faceDown }`, by `postMessage`.
 
-The tag is the element of [Hide a hand](#hide-a-hand), so it takes every
+The tag is the element of [Hand controls](#hand-controls), so it takes every
 attribute listed there. [The demo](https://johnmorrisdotca.github.io/toranpu/#embed-panel)
 writes both for any hand typed into it, in the look chosen there, and shows
 the iframe as it will be framed.
@@ -962,7 +985,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.12.1",
+  "generator": "toranpu 2.13.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -1216,14 +1239,15 @@ other card.
 | `TORANPU_TAGS` | The elements' tags |
 | `ELEMENT_SIZES` | The card widths `size` names: small 46, medium 70, large 104 |
 | `handLayout(count, options?)` | Where each card of a hand lies, fanned or squared up |
+| `partedHandLayout(count, at, options?)` | Where each card lies with the hand parted at its card in that place, from 0: it lifted clear, a group either side |
 | `pileLayout(count, options?)` | Where each card of a pile lies, neat or messy, from a seed |
 | `readHand(text)` | A hand written as ids (`"AS KH 10D"`) or one-letter codes, as its cards |
-| `arrangeCards(cards, by)` | A hand by `"rank"`, grouped by `"suit"`, or as `"dealt"`, as a new list; the extras last |
+| `arrangeCards(cards, by)` | A hand by `"rank"`, grouped by `"suit"`, number cards then face cards (`"face"`), or as `"dealt"`, as a new list; the extras last |
 | `mixCards(cards, random?)` | The same cards in another order, never the one given |
 | `tossCard(cards, card)` | The hand without that card |
 | `replaceCard(cards, card, next, lands?)` | The hand with that card out and the next card at the `"front"` or the `"end"` |
 
-Types: `CardPlace`, `HandLayoutOptions`, `PileLayoutOptions`, `HandTurnOptions`, `CardOrder`, `CardLands`.
+Types: `CardPlace`, `HandLayoutOptions`, `PartOptions`, `PileLayoutOptions`, `HandTurnOptions`, `SpinOptions`, `CardOrder`, `CardLands`.
 
 ### `@johnmorrisdotca/toranpu/element/define`
 

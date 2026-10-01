@@ -136,3 +136,11 @@ input[type="range"] { width: 12rem; max-width: 100%; min-height: 44px; accent-co
 .api-entry pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .deck-rest { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
 .deck-rest p { margin: 0; }
+/* The hand's controls, a row for each kind of thing a hand does, its name before its buttons. */
+.hand-controls { display: grid; gap: 10px; margin-top: 12px; }
+.hand-row { padding-top: 10px; border-top: 1px solid var(--rule); }
+.hand-row:first-child { padding-top: 0; border-top: 0; }
+.hand-row { display: grid; grid-template-columns: 6.5rem 1fr; align-items: start; gap: 8px 12px; }
+.hand-row .fam-label { padding-top: 14px; min-width: 0; }
+.hand-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+@media (max-width: 520px) { .hand-row { grid-template-columns: 1fr; } .hand-row .fam-label { padding-top: 0; } }

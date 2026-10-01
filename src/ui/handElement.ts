@@ -1,8 +1,8 @@
 import { STRINGS, fillIn } from "../strings.ts";
 import { namesList } from "../words.ts";
 import { faceName } from "./cardFaces.ts";
-import { followLanguage, cardDrawing, designNamed, ElementBase, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./elementKit.ts";
-import { arrangeCards, handLayout, mixCards, readHand, replaceCard, tossCard, type CardLands, type CardOrder, type CardPlace } from "./layout.ts";
+import { followLanguage, cardDrawing, cardIds, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markedCards, markerHtml, MARKER_STYLE, pageSounds, spinElement, widthOf, type SpinOptions } from "./elementKit.ts";
+import { arrangeCards, handLayout, mixCards, partedHandLayout, readHand, replaceCard, tossCard, type CardLands, type CardOrder, type CardPlace } from "./layout.ts";
 
 /** How a hand's cards are turned face down or face up. */
 export type HandTurnOptions = {
@@ -15,13 +15,19 @@ export type HandTurnOptions = {
 /** How many backs a squared-up bundle shows, whatever the hand: a bundle never tells how many cards are in it. */
 export const BUNDLE_BACKS = 3;
 
+/** How a hand lies: face down or up, squared into a bundle, how open, which cards are turned the other way, and the card it is parted at. */
+type HandState = { down: boolean; scrunched: boolean; open: number; turned: string[]; parted: string | null };
+
+const sameState = (a: HandState, b: HandState) => JSON.stringify(a) === JSON.stringify(b);
+
 /**
  * A HAND OF CARDS ON ANY PAGE: `<toranpu-hand cards="AS KH QD">`, fanned, in
  * any design and with any back. It can be turned face down where it lies, all
- * at once or one card after another, and back; squared up into one face-down
- * bundle ("scrunched") that shows neither the cards nor how many there are;
- * and held closed, squared up with only the top card showing, to open into a
- * fan on a tap.
+ * at once or one card after another, and back, or only the cards chosen;
+ * squared up into one bundle ("scrunched") that never says how many cards
+ * there are; parted at one card, which comes out from among the rest; held
+ * closed, squared up with only the top card showing, to open into a fan on a
+ * tap; and its cards marked, to be followed while face down, and spun.
  *
  * ```html
  * <toranpu-hand cards="AS KH QD JC 10S" design="english" closed="0.9" reveal></toranpu-hand>
@@ -30,27 +36,35 @@ export const BUNDLE_BACKS = 3;
  * Attributes, all optional:
  *   cards       the hand: ids separated by spaces or commas (`AS KH 10D`), or the deck's one-letter codes
  *   face-down   every card shows its back; their faces are not in the page
- *   scrunched   squared up into one bundle that never says how many; with face-down (as scrunch() leaves it), no faces
- *               in the page either; face up, its top card showing
+ *   turned      cards that show the other side from the rest: face up in a hand face down, face down in one face up
+ *   scrunched   squared up into one bundle that never says how many; face down, no faces in the page either; face
+ *               up, its top card showing
+ *   parted      a card the hand is parted at: lifted out, wholly in view, the cards either side drawn away from it
+ *   marked      cards that carry a mark, a dot on the corner seen face up or face down
  *   closed      how closed the hand lies, from 0 (a clear fan) to 1 (squared up, only the top card showing)
  *   reveal      a tap, Enter or Space opens a closed hand into a fan, and closes it again
  *   order       "rank" sorts the hand low to high, the ace high; "suit" groups it by suit, each in rank order;
- *               left out, the cards lie as they were dealt (`arrangeCards`)
+ *               "face" puts the number cards before the face cards; left out, the cards lie as they were dealt
+ *               (`arrangeCards`)
  *   receive     where a card given by replace() lands: "front", or "end" (unless said)
  *   deal-after  given new cards, how many milliseconds the hand waits before it gathers the old ones in and
  *               opens on the new; a table gives each seat a little more, so the hands are dealt in turn
  *   design, back, back-colour, mark, size, width, lang, sound   as on `<toranpu-card>`
  *
- * Methods: `hide(options?)` and `show(options?)` turn the cards over, one by
- * one if asked; `scrunch()` and `spread()` square the hand up and lay it out
- * again; `open()` and `close()` fan it and square it. Each returns a promise
- * that settles when the cards have finished moving. The motion is skipped on
- * a device that asks for less. Each change is a `toranpu-hand` event that
- * bubbles, its detail `{ faceDown, scrunched, open }`.
+ * Methods: `hide(options?)` and `show(options?)` turn every card one way, one
+ * by one if asked, and `toggle(cards?, options?)` turns the cards named (or
+ * all) over; `scrunch()` and `spread()` square the hand up and lay it out
+ * again; `partAt(card)` and `unpart()`; `open()` and `close()` fan it and square
+ * it; `sort()`, `group(by?)`, `unsort()`, `mixUp()`, `toss(card)` and
+ * `replace(card, next)`; `mark(cards)` and `unmark(cards?)`; and `spin(cards?,
+ * options?)`. Each returns a promise that settles when the cards have finished
+ * moving. The motion is skipped on a device that asks for less. Each change is
+ * a `toranpu-hand` event that bubbles, its detail `{ faceDown, scrunched,
+ * open, turned, parted }`.
  */
 export class ToranpuHand extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["cards", "order", "receive", "deal-after", "face-down", "scrunched", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
+    return ["cards", "order", "receive", "deal-after", "face-down", "turned", "scrunched", "parted", "marked", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
   }
 
   #root: ShadowRoot | null = null;
@@ -60,11 +74,11 @@ export class ToranpuHand extends ElementBase {
   /** Whether the next change moves the cards (true) or simply draws them where they end. */
   #moving = false;
   /** What is on screen now. */
-  #shown: { down: boolean; scrunched: boolean; open: number } | null = null;
+  #shown: HandState | null = null;
   #settle: (() => void) | null = null;
   #timer: ReturnType<typeof setTimeout> | null = null;
   /** A new deal on its way: the old cards gathering in, drawn in place of the new until they are squared up. */
-  #dealing: { cards: string[]; target: { down: boolean; scrunched: boolean; open: number } } | null = null;
+  #dealing: { cards: string[]; target: HandState } | null = null;
   #dealTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** The cards of the hand, as ids. Setting them lays the hand out afresh. */
@@ -77,47 +91,127 @@ export class ToranpuHand extends ElementBase {
 
   /** Turn every card face down where it lies: all at once, or one after another. */
   hide(options: HandTurnOptions = {}): Promise<void> {
-    return this.#change(() => this.toggleAttribute("face-down", true), options, "flip");
+    return this.#change(() => {
+      this.toggleAttribute("face-down", true);
+      this.removeAttribute("turned");
+    }, options, "flip");
   }
 
   /** Turn every card face up again. */
   show(options: HandTurnOptions = {}): Promise<void> {
-    this.#scrunchTurned = false;
-    return this.#change(() => this.toggleAttribute("face-down", false), options, "flip");
+    return this.#change(() => {
+      this.toggleAttribute("face-down", false);
+      this.removeAttribute("turned");
+    }, options, "flip");
   }
 
   /**
-   * Square the hand up into one face-down bundle that shows neither the cards nor how many. Turned
-   * face up (`show()`), the bundle stays squared, its top card showing and still no count.
+   * Turn the cards named over, each to its other side, where they lie: a card face up goes face down and
+   * one face down comes up (John, 2026-10-01: "flips over any card(s)"). Unless cards are named, every card
+   * of the hand, so a hand half turned is turned the other way about. A card the hand does not hold is
+   * passed over; a hand holding two of a card turns both.
+   */
+  toggle(cards?: string | readonly string[], options: HandTurnOptions = {}): Promise<void> {
+    const hand = this.cards;
+    const named = cards === undefined ? hand : cardIds(cards).filter((card) => hand.includes(card));
+    if (named.length === 0) return Promise.resolve();
+    return this.#change(() => {
+      const turned = new Set(this.#state().turned);
+      for (const card of new Set(named)) {
+        if (turned.has(card)) turned.delete(card);
+        else turned.add(card);
+      }
+      // Every card turned the other way is the whole hand turned: it is written as the hand's own side.
+      if (hand.every((card) => turned.has(card))) {
+        this.toggleAttribute("face-down", !this.hasAttribute("face-down"));
+        this.removeAttribute("turned");
+      } else if (turned.size === 0) this.removeAttribute("turned");
+      else this.setAttribute("turned", [...turned].join(" "));
+    }, options, "flip");
+  }
+
+  /**
+   * Square the hand up into one bundle that never says how many cards it holds, each card keeping its
+   * side: face down, the bundle shows only backs; face up, its top card. (Until 2.13 a scrunch also
+   * turned the hand face down; John, 2026-10-01, once cards could be turned over by themselves: "Scrunch
+   * doesn't have to flip face down. Just brings cards together.")
    */
   scrunch(): Promise<void> {
-    return this.#change(() => {
-      this.#scrunchTurned = !this.hasAttribute("face-down");
-      this.toggleAttribute("scrunched", true);
-      this.toggleAttribute("face-down", true);
-    }, {}, "gather");
+    return this.#change(() => this.toggleAttribute("scrunched", true), {}, "gather");
   }
 
-  /** Lay a squared-up hand out again: face up if the scrunch turned it down, otherwise as it now faces. */
+  /** Lay a squared-up hand out again, each card as it now faces. */
   spread(): Promise<void> {
-    return this.#change(() => {
-      this.toggleAttribute("scrunched", false);
-      if (this.#scrunchTurned) this.toggleAttribute("face-down", false);
-      this.#scrunchTurned = false;
-    }, {}, "fan");
+    return this.#change(() => this.toggleAttribute("scrunched", false), {}, "fan");
   }
 
-  /** Whether the last scrunch turned a face-up hand down, so that spreading it turns it back; a turn by hand since forgets it. */
-  #scrunchTurned = false;
+  /**
+   * Part the hand at a card: that card is lifted out, upright and wholly in view, and the cards to its
+   * left and right are drawn away from it, so a card from the middle leaves three groups, the left, it,
+   * and the right (`partedHandLayout`). It keeps its side; `toggle` turns it. Parting at another card
+   * moves the parting there; `null`, or `unpart()`, closes the hand up again. Nothing happens for a card
+   * the hand does not hold.
+   */
+  partAt(card: string | null): Promise<void> {
+    const id = card === null ? null : (cardIds(card)[0] ?? null);
+    if (id !== null && !this.cards.includes(id)) return Promise.resolve();
+    return this.#change(() => (id === null ? this.removeAttribute("parted") : this.setAttribute("parted", id)), {}, "fan");
+  }
+
+  /** Close a parted hand up again into its fan. */
+  unpart(): Promise<void> {
+    return this.partAt(null);
+  }
+
+  /** Mark the cards named, with a dot on the corner that shows face up and face down alike, to follow them as they move. */
+  mark(cards: string | readonly string[]): void {
+    const marked = markedCards(this);
+    for (const card of cardIds(cards)) marked.add(card);
+    this.setAttribute("marked", [...marked].join(" "));
+  }
+
+  /** Take the marks off the cards named, or off every card. */
+  unmark(cards?: string | readonly string[]): void {
+    if (cards === undefined) {
+      this.removeAttribute("marked");
+      return;
+    }
+    const marked = markedCards(this);
+    for (const card of cardIds(cards)) marked.delete(card);
+    if (marked.size === 0) this.removeAttribute("marked");
+    else this.setAttribute("marked", [...marked].join(" "));
+  }
+
+  /**
+   * Spin the cards named (or every card) where they lie, as a flick sets a card turning on a table: fast,
+   * then slowing to a stop as it was, a whole number of turns later. Several spin together, each a moment
+   * after the one before. `direction` is clockwise unless said; `turns` 3. Settles when every card is
+   * still; at once where motion is reduced. A bundle's cards are not spun, having none to show.
+   */
+  spin(cards?: string | readonly string[], options: SpinOptions = {}): Promise<void> {
+    const root = this.#root;
+    if (root === null) return Promise.resolve();
+    const named = cards === undefined ? [...new Set(this.#onScreen)] : cardIds(cards);
+    const spins = root.querySelectorAll<HTMLElement>(".slot .spin");
+    const turning = named.flatMap((card) => {
+      const at = this.#onScreen.indexOf(card);
+      const one = at === -1 ? undefined : spins[at];
+      return one === undefined ? [] : [one];
+    });
+    return Promise.all(turning.map((one, at) => spinElement(one, options, at * 70))).then(() => undefined);
+  }
 
   /** Sort the hand by rank, low to high with the ace high, the cards sliding to their places. */
   sort(): Promise<void> {
     return this.#reorder("rank");
   }
 
-  /** Group the hand by suit (spades, hearts, clubs, diamonds), each suit in rank order. */
-  group(): Promise<void> {
-    return this.#reorder("suit");
+  /**
+   * Group the hand by suit (spades, hearts, clubs, diamonds), each suit in rank order; or, with `"face"`,
+   * the number cards (ace to ten) before the face cards (jack, queen, king).
+   */
+  group(by: "suit" | "face" = "suit"): Promise<void> {
+    return this.#reorder(by === "face" ? "face" : "suit");
   }
 
   /** Lay the hand out again in the order it was dealt. */
@@ -203,15 +297,17 @@ export class ToranpuHand extends ElementBase {
       if (this.#batched && this.#root !== null) this.#draw();
       const after = this.#state();
       const count = this.cards.length;
-      if (isOn(this, "sound") && (always || before.down !== after.down || before.scrunched !== after.scrunched || before.open !== after.open)) pageSounds().play(sound, sound === "flip" ? { count, gap: this.#stagger || 25 } : {});
+      if (isOn(this, "sound") && (always || !sameState(before, after))) pageSounds().play(sound, sound === "flip" ? { count, gap: this.#stagger || 25 } : {});
       // A change that changed nothing settles at once.
-      if (!always && before.down === after.down && before.scrunched === after.scrunched && before.open === after.open) this.#finish();
+      if (!always && sameState(before, after)) this.#finish();
     });
   }
 
-  #state(): { down: boolean; scrunched: boolean; open: number } {
+  #state(): HandState {
     const closed = Number(this.getAttribute("closed"));
-    return { down: this.hasAttribute("face-down"), scrunched: this.hasAttribute("scrunched"), open: Number.isFinite(closed) ? 1 - Math.min(1, Math.max(0, closed)) : 1 };
+    const turned = [...new Set(readHand(this.getAttribute("turned")) ?? [])].sort();
+    const parted = readHand(this.getAttribute("parted"))?.[0] ?? null;
+    return { down: this.hasAttribute("face-down"), scrunched: this.hasAttribute("scrunched"), open: Number.isFinite(closed) ? 1 - Math.min(1, Math.max(0, closed)) : 1, turned, parted };
   }
 
   connectedCallback(): void {
@@ -219,7 +315,7 @@ export class ToranpuHand extends ElementBase {
     if (this.#root === null) {
       this.#root = this.attachShadow({ mode: "open" });
       const toggle = () => {
-        if (!this.hasAttribute("reveal") || this.hasAttribute("scrunched")) return;
+        if (!this.hasAttribute("reveal") || this.hasAttribute("scrunched") || this.hasAttribute("parted")) return;
         const now = this.#state();
         if (now.open < 1) {
           // Closed again, it closes as far as it was.
@@ -267,6 +363,7 @@ export class ToranpuHand extends ElementBase {
       if (this.#redeal(before, after)) return;
     }
     if (name === "deal-after" || name === "receive") return;
+    // A mark moves nothing: drawn where the cards lie, never as a change of how the hand lies.
     this.#draw();
   }
 
@@ -282,7 +379,12 @@ export class ToranpuHand extends ElementBase {
     const next = readHand(after) ?? [];
     const now = this.#state();
     if (this.#shown === null || old.length === 0 || next.length === 0 || old.join(" ") === next.join(" ") || now.scrunched || lessMotion() || !this.isConnected) return false;
-    const gathered = { down: now.down, scrunched: false, open: 0 };
+    // A new deal starts afresh: no card turned the other way, and the hand not parted.
+    this.#batching = true;
+    this.removeAttribute("turned");
+    this.removeAttribute("parted");
+    this.#batching = false;
+    const gathered: HandState = { ...now, scrunched: false, open: 0, parted: null };
     if (this.#dealTimer !== null) clearTimeout(this.#dealTimer);
     // `deal-after`: how long this hand waits, still showing its old cards, before it gathers in. A table gives each seat
     // a little more than the one before, so the hands are dealt in turn round the table, as a dealer deals them.
@@ -320,7 +422,7 @@ export class ToranpuHand extends ElementBase {
   #draw(): void {
     const root = this.#root as ShadowRoot;
     const order = this.getAttribute("order");
-    const cards = arrangeCards(this.#dealing?.cards ?? this.cards, order === "rank" || order === "suit" ? order : "dealt");
+    const cards = arrangeCards(this.#dealing?.cards ?? this.cards, order === "rank" || order === "suit" || order === "face" ? order : "dealt");
     const language = languageOf(this);
     const { design, ready } = designNamed(this.getAttribute("design"));
     if (ready !== null) void ready.then(() => this.#draw());
@@ -336,7 +438,14 @@ export class ToranpuHand extends ElementBase {
     // What a screen reader hears: the cards, or that they are face down and how many, or only that it is a bundle.
     const words = STRINGS[language];
     const top = cards[cards.length - 1];
-    const label = target.scrunched ? (target.down || top === undefined ? words.handScrunched : fillIn(words.handSquared, { card: faceName(top, language) })) : target.down ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map((card) => faceName(card, language)), language) });
+    const marked = markedCards(this);
+    const downIn = (card: string, state: HandState) => (card !== "" && state.turned.includes(card) ? !state.down : state.down);
+    const named = (card: string) => {
+      const name = cardLabel(card, downIn(card, target), language);
+      return marked.has(card) ? fillIn(words.cardMarked, { card: name }) : name;
+    };
+    const allDown = cards.every((card) => downIn(card, target));
+    const label = target.scrunched ? (downIn(top ?? "", target) || top === undefined ? words.handScrunched : fillIn(words.handSquared, { card: faceName(top, language) })) : allDown && marked.size === 0 ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map(named), language) });
     this.setAttribute("aria-label", label);
     const reveals = this.hasAttribute("reveal") && !target.scrunched;
     this.setAttribute("role", reveals ? "button" : "group");
@@ -358,18 +467,19 @@ export class ToranpuHand extends ElementBase {
     // squared into a bundle, and each state lies in the middle of it. So closing gathers the cards to
     // where the hand lies and opening spreads them from there, and the hand never changes size when an
     // effect ends: a hand drawn smaller once still would slide across the page (a centred one most).
-    const fan = this.#places(cards.length, { open: 1, scrunched: false });
+    const fan = this.#places(cards, { open: 1, scrunched: false, parted: null });
     const widest = (places: CardPlace[]) => Math.max(0, ...places.map((spot) => spot.x));
-    const frame = Math.max(widest(fan), widest(this.#places(count, from)), widest(this.#places(count, target)));
+    const listed = bundle ? bundleCards : cards;
+    const frame = Math.max(widest(fan), widest(this.#places(listed, from)), widest(this.#places(listed, target)));
     const centred = (places: CardPlace[]) => places.map((spot) => ({ ...spot, x: Math.round((spot.x + (frame - widest(places)) / 2) * 1000) / 1000 }));
-    const endPlaces = centred(this.#places(count, target));
+    const endPlaces = centred(this.#places(listed, target));
     // The same cards moved about (sorted, mixed up), or a card tossed out or given: each card that was on the table
     // starts from the place it lay in, so it is seen to slide to its new one, and a card given drops in from above.
     // Cards that have nothing to do with the ones before (a new deal) are simply laid where they go.
-    const startAt = centred(this.#places(count, from));
+    const startAt = centred(this.#places(listed, from));
     const before = [...this.#onScreen];
     const related = !bundle && before.length > 0 && cards.some((card) => before.includes(card));
-    const prior = related ? centred(this.#places(before.length, from)) : startAt;
+    const prior = related ? centred(this.#places(before, from)) : startAt;
     const startPlaces = related
       ? cards.map((card, at) => {
           const was = before.indexOf(card);
@@ -382,13 +492,16 @@ export class ToranpuHand extends ElementBase {
         })
       : startAt;
     this.#onScreen = bundle ? [] : [...cards];
-    // Faces are in the page only while some card may show one: never for a bundle face down at both ends, nor once a hand is still face down.
-    const facesNeeded = (!from.down || !target.down) && !(target.down && target.scrunched && !moving);
+    // A card's face is in the page only while it may show: never for a card face down at both ends of a change, so a hand
+    // still face down, and a bundle face down, hold no face at all.
+    const slotCards = listed;
+    const faceShows = (card: string) => card !== "" && !(downIn(card, from) && downIn(card, target));
     const slots = Array.from({ length: count }, (_, at) => {
-      const card = bundle ? (facesNeeded ? (bundleCards[at] as string) : "") : (cards[at] as string);
-      const face = facesNeeded && card !== "" ? cardDrawing(card, false, this, design, language) : "";
+      const dealt = slotCards[at] as string;
+      const card = bundle && !faceShows(dealt) ? "" : dealt;
+      const face = faceShows(card) ? cardDrawing(card, false, this, design, language) : "";
       const back = cardDrawing(card || "AS", true, this, design, language);
-      return `<div class="slot" part="card" data-at="${at}"><div class="turn"><div class="side face"${face === "" ? "" : ` data-card="${card}"`}>${face}</div><div class="side back">${back}</div></div></div>`;
+      return `<div class="slot" part="card" data-at="${at}"><div class="spin"><div class="turn"><div class="side face"${face === "" ? "" : ` data-card="${card}"`}>${face}</div><div class="side back">${back}</div></div>${markerHtml(card !== "" && marked.has(card))}</div></div>`;
     });
     const every = [...fan, ...startPlaces, ...endPlaces];
     const span = frame;
@@ -402,14 +515,15 @@ export class ToranpuHand extends ElementBase {
     this.style.setProperty("--toranpu-w", widthOf(this));
     this.style.setProperty("--toranpu-across", String(across));
     const all = [...root.querySelectorAll<HTMLElement>(".slot")];
-    const place = (slot: HTMLElement, spot: CardPlace | undefined, down: boolean) => {
+    const place = (slot: HTMLElement, spot: CardPlace | undefined, state: HandState, at: number) => {
+      const down = downIn((slotCards[at] as string | undefined) ?? "", state);
       if (spot === undefined) return;
       slot.style.setProperty("--x", String(spot.x));
       slot.style.setProperty("--y", String(spot.y));
       slot.style.setProperty("--r", `${spot.rotate}deg`);
       slot.dataset.down = String(down);
     };
-    all.forEach((slot, at) => place(slot, (moving ? startPlaces : endPlaces)[at], moving ? from.down : target.down));
+    all.forEach((slot, at) => place(slot, (moving ? startPlaces : endPlaces)[at], moving ? from : target, at));
     this.#shown = target;
     if (!moving) {
       this.#announce(target);
@@ -421,7 +535,7 @@ export class ToranpuHand extends ElementBase {
     void hand.offsetWidth;
     all.forEach((slot, at) => {
       slot.style.setProperty("--delay", `${stagger * at}ms`);
-      place(slot, endPlaces[at], target.down);
+      place(slot, endPlaces[at], target, at);
     });
     const length = 480 + stagger * Math.max(0, count - 1);
     this.#timer = setTimeout(() => {
@@ -432,22 +546,25 @@ export class ToranpuHand extends ElementBase {
     }, length + 40);
   }
 
-  /** Where each card lies for a state: squared up into a bundle when scrunched, fanned as open as asked otherwise. */
-  #places(count: number, state: { open: number; scrunched: boolean }): CardPlace[] {
+  /** Where each of these cards lies for a state: squared up into a bundle when scrunched, parted at a card, or fanned as open as asked. */
+  #places(cards: readonly string[], state: { open: number; scrunched: boolean; parted: string | null }): CardPlace[] {
+    const count = cards.length;
     if (state.scrunched) return Array.from({ length: count }, (_, at) => ({ x: Math.min(at, BUNDLE_BACKS - 1) * 0.025, y: Math.min(at, BUNDLE_BACKS - 1) * 0.02, rotate: (Math.min(at, BUNDLE_BACKS - 1) - 1) * 1.5 }));
+    const parted = state.parted === null ? -1 : cards.indexOf(state.parted);
+    if (parted !== -1) return partedHandLayout(count, parted);
     return handLayout(count, { open: state.open });
   }
 
   /** The state last told to the page, so each change is told once, and the first drawing not at all. */
   #told: string | null = null;
 
-  #announce(state: { down: boolean; scrunched: boolean; open: number }): void {
+  #announce(state: HandState): void {
     const now = JSON.stringify(state);
     const first = this.#told === null;
     if (now === this.#told) return;
     this.#told = now;
     if (first) return;
-    this.dispatchEvent(new CustomEvent("toranpu-hand", { bubbles: true, composed: true, detail: { faceDown: state.down, scrunched: state.scrunched, open: state.open } }));
+    this.dispatchEvent(new CustomEvent("toranpu-hand", { bubbles: true, composed: true, detail: { faceDown: state.down, scrunched: state.scrunched, open: state.open, turned: state.turned, parted: state.parted } }));
   }
 }
 
@@ -463,6 +580,7 @@ const HAND_STYLE = `
 :host(:focus-visible) { outline: 3px solid var(--toranpu-focus, #b5452c); outline-offset: 4px; border-radius: 8px; }
 .hand { --cw: min(var(--toranpu-w, 70px), calc(100cqw / var(--across))); position: relative; width: 100%; height: calc(var(--cw) * (1.4 + var(--drop) + .14 + var(--side) * .45)); }
 .slot { position: absolute; left: calc(var(--cw) * (var(--x) + var(--side) + .06)); top: calc(var(--cw) * (var(--y) + .05)); width: var(--cw); aspect-ratio: 5 / 7; transform: rotate(var(--r)); transform-origin: 50% 120%; perspective: 800px; }
+.spin { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
 .turn { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
 .slot[data-down="true"] .turn { transform: rotateY(180deg); }
 .side { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
@@ -471,4 +589,5 @@ const HAND_STYLE = `
 .hand[data-moving="true"] .slot { transition: left .45s cubic-bezier(.3,.7,.3,1), top .45s cubic-bezier(.3,.7,.3,1), transform .45s cubic-bezier(.3,.7,.3,1); }
 .hand[data-moving="true"] .turn { transition: transform var(--toranpu-flip-ms, 450ms) cubic-bezier(.3,.7,.3,1) var(--delay, 0ms); }
 @media (prefers-reduced-motion: reduce) { .hand[data-moving="true"] .slot, .hand[data-moving="true"] .turn { transition: none; } }
+${MARKER_STYLE}
 `;

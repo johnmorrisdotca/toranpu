@@ -196,6 +196,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageDesignEnglish` | English pattern | イングリッシュ・パターン |
 | `pageDesignRealistic` | Realistic | リアル |
 | `cardFaceDown` | a card, face down | 伏せたカード |
+| `cardMarked` | {card}, marked | {card}（印つき） |
 | `pageOneCard` | One card on any page | どのページにもカードを1枚 |
 | `pageOneCardNote` | A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL. | 上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。 |
 | `pageCardPick` | Card | カード |
@@ -205,8 +206,8 @@ a game; `cli` is the command line; `page` is the demo.
 | `handFaceDown` | a hand face down, cards: {n} | 伏せた手札（{n}枚） |
 | `handScrunched` | a hand of cards, squared up face down | 伏せてまとめた手札 |
 | `handSquared` | a hand of cards, squared up, {card} on top | まとめた手札（いちばん上は{card}） |
-| `pageHide` | Hide a hand | 手札を隠す |
-| `pageHideNote` | Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read. | 手札をその場で伏せます。全部いっぺんにも、1枚ずつにもできます。表に戻すこともできます。「まとめる」は手札を伏せて1つの束にし、カードも枚数もわからないようにします。 |
+| `pageHide` | Hand controls | 手札の操作 |
+| `pageHideNote` | Everything a hand can do where it lies. Turn it face down, all at once or one card after another, or turn chosen cards over. Gather it into a bundle that never says how many, or part it at one card to bring that card out. Sort it, group it, mix it up, toss a card or swap one, and mark a card to follow it while it is face down. | 手札をその場で動かします。全部いっぺんに、または1枚ずつ伏せたり、選んだカードだけ裏返したりできます。枚数のわからない束にまとめたり、1枚を抜き出して見せたりもできます。並べ替え、まとめ方、混ぜる、捨てる、入れ替える、そして伏せたカードを追えるように印をつけることもできます。 |
 | `pageHideAll` | Face down | 伏せる |
 | `pageHideOneByOne` | One by one | 1枚ずつ伏せる |
 | `pageShowHand` | Face up | 表にする |
@@ -222,6 +223,23 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageGroup` | Group by suit | スートごと |
 | `pageUnsort` | As dealt | 配られた順 |
 | `pageNewHand` | Another hand | 別の手札 |
+| `pageRowTurn` | Turn | 裏表 |
+| `pageRowGather` | Gather | まとめる |
+| `pageRowOrder` | Order | 並び |
+| `pageRowChange` | Change | 入れ替え |
+| `pageRowMark` | Mark and spin | 印と回転 |
+| `pageWhichCard` | Card | カード |
+| `pageToggle` | Turn it over | 裏返す |
+| `pageToggleAll` | Turn every card over | 全部裏返す |
+| `pagePart` | Part at it | 抜き出す |
+| `pageUnpart` | Close up | 戻す |
+| `pageGroupFace` | Number and face cards | 数札と絵札 |
+| `pageMark` | Mark it | 印をつける |
+| `pageUnmark` | Clear marks | 印を消す |
+| `pageSpin` | Spin it | 回す |
+| `pageSpinAll` | Spin them all | 全部回す |
+| `pageClockwise` | clockwise | 右回り |
+| `pageAnticlockwise` | anticlockwise | 左回り |
 | `pageReveal` | A closed hand that opens with a tap | タップで開く手札 |
 | `pageRevealNote` | The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it. | 手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。 |
 | `pageClosed` | How closed | 閉じ具合 |

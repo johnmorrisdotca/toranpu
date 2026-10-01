@@ -202,6 +202,8 @@ export type ToranpuStrings = {
   pageDesignEnglish: string;
   pageDesignRealistic: string;
   cardFaceDown: string;
+  /** A card that carries a mark, as a screen reader hears it: its name, or that it is face down. */
+  cardMarked: string;
   pageOneCard: string;
   pageOneCardNote: string;
   pageCardPick: string;
@@ -231,6 +233,26 @@ export type ToranpuStrings = {
   pageAtFront: string;
   pageSpread: string;
   pageNewHand: string;
+  /** The demo hand's rows of controls, each named by what its buttons do. */
+  pageRowTurn: string;
+  pageRowGather: string;
+  pageRowOrder: string;
+  pageRowChange: string;
+  pageRowMark: string;
+  /** The card the one-card controls act on. */
+  pageWhichCard: string;
+  /** The demo hand: one card turned over, parted out and closed up again, grouped by face, marked, spun. */
+  pageToggle: string;
+  pageToggleAll: string;
+  pagePart: string;
+  pageUnpart: string;
+  pageGroupFace: string;
+  pageMark: string;
+  pageUnmark: string;
+  pageSpin: string;
+  pageSpinAll: string;
+  pageClockwise: string;
+  pageAnticlockwise: string;
   pageReveal: string;
   pageRevealNote: string;
   pageClosed: string;
@@ -479,6 +501,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDesignEnglish: "English pattern",
     pageDesignRealistic: "Realistic",
     cardFaceDown: "a card, face down",
+    cardMarked: "{card}, marked",
     pageOneCard: "One card on any page",
     pageOneCardNote: "A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL.",
     pageCardPick: "Card",
@@ -488,8 +511,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     handFaceDown: "a hand face down, cards: {n}",
     handScrunched: "a hand of cards, squared up face down",
     handSquared: "a hand of cards, squared up, {card} on top",
-    pageHide: "Hide a hand",
-    pageHideNote: "Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read.",
+    pageHide: "Hand controls",
+    pageHideNote: "Everything a hand can do where it lies. Turn it face down, all at once or one card after another, or turn chosen cards over. Gather it into a bundle that never says how many, or part it at one card to bring that card out. Sort it, group it, mix it up, toss a card or swap one, and mark a card to follow it while it is face down.",
     pageHideAll: "Face down",
     pageHideOneByOne: "One by one",
     pageShowHand: "Face up",
@@ -505,6 +528,23 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageGroup: "Group by suit",
     pageUnsort: "As dealt",
     pageNewHand: "Another hand",
+    pageRowTurn: "Turn",
+    pageRowGather: "Gather",
+    pageRowOrder: "Order",
+    pageRowChange: "Change",
+    pageRowMark: "Mark and spin",
+    pageWhichCard: "Card",
+    pageToggle: "Turn it over",
+    pageToggleAll: "Turn every card over",
+    pagePart: "Part at it",
+    pageUnpart: "Close up",
+    pageGroupFace: "Number and face cards",
+    pageMark: "Mark it",
+    pageUnmark: "Clear marks",
+    pageSpin: "Spin it",
+    pageSpinAll: "Spin them all",
+    pageClockwise: "clockwise",
+    pageAnticlockwise: "anticlockwise",
     pageReveal: "A closed hand that opens with a tap",
     pageRevealNote: "The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it.",
     pageClosed: "How closed",
@@ -749,6 +789,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDesignEnglish: "イングリッシュ・パターン",
     pageDesignRealistic: "リアル",
     cardFaceDown: "伏せたカード",
+    cardMarked: "{card}（印つき）",
     pageOneCard: "どのページにもカードを1枚",
     pageOneCardNote: "上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。",
     pageCardPick: "カード",
@@ -758,8 +799,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     handFaceDown: "伏せた手札（{n}枚）",
     handScrunched: "伏せてまとめた手札",
     handSquared: "まとめた手札（いちばん上は{card}）",
-    pageHide: "手札を隠す",
-    pageHideNote: "手札をその場で伏せます。全部いっぺんにも、1枚ずつにもできます。表に戻すこともできます。「まとめる」は手札を伏せて1つの束にし、カードも枚数もわからないようにします。",
+    pageHide: "手札の操作",
+    pageHideNote: "手札をその場で動かします。全部いっぺんに、または1枚ずつ伏せたり、選んだカードだけ裏返したりできます。枚数のわからない束にまとめたり、1枚を抜き出して見せたりもできます。並べ替え、まとめ方、混ぜる、捨てる、入れ替える、そして伏せたカードを追えるように印をつけることもできます。",
     pageHideAll: "伏せる",
     pageHideOneByOne: "1枚ずつ伏せる",
     pageShowHand: "表にする",
@@ -775,6 +816,23 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageGroup: "スートごと",
     pageUnsort: "配られた順",
     pageNewHand: "別の手札",
+    pageRowTurn: "裏表",
+    pageRowGather: "まとめる",
+    pageRowOrder: "並び",
+    pageRowChange: "入れ替え",
+    pageRowMark: "印と回転",
+    pageWhichCard: "カード",
+    pageToggle: "裏返す",
+    pageToggleAll: "全部裏返す",
+    pagePart: "抜き出す",
+    pageUnpart: "戻す",
+    pageGroupFace: "数札と絵札",
+    pageMark: "印をつける",
+    pageUnmark: "印を消す",
+    pageSpin: "回す",
+    pageSpinAll: "全部回す",
+    pageClockwise: "右回り",
+    pageAnticlockwise: "左回り",
     pageReveal: "タップで開く手札",
     pageRevealNote: "手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。",
     pageClosed: "閉じ具合",

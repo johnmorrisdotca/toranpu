@@ -28,8 +28,9 @@ export { BUNDLE_BACKS, ToranpuHand } from "./ui/handElement.ts";
 export type { HandTurnOptions } from "./ui/handElement.ts";
 export { ToranpuPile } from "./ui/pileElement.ts";
 export { ELEMENT_SIZES } from "./ui/elementKit.ts";
-export { arrangeCards, handLayout, mixCards, pileLayout, readHand, replaceCard, tossCard } from "./ui/layout.ts";
-export type { CardLands, CardOrder, CardPlace, HandLayoutOptions, PileLayoutOptions } from "./ui/layout.ts";
+export type { SpinOptions } from "./ui/elementKit.ts";
+export { arrangeCards, handLayout, mixCards, partedHandLayout, pileLayout, readHand, replaceCard, tossCard } from "./ui/layout.ts";
+export type { CardLands, CardOrder, CardPlace, HandLayoutOptions, PartOptions, PileLayoutOptions } from "./ui/layout.ts";
 
 /** The elements' tags. */
 export const TORANPU_TAGS = { card: "toranpu-card", hand: "toranpu-hand", pile: "toranpu-pile" } as const;

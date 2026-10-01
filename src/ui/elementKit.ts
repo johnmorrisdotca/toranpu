@@ -9,6 +9,7 @@ import { createCardSounds, type CardSounds } from "./cardSounds.ts";
 import { cardFaceSvg, faceName, loadCardDesign } from "./cardFaces.ts";
 import type { CardDesign } from "./cardFaces.types.ts";
 import { STRINGS, type Language } from "../strings.ts";
+import { readHand } from "./layout.ts";
 
 /** What the elements extend: HTMLElement, or on a server, where there is none, an empty class, so that importing them never throws. */
 export const ElementBase: typeof HTMLElement = typeof HTMLElement === "undefined" ? (class {} as unknown as typeof HTMLElement) : HTMLElement;
@@ -110,4 +111,55 @@ export function followLanguage(redraw: () => void): () => void {
     listening.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   }
   return () => speakers.delete(redraw);
+}
+
+/** Cards as an element's method is given them, one or several, in any spelling `readHand` reads, as ids. */
+export function cardIds(cards: string | readonly string[]): string[] {
+  return readHand(typeof cards === "string" ? cards : cards.join(" ")) ?? [];
+}
+
+/** The cards an element's `marked` attribute names. */
+export function markedCards(element: Element): Set<string> {
+  return new Set(readHand(element.getAttribute("marked")) ?? []);
+}
+
+/**
+ * A MARK ON A CARD, to follow it while it is face down and moves about (John, 2026-10-01: in Solitaire,
+ * "to visually track a hidden card in deck games where the cards move around and recycle"). A round dot
+ * on the card's top left corner, where a fanned hand and a pile both leave it in sight, the same on the
+ * face and on the back, since it is drawn on the card and not on either side. `--toranpu-marker` colours it.
+ */
+export function markerHtml(marked: boolean): string {
+  return marked ? '<div class="marker" part="marker" aria-hidden="true"></div>' : "";
+}
+
+/** The mark's look, for every element that draws one. */
+export const MARKER_STYLE = `.marker { position: absolute; left: -6%; top: -4%; width: 22%; aspect-ratio: 1; border-radius: 50%; background: var(--toranpu-marker, #f2b134); box-shadow: 0 0 0 2px #fff, 0 1px 3px rgba(0,0,0,.45); pointer-events: none; }`;
+
+/** How a card is spun. */
+export type SpinOptions = {
+  /** Which way it spins. Unless said, clockwise. */
+  direction?: "clockwise" | "anticlockwise";
+  /** How many whole turns before it comes to rest where it lay. Unless said, 3; at most 20. */
+  turns?: number;
+  /** How long the spin takes, in milliseconds. Unless said, 700 and 420 a turn. */
+  ms?: number;
+};
+
+/**
+ * A CARD SPUN ON THE TABLE, as a flick sets a real one turning: fast at first, then slowed by the
+ * cloth until it stops, a whole number of turns later, lying as it was. `delay` starts it a little
+ * after the others where several spin. Settles at once on a device that asks for less motion, and
+ * when the spin is cut short.
+ */
+export function spinElement(element: HTMLElement, options: SpinOptions = {}, delay = 0): Promise<void> {
+  if (lessMotion() || typeof element.animate !== "function") return Promise.resolve();
+  const turns = Math.min(20, Math.max(1, Math.round(Number.isFinite(options.turns) ? (options.turns as number) : 3)));
+  const sign = options.direction === "anticlockwise" ? -1 : 1;
+  const ms = Number.isFinite(options.ms) && (options.ms as number) > 0 ? (options.ms as number) : 700 + 420 * turns;
+  const run = element.animate([{ transform: "rotate(0deg)" }, { transform: `rotate(${sign * 360 * turns}deg)` }], { duration: ms, delay, easing: "cubic-bezier(.06, .72, .2, 1)" });
+  return run.finished.then(
+    () => undefined,
+    () => undefined,
+  );
 }

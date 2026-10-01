@@ -336,7 +336,7 @@ wireSound((key) => t()[key]);
 wireBacks((key) => t()[key]);
 afterLanguage.push(wireDesigns((key) => t()[key], () => language.lang));
 afterLanguage.push(wireOneCard(() => language.lang));
-wireHands();
+afterLanguage.push(wireHands());
 wirePiles();
 afterLanguage.push(wireTable(() => language.lang));
 afterLanguage.push(wireEmbeds(() => t()));

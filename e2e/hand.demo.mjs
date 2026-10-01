@@ -3,7 +3,7 @@
 import { expect, test } from "@playwright/test";
 
 import { STRINGS } from "../dist/index.js";
-import { handLayout } from "../dist/element.js";
+import { arrangeCards, handLayout } from "../dist/element.js";
 import { at, open, sound, tap } from "./demo.mjs";
 
 /** The hand as the page holds it: what it says, and what is drawn in it. */
@@ -59,6 +59,8 @@ test("face down all at once and face up again: while down, no face is in the pag
 test("scrunched, the hand is one bundle that says neither its cards nor how many; spread out, it is the hand again", async ({ page }) => {
   const errors = await open(page, "?seed=1");
   const before = await read(page, "hide-hand");
+  await tap(page, at("hand-hide"));
+  await settled(page, "hide-hand");
   await tap(page, at("hand-scrunch"));
   await settled(page, "hide-hand");
   let s = await read(page, "hide-hand");
@@ -71,9 +73,107 @@ test("scrunched, the hand is one bundle that says neither its cards nor how many
   await tap(page, at("hand-spread"));
   await settled(page, "hide-hand");
   s = await read(page, "hide-hand");
-  expect(s).toMatchObject({ count: 7, faces: 7, down: 0 });
+  expect(s).toMatchObject({ count: 7, faces: 0, down: 7 });
   expect(s.xs).toEqual(before.xs);
   expect(s.width).toBe(before.width);
+  await sound(page, errors);
+});
+
+test("a scrunch only gathers: a hand face up stays face up, its top card showing, and spreads out face up", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  await tap(page, at("hand-scrunch"));
+  await settled(page, "hide-hand");
+  let s = await read(page, "hide-hand");
+  expect(s).toMatchObject({ count: 3, down: 0 });
+  expect(s.label).toMatch(/^a hand of cards, squared up, .+ on top$/);
+  await tap(page, at("hand-spread"));
+  await settled(page, "hide-hand");
+  s = await read(page, "hide-hand");
+  expect(s).toMatchObject({ count: 7, faces: 7, down: 0 });
+  await sound(page, errors);
+});
+
+test("a card turned over by itself, then every card each to its other side; face down, nothing is left turned", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const hand = page.locator(at("hide-hand"));
+  const cards = (await hand.getAttribute("cards")).split(" ");
+  await page.selectOption(at("hand-card"), cards[1]);
+  await tap(page, at("hand-toggle"));
+  await settled(page, "hide-hand");
+  let s = await read(page, "hide-hand");
+  expect(s).toMatchObject({ count: 7, faces: 6, down: 1 });
+  await expect(hand).toHaveAttribute("turned", cards[1]);
+  expect(s.label).toContain("a card, face down");
+  await expect(page.locator(at("hide-code"))).toContainText(`hand.toggle("${cards[1]}");`);
+  await tap(page, at("hand-toggle-all"));
+  await settled(page, "hide-hand");
+  s = await read(page, "hide-hand");
+  expect(s).toMatchObject({ faces: 1, down: 6 });
+  expect((await hand.getAttribute("turned")).split(" ").sort()).toEqual(cards.filter((card) => card !== cards[1]).sort());
+  await tap(page, at("hand-hide"));
+  await settled(page, "hide-hand");
+  expect(await read(page, "hide-hand")).toMatchObject({ faces: 0, down: 7 });
+  await expect(hand).not.toHaveAttribute("turned", /.*/);
+  await sound(page, errors);
+});
+
+test("parted at a card, it lifts clear upright and the cards either side draw away; closed up, it is the fan again", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const before = await read(page, "hide-hand");
+  const cards = (await page.locator(at("hide-hand")).getAttribute("cards")).split(" ");
+  await page.selectOption(at("hand-card"), cards[3]);
+  await tap(page, at("hand-part"));
+  await settled(page, "hide-hand");
+  const s = await read(page, "hide-hand");
+  const lifted = await page.locator(at("hide-hand")).evaluate((hand) => {
+    const slot = hand.shadowRoot.querySelector('.slot[data-at="3"]');
+    return { y: Number(slot.style.getPropertyValue("--y")), r: slot.style.getPropertyValue("--r") };
+  });
+  expect(lifted).toEqual({ y: -0.2, r: "0deg" });
+  // A whole card and the gap clear on each side: three groups, the left, it, and the right.
+  expect(s.xs[3] - s.xs[2]).toBeCloseTo(1.12, 2);
+  expect(s.xs[4] - s.xs[3]).toBeCloseTo(1.12, 2);
+  // Seven cards close up enough to keep the hand's room.
+  expect(s.width).toBe(before.width);
+  await expect(page.locator(at("hide-hand"))).toHaveAttribute("parted", cards[3]);
+  await tap(page, at("hand-unpart"));
+  await settled(page, "hide-hand");
+  expect((await read(page, "hide-hand")).xs).toEqual(before.xs);
+  await sound(page, errors);
+});
+
+test("a marked card carries a dot face up and face down, and a screen reader hears it; marks clear", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const hand = page.locator(at("hide-hand"));
+  const cards = (await hand.getAttribute("cards")).split(" ");
+  const markers = () => hand.evaluate((one) => [...one.shadowRoot.querySelectorAll(".slot")].flatMap((slot, at) => (slot.querySelector(".marker") === null ? [] : [at])));
+  await page.selectOption(at("hand-card"), cards[2]);
+  await tap(page, at("hand-mark"));
+  expect(await markers()).toEqual([2]);
+  expect(await hand.getAttribute("aria-label")).toContain(", marked");
+  await tap(page, at("hand-hide"));
+  await settled(page, "hide-hand");
+  expect(await markers()).toEqual([2]);
+  expect(await hand.getAttribute("aria-label")).toContain("a card, face down, marked");
+  await tap(page, at("hand-mix"));
+  await settled(page, "hide-hand");
+  const now = (await hand.getAttribute("cards")).split(" ");
+  expect(await markers()).toEqual([now.indexOf(cards[2])]);
+  await tap(page, at("hand-unmark"));
+  expect(await markers()).toEqual([]);
+  await sound(page, errors);
+});
+
+test("grouped into number cards and face cards", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const hand = page.locator(at("hide-hand"));
+  await tap(page, at("hand-group-face"));
+  await settled(page, "hide-hand");
+  await expect(hand).toHaveAttribute("order", "face");
+  const drawn = await hand.evaluate((one) => [...one.shadowRoot.querySelectorAll(".slot .face")].map((face) => face.dataset.card));
+  expect(drawn).toEqual(arrangeCards((await hand.getAttribute("cards")).split(" "), "face"));
+  const faceAt = drawn.findIndex((card) => "JQK".includes(card[0]));
+  if (faceAt !== -1) expect(drawn.slice(faceAt).every((card) => "JQK".includes(card[0]))).toBe(true);
   await sound(page, errors);
 });
 
@@ -300,7 +400,9 @@ test("mixed up, the hand holds the same cards in another order; a card tossed is
   expect([...mixed].sort()).toEqual([...dealt].sort());
   expect(await shown()).toEqual(mixed);
 
-  const middle = mixed[Math.floor(mixed.length / 2)];
+  // Toss and replace act on the card chosen, which stays chosen while the hand holds it.
+  const middle = await page.locator(at("hand-card")).inputValue();
+  expect(mixed).toContain(middle);
   await tap(page, at("hand-toss"));
   await expect.poll(cards).toEqual(mixed.filter((card) => card !== middle));
   await settled(page, "hide-hand");
@@ -309,18 +411,20 @@ test("mixed up, the hand holds the same cards in another order; a card tossed is
 
   // At the end, unless asked; then at the front.
   let before = await cards();
+  let out = await page.locator(at("hand-card")).inputValue();
   await tap(page, at("hand-replace"));
   await expect.poll(async () => (await cards()).length).toBe(before.length);
   let after = await cards();
-  expect(after.slice(0, -1)).toEqual(before.filter((card) => card !== before[Math.floor(before.length / 2)]));
+  expect(after.slice(0, -1)).toEqual(before.filter((card) => card !== out));
   expect(before).not.toContain(after[after.length - 1]);
   await page.locator(at("hand-receive")).selectOption("front");
   await expect(hand).toHaveAttribute("receive", "front");
   before = after;
+  out = await page.locator(at("hand-card")).inputValue();
   await tap(page, at("hand-replace"));
   await expect.poll(async () => (await cards())[0]).not.toBe(before[0]);
   after = await cards();
-  expect(after.slice(1)).toEqual(before.filter((card) => card !== before[Math.floor(before.length / 2)]));
+  expect(after.slice(1)).toEqual(before.filter((card) => card !== out));
   await settled(page, "hide-hand");
   expect(await shown()).toEqual(after);
   await sound(page, errors);
@@ -333,13 +437,43 @@ test.describe("a card tossed, with motion", () => {
     const errors = await open(page, "?seed=1");
     const hand = page.locator(at("hide-hand"));
     const count = (await hand.getAttribute("cards")).split(" ").length;
+    // Watched in the page from before the tap, however slow the machine: the card lifts while the hand still holds it.
+    await hand.evaluate((element) => {
+      window.lift = null;
+      new MutationObserver((_, watcher) => {
+        const lifting = [...element.shadowRoot.querySelectorAll(".slot")].filter((slot) => slot.style.opacity === "0").length;
+        if (lifting === 0) return;
+        window.lift = { lifting, cards: element.getAttribute("cards").split(" ").length };
+        watcher.disconnect();
+      }).observe(element.shadowRoot, { subtree: true, attributes: true, attributeFilter: ["style"] });
+    });
     await tap(page, at("hand-toss"));
-    // Straight after: still all the cards, one of them lifting away.
-    const lifting = await hand.evaluate((element) => [...element.shadowRoot.querySelectorAll(".slot")].filter((slot) => slot.style.opacity === "0").length);
-    expect(lifting).toBe(1);
-    expect((await hand.getAttribute("cards")).split(" ").length).toBe(count);
+    await page.waitForFunction(() => window.lift !== null);
+    expect(await page.evaluate(() => window.lift)).toEqual({ lifting: 1, cards: count });
     await expect.poll(async () => (await hand.getAttribute("cards")).split(" ").length).toBe(count - 1);
     await settled(page, "hide-hand");
+    await sound(page, errors);
+  });
+});
+
+test.describe("a card spun, with motion", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("spins the way chosen, whole turns, and comes to rest as it lay", async ({ page }) => {
+    const errors = await open(page, "?seed=1");
+    const hand = page.locator(at("hide-hand"));
+    const cards = (await hand.getAttribute("cards")).split(" ");
+    await page.selectOption(at("hand-card"), cards[4]);
+    await page.selectOption(at("hand-spin-way"), "anticlockwise");
+    await tap(page, at("hand-spin"));
+    const spinning = await hand.evaluate((one) =>
+      [...one.shadowRoot.querySelectorAll(".slot .spin")].flatMap((spin, at) => spin.getAnimations().map((run) => ({ at, to: run.effect.getKeyframes().at(-1).transform }))),
+    );
+    expect(spinning).toEqual([{ at: 4, to: "rotate(-1080deg)" }]);
+    await expect(page.locator(at("hide-code"))).toContainText(`hand.spin("${cards[4]}", { direction: "anticlockwise" });`);
+    await tap(page, at("hand-spin-all"));
+    expect(await hand.evaluate((one) => [...one.shadowRoot.querySelectorAll(".slot .spin")].filter((spin) => spin.getAnimations().length > 0).length)).toBe(7);
+    await expect.poll(() => hand.evaluate((one) => one.shadowRoot.getAnimations?.().length ?? [...one.shadowRoot.querySelectorAll(".spin")].filter((spin) => spin.getAnimations().length > 0).length), { timeout: 6000 }).toBe(0);
     await sound(page, errors);
   });
 });

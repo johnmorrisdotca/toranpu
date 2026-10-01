@@ -6,6 +6,40 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-10-01
+
+### Added
+
+- **Turn any card over.** `hand.toggle(cards?)` turns the cards named, or
+  every card, each to its other side, so a hand can lie half face up; the
+  `turned` attribute names the cards showing the other side from the rest.
+- **Part a hand at a card.** `hand.partAt(card)` lifts that card out, upright
+  and wholly in view, and draws the cards either side away into a group on
+  each side; `unpart()` closes it up. The groups close up to keep the hand's
+  room wherever they can (`partedHandLayout`). The `parted` attribute.
+- **Mark a card** to follow it while it is face down: `hand.mark(cards)` and
+  `unmark(cards?)`, the `marked` attribute on a hand and on `<toranpu-card>`,
+  a dot on the corner seen face up and face down, and heard as "marked".
+- **Spin a card** like a real one, fast then slowing to a stop where it lay:
+  `hand.spin(cards?, { direction, turns })` and `card.spin(options?)`,
+  clockwise or anticlockwise, one card or several.
+- **Number cards and face cards.** `group("face")` and `order="face"` put the
+  ace to ten before the jack, queen and king.
+- The `toranpu-hand` event's detail also says `turned` and `parted`.
+- The demo's hand panel is now "Hand controls": a row for each kind of thing a
+  hand does (turn, gather, order, change, mark and spin), acting on the card
+  chosen.
+
+### Changed
+
+- **`scrunch()` only gathers the cards**, each keeping its side; it no longer
+  turns the hand face down. `hide()` then `scrunch()` does what it did.
+
+### Fixed
+
+- A browser test of a tossed card read the lift after the tap had returned,
+  which WebKit could already be past; it now watches from before the tap.
+
 ## [2.12.1] - 2026-10-01
 
 ### Fixed

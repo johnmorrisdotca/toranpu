@@ -1,4 +1,5 @@
-import { followLanguage, cardDrawing, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./elementKit.ts";
+import { followLanguage, cardDrawing, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markerHtml, MARKER_STYLE, pageSounds, spinElement, widthOf, type SpinOptions } from "./elementKit.ts";
+import { STRINGS, fillIn } from "../strings.ts";
 import { isCardFace } from "./cardFaces.ts";
 
 /**
@@ -15,15 +16,17 @@ import { isCardFace } from "./cardFaces.ts";
  *   back          `classic-red` (unless said), `classic-blue` or `ink-dots`; `back-colour` and `mark` as `cardBackSvg` takes them
  *   face-down     shows the back; the face is not in the page while it is down
  *   flip          a tap, Enter or Space turns it over, with a turn that a device asking for less motion skips
+ *   marked        a mark on its corner, seen face up and face down, to follow it as it moves
  *   size          `small`, `medium` (unless said) or `large`; or `width` in pixels; or the page's `--toranpu-card-width`
  *   sound         the turn makes a sound
  *   lang          `ja` for Japanese names; the page's language unless said
  *
- * Each turn is a `toranpu-flip` event that bubbles, with `{ card, faceDown }` as its detail.
+ * Each turn is a `toranpu-flip` event that bubbles, with `{ card, faceDown }` as its detail. `spin(options?)`
+ * spins it where it lies, slowing to a stop as it was.
  */
 export class ToranpuCard extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["card", "design", "back", "back-colour", "mark", "face-down", "flip", "size", "width", "lang"];
+    return ["card", "design", "back", "back-colour", "mark", "face-down", "flip", "marked", "size", "width", "lang"];
   }
 
   #root: ShadowRoot | null = null;
@@ -47,6 +50,12 @@ export class ToranpuCard extends ElementBase {
     this.faceDown = !this.faceDown;
     if (isOn(this, "sound")) pageSounds().play("flip");
     this.dispatchEvent(new CustomEvent("toranpu-flip", { bubbles: true, composed: true, detail: { card, faceDown: this.faceDown } }));
+  }
+
+  /** Spin the card where it lies, as a flick sets a card turning on a table: fast, then slowing to a stop as it was (`SpinOptions`). */
+  spin(options: SpinOptions = {}): Promise<void> {
+    const spinning = this.#root?.querySelector<HTMLElement>(".spin");
+    return spinning === null || spinning === undefined ? Promise.resolve() : spinElement(spinning, options);
   }
 
   connectedCallback(): void {
@@ -88,11 +97,13 @@ export class ToranpuCard extends ElementBase {
     this.setAttribute("role", flips ? "button" : "img");
     if (flips) this.tabIndex = this.tabIndex < 0 ? 0 : this.tabIndex;
     else this.removeAttribute("tabindex");
-    this.setAttribute("aria-label", known ? cardLabel(card, down, language) : "");
+    // Marked: the attribute is all it takes on one card.
+    const marked = known && this.hasAttribute("marked");
+    this.setAttribute("aria-label", known ? (marked ? fillIn(STRINGS[language].cardMarked, { card: cardLabel(card, down, language) }) : cardLabel(card, down, language)) : "");
     // The side not shown is drawn only for the length of a turn, so the face of a card lying face down is not in the page.
     const face = known && (!down || turning) ? cardDrawing(card, false, this, design, language) : "";
     const back = known && (down || turning) ? cardDrawing(card, true, this, design, language) : "";
-    root.innerHTML = `<style>${CARD_STYLE}</style><div class="card" part="card" data-down="${down}"${turning ? ' data-turning="true"' : ""}><div class="side face" part="face">${face}</div><div class="side back" part="back">${back}</div></div>`;
+    root.innerHTML = `<style>${CARD_STYLE}</style><div class="spin"><div class="card" part="card" data-down="${down}"${turning ? ' data-turning="true"' : ""}><div class="side face" part="face">${face}</div><div class="side back" part="back">${back}</div></div>${markerHtml(marked)}</div>`;
     this.style.setProperty("--toranpu-w", widthOf(this));
     if (turning) {
       const inner = root.querySelector(".card") as HTMLElement;
@@ -117,10 +128,12 @@ const CARD_STYLE = `
 :host { display: inline-block; user-select: none; -webkit-user-select: none; width: var(--toranpu-w, 70px); aspect-ratio: 5 / 7; perspective: 800px; vertical-align: middle; -webkit-tap-highlight-color: transparent; }
 :host([flip]) { cursor: pointer; }
 :host(:focus-visible) { outline: 3px solid var(--toranpu-focus, #b5452c); outline-offset: 3px; border-radius: 7%; }
+.spin { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
 .card { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform var(--toranpu-flip-ms, 450ms) cubic-bezier(.3, .7, .3, 1); }
 .card[data-down="true"] { transform: rotateY(180deg); }
 .side { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .back { transform: rotateY(180deg); }
 .side svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 1px 2px rgba(0,0,0,.28)); }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+${MARKER_STYLE}
 `;

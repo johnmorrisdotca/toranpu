@@ -136,31 +136,41 @@ function round(value: number): number {
   return Object.is(kept, -0) ? 0 : kept;
 }
 
-/** How a hand's cards are laid out: as they were dealt, by rank, or grouped by suit. */
-export type CardOrder = "dealt" | "rank" | "suit";
+/** How a hand's cards are laid out: as they were dealt, by rank, grouped by suit, or the number cards apart from the face cards. */
+export type CardOrder = "dealt" | "rank" | "suit" | "face";
 
 /** The ranks low to high, the ace high, as a sorted hand reads left to right. */
 const RANKS = "23456789TJQKA";
+/** Where the face cards begin among `RANKS`: the jack. */
+const FIRST_FACE = RANKS.indexOf("J");
 /** The suits in the order a grouped hand lays them: spades, hearts, clubs, diamonds, so no two of a colour lie side by side. */
 const SUITS = "SHCD";
 
 /**
  * A hand laid out another way, as a new list (the one given is left alone): `"rank"` sorts it low to
  * high, the ace high, a rank's cards in suit order; `"suit"` groups it by suit, spades, hearts, clubs,
- * diamonds, each in rank order; `"dealt"` keeps the order given. The extras (jokers, rules cards, the
+ * diamonds, each in rank order; `"face"` groups it into the number cards, ace to ten, and then the face
+ * cards, jack, queen, king, each group in rank order and a rank's cards in suit order; `"dealt"` keeps
+ * the order given. The extras (jokers, rules cards, the
  * blank) come last, in the order dealt. Cards of the same id keep their order, so a sort is stable.
  *
  * ```ts
  * arrangeCards(["QH", "2S", "AH", "2H"], "rank"); // ["2S", "2H", "QH", "AH"]
  * arrangeCards(["QH", "2S", "AH", "2H", "KS"], "suit"); // ["2S", "KS", "2H", "QH", "AH"]
+ * arrangeCards(["QH", "2S", "AH", "KS", "9D"], "face"); // ["AH", "2S", "9D", "QH", "KS"]
  * ```
  */
 export function arrangeCards(cards: readonly string[], by: CardOrder): string[] {
-  if (by !== "rank" && by !== "suit") return [...cards];
+  if (by !== "rank" && by !== "suit" && by !== "face") return [...cards];
   const key = (card: string, at: number): [number, number, number] => {
     const rank = RANKS.indexOf(card[0] ?? "");
     const suit = SUITS.indexOf(card[1] ?? "");
     if (card.length !== 2 || rank === -1 || suit === -1) return [1, 0, at];
+    if (by === "face") {
+      // The ace counts as one here, the first of the number cards; the jack, queen and king are the face cards.
+      const low = rank === RANKS.length - 1 ? -1 : rank;
+      return [0, (rank >= FIRST_FACE && rank < RANKS.length - 1 ? 100 : 0) + (low + 1) * 4 + suit, at];
+    }
     return [0, by === "rank" ? rank * 4 + suit : suit * 13 + rank, at];
   };
   return cards
@@ -200,4 +210,46 @@ export function replaceCard(cards: readonly string[], card: string, next: string
   if (!cards.includes(card)) return [...cards];
   const rest = tossCard(cards, card);
   return lands === "front" ? [next, ...rest] : [...rest, next];
+}
+
+/** How a parted hand is laid out. */
+export type PartOptions = {
+  /** The room left on each side of the parted card, in card widths. Unless said, 0.12. */
+  gap?: number;
+  /** How far the parted card is lifted above the rest, in card widths. Unless said, 0.2. */
+  lift?: number;
+  /** The least the cards of a group may lie apart, squared up as they close in. Unless said, 0.04. */
+  peek?: number;
+};
+
+/**
+ * A HAND PARTED AT ONE CARD: that card lifted a little, upright and wholly in view, and the cards to
+ * its left and right drawn apart from it into a group on each side (one group where it is the first or
+ * the last). The groups close up to make room, down to a sliver of each card, so the hand keeps the room
+ * its fan takes wherever it can; a hand too short to close up that far takes a little more. Built on the
+ * open fan of `handLayout`, its dip and turn kept for every card but the one parted. Where `at` is no card
+ * of the hand, the fan itself.
+ *
+ * ```ts
+ * partedHandLayout(7, 3); // three cards squared up on the left, the fourth lifted clear, three on the right
+ * ```
+ */
+export function partedHandLayout(count: number, at: number, options: HandLayoutOptions & PartOptions = {}): CardPlace[] {
+  const fan = handLayout(count, { ...options, open: 1 });
+  const whole = fan.length;
+  if (!Number.isInteger(at) || at < 0 || at >= whole) return fan;
+  const gap = Math.max(0, options.gap ?? 0.12);
+  const lift = options.lift ?? 0.2;
+  const peek = Math.max(0, options.peek ?? 0.04);
+  const step = whole > 1 ? (fan[1] as CardPlace).x : 0;
+  const span = step * (whole - 1);
+  const beside = (at > 0 ? 1 : 0) + (at < whole - 1 ? 1 : 0);
+  const others = whole - 1 - beside;
+  // The step inside each group: as much of the fan's as the room left allows, never less than a sliver.
+  const inside = others > 0 ? Math.min(step, Math.max(peek, (span - beside * (1 + gap)) / others)) : step;
+  let x = 0;
+  return fan.map((place, i) => {
+    if (i > 0) x += i === at || i - 1 === at ? 1 + gap : inside;
+    return i === at ? { x: round(x), y: round(-lift), rotate: 0 } : { ...place, x: round(x) };
+  });
 }
