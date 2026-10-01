@@ -6,6 +6,19 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.13.1] - 2026-10-01
+
+Nothing that was exported has changed.
+
+### Added
+
+- **An Architecture section in the README**: how the source is split and what each file is for, held to the real files by a test.
+- A test that holds the API reference to the source it is made from: every entry point has a section, and every name an entry point exports is listed.
+
+### Changed
+
+- The family's footer lists Jarajara.
+
 ## [2.13.0] - 2026-10-01
 
 ### Added
