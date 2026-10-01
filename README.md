@@ -338,6 +338,9 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   See [The command line](#the-command-line).
 - **Card sounds**, recorded from real cards: shuffle, deal, turn over, play,
   gather and fan, off until a table asks. See [Card sounds](#card-sounds).
+- **A hand on any page**: `<toranpu-hand>`, turned face down all at once or
+  one by one, or scrunched into a bundle that shows nothing. See
+  [Hide a hand](#hide-a-hand).
 - **One card on any page**: `<toranpu-card>`, turned over by a tap, or any
   card as a picture. See [One card on any page](#one-card-on-any-page).
 - **Card designs**: plain, four colour and the traditional English pattern
@@ -662,6 +665,54 @@ and `https://johnmorrisdotca.github.io/toranpu/backs/<back>.svg`. Or drawn by
 the page itself, with no request at all, as a data URL from `cardFaceUrl`
 and `cardBackUrl`.
 
+## Hide a hand
+
+`<toranpu-hand>` is a hand of cards on any page, fanned, in any design and
+with any back. It can be turned face down where it lies, all at once or one
+card after another, and back; or squared up into one face-down bundle, so
+that neither the cards nor how many there are can be read.
+
+```html
+<toranpu-hand id="mine" cards="AS KH QD JC 10S" design="english"></toranpu-hand>
+<script type="module">
+  import "https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/element-define.js";
+
+  const hand = document.getElementById("mine");
+  await hand.hide({ oneByOne: true });   // face down, one card after another; settles once all are down
+  await hand.show();                     // face up again, all at once
+  await hand.scrunch();                  // one face-down bundle: no faces and no count in the page
+  await hand.spread();                   // laid out again as it was
+</script>
+```
+
+| Attribute of `<toranpu-hand>` | What it does |
+| --- | --- |
+| `cards` | the hand: ids separated by spaces or commas (`AS KH 10D`), or the deck's one-letter codes |
+| `face-down` | every card shows its back, and no face is in the page |
+| `scrunched` | squared up into one face-down bundle of three backs whatever the hand, and nothing in the page says how many |
+| `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
+
+| Method | What it does |
+| --- | --- |
+| `hide({ oneByOne?, gap? })` | turns every card face down: at once, or one by one, `gap` milliseconds apart (110 unless said) |
+| `show({ oneByOne?, gap? })` | turns them face up again |
+| `scrunch()`, `spread()` | squares the hand into a bundle, and lays it out again |
+
+- Each returns a promise that settles when the cards have stopped moving, and
+  each change is a `toranpu-hand` event that bubbles, its `detail`
+  `{ faceDown, scrunched, open }`. The `cards` property reads and sets the
+  hand as a list.
+- The cards turn over in place and slide together; a device that asks for less
+  motion gets the end at once.
+- A face down card's face, and a bundle's cards, are taken out of the page
+  once the cards are still: a screen reader hears "a hand of 5 cards, face
+  down", or for a bundle only "a hand of cards, squared up face down". What
+  the page itself was given (the `cards` attribute) is the page's to keep
+  secret: a game should not put an opponent's cards in the page at all.
+- The hand is as wide as its cards ask, and never wider than the room it is
+  given: in less room its cards are drawn smaller, so it never pokes out of a
+  phone's screen.
+
 ## Words
 
 ```ts
@@ -718,7 +769,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.4.0",
+  "generator": "toranpu 2.5.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -958,13 +1009,15 @@ and both jokers in a box 360 by 540.
 | --- | --- |
 | `defineToranpuElements()` | Registers the elements under their tags, once |
 | `ToranpuCard` | The `<toranpu-card>` element's class |
+| `ToranpuHand` | The `<toranpu-hand>` element's class |
+| `BUNDLE_BACKS` | How many backs a scrunched hand shows, whatever its size: 3 |
 | `TORANPU_TAGS` | The elements' tags |
 | `ELEMENT_SIZES` | The card widths `size` names: small 46, medium 70, large 104 |
 | `handLayout(count, options?)` | Where each card of a hand lies, fanned or squared up |
 | `pileLayout(count, options?)` | Where each card of a pile lies, neat or messy, from a seed |
 | `readHand(text)` | A hand written as ids (`"AS KH 10D"`) or one-letter codes, as its cards |
 
-Types: `CardPlace`, `HandLayoutOptions`, `PileLayoutOptions`.
+Types: `CardPlace`, `HandLayoutOptions`, `PileLayoutOptions`, `HandTurnOptions`.
 
 ### `@johnmorrisdotca/toranpu/element/define`
 

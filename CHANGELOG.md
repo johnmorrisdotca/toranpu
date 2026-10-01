@@ -6,6 +6,28 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-09-30
+
+### Added
+
+- **Hide a hand**: `<toranpu-hand cards="AS KH QD">`, a hand of cards on any
+  page, fanned, in any design and with any back. `hide()` turns it face down
+  where it lies, all at once or one card after another (`{ oneByOne: true,
+  gap }`), and `show()` turns it back; `scrunch()` squares it into one
+  face-down bundle of three backs whatever its size, so neither the cards nor
+  how many there are can be read, and `spread()` lays it out again. The same
+  as attributes: `face-down` and `scrunched`. The cards turn over and slide
+  together, and a device that asks for less motion gets the end at once. Once
+  the cards are still, a face-down card's face and a bundle's cards are not
+  in the page, and a screen reader hears only "a hand of 5 cards, face down"
+  or "a hand of cards, squared up face down". A hand never grows wider than
+  the room it is given; its cards are drawn smaller instead.
+- The demo has a Hide a hand panel with a button for each, and the code.
+- The README's HTML examples for the elements are run as written in Chromium
+  and WebKit by the browser tests.
+
+Nothing that was exported has changed.
+
 ## [2.4.0] - 2026-09-30
 
 ### Added
@@ -211,7 +233,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.4.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.5.0...HEAD
+[2.5.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.1.0...v2.2.0

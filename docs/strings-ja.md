@@ -191,6 +191,17 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageCardPick` | Card | カード |
 | `pageAsElement` | As an element | 要素として |
 | `pageAsPicture` | As a picture | 画像として |
+| `handLabel` | Hand: {cards} | 手札：{cards} |
+| `handFaceDown` | a hand of {n} cards, face down | 伏せた手札（{n}枚） |
+| `handScrunched` | a hand of cards, squared up face down | 伏せてまとめた手札 |
+| `pageHide` | Hide a hand | 手札を隠す |
+| `pageHideNote` | Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read. | 手札をその場で伏せます。全部いっぺんにも、1枚ずつにもできます。表に戻すこともできます。「まとめる」は手札を伏せて1つの束にし、カードも枚数もわからないようにします。 |
+| `pageHideAll` | Face down | 伏せる |
+| `pageHideOneByOne` | One by one | 1枚ずつ伏せる |
+| `pageShowHand` | Face up | 表にする |
+| `pageScrunch` | Scrunch | まとめる |
+| `pageSpread` | Spread out | 広げる |
+| `pageNewHand` | Another hand | 別の手札 |
 
 ## The command line's help
 

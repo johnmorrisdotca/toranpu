@@ -90,6 +90,10 @@ button.card[aria-pressed="true"] { transform: translateY(-10px); border-color: v
 #one-card-img { filter: drop-shadow(0 1px 2px rgba(0,0,0,.28)); }
 #one-card-pick { max-width: 100%; }
 
+/* A hand on the felt, for the hand panels. */
+.hand-stage { background: radial-gradient(circle at 50% 40%, var(--felt), var(--felt-deep)); border-radius: 14px; padding: 16px 12px; min-height: 150px; display: flex; align-items: center; justify-content: center; }
+input[type="range"] { width: 12rem; max-width: 100%; min-height: 44px; accent-color: var(--accent); }
+
 /* The deck on its own: each hand a fan. */
 .deck-hands { display: grid; gap: 10px 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
 .fan-box { display: grid; gap: 2px; min-width: 0; }

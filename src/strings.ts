@@ -194,6 +194,17 @@ export type ToranpuStrings = {
   pageCardPick: string;
   pageAsElement: string;
   pageAsPicture: string;
+  handLabel: string;
+  handFaceDown: string;
+  handScrunched: string;
+  pageHide: string;
+  pageHideNote: string;
+  pageHideAll: string;
+  pageHideOneByOne: string;
+  pageShowHand: string;
+  pageScrunch: string;
+  pageSpread: string;
+  pageNewHand: string;
 };
 
 /** Every string, in both languages. */
@@ -410,6 +421,17 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageCardPick: "Card",
     pageAsElement: "As an element",
     pageAsPicture: "As a picture",
+    handLabel: "Hand: {cards}",
+    handFaceDown: "a hand of {n} cards, face down",
+    handScrunched: "a hand of cards, squared up face down",
+    pageHide: "Hide a hand",
+    pageHideNote: "Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read.",
+    pageHideAll: "Face down",
+    pageHideOneByOne: "One by one",
+    pageShowHand: "Face up",
+    pageScrunch: "Scrunch",
+    pageSpread: "Spread out",
+    pageNewHand: "Another hand",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -623,6 +645,17 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageCardPick: "カード",
     pageAsElement: "要素として",
     pageAsPicture: "画像として",
+    handLabel: "手札：{cards}",
+    handFaceDown: "伏せた手札（{n}枚）",
+    handScrunched: "伏せてまとめた手札",
+    pageHide: "手札を隠す",
+    pageHideNote: "手札をその場で伏せます。全部いっぺんにも、1枚ずつにもできます。表に戻すこともできます。「まとめる」は手札を伏せて1つの束にし、カードも枚数もわからないようにします。",
+    pageHideAll: "伏せる",
+    pageHideOneByOne: "1枚ずつ伏せる",
+    pageShowHand: "表にする",
+    pageScrunch: "まとめる",
+    pageSpread: "広げる",
+    pageNewHand: "別の手札",
   },
 };
 

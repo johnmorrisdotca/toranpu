@@ -4,6 +4,9 @@
  *
  * - `<toranpu-card>`: one card, in any design and with any back, turned over
  *   by a tap.
+ * - `<toranpu-hand>`: a hand, fanned; turned face down where it lies, all at
+ *   once or one by one; squared up into a bundle that shows nothing; or held
+ *   closed, to open on a tap.
  *
  * ```ts
  * import { defineToranpuElements } from "@johnmorrisdotca/toranpu/element";
@@ -16,18 +19,24 @@
  * registers them by being imported.
  */
 import { ToranpuCard } from "./ui/cardElement.ts";
+import { ToranpuHand } from "./ui/handElement.ts";
 
 export { ToranpuCard } from "./ui/cardElement.ts";
+export { BUNDLE_BACKS, ToranpuHand } from "./ui/handElement.ts";
+export type { HandTurnOptions } from "./ui/handElement.ts";
 export { ELEMENT_SIZES } from "./ui/elementKit.ts";
 export { handLayout, pileLayout, readHand } from "./ui/layout.ts";
 export type { CardPlace, HandLayoutOptions, PileLayoutOptions } from "./ui/layout.ts";
 
 /** The elements' tags. */
-export const TORANPU_TAGS = { card: "toranpu-card" } as const;
+export const TORANPU_TAGS = { card: "toranpu-card", hand: "toranpu-hand" } as const;
 
 /** Register the elements under their tags, once; a tag already taken is left as it is. Does nothing where there are no custom elements, as on a server. */
 export function defineToranpuElements(): void {
   if (typeof customElements === "undefined") return;
-  const all: [string, CustomElementConstructor][] = [[TORANPU_TAGS.card, ToranpuCard]];
+  const all: [string, CustomElementConstructor][] = [
+    [TORANPU_TAGS.card, ToranpuCard],
+    [TORANPU_TAGS.hand, ToranpuHand],
+  ];
   for (const [tag, made] of all) if (customElements.get(tag) === undefined) customElements.define(tag, made);
 }

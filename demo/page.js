@@ -7,6 +7,7 @@ import { dealt, moved, wire as wireSound } from "./sound.js";
 import { wire as wireBacks } from "./backs.js";
 import { wire as wireDesigns } from "./designs.js";
 import { wire as wireOneCard } from "./onecard.js";
+import { wire as wireHands } from "./hands.js";
 import { lookQuery, onLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
@@ -300,6 +301,7 @@ wireSound((key) => t()[key]);
 wireBacks((key) => t()[key]);
 afterLanguage.push(wireDesigns((key) => t()[key], () => language.lang));
 afterLanguage.push(wireOneCard(() => language.lang));
+wireHands();
 onLook(writeAddress);
 $("players").addEventListener("change", () => deal(kind, { seed: game.seed }));
 $("seed").addEventListener("change", () => {

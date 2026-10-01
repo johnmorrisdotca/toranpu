@@ -93,6 +93,20 @@ sounds.setMuted(true);</pre>
             </div>
           </div>
         </section>
+        <section aria-labelledby="hide-title" id="hide-panel">
+          <h2 id="hide-title" data-say="pageHide"></h2>
+          <p data-say="pageHideNote"></p>
+          <div class="hand-stage"><toranpu-hand id="hide-hand" data-testid="hide-hand" sound></toranpu-hand></div>
+          <div class="fam-actions">
+            <button type="button" class="fam-button" id="hand-hide" data-testid="hand-hide" data-say="pageHideAll"></button>
+            <button type="button" class="fam-button" id="hand-one-by-one" data-testid="hand-one-by-one" data-say="pageHideOneByOne"></button>
+            <button type="button" class="fam-button" id="hand-show" data-testid="hand-show" data-say="pageShowHand"></button>
+            <button type="button" class="fam-button" id="hand-scrunch" data-testid="hand-scrunch" data-say="pageScrunch"></button>
+            <button type="button" class="fam-button" id="hand-spread" data-testid="hand-spread" data-say="pageSpread"></button>
+            <button type="button" class="fam-button" id="hand-new" data-testid="hand-new" data-say="pageNewHand"></button>
+          </div>
+          <pre class="snippet" id="hide-code" data-testid="hide-code" tabindex="0">hand.hide({ oneByOne: true });</pre>
+        </section>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>
           <p data-say="pageDeckNote"></p>

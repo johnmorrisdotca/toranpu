@@ -276,6 +276,23 @@ describe("the README on one card", () => {
   });
 });
 
+describe("the README on a hand", () => {
+  it("names every attribute and every method the hand has", () => {
+    const named = table("| Attribute of `<toranpu-hand>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
+    expect(new Set(named)).toEqual(new Set([...element.ToranpuHand.observedAttributes, "sound"]));
+    const methods = table("| Method | What it does |").flatMap((row) => [...row[0].matchAll(/`(\w+)\(/g)].map((m) => m[1]));
+    const own = Object.getOwnPropertyNames(element.ToranpuHand.prototype).filter((name) => typeof Object.getOwnPropertyDescriptor(element.ToranpuHand.prototype, name).value === "function" && !["constructor", "connectedCallback", "attributeChangedCallback"].includes(name));
+    expect(methods.sort()).toEqual(own.sort());
+  });
+
+  it("the gap it gives is the one the hand takes, and the bundle shows as many backs as it says", () => {
+    expect(readme).toContain("`gap` milliseconds apart (110 unless said)");
+    expect(readFileSync("src/ui/handElement.ts", "utf8")).toContain("options.gap ?? 110");
+    expect(readme).toContain("one face-down bundle of three backs whatever the hand");
+    expect(element.BUNDLE_BACKS).toBe(3);
+  });
+});
+
 describe("the README on the command line", () => {
   it("prints the help as it is", () => {
     expect(readme).toContain(`\`\`\`\n${STRINGS.en.cliUsage}\`\`\``);
@@ -329,7 +346,7 @@ describe("the README's tables", () => {
     for (const name of Object.keys(toranpu)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
     for (const [entry, module] of Object.entries(TABLE_ENTRIES)) for (const name of Object.keys(module)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `${entry}'s ${name}`).toBe(true);
     const everything = new Set([...Object.keys(toranpu), ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)), ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])), ...types, "useCardGame"]);
-    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options", "plain", "english", "art", "box", "KS", "RJ", "BJ", "faceDown", "flip", "card", "size", "width", "design", "back", "mark", "lang", "sound", "sideEffects"].includes(name));
+    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options", "plain", "english", "art", "box", "KS", "RJ", "BJ", "faceDown", "flip", "card", "size", "width", "design", "back", "mark", "lang", "sound", "sideEffects", "cards", "hide", "show", "scrunch", "spread"].includes(name));
     expect(named.length).toBeGreaterThan(120);
     for (const name of named) expect(everything.has(name), `the README names ${name}`).toBe(true);
   });
