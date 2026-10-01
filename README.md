@@ -875,6 +875,37 @@ attribute listed there. [The demo](https://johnmorrisdotca.github.io/toranpu/#em
 writes both for any hand typed into it, in the look chosen there, and shows
 the iframe as it will be framed.
 
+## A whole table on a page
+
+Any of the ten games, ready to play, in one tag: the seats round the felt,
+what lies on the table (the trick, the pile to beat, the stock and the
+discard), the hand of whoever is to play and the moves they may make, with
+computers in the other seats, playing after a short pause.
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/table-define.js"></script>
+<toranpu-table game="crazy-eights" players="3" cloth="blue" messiness="0.4"></toranpu-table>
+```
+
+| Attribute of `<toranpu-table>` | What it does |
+| --- | --- |
+| `game` | any of the ten, by its key or in kebab case: `hearts` (unless said), `spades`, `euchre`, `cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`, `gin-rummy` |
+| `players` | how many sit at the table, within the game's own range (its usual number unless said) |
+| `people` | how many seats, the first ones, are people's; the rest are computers (1 unless said) |
+| `names` | the seats' names, separated by commas; the first is "You" unless said |
+| `seed` | the deal: the same seed deals the same cards |
+| `cloth` | the felt: `green` (unless said), `blue`, `red`, `black` or `wood`, the family's five |
+| `messiness` | how untidy the stock and the discard lie, from 0 to 1 (0.3 unless said) |
+| `delay` | how long a computer thinks before it plays, in milliseconds (550 unless said) |
+| `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
+
+- `deal(seed?)` deals again; the `game` property is the game as it stands,
+  in the game's own form (`toCode` and the rest save it).
+- Each move is a `toranpu-table` event that bubbles, its `detail`
+  `{ seat, move, over, winners }`.
+- The table carries the rules of all ten games, so it is an entry point of
+  its own: a page that wants only a card or a hand imports `element`.
+
 ## Words
 
 ```ts
@@ -931,7 +962,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.11.0",
+  "generator": "toranpu 2.12.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -1192,13 +1223,28 @@ other card.
 | `tossCard(cards, card)` | The hand without that card |
 | `replaceCard(cards, card, next, lands?)` | The hand with that card out and the next card at the `"front"` or the `"end"` |
 
-Types: `CardPlace`, `HandLayoutOptions`, `PileLayoutOptions`, `HandTurnOptions`.
+Types: `CardPlace`, `HandLayoutOptions`, `PileLayoutOptions`, `HandTurnOptions`, `CardOrder`, `CardLands`.
 
 ### `@johnmorrisdotca/toranpu/element/define`
 
 The same exports, and the elements registered by importing it: the one
 module of the package with an effect of its own, and named in
 `sideEffects` so a bundler keeps it.
+
+### `@johnmorrisdotca/toranpu/table`
+
+| Export | What it does |
+| --- | --- |
+| `defineToranpuTable()` | Registers `<toranpu-table>`, and the card, hand and pile elements it lays out, once |
+| `ToranpuTable` | The `<toranpu-table>` element's class |
+| `TABLE_CLOTHS` | The five cloths a table may be laid in, each its felt, its deep edge and its ink |
+
+Types: `TableCloth`.
+
+### `@johnmorrisdotca/toranpu/table/define`
+
+The same exports, and `<toranpu-table>` registered by importing it, named
+in `sideEffects` like `element/define`.
 
 ## Theming
 

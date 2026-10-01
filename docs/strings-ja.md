@@ -231,6 +231,9 @@ a game; `cli` is the command line; `page` is the demo.
 | `pagePiles` | Messy piles | 乱れた山 |
 | `pagePilesNote` | A stock to draw from and a discard pile, the cards under the top one showing as a stack, from neatly squared to very messy. The seed keeps a pile looking the same; draw a card and watch only the top change. | 引くための山札と捨て札です。いちばん上の下にあるカードが重なって見え、きれいにそろった状態からひどく乱れた状態まで選べます。シードが同じなら山はいつも同じ見た目です。1枚引くと、変わるのはいちばん上だけです。 |
 | `pageMessiness` | Messiness | 乱れ具合 |
+| `pageTablePanel` | A whole table on your page | テーブルごとページに |
+| `pageTablePanelNote` | Any of the games, ready to play, in one tag: the seats, your hand, the moves you may make, the stock and the discard, and computers in the other seats. Its cloth follows the patches above, and its cards and its messiness the choices on this page. | どのゲームも1行で遊べる状態で置けます。席、手札、出せる手、山札と捨て札、残りの席はコンピューター。テーブルの色は上の見本、カードと乱れ具合は上の選択に従います。 |
+| `pageTableGame` | Game | ゲーム |
 | `pagePileSeed` | Pile seed | 山のシード |
 | `pageDrawCard` | Draw a card | 1枚引く |
 | `pageStockPile` | Stock | 山札 |

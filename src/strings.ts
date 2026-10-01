@@ -239,6 +239,10 @@ export type ToranpuStrings = {
   pileEmpty: string;
   pagePiles: string;
   pagePilesNote: string;
+  /** The demo's panel for <toranpu-table>: its heading, its note, and the game chosen for it. */
+  pageTablePanel: string;
+  pageTablePanelNote: string;
+  pageTableGame: string;
   pageMessiness: string;
   pagePileSeed: string;
   pageDrawCard: string;
@@ -510,6 +514,9 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pagePiles: "Messy piles",
     pagePilesNote: "A stock to draw from and a discard pile, the cards under the top one showing as a stack, from neatly squared to very messy. The seed keeps a pile looking the same; draw a card and watch only the top change.",
     pageMessiness: "Messiness",
+    pageTablePanel: "A whole table on your page",
+    pageTablePanelNote: "Any of the games, ready to play, in one tag: the seats, your hand, the moves you may make, the stock and the discard, and computers in the other seats. Its cloth follows the patches above, and its cards and its messiness the choices on this page.",
+    pageTableGame: "Game",
     pagePileSeed: "Pile seed",
     pageDrawCard: "Draw a card",
     pageStockPile: "Stock",
@@ -777,6 +784,9 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pagePiles: "乱れた山",
     pagePilesNote: "引くための山札と捨て札です。いちばん上の下にあるカードが重なって見え、きれいにそろった状態からひどく乱れた状態まで選べます。シードが同じなら山はいつも同じ見た目です。1枚引くと、変わるのはいちばん上だけです。",
     pageMessiness: "乱れ具合",
+    pageTablePanel: "テーブルごとページに",
+    pageTablePanelNote: "どのゲームも1行で遊べる状態で置けます。席、手札、出せる手、山札と捨て札、残りの席はコンピューター。テーブルの色は上の見本、カードと乱れ具合は上の選択に従います。",
+    pageTableGame: "ゲーム",
     pagePileSeed: "山のシード",
     pageDrawCard: "1枚引く",
     pageStockPile: "山札",

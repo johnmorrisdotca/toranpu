@@ -137,6 +137,17 @@ sounds.setMuted(true);</pre>
           </div>
           <pre class="snippet" id="piles-code" data-testid="piles-code" tabindex="0"></pre>
         </section>
+        <section class="wide" aria-labelledby="table-title" id="table-panel">
+          <h2 id="table-title" data-say="pageTablePanel"></h2>
+          <p data-say="pageTablePanelNote"></p>
+          <div class="fam-row setup">
+            <label><span data-say="pageTableGame"></span> <select id="table-game" class="fam-field" data-testid="table-game"></select></label>
+            <label><span data-say="pagePlayers"></span> <select id="table-players" class="fam-field" data-testid="table-players"></select></label>
+            <button type="button" class="fam-button" id="table-deal" data-testid="table-deal" data-say="pageDeal"></button>
+          </div>
+          <toranpu-table id="table-demo" data-testid="table-demo" game="crazy-eights" players="3" seed="7"></toranpu-table>
+          <pre class="snippet" id="table-code" data-testid="table-code" tabindex="0"></pre>
+        </section>
         <section class="wide" aria-labelledby="embed-title" id="embed-panel">
           <h2 id="embed-title" data-say="pageEmbed"></h2>
           <p data-say="pageEmbedNote"></p>

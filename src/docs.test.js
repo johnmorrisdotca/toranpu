@@ -11,13 +11,14 @@ import * as cardFaces from "./card-faces.ts";
 import * as english from "./designs/english.ts";
 import * as realistic from "./designs/realistic.ts";
 import * as element from "./element.ts";
+import * as tableEntry from "./table.ts";
 import * as cardSounds from "./card-sounds.ts";
 import * as deck from "./deck.ts";
 import * as toranpu from "./index.ts";
 import * as soundData from "./sounds.ts";
 
 /** The entry points that are not a game: the front door, the deck, the hook, and what a table looks and sounds like. */
-const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks, "./card-faces": cardFaces, "./card-faces/english": english, "./card-faces/realistic": realistic, "./element": element, "./element/define": element };
+const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks, "./card-faces": cardFaces, "./card-faces/english": english, "./card-faces/realistic": realistic, "./element": element, "./element/define": element, "./table": tableEntry, "./table/define": tableEntry };
 
 const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText, fromCode, fromJSON, gameName, moveText, newGame, playComputers, rulesFor, runCli, toCSV, toCode, toJSON, toText } = toranpu;
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;

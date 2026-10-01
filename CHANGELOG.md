@@ -6,6 +6,22 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-10-01
+
+### Added
+
+- **A whole table on a page.** `<toranpu-table game="crazy-eights">`, from
+  `@johnmorrisdotca/toranpu/table` (or `table/define`): any of the ten games
+  ready to play, with the seats, the trick and the piles (the stock and the
+  discard as `<toranpu-pile>`), the hand of whoever is to play, the moves they
+  may make and computers in the other seats. The felt's `cloth` (green, blue,
+  red, black or wood, the family's five), the piles' `messiness`, the
+  players, people, names, seed and the computers' delay are attributes, for
+  every game alike; `deal()` deals again, and each move is a `toranpu-table`
+  event. Its own entry point, since it carries every game's rules.
+- The demo has a panel for it, its cloth following the header's patches, and
+  the family's cloth patches in its header.
+
 ## [2.11.0] - 2026-10-01
 
 ### Added
@@ -369,7 +385,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.11.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.0...HEAD
+[2.12.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.1...v2.9.0
