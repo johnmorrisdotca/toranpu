@@ -264,7 +264,10 @@ reaches has to be the game the seed and those taps must give.
 - **Sizes.** The deck alone is about 3 kB minified (1.4 kB gzipped). One game
   from its own entry point is 7 to 12 kB (Hearts is 9 kB, 3.5 kB gzipped).
   All ten, with the words in two languages and the command line, are about
-  95 kB (30 kB gzipped).
+  95 kB (30 kB gzipped). What is drawn is apart from the games: the backs
+  alone are about 2 kB gzipped, the three elements with the plain faces and
+  the backs about 68 kB (21 kB gzipped), and the English pattern (166 kB
+  gzipped) and the sounds (50 kB) are fetched only by a page that uses them.
 - **Where it runs.** Every current browser, Node 20 and later, Deno and Bun.
 
 ## The name
@@ -1217,8 +1220,12 @@ moves and nine thousand characters of code.
 
 Any browser with ES2020 modules: Chrome, Edge, Firefox and Safari from 2020
 on, and Node 20 or later, Deno and Bun. Nothing is polyfilled because nothing
-needs to be. The demo is tested in Chromium and in WebKit, Safari's engine, at
-phone size with touch.
+needs to be. The elements need custom elements and shadow DOM, which every
+current browser has, and a hand shrinks to fit its room with container
+queries (Chrome and Edge 105, Safari 16, Firefox 110, all from 2022); the
+drawings and sounds work anywhere SVG and the Web Audio API do. The demo and
+the elements are tested in Chromium and in WebKit, Safari's engine, at phone
+size with touch.
 
 ## Languages
 
@@ -1238,7 +1245,11 @@ only so far.
 - Rummy 500, and Euchre's going alone.
 - A choice of computer strength for each game.
 - The rules page in Japanese.
-- A framework-free card table component to go with the React hook.
+- A whole card table as an element, built from the hand and pile elements,
+  to go with the React hook.
+- More designed decks: one is here (the English pattern); others will come
+  only where a set's licence is public domain or CC0 and verified at its
+  source.
 
 Left out on purpose: anything played for stakes (no betting, no chips, no
 payouts: children use the site this was built for), and play over a network,

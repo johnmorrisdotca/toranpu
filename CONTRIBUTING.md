@@ -24,6 +24,15 @@ pnpm site             # builds the demo and the API reference into ./site
 pnpm dlx serve site   # or any static server
 ```
 
+Two commands remake what is made from outside material, and are run by hand,
+once, not in CI: `node scripts/sounds-cut.mjs <Audio folder>` then
+`pnpm sounds` remake the card sounds from Kenney's Casino Audio pack (on a
+Mac: it uses `afconvert`), and `node scripts/designs.mjs <folder>` remakes the
+English pattern from Dmitry Fomin's files on Wikimedia Commons. Anything new
+from outside must be CC0 or public domain, read at its source, and named in
+[docs/credits.md](./docs/credits.md) with the date it was checked; a test
+holds each file to that page. Nothing GPL or LGPL.
+
 - **Keep the rules pure.** Every function takes plain data and returns new
   plain data, leaving what it was given alone. No classes, no mutation, no
   timers, no DOM, no dependencies.
