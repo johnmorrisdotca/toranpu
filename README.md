@@ -338,6 +338,9 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   See [The command line](#the-command-line).
 - **Card sounds**, recorded from real cards: shuffle, deal, turn over, play,
   gather and fan, off until a table asks. See [Card sounds](#card-sounds).
+- **Card designs**: plain, four colour and the traditional English pattern
+  with drawn kings, queens and jacks, jokers included. See
+  [Card designs](#card-designs).
 - **Card backs**, drawn as SVG: a classic red, a classic blue and ink with
   dots, recoloured or marked with a site's name. See [Card backs](#card-backs).
 - **An optional React hook**, `useCardGame`.
@@ -560,6 +563,53 @@ with no colour given, a back takes the CSS custom properties
 are set, so a site's theme can recolour every back at once; as an image it
 keeps its own colours. Each back is under 5 kB of SVG.
 
+## Card designs
+
+The faces of the cards, drawn as SVG in the same 100 by 140 box as the backs.
+Plain is the default; four colour and the English pattern are there to
+choose.
+
+```ts
+import { cardFaceSvg, cardFaceUrl, loadCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
+
+cardFaceSvg("QS");                                    // '<svg … role="img" aria-label="queen of spades">…': the plain queen of spades
+cardFaceUrl("TD", { design: "four-colour" });         // "data:image/svg+xml;charset=utf-8,…": a blue ten of diamonds
+const english = await loadCardDesign("english");      // the English pattern, fetched now and not before
+cardFaceSvg("KS", { design: english, width: 120 });   // the traditional king of spades, 120 pixels wide
+cardFaceSvg("RJ", { language: "ja" });                // the red joker, ジョーカー down its corners
+```
+
+| Design | What it is | Size |
+| --- | --- | --- |
+| `plain` | drawn for Toranpu: big corners, the pips laid out as a real deck lays them, kings, queens and jacks as their letter in a frame, jokers in a jester's cap | in the package's 35 kB (11 kB gzipped) with the cards' names |
+| `four-colour` | plain, with diamonds blue and clubs green, as many poker players like them | the same |
+| `english` | the traditional English pattern, with its drawn kings, queens and jacks, by Dmitry Fomin, who gave it to the public domain (CC0); his jokers too | 715 kB (166 kB gzipped), its own entry point, fetched only when asked for |
+
+| Option of `cardFaceSvg` and `cardFaceUrl` | Means | Unless said |
+| --- | --- | --- |
+| `design` | `"plain"`, `"four-colour"`, or a design handed in: `ENGLISH_PATTERN`, or what `loadCardDesign` gives | `"plain"` |
+| `width` | pixels wide; the height is 1.4 times it | none: it fills what holds it |
+| `title` | what a screen reader says; `""` for none | the card's name in `language` |
+| `language` | `"en"` or `"ja"`, for the card's name and a joker's corner word | `"en"` |
+
+- **Every card and two jokers.** A card is its id, as everywhere in Toranpu
+  (`"QS"`, `"TD"`); the jokers are `"RJ"` and `"BJ"`. Anything else gives
+  `null`. No game here deals a joker; a table of your own may.
+- **The English pattern by import**, where a bundler should carry it:
+  `import { ENGLISH_PATTERN } from "@johnmorrisdotca/toranpu/card-faces/english"`.
+  **By name**, where it should be fetched only when somebody chooses it:
+  `await loadCardDesign("english")`.
+- **A design of your own** is `{ name, box: [width, height], art: { KS: "<path …/>", … } }`:
+  each card's drawing inside an `<svg>` of that box. A card it has no drawing
+  for is drawn plain.
+- Plain and four colour take the CSS custom properties under
+  [The drawings](#the-drawings) when put into a page. The English pattern
+  keeps its own colours, as a printed deck does.
+
+The English pattern's 54 files, their licence and what was done to them are
+listed in [docs/credits.md](./docs/credits.md). The plain and four-colour
+faces were drawn for Toranpu.
+
 ## Words
 
 ```ts
@@ -616,7 +666,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.2.0",
+  "generator": "toranpu 2.3.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -829,6 +879,27 @@ to play the recordings your own way.
 
 Types: `CardBackName`, `CardBackOptions`, `CardSuitLetter`.
 
+### `@johnmorrisdotca/toranpu/card-faces`
+
+| Export | What it does |
+| --- | --- |
+| `cardFaceSvg(card, options?)` | A face as a whole SVG document, or `null` for what is not a card |
+| `cardFaceUrl(card, options?)` | The same as a data URL |
+| `loadCardDesign(name)` | A design by name, fetched when first asked for: `"english"` |
+| `CARD_DESIGNS` | The three designs' names |
+| `JOKERS` | The jokers' ids, `RJ` and `BJ` |
+| `isCardFace(text)` | Whether a face can be drawn for it |
+| `faceName(card, language?)` | A face's name in words, jokers included |
+| `pipPlaces(count)` | Where a number card's pips go, and which are drawn upside down |
+| `CARD_FACE_COLOURS`, `CARD_FACE_PROPERTIES` | The faces' own colours, and the CSS custom properties that change them |
+
+Types: `CardDesign`, `CardDesignName`, `CardFaceOptions`.
+
+### `@johnmorrisdotca/toranpu/card-faces/english`
+
+`ENGLISH_PATTERN`, the English pattern as a `CardDesign`: all fifty-two cards
+and both jokers in a box 360 by 540.
+
 ## Theming
 
 The games draw nothing: the table looks however you draw it. What Toranpu
@@ -869,14 +940,20 @@ the properties after the two stylesheets:
 
 ### The drawings
 
-What Toranpu draws (the backs so far) takes these custom properties when it
-is put into a page as SVG, and keeps its own colours as an image:
+What Toranpu draws, the backs and the plain and four-colour faces, takes
+these custom properties when it is put into a page as SVG, and keeps its own
+colours as an image:
 
 | Custom property | Colours | Unless set |
 | --- | --- | --- |
 | `--toranpu-back` | a back's field | the back's own: `#b3262d`, `#1f4e8c` or `#24231f` |
 | `--toranpu-back-ink` | the lines and dots on it | `#fffaf0` |
 | `--toranpu-back-paper` | the border round it | `#fffdf8` |
+| `--toranpu-card` | a face's paper | `#fffdf8` |
+| `--toranpu-card-ink` | spades and clubs, and a black joker | `#1b1b1b` |
+| `--toranpu-card-red` | hearts and diamonds, and a red joker | `#c2272d` |
+| `--toranpu-card-blue` | diamonds, in four colour | `#1f5fbf` |
+| `--toranpu-card-green` | clubs, in four colour | `#1f7a3a` |
 
 ```css
 .my-table { --toranpu-back: #3d4d38; }   /* every back on this table, moss green */
@@ -889,7 +966,7 @@ is put into a page as SVG, and keeps its own colours as an image:
 | Players | each game's own, from 2 to 8 | `CARD_GAME_TABLES` |
 | A game's length | one of the sizes its table offers | `CARD_GAME_TABLES` |
 | A seed | a whole number; the games draw 1 to 2,147,483,647 | `randomSeed` |
-| The deck | fifty-two cards, no jokers | `DECK_SIZE` |
+| The deck the games deal | fifty-two cards, no jokers (the faces draw two) | `DECK_SIZE` |
 | A saved game's format | 1 | `SAVE_FORMAT` |
 | Languages | English and Japanese | `STRINGS` |
 
@@ -924,9 +1001,9 @@ only so far.
 - A framework-free card table component to go with the React hook.
 
 Left out on purpose: anything played for stakes (no betting, no chips, no
-payouts: children use the site this was built for), jokers and card designs
-(the look is yours), and play over a network, which needs a server. A game
-here is plain data, so your own server can carry it.
+payouts: children use the site this was built for), and play over a network,
+which needs a server. A game here is plain data, so your own server can carry
+it.
 
 Ideas and requests are welcome in the
 [issues](https://github.com/johnmorrisdotca/toranpu/issues).

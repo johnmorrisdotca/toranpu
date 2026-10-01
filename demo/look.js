@@ -3,11 +3,13 @@
 const asked = new URLSearchParams(location.search);
 const BACKS = ["classic-red", "classic-blue", "ink-dots"];
 const colour = asked.get("back-colour");
+const DESIGNS = ["plain", "four-colour", "english"];
 
 export const look = {
   back: BACKS.includes(asked.get("back")) ? asked.get("back") : "classic-red",
   colour: /^[0-9a-f]{6}$/i.test(colour ?? "") ? `#${colour.toLowerCase()}` : null,
   mark: (asked.get("mark") ?? "").slice(0, 12),
+  design: DESIGNS.includes(asked.get("design")) ? asked.get("design") : "plain",
 };
 
 const listeners = [];
@@ -25,4 +27,5 @@ export function lookQuery(query) {
   if (look.back !== "classic-red") query.set("back", look.back);
   if (look.colour !== null) query.set("back-colour", look.colour.slice(1));
   if (look.mark.trim() !== "") query.set("mark", look.mark.trim());
+  if (look.design !== "plain") query.set("design", look.design);
 }

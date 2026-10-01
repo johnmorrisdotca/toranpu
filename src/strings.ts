@@ -181,6 +181,13 @@ export type ToranpuStrings = {
   pageBackColour: string;
   pageBackOwnColour: string;
   pageBackMark: string;
+  cardRedJoker: string;
+  cardBlackJoker: string;
+  pageDesigns: string;
+  pageDesignsNote: string;
+  pageDesignPlain: string;
+  pageDesignFourColour: string;
+  pageDesignEnglish: string;
 };
 
 /** Every string, in both languages. */
@@ -384,6 +391,13 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageBackColour: "Colour",
     pageBackOwnColour: "Its own colour",
     pageBackMark: "Words in the middle",
+    cardRedJoker: "red joker",
+    cardBlackJoker: "black joker",
+    pageDesigns: "Card designs",
+    pageDesignsNote: "Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain.",
+    pageDesignPlain: "Plain",
+    pageDesignFourColour: "Four colour",
+    pageDesignEnglish: "English pattern",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -584,6 +598,13 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageBackColour: "色",
     pageBackOwnColour: "元の色",
     pageBackMark: "中央の文字",
+    cardRedJoker: "赤のジョーカー",
+    cardBlackJoker: "黒のジョーカー",
+    pageDesigns: "カードのデザイン",
+    pageDesignsNote: "「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。",
+    pageDesignPlain: "シンプル",
+    pageDesignFourColour: "4色",
+    pageDesignEnglish: "イングリッシュ・パターン",
   },
 };
 

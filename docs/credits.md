@@ -48,3 +48,47 @@ decodes, Safari on an iPhone included. The empty padding the encoder leaves
 in the file was taken out. Then `pnpm sounds` writes them into
 `src/sounds.ts` as base64, and a test fails if that module and the files fall
 out of step, or if a file is not named on this page.
+
+## The English pattern design
+
+The cards of `@johnmorrisdotca/toranpu/card-faces/english`: the traditional
+English pattern deck with its kings, queens and jacks, drawn as vectors by
+**Dmitry Fomin**
+([User:Dmitry Fomin](https://commons.wikimedia.org/wiki/User:Dmitry_Fomin)
+on Wikimedia Commons), from his set
+[SVG English pattern playing cards](https://commons.wikimedia.org/wiki/Category:SVG_English_pattern_playing_cards).
+
+- **Licence:** Creative Commons Zero, CC0 1.0, a public domain dedication
+  (`{{self|cc-zero}}`, "own work", dated 2017-02-24), stated on each file's
+  own page. Checked on every one of the 52 pages below, 2026-09-30.
+- **Not used:** the same category's "English pattern playing cards deck
+  PLUS.svg", which is under the LGPL; and xCards and Chris Aguilar's Vector
+  Playing Cards, which are LGPL too.
+
+| Suit | The file of each card, ace to king |
+| --- | --- |
+| Spades | [`AS`](https://commons.wikimedia.org/wiki/File:English_pattern_ace_of_spades.svg) [`2S`](https://commons.wikimedia.org/wiki/File:English_pattern_2_of_spades.svg) [`3S`](https://commons.wikimedia.org/wiki/File:English_pattern_3_of_spades.svg) [`4S`](https://commons.wikimedia.org/wiki/File:English_pattern_4_of_spades.svg) [`5S`](https://commons.wikimedia.org/wiki/File:English_pattern_5_of_spades.svg) [`6S`](https://commons.wikimedia.org/wiki/File:English_pattern_6_of_spades.svg) [`7S`](https://commons.wikimedia.org/wiki/File:English_pattern_7_of_spades.svg) [`8S`](https://commons.wikimedia.org/wiki/File:English_pattern_8_of_spades.svg) [`9S`](https://commons.wikimedia.org/wiki/File:English_pattern_9_of_spades.svg) [`TS`](https://commons.wikimedia.org/wiki/File:English_pattern_10_of_spades.svg) [`JS`](https://commons.wikimedia.org/wiki/File:English_pattern_jack_of_spades.svg) [`QS`](https://commons.wikimedia.org/wiki/File:English_pattern_queen_of_spades.svg) [`KS`](https://commons.wikimedia.org/wiki/File:English_pattern_king_of_spades.svg) |
+| Hearts | [`AH`](https://commons.wikimedia.org/wiki/File:English_pattern_ace_of_hearts.svg) [`2H`](https://commons.wikimedia.org/wiki/File:English_pattern_2_of_hearts.svg) [`3H`](https://commons.wikimedia.org/wiki/File:English_pattern_3_of_hearts.svg) [`4H`](https://commons.wikimedia.org/wiki/File:English_pattern_4_of_hearts.svg) [`5H`](https://commons.wikimedia.org/wiki/File:English_pattern_5_of_hearts.svg) [`6H`](https://commons.wikimedia.org/wiki/File:English_pattern_6_of_hearts.svg) [`7H`](https://commons.wikimedia.org/wiki/File:English_pattern_7_of_hearts.svg) [`8H`](https://commons.wikimedia.org/wiki/File:English_pattern_8_of_hearts.svg) [`9H`](https://commons.wikimedia.org/wiki/File:English_pattern_9_of_hearts.svg) [`TH`](https://commons.wikimedia.org/wiki/File:English_pattern_10_of_hearts.svg) [`JH`](https://commons.wikimedia.org/wiki/File:English_pattern_jack_of_hearts.svg) [`QH`](https://commons.wikimedia.org/wiki/File:English_pattern_queen_of_hearts.svg) [`KH`](https://commons.wikimedia.org/wiki/File:English_pattern_king_of_hearts.svg) |
+| Diamonds | [`AD`](https://commons.wikimedia.org/wiki/File:English_pattern_ace_of_diamonds.svg) [`2D`](https://commons.wikimedia.org/wiki/File:English_pattern_2_of_diamonds.svg) [`3D`](https://commons.wikimedia.org/wiki/File:English_pattern_3_of_diamonds.svg) [`4D`](https://commons.wikimedia.org/wiki/File:English_pattern_4_of_diamonds.svg) [`5D`](https://commons.wikimedia.org/wiki/File:English_pattern_5_of_diamonds.svg) [`6D`](https://commons.wikimedia.org/wiki/File:English_pattern_6_of_diamonds.svg) [`7D`](https://commons.wikimedia.org/wiki/File:English_pattern_7_of_diamonds.svg) [`8D`](https://commons.wikimedia.org/wiki/File:English_pattern_8_of_diamonds.svg) [`9D`](https://commons.wikimedia.org/wiki/File:English_pattern_9_of_diamonds.svg) [`TD`](https://commons.wikimedia.org/wiki/File:English_pattern_10_of_diamonds.svg) [`JD`](https://commons.wikimedia.org/wiki/File:English_pattern_jack_of_diamonds.svg) [`QD`](https://commons.wikimedia.org/wiki/File:English_pattern_queen_of_diamonds.svg) [`KD`](https://commons.wikimedia.org/wiki/File:English_pattern_king_of_diamonds.svg) |
+| Clubs | [`AC`](https://commons.wikimedia.org/wiki/File:English_pattern_ace_of_clubs.svg) [`2C`](https://commons.wikimedia.org/wiki/File:English_pattern_2_of_clubs.svg) [`3C`](https://commons.wikimedia.org/wiki/File:English_pattern_3_of_clubs.svg) [`4C`](https://commons.wikimedia.org/wiki/File:English_pattern_4_of_clubs.svg) [`5C`](https://commons.wikimedia.org/wiki/File:English_pattern_5_of_clubs.svg) [`6C`](https://commons.wikimedia.org/wiki/File:English_pattern_6_of_clubs.svg) [`7C`](https://commons.wikimedia.org/wiki/File:English_pattern_7_of_clubs.svg) [`8C`](https://commons.wikimedia.org/wiki/File:English_pattern_8_of_clubs.svg) [`9C`](https://commons.wikimedia.org/wiki/File:English_pattern_9_of_clubs.svg) [`TC`](https://commons.wikimedia.org/wiki/File:English_pattern_10_of_clubs.svg) [`JC`](https://commons.wikimedia.org/wiki/File:English_pattern_jack_of_clubs.svg) [`QC`](https://commons.wikimedia.org/wiki/File:English_pattern_queen_of_clubs.svg) [`KC`](https://commons.wikimedia.org/wiki/File:English_pattern_king_of_clubs.svg) |
+
+**The jokers** are Dmitry Fomin's too, from his Atlas deck, CC0 by the same
+dedication ("own work", 2017-02-25), checked 2026-09-30:
+[`RJ` Atlas deck joker red.svg](https://commons.wikimedia.org/wiki/File:Atlas_deck_joker_red.svg) and
+[`BJ` Atlas deck joker black.svg](https://commons.wikimedia.org/wiki/File:Atlas_deck_joker_black.svg).
+Their corner word, the Russian джокер, was taken off, and Toranpu writes
+JOKER (or ジョーカー) in its place.
+
+**What was done to them**, by `scripts/designs.mjs`: each file was made
+smaller with svgo (one decimal place in its 360 by 540 box; 2.5 MB of SVG
+became 0.7 MB), its outline taken off so that Toranpu draws the card's paper,
+and every id given the card's own prefix. The drawings are otherwise as
+Fomin made them. Each card is fitted to Toranpu's 100 by 140 card by its
+height, and centred.
+
+## Drawn for Toranpu
+
+The card backs, the plain and four-colour faces with their jester's-cap
+jokers, and the suits are drawn for Toranpu and are MIT like the rest of it.
+The two classic backs are in the manner of a casino back and copy no maker's
+design.

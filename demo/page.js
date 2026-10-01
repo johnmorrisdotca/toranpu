@@ -5,6 +5,7 @@ import { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, cardShort, cardText, fillIn,
 import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
 import { dealt, moved, wire as wireSound } from "./sound.js";
 import { wire as wireBacks } from "./backs.js";
+import { wire as wireDesigns } from "./designs.js";
 import { lookQuery, onLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
@@ -15,7 +16,9 @@ const SEED_MOST = 2147483647;
 
 // The page's words are the package's own table, under the names the shared header and footer ask for.
 const words = (lang) => ({ ...STRINGS[lang], pitch: STRINGS[lang].pagePitch, name: STRINGS[lang].pageName, nameLink: STRINGS[lang].pageNameLink, foot: STRINGS[lang].pageFoot });
-const language = familyLanguage({ id: "toranpu", words: { en: words("en"), ja: words("ja") }, onChange: () => drawAll() });
+/** What else redraws when the language changes: the panels whose drawings carry words. */
+const afterLanguage = [];
+const language = familyLanguage({ id: "toranpu", words: { en: words("en"), ja: words("ja") }, onChange: () => { drawAll(); for (const redraw of afterLanguage) redraw(); } });
 const t = () => STRINGS[language.lang];
 
 const asked = new URLSearchParams(location.search);
@@ -294,6 +297,7 @@ function deal(next = kind, { count, seed } = {}) {
 $("deal").addEventListener("click", () => deal());
 wireSound((key) => t()[key]);
 wireBacks((key) => t()[key]);
+afterLanguage.push(wireDesigns((key) => t()[key], () => language.lang));
 onLook(writeAddress);
 $("players").addEventListener("change", () => deal(kind, { seed: game.seed }));
 $("seed").addEventListener("change", () => {

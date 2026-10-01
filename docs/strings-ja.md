@@ -178,6 +178,13 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageBackColour` | Colour | 色 |
 | `pageBackOwnColour` | Its own colour | 元の色 |
 | `pageBackMark` | Words in the middle | 中央の文字 |
+| `cardRedJoker` | red joker | 赤のジョーカー |
+| `cardBlackJoker` | black joker | 黒のジョーカー |
+| `pageDesigns` | Card designs | カードのデザイン |
+| `pageDesignsNote` | Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. | 「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。 |
+| `pageDesignPlain` | Plain | シンプル |
+| `pageDesignFourColour` | Four colour | 4色 |
+| `pageDesignEnglish` | English pattern | イングリッシュ・パターン |
 
 ## The command line's help
 

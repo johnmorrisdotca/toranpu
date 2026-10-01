@@ -6,6 +6,34 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-09-30
+
+### Added
+
+- **Card designs**: the faces of the cards drawn as SVG in the same 100 by
+  140 box as the backs, from the new `@johnmorrisdotca/toranpu/card-faces`
+  entry point. `cardFaceSvg` and `cardFaceUrl` draw any card, and the two
+  jokers (`RJ`, `BJ`), in one of three designs:
+  - **plain**, the default, drawn for Toranpu: big corners, the pips laid out
+    as a real deck lays them, kings, queens and jacks as their letter in a
+    frame, jokers in a jester's cap;
+  - **four colour**, plain with diamonds blue and clubs green;
+  - **the English pattern**, the traditional deck with its drawn kings,
+    queens and jacks, by Dmitry Fomin, who dedicated it to the public domain
+    (CC0) on Wikimedia Commons, with his jokers. At 715 kB it is its own entry
+    point, `@johnmorrisdotca/toranpu/card-faces/english`, and
+    `loadCardDesign("english")` fetches it only when asked.
+  A design of your own is a set of drawings by card id. Every face is named
+  for screen readers in English or Japanese, and the plain faces take the
+  CSS custom properties `--toranpu-card`, `--toranpu-card-ink`,
+  `--toranpu-card-red`, `--toranpu-card-blue` and `--toranpu-card-green`.
+- [docs/credits.md](./docs/credits.md) names each of the English pattern's 54
+  files, its licence and what was done to it.
+- The demo has a Card designs panel showing a spread of cards in each design,
+  with the code that draws them.
+
+Nothing that was exported has changed.
+
 ## [2.2.0] - 2026-09-30
 
 ### Added
@@ -157,7 +185,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.3.0...v2.0.0
