@@ -214,6 +214,17 @@ a game; `cli` is the command line; `page` is the demo.
 | `pagePileSeed` | Pile seed | 山のシード |
 | `pageDrawCard` | Draw a card | 1枚引く |
 | `pageStockPile` | Stock | 山札 |
+| `embedTurn` | Turn over | 裏返す |
+| `embedBad` | Those are not cards. Write them as AS KH 10D, or in the deck's one-letter codes. | カードとして読めません。AS KH 10D のように、またはデッキの1文字のコードで書いてください。 |
+| `pageEmbed` | Embed a hand | 手札を埋め込む |
+| `pageEmbedNote` | Any hand of cards on any web page: write it in the card codes, choose a size, and copy one of the two. The iframe needs no script on your page; the tag needs one script line. | どんな手札でも、どのウェブページにも置けます。カードのコードで書き、大きさを選んで、どちらかをコピーしてください。iframe ならページにスクリプトは要りません。タグならスクリプトを1行加えます。 |
+| `pageEmbedCards` | Cards | カード |
+| `pageEmbedSize` | Size | 大きさ |
+| `pageSizeSmall` | Small | 小 |
+| `pageSizeMedium` | Medium | 中 |
+| `pageSizeLarge` | Large | 大 |
+| `pageAsFrame` | As an iframe | iframe で |
+| `pageAsTag` | As one tag | タグ1つで |
 
 ## The command line's help
 

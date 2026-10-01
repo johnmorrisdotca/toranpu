@@ -9,6 +9,7 @@ import { wire as wireDesigns } from "./designs.js";
 import { wire as wireOneCard } from "./onecard.js";
 import { wire as wireHands } from "./hands.js";
 import { wire as wirePiles } from "./piles.js";
+import { wire as wireEmbeds } from "./embeds.js";
 import { look, lookQuery, onLook, wear } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
@@ -317,6 +318,7 @@ afterLanguage.push(wireDesigns((key) => t()[key], () => language.lang));
 afterLanguage.push(wireOneCard(() => language.lang));
 wireHands();
 wirePiles();
+afterLanguage.push(wireEmbeds(() => t()));
 onLook(writeAddress);
 onLook(() => drawPiles(shown(rules().seats(game).players)));
 $("players").addEventListener("change", () => deal(kind, { seed: game.seed }));

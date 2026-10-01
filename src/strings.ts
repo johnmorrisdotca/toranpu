@@ -217,6 +217,17 @@ export type ToranpuStrings = {
   pagePileSeed: string;
   pageDrawCard: string;
   pageStockPile: string;
+  embedTurn: string;
+  embedBad: string;
+  pageEmbed: string;
+  pageEmbedNote: string;
+  pageEmbedCards: string;
+  pageEmbedSize: string;
+  pageSizeSmall: string;
+  pageSizeMedium: string;
+  pageSizeLarge: string;
+  pageAsFrame: string;
+  pageAsTag: string;
 };
 
 /** Every string, in both languages. */
@@ -456,6 +467,17 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pagePileSeed: "Pile seed",
     pageDrawCard: "Draw a card",
     pageStockPile: "Stock",
+    embedTurn: "Turn over",
+    embedBad: "Those are not cards. Write them as AS KH 10D, or in the deck's one-letter codes.",
+    pageEmbed: "Embed a hand",
+    pageEmbedNote: "Any hand of cards on any web page: write it in the card codes, choose a size, and copy one of the two. The iframe needs no script on your page; the tag needs one script line.",
+    pageEmbedCards: "Cards",
+    pageEmbedSize: "Size",
+    pageSizeSmall: "Small",
+    pageSizeMedium: "Medium",
+    pageSizeLarge: "Large",
+    pageAsFrame: "As an iframe",
+    pageAsTag: "As one tag",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -692,6 +714,17 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pagePileSeed: "山のシード",
     pageDrawCard: "1枚引く",
     pageStockPile: "山札",
+    embedTurn: "裏返す",
+    embedBad: "カードとして読めません。AS KH 10D のように、またはデッキの1文字のコードで書いてください。",
+    pageEmbed: "手札を埋め込む",
+    pageEmbedNote: "どんな手札でも、どのウェブページにも置けます。カードのコードで書き、大きさを選んで、どちらかをコピーしてください。iframe ならページにスクリプトは要りません。タグならスクリプトを1行加えます。",
+    pageEmbedCards: "カード",
+    pageEmbedSize: "大きさ",
+    pageSizeSmall: "小",
+    pageSizeMedium: "中",
+    pageSizeLarge: "大",
+    pageAsFrame: "iframe で",
+    pageAsTag: "タグ1つで",
   },
 };
 

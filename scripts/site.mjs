@@ -31,6 +31,9 @@ ${body}
 rmSync("site", { recursive: true, force: true });
 mkdirSync("site", { recursive: true });
 for (const file of readdirSync("demo").filter((name) => /\.(css|js)$/.test(name))) cpSync(`demo/${file}`, `site/${file}`);
+// The page another site frames: a hand of cards and nothing else, at embed/?hand=AS+KH+10D.
+mkdirSync("site/embed", { recursive: true });
+cpSync("demo/embed.html", "site/embed/index.html");
 cpSync("dist", "site/dist", { recursive: true });
 
 writeFileSync(

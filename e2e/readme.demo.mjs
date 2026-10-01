@@ -79,3 +79,15 @@ test("Messy piles: the two piles of the example, face down and face up, from one
   await expect(piles.nth(1)).toHaveAttribute("aria-label", "a pile, seven of hearts on top, cards: 4");
   expect(errors).toEqual([]);
 });
+
+test("Embed a hand: the iframe and the one tag of the example each show the five cards", async ({ page }) => {
+  const SITE = "https://johnmorrisdotca.github.io/toranpu/";
+  const frame = block("<iframe");
+  const tag = block('<toranpu-hand cards="AS KH QD JC 10S" size="medium">');
+  expect(frame).toContain(SITE);
+  const errors = await run(page, `${frame.replaceAll(SITE, "http://toranpu.test/")}${tag}`);
+  const named = "Hand: ace of spades, king of hearts, queen of diamonds, jack of clubs, ten of spades";
+  await expect(page.frameLocator("iframe").locator("toranpu-hand")).toHaveAttribute("aria-label", named);
+  await expect(page.locator("body > toranpu-hand")).toHaveAttribute("aria-label", named);
+  expect(errors).toEqual([]);
+});

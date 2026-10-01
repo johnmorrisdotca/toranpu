@@ -130,6 +130,30 @@ sounds.setMuted(true);</pre>
           </div>
           <pre class="snippet" id="piles-code" data-testid="piles-code" tabindex="0"></pre>
         </section>
+        <section class="wide" aria-labelledby="embed-title" id="embed-panel">
+          <h2 id="embed-title" data-say="pageEmbed"></h2>
+          <p data-say="pageEmbedNote"></p>
+          <div class="fam-row setup">
+            <label><span data-say="pageEmbedCards"></span> <input id="embed-cards" class="fam-field" data-mono="true" data-testid="embed-cards" autocomplete="off" autocapitalize="characters" spellcheck="false" /></label>
+            <span class="fam-seg" role="group" data-say-label="pageEmbedSize">
+              <button type="button" data-embed-size="small" data-testid="embed-small" data-say="pageSizeSmall"></button>
+              <button type="button" data-embed-size="medium" data-testid="embed-medium" data-say="pageSizeMedium"></button>
+              <button type="button" data-embed-size="large" data-testid="embed-large" data-say="pageSizeLarge"></button>
+            </span>
+          </div>
+          <span class="fam-error" id="embed-error" data-testid="embed-error" role="status"></span>
+          <div class="embed-out">
+            <div class="embed-show">
+              <span class="fam-label" data-say="pageAsFrame"></span>
+              <iframe id="embed-frame" data-testid="embed-frame" title="A hand of cards" width="360" height="200" loading="lazy"></iframe>
+              <pre class="snippet" id="embed-frame-code" data-testid="embed-frame-code" tabindex="0"></pre>
+            </div>
+            <div class="embed-show">
+              <span class="fam-label" data-say="pageAsTag"></span>
+              <pre class="snippet" id="embed-tag-code" data-testid="embed-tag-code" tabindex="0"></pre>
+            </div>
+          </div>
+        </section>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>
           <p data-say="pageDeckNote"></p>

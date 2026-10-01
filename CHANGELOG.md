@@ -6,6 +6,26 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-09-30
+
+### Added
+
+- **Embed a hand**: any hand of cards on any web page, written in the card
+  codes. An iframe of the demo site's new `embed/` page, for a page that
+  allows no scripts (`embed/?hand=AS+KH+10D&size=medium`), or one tag, the
+  `<toranpu-hand>` element from a CDN. Three sizes: small (the hand alone),
+  medium, and large (the cards named in words, and a button that turns the
+  hand face down one card at a time and back). The address also takes one
+  `card`, `lang`, `design`, `back` and its colour and words, `felt` and `ink`
+  colours, `face-down`, `closed` and `sound`; anything that is not a hand is
+  answered in words, and only what looks like a colour is taken as one. The
+  page tells the page that frames it its height and each change by
+  `postMessage`, tracks nothing and keeps nothing.
+- The demo has an Embed a hand panel that writes both for any hand typed
+  into it, at the size chosen, and shows the iframe as it will be framed.
+
+Nothing that was exported has changed.
+
 ## [2.7.0] - 2026-09-30
 
 ### Added
@@ -271,7 +291,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.7.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.0...HEAD
+[2.8.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.4.0...v2.5.0

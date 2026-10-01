@@ -311,6 +311,28 @@ describe("the README on piles", () => {
   });
 });
 
+describe("the README on embedding", () => {
+  it("gives the heights the demo writes, and the card widths the sizes draw", () => {
+    const panel = readFileSync("demo/embeds.js", "utf8");
+    const heights = JSON.parse(/FRAME_HEIGHTS = (\{[^}]+\})/.exec(panel)[1].replace(/(\w+):/g, '"$1":'));
+    const rows = table("| Size | The iframe shows |");
+    expect(rows.map((row) => row[0].replaceAll("`", ""))).toEqual(Object.keys(heights));
+    rows.forEach((row) => {
+      const size = row[0].replaceAll("`", "");
+      expect(row[2], size).toBe(String(heights[size]));
+      expect(row[1], size).toContain(`${element.ELEMENT_SIZES[size]} pixels wide`);
+    });
+    expect(readme).toContain('width="360" height="200"');
+  });
+
+  it("names every part of the address the embed page reads", () => {
+    const page = readFileSync("demo/embed.html", "utf8");
+    const read = new Set([...page.matchAll(/q\.(?:get|has)\("([\w-]+)"\)|(?:on|hex)\("([\w-]+)"\)/g)].map((m) => m[1] ?? m[2]));
+    const said = readme.slice(readme.indexOf("The iframe's address takes"), readme.indexOf("Anything that is not a hand"));
+    for (const name of read) if (name !== "cards" && name !== "roll") expect(said, name).toContain(`\`${name}\``);
+  });
+});
+
 describe("the README on the command line", () => {
   it("prints the help as it is", () => {
     expect(readme).toContain(`\`\`\`\n${STRINGS.en.cliUsage}\`\`\``);

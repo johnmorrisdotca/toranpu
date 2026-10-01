@@ -342,6 +342,8 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   one by one, or scrunched into a bundle that shows nothing, or held closed
   to open into a fan on a tap. See [Hide a hand](#hide-a-hand) and
   [A closed hand](#a-closed-hand-that-opens-with-a-tap).
+- **Embedding**: any hand on any page, as an iframe or one tag, at three
+  sizes. See [Embed a hand](#embed-a-hand).
 - **Messy piles**: `<toranpu-pile>`, a stock or a discard pile from neatly
   squared to very messy, the same every time for the same seed. See
   [Messy piles](#messy-piles).
@@ -777,6 +779,46 @@ and a card put on top moves none of those under it.
 - The demo's own table draws its stock and its discard pile this way, in
   the look and the messiness chosen on the page.
 
+## Embed a hand
+
+Any hand of cards on any web page, written in the card codes (`AS KH 10D`, or
+the deck's one-letter codes). Two ways, at three sizes.
+
+An iframe, where the page allows no scripts (a blog, a wiki, a forum):
+
+```html
+<iframe src="https://johnmorrisdotca.github.io/toranpu/embed/?hand=AS+KH+QD+JC+10S&size=medium" title="A hand of cards" width="360" height="200" style="border:0;max-width:100%" loading="lazy"></iframe>
+```
+
+One tag, where the page may run a script, with nothing to install:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/element-define.js"></script>
+<toranpu-hand cards="AS KH QD JC 10S" size="medium"></toranpu-hand>
+```
+
+| Size | The iframe shows | Its height, for five cards at 360 pixels wide |
+| --- | --- | --- |
+| `small` | the hand alone, its cards 46 pixels wide | 160 |
+| `medium` | the hand, its cards 70 pixels wide | 200 |
+| `large` | the hand, its cards 104 pixels wide, named in words, with a button that turns it face down one card at a time and back | 360 |
+
+The iframe's address takes `hand` (or `card` for one card, which turns over
+on a tap), `size`, `lang` (`en` or `ja`), `design`, `back`, `back-colour` and
+`felt` and `ink` as `rrggbb`, `mark`, `face-down`, `closed` (a closed hand
+that opens on a tap) and `sound`. Anything that is not a hand is answered
+with a line saying how to write one, and only what looks like a colour is
+taken as one. The page tracks nothing, loads nothing from anywhere else and
+keeps nothing on the visitor's device. It tells the page that frames it its
+height, `{ toranpu: "height", height }`, so a frame can be made to fit, and
+each change, `{ toranpu: "hand", faceDown, scrunched, open }` or
+`{ toranpu: "flip", card, faceDown }`, by `postMessage`.
+
+The tag is the element of [Hide a hand](#hide-a-hand), so it takes every
+attribute listed there. [The demo](https://johnmorrisdotca.github.io/toranpu/#embed-panel)
+writes both for any hand typed into it, in the look chosen there, and shows
+the iframe as it will be framed.
+
 ## Words
 
 ```ts
@@ -833,7 +875,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.7.0",
+  "generator": "toranpu 2.8.0",
   "game": "goFish",
   "size": 1,
   "players": [

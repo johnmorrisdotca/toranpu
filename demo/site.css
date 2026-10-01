@@ -101,6 +101,13 @@ input[type="range"] { width: 12rem; max-width: 100%; min-height: 44px; accent-co
 @media (min-width: 600px) { .pile-pair toranpu-pile { --toranpu-card-width: 104px; } }
 .pile-pair figure { margin: 0; display: grid; justify-items: center; gap: 4px; color: var(--felt-ink); font-size: .8rem; }
 
+/* Embedding a hand. */
+#embed-cards { width: 16em; max-width: 100%; }
+.embed-out { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .embed-out { grid-template-columns: 380px minmax(0, 1fr); } }
+.embed-show { display: grid; gap: 8px; align-content: start; min-width: 0; }
+#embed-frame { border: 1px dashed var(--rule); border-radius: 12px; max-width: 100%; background: transparent; }
+
 /* The deck on its own: each hand a fan. */
 .deck-hands { display: grid; gap: 10px 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
 .fan-box { display: grid; gap: 2px; min-width: 0; }
