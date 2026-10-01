@@ -146,10 +146,11 @@ test.describe("in a browser set to Japanese", () => {
 test("changing language moves nothing below the header", async ({ page }) => {
   const errors = await open(page, "?game=hearts&seed=2026");
   await settled(page);
-  const top = () => page.evaluate(() => Math.round(document.querySelector(".choose").getBoundingClientRect().top + window.scrollY));
+  // Where the game picker starts, and how tall the seats over the table are: neither may move with the language.
+  const top = () => page.evaluate(() => [".choose", ".seats"].map((at) => { const box = document.querySelector(at).getBoundingClientRect(); return [Math.round(box.top + window.scrollY), Math.round(box.height)]; }));
   const english = await top();
   await tap(page, '[data-lang="ja"]');
-  expect(await top()).toBe(english);
+  expect(await top()).toEqual(english);
   await sound(page, errors);
 });
 
