@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, the rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy with computer players, and Klondike, FreeCell and Spider solitaire with solvers. Zero dependencies.",
   "keywords": [
     "cards",
@@ -79,7 +79,11 @@
     "card-sounds",
     "sound-effects",
     "audio",
-    "web-audio"
+    "web-audio",
+    "card-back",
+    "card-backs",
+    "svg",
+    "playing-card-svg"
   ],
   "homepage": "https://johnmorrisdotca.github.io/toranpu/",
   "bugs": {
@@ -124,6 +128,11 @@
       "types": "./dist/sounds.d.ts",
       "import": "./dist/sounds.js",
       "default": "./dist/sounds.js"
+    },
+    "./card-backs": {
+      "types": "./dist/card-backs.d.ts",
+      "import": "./dist/card-backs.js",
+      "default": "./dist/card-backs.js"
     },
     "./hearts": {
       "types": "./dist/hearts.d.ts",

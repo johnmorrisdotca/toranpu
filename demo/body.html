@@ -53,6 +53,20 @@ sounds.play("shuffle");
 sounds.play("deal", { count: 13, delay: 900 });
 sounds.setMuted(true);</pre>
         </section>
+        <section aria-labelledby="backs-title" id="backs">
+          <h2 id="backs-title" data-say="pageBacks"></h2>
+          <p data-say="pageBacksNote"></p>
+          <div class="back-picks" id="back-picks" data-testid="back-picks"></div>
+          <div class="fam-row setup">
+            <label><span data-say="pageBackColour"></span> <input type="color" id="back-colour" class="fam-field colour" data-testid="back-colour" /></label>
+            <button type="button" class="fam-button" id="back-own" data-testid="back-own" data-say="pageBackOwnColour"></button>
+            <label><span data-say="pageBackMark"></span> <input id="back-mark" class="fam-field" data-testid="back-mark" maxlength="12" autocomplete="off" /></label>
+          </div>
+          <div class="back-out">
+            <div class="back-show" id="back-show" data-testid="back-show"></div>
+            <pre class="snippet" id="back-code" data-testid="back-code" tabindex="0"></pre>
+          </div>
+        </section>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>
           <p data-say="pageDeckNote"></p>

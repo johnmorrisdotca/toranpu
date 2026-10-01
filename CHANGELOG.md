@@ -6,6 +6,26 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-09-30
+
+### Added
+
+- **Card backs**, one home for every card game in the family: the new
+  `@johnmorrisdotca/toranpu/card-backs` entry point draws three backs as SVG
+  in the same 100 by 140 box as every card, a classic red and a classic blue
+  in the manner of a casino back and ink with dots, all drawn for Toranpu.
+  `cardBackSvg` gives an SVG document and `cardBackUrl` a data URL; either can
+  take another colour, words in the middle (a site's name or mark), a width
+  and a name for screen readers. Drawn into a page, a back takes the CSS
+  custom properties `--toranpu-back`, `--toranpu-back-ink` and
+  `--toranpu-back-paper`.
+- `CARD_BOX` and `SUIT_PATHS`: the card's box, and the four suits drawn as
+  paths, for drawings of your own.
+- The demo has a Card backs panel: choose a back, colour it, write in its
+  middle, and see the code that draws it. The choice is kept in the address.
+
+Nothing that was exported has changed.
+
 ## [2.1.0] - 2026-09-30
 
 ### Added
@@ -137,7 +157,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/johnmorrisdotca/toranpu/compare/v1.2.0...v1.3.0

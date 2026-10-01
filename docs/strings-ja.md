@@ -170,6 +170,14 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageSoundPlay` | Play a card | 札を出す |
 | `pageSoundGather` | Gather | 集める |
 | `pageSoundFan` | Fan | 広げる |
+| `pageBacks` | Card backs | カードの裏面 |
+| `pageBacksNote` | Three backs drawn for Toranpu, for any card game: a classic red, a classic blue and ink with dots. Give one your own colour or a word in its middle. | どのカードゲームでも使える、Toranpu のために描いた3種類の裏面です。クラシックの赤、クラシックの青、墨に水玉。色を変えたり、中央に文字を入れたりできます。 |
+| `pageBackClassicRed` | Classic red | クラシック・赤 |
+| `pageBackClassicBlue` | Classic blue | クラシック・青 |
+| `pageBackInkDots` | Ink with dots | 墨に水玉 |
+| `pageBackColour` | Colour | 色 |
+| `pageBackOwnColour` | Its own colour | 元の色 |
+| `pageBackMark` | Words in the middle | 中央の文字 |
 
 ## The command line's help
 

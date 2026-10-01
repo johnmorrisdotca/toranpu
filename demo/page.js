@@ -4,6 +4,8 @@
 import { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, cardShort, cardText, fillIn, fromJSON, gameName, gameSays, isCard, moveText, namesList, newGame, randomSeed, rulesFor, suitSymbol, toCSV, toCode, toJSON, toText } from "./dist/index.js";
 import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
 import { dealt, moved, wire as wireSound } from "./sound.js";
+import { wire as wireBacks } from "./backs.js";
+import { lookQuery, onLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
 const NAMES = ["You", "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
@@ -261,13 +263,18 @@ function drawAll() {
   drawLog();
   drawKeep();
   drawDeck();
-  // The address is the link: the game, the table and the seed.
+  writeAddress();
+}
+
+/** The address is the link: the game, the table, the seed, and the look the cards are shown in. */
+function writeAddress() {
   const query = new URLSearchParams();
   if (language.asked !== null) query.set("lang", language.asked);
   query.set("game", inAddress(kind));
   query.set("players", String(rules().seats(game).players.length));
   query.set("seed", String(game.seed));
   if (deck.seed !== 42) query.set("deck", String(deck.seed));
+  lookQuery(query);
   history.replaceState(null, "", `?${query}`);
 }
 
@@ -286,6 +293,8 @@ function deal(next = kind, { count, seed } = {}) {
 
 $("deal").addEventListener("click", () => deal());
 wireSound((key) => t()[key]);
+wireBacks((key) => t()[key]);
+onLook(writeAddress);
 $("players").addEventListener("change", () => deal(kind, { seed: game.seed }));
 $("seed").addEventListener("change", () => {
   const seed = whole($("seed").value.trim(), 1, SEED_MOST);

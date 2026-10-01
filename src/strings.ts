@@ -173,6 +173,14 @@ export type ToranpuStrings = {
   pageSoundPlay: string;
   pageSoundGather: string;
   pageSoundFan: string;
+  pageBacks: string;
+  pageBacksNote: string;
+  pageBackClassicRed: string;
+  pageBackClassicBlue: string;
+  pageBackInkDots: string;
+  pageBackColour: string;
+  pageBackOwnColour: string;
+  pageBackMark: string;
 };
 
 /** Every string, in both languages. */
@@ -368,6 +376,14 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageSoundPlay: "Play a card",
     pageSoundGather: "Gather",
     pageSoundFan: "Fan",
+    pageBacks: "Card backs",
+    pageBacksNote: "Three backs drawn for Toranpu, for any card game: a classic red, a classic blue and ink with dots. Give one your own colour or a word in its middle.",
+    pageBackClassicRed: "Classic red",
+    pageBackClassicBlue: "Classic blue",
+    pageBackInkDots: "Ink with dots",
+    pageBackColour: "Colour",
+    pageBackOwnColour: "Its own colour",
+    pageBackMark: "Words in the middle",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -560,6 +576,14 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageSoundPlay: "札を出す",
     pageSoundGather: "集める",
     pageSoundFan: "広げる",
+    pageBacks: "カードの裏面",
+    pageBacksNote: "どのカードゲームでも使える、Toranpu のために描いた3種類の裏面です。クラシックの赤、クラシックの青、墨に水玉。色を変えたり、中央に文字を入れたりできます。",
+    pageBackClassicRed: "クラシック・赤",
+    pageBackClassicBlue: "クラシック・青",
+    pageBackInkDots: "墨に水玉",
+    pageBackColour: "色",
+    pageBackOwnColour: "元の色",
+    pageBackMark: "中央の文字",
   },
 };
 

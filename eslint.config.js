@@ -8,7 +8,7 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ["scripts/**/*.mjs"], languageOptions: { globals: { console: "readonly", URL: "readonly", document: "readonly", window: "readonly", Buffer: "readonly", MutationObserver: "readonly", setTimeout: "readonly" } } },
-  { files: ["e2e/**/*.mjs", "playwright.config.mjs"], languageOptions: { globals: { console: "readonly", URL: "readonly", document: "readonly", window: "readonly", location: "readonly", AudioBufferSourceNode: "readonly", getComputedStyle: "readonly", matchMedia: "readonly" } } },
+  { files: ["e2e/**/*.mjs", "playwright.config.mjs"], languageOptions: { globals: { console: "readonly", URL: "readonly", document: "readonly", window: "readonly", location: "readonly", AudioBufferSourceNode: "readonly", getComputedStyle: "readonly", matchMedia: "readonly", DOMParser: "readonly", customElements: "readonly", requestAnimationFrame: "readonly" } } },
   { files: ["demo/**/*.js"], languageOptions: { globals: browser } },
   { files: ["src/**/*.test.js"], languageOptions: { globals: { atob: "readonly", setTimeout: "readonly" } } },
 );

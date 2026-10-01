@@ -6,13 +6,14 @@ import process from "node:process";
 
 import { describe, expect, it } from "vitest";
 
+import * as cardBacks from "./card-backs.ts";
 import * as cardSounds from "./card-sounds.ts";
 import * as deck from "./deck.ts";
 import * as toranpu from "./index.ts";
 import * as soundData from "./sounds.ts";
 
 /** The entry points that are not a game: the front door, the deck, the hook, and what a table looks and sounds like. */
-const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData };
+const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks };
 
 const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText, fromCode, fromJSON, gameName, moveText, newGame, playComputers, rulesFor, runCli, toCSV, toCode, toJSON, toText } = toranpu;
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
@@ -203,6 +204,25 @@ describe("the README on card sounds", () => {
   });
 });
 
+describe("the README on card backs", () => {
+  it("each line says what it gives", () => {
+    says('cardBackSvg("classic-blue", { width: 70 });                    // \'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="70" height="98" …\'');
+    expect(cardBacks.cardBackSvg("classic-blue", { width: 70 }).startsWith('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="70" height="98" ')).toBe(true);
+    says('cardBackUrl("ink-dots", { colour: "#8f2826", mark: "五つ" });  // "data:image/svg+xml;charset=utf-8,…"');
+    const url = cardBacks.cardBackUrl("ink-dots", { colour: "#8f2826", mark: "五つ" });
+    expect(url.startsWith("data:image/svg+xml;charset=utf-8,")).toBe(true);
+    expect(decodeURIComponent(url)).toContain(">五つ</text>");
+  });
+
+  it("the tables name every back and every option, and the drawings' custom properties are the ones used", () => {
+    expect(table("| Back | Looks like |").map((row) => row[0].replaceAll("`", ""))).toEqual([...cardBacks.CARD_BACKS]);
+    expect(table("| Option of `cardBackSvg`").map((row) => row[0].replaceAll("`", ""))).toEqual(["colour", "ink", "paper", "mark", "width", "title"]);
+    const properties = table("| Custom property | Colours |").map((row) => row[0].replaceAll("`", ""));
+    expect(properties).toEqual(Object.values(cardBacks.CARD_BACK_PROPERTIES));
+    for (const name of cardBacks.CARD_BACKS) expect(table("| Custom property | Colours |")[0][2]).toContain(cardBacks.CARD_BACK_LOOK[name].field);
+  });
+});
+
 describe("the README on the command line", () => {
   it("prints the help as it is", () => {
     expect(readme).toContain(`\`\`\`\n${STRINGS.en.cliUsage}\`\`\``);
@@ -256,7 +276,7 @@ describe("the README's tables", () => {
     for (const name of Object.keys(toranpu)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
     for (const [entry, module] of Object.entries(TABLE_ENTRIES)) for (const name of Object.keys(module)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `${entry}'s ${name}`).toBe(true);
     const everything = new Set([...Object.keys(toranpu), ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)), ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])), ...types, "useCardGame"]);
-    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan"].includes(name));
+    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options"].includes(name));
     expect(named.length).toBeGreaterThan(120);
     for (const name of named) expect(everything.has(name), `the README names ${name}`).toBe(true);
   });

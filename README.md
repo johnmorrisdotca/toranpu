@@ -77,8 +77,9 @@ with or endorsed by any publisher of an edition of them.
 
 Toranpu is three things, each usable without the others: **the games**, as
 plain functions over plain data; **the deck**, for a game of your own; and
-**a React hook** that holds a game in state. It draws nothing: the table is
-yours. The example below is the same small table each time, a game of Go
+**a React hook** that holds a game in state. The table is yours to draw; the
+[backs](#card-backs) and the [sounds](#card-sounds) are there if you want
+them. The example below is the same small table each time, a game of Go
 Fish against two computers with a button for every move you may make.
 
 ### 1. The API alone
@@ -337,6 +338,8 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   See [The command line](#the-command-line).
 - **Card sounds**, recorded from real cards: shuffle, deal, turn over, play,
   gather and fan, off until a table asks. See [Card sounds](#card-sounds).
+- **Card backs**, drawn as SVG: a classic red, a classic blue and ink with
+  dots, recoloured or marked with a site's name. See [Card backs](#card-backs).
 - **An optional React hook**, `useCardGame`.
 
 ## The games
@@ -520,6 +523,43 @@ and a panel that plays each sound. Card sounds from Kenney's
 [Casino Audio](https://kenney.nl/assets/casino-audio), CC0;
 [docs/credits.md](./docs/credits.md) names the files and what was done to them.
 
+## Card backs
+
+One home for the backs of the cards, for every card game in the family: this
+package's tables, [Hitotsu](https://github.com/johnmorrisdotca/hitotsu) and
+[itsutsu.com](https://itsutsu.com). Three backs, drawn for Toranpu as SVG in
+the same 100 by 140 box as every card: a classic red and a classic blue in the
+manner of a casino back, and ink with dots.
+
+```ts
+import { cardBackSvg, cardBackUrl } from "@johnmorrisdotca/toranpu/card-backs";
+
+cardBackSvg("classic-blue", { width: 70 });                    // '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="70" height="98" …'
+cardBackUrl("ink-dots", { colour: "#8f2826", mark: "五つ" });  // "data:image/svg+xml;charset=utf-8,…": for an <img>, a CSS background or a canvas
+```
+
+| Back | Looks like |
+| --- | --- |
+| `classic-red` | a fine lattice on red inside a white border, a rosette in the middle |
+| `classic-blue` | the same on blue |
+| `ink-dots` | ivory dots on ink, the four suits in the middle |
+
+| Option of `cardBackSvg` and `cardBackUrl` | Means | Unless said |
+| --- | --- | --- |
+| `colour` | the field's colour: a hex colour, a name, or `rgb()`, `hsl()`, `oklch()` | the back's own |
+| `ink` | the colour of the lines and dots | the back's own |
+| `paper` | the colour of the border | the back's own |
+| `mark` | up to twelve characters in the middle, such as a site's name, in place of the ornament | none |
+| `width` | pixels wide; the height is 1.4 times it | none: it fills what holds it |
+| `title` | what a screen reader says | nothing: it is decoration |
+
+A colour that is not one is ignored rather than written into the drawing, and
+the mark is escaped, so neither can put markup into a page. Drawn into a page
+with no colour given, a back takes the CSS custom properties
+`--toranpu-back`, `--toranpu-back-ink` and `--toranpu-back-paper` where they
+are set, so a site's theme can recolour every back at once; as an image it
+keeps its own colours. Each back is under 5 kB of SVG.
+
 ## Words
 
 ```ts
@@ -576,7 +616,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.1.0",
+  "generator": "toranpu 2.2.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -776,10 +816,24 @@ Types: `CardSoundKind`, `CardSounds`, `CardSoundsOptions`,
 type `CardSoundFile`. `createCardSounds` loads it by itself; import it only
 to play the recordings your own way.
 
+### `@johnmorrisdotca/toranpu/card-backs`
+
+| Export | What it does |
+| --- | --- |
+| `cardBackSvg(name?, options?)` | A back as a whole SVG document |
+| `cardBackUrl(name?, options?)` | The same as a data URL |
+| `CARD_BACKS` | The three backs' names |
+| `CARD_BACK_LOOK` | Each back's own field, ink and paper colours |
+| `CARD_BACK_PROPERTIES` | The CSS custom properties a back in a page takes its colours from |
+| `CARD_BOX`, `SUIT_PATHS` | The card's 100 by 140 box, and the four suits drawn as paths in a box of 100 |
+
+Types: `CardBackName`, `CardBackOptions`, `CardSuitLetter`.
+
 ## Theming
 
-Toranpu draws nothing: it has no component and no stylesheet, so the cards
-and the table look however you draw them.
+The games draw nothing: the table looks however you draw it. What Toranpu
+does draw, the card backs, takes the custom properties under
+[The drawings](#the-drawings) below.
 
 The demo's table is themed, and is the worked example. It wears the family's
 one stylesheet, [`demo/family.css`](./demo/family.css), which is the same file
@@ -811,6 +865,21 @@ the properties after the two stylesheets:
 
 ```css
 :root { --felt: #23405a; --felt-deep: #162a3c; --card-red: #b00020; --card-w: 64px; --card-h: 92px; }
+```
+
+### The drawings
+
+What Toranpu draws (the backs so far) takes these custom properties when it
+is put into a page as SVG, and keeps its own colours as an image:
+
+| Custom property | Colours | Unless set |
+| --- | --- | --- |
+| `--toranpu-back` | a back's field | the back's own: `#b3262d`, `#1f4e8c` or `#24231f` |
+| `--toranpu-back-ink` | the lines and dots on it | `#fffaf0` |
+| `--toranpu-back-paper` | the border round it | `#fffdf8` |
+
+```css
+.my-table { --toranpu-back: #3d4d38; }   /* every back on this table, moss green */
 ```
 
 ## Limits
