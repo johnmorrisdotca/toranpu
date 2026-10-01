@@ -91,9 +91,15 @@ describe("the card faces", () => {
     expect(cardFaceSvg("KH", { design: partial })).toBe(cardFaceSvg("KH"));
   });
 
-  it("load the English pattern by name, and need no loading for the two drawn here", async () => {
-    expect(CARD_DESIGNS).toEqual(["plain", "four-colour", "english"]);
+  it("load the English pattern and the realistic design by name, and need no loading for the two drawn here", async () => {
+    expect(CARD_DESIGNS).toEqual(["plain", "four-colour", "english", "realistic"]);
     expect(await loadCardDesign("english")).toBe(ENGLISH_PATTERN);
+    const realistic = await loadCardDesign("realistic");
+    expect(realistic?.name).toBe("realistic");
+    // Knoll's own cards from his set; his ace of spades and the courts from Fomin's, through the fallback.
+    expect(cardFaceSvg("7H", { design: realistic! })).not.toBe(cardFaceSvg("7H", { design: ENGLISH_PATTERN }));
+    expect(cardFaceSvg("7H", { design: realistic! })).not.toBe(cardFaceSvg("7H"));
+    for (const card of ["AS", "KD", "QC", "JH", "RJ"]) expect(cardFaceSvg(card, { design: realistic! }), card).toBe(cardFaceSvg(card, { design: ENGLISH_PATTERN }));
     expect(await loadCardDesign("plain")).toBeNull();
     expect(await loadCardDesign("nonsense")).toBeNull();
   });

@@ -190,10 +190,11 @@ a game; `cli` is the command line; `page` is the demo.
 | `rulesSpadesTitle` | SPADES | スペード |
 | `rulesSpades` | Bid the tricks you will take<br>Follow suit if you can<br>Spades are always trumps<br>Make your bid: 10 a trick<br>Fall short: lose your bid | 取るトリック数を宣言<br>同じスートを出す<br>スペードは常に切り札<br>宣言どおり：1トリック10点<br>足りなければ宣言分を失う |
 | `pageDesigns` | Card designs | カードのデザイン |
-| `pageDesignsNote` | Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. | 「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。 |
+| `pageDesignsNote` | Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. Realistic is Byron Knoll's public-domain deck, with Fomin's kings, queens and jacks. | 「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。「リアル」は Byron Knoll がパブリックドメインとして公開したデッキで、キング・クイーン・ジャックは Fomin のものです。 |
 | `pageDesignPlain` | Plain | シンプル |
 | `pageDesignFourColour` | Four colour | 4色 |
 | `pageDesignEnglish` | English pattern | イングリッシュ・パターン |
+| `pageDesignRealistic` | Realistic | リアル |
 | `cardFaceDown` | a card, face down | 伏せたカード |
 | `pageOneCard` | One card on any page | どのページにもカードを1枚 |
 | `pageOneCardNote` | A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL. | 上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。 |

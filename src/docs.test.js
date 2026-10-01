@@ -9,6 +9,7 @@ import { describe, expect, it } from "vitest";
 import * as cardBacks from "./card-backs.ts";
 import * as cardFaces from "./card-faces.ts";
 import * as english from "./designs/english.ts";
+import * as realistic from "./designs/realistic.ts";
 import * as element from "./element.ts";
 import * as cardSounds from "./card-sounds.ts";
 import * as deck from "./deck.ts";
@@ -16,7 +17,7 @@ import * as toranpu from "./index.ts";
 import * as soundData from "./sounds.ts";
 
 /** The entry points that are not a game: the front door, the deck, the hook, and what a table looks and sounds like. */
-const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks, "./card-faces": cardFaces, "./card-faces/english": english, "./element": element, "./element/define": element };
+const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks, "./card-faces": cardFaces, "./card-faces/english": english, "./card-faces/realistic": realistic, "./element": element, "./element/define": element };
 
 const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText, fromCode, fromJSON, gameName, moveText, newGame, playComputers, rulesFor, runCli, toCSV, toCode, toJSON, toText } = toranpu;
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
@@ -255,6 +256,18 @@ describe("the README on card designs", () => {
     const credits = readFileSync("docs/credits.md", "utf8");
     for (const id of Object.keys(english.ENGLISH_PATTERN.art)) expect(credits, id).toContain(`[\`${id}\``);
     expect(credits).toContain("CC0");
+  });
+
+  it("the credits name every file of the realistic design, and it takes nothing of Knoll's that was left out", () => {
+    const credits = readFileSync("docs/credits.md", "utf8");
+    const knoll = credits.slice(credits.indexOf("## The realistic design"), credits.indexOf("## Drawn for Toranpu"));
+    const ids = Object.keys(realistic.REALISTIC.art);
+    expect(ids).toHaveLength(39);
+    for (const id of ids) expect(knoll, id).toContain(`[\`${id}\``);
+    // His ace of spades and his courts are not his to give, and are drawn from Fomin's deck instead.
+    for (const id of ["AS", "KS", "QH", "JD"]) expect(ids).not.toContain(id);
+    expect(realistic.REALISTIC.fallback).toBe(english.ENGLISH_PATTERN);
+    expect(knoll).toContain("public domain");
   });
 });
 

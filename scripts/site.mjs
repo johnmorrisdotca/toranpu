@@ -65,12 +65,13 @@ writeFileSync(
 // Every card and back as a picture of its own, for an <img> on any page: cards/<design>/<id>.svg and backs/<name>.svg.
 const faces = await import("../dist/card-faces.js");
 const backs = await import("../dist/card-backs.js");
-const { ENGLISH_PATTERN } = await import("../dist/designs/english.js");
 const { FULL_DECK } = await import("../dist/index.js");
 let pictures = 0;
-for (const [name, design] of [["plain", "plain"], ["four-colour", "four-colour"], ["english", ENGLISH_PATTERN]]) {
+// Every design the package lists, and every card it draws: the deck and its extras.
+for (const name of faces.CARD_DESIGNS) {
+  const design = (await faces.loadCardDesign(name)) ?? name;
   mkdirSync(`site/cards/${name}`, { recursive: true });
-  for (const card of [...FULL_DECK, ...faces.JOKERS]) {
+  for (const card of [...FULL_DECK, ...faces.EXTRA_CARDS]) {
     writeFileSync(`site/cards/${name}/${card}.svg`, faces.cardFaceSvg(card, { design }));
     pictures += 1;
   }

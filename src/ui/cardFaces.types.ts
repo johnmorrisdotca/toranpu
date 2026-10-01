@@ -11,4 +11,6 @@ export type CardDesign = {
   box: readonly [number, number];
   /** Each card's drawing, by its id. */
   art: Readonly<Record<string, string>>;
+  /** Where the set has no drawing for a card, the set that draws it instead; then plain. */
+  fallback?: CardDesign;
 };

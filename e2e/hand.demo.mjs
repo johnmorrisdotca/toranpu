@@ -259,15 +259,30 @@ test.describe("a hand sorted, with motion", () => {
     const hand = page.locator(at("hide-hand"));
     const before = await read(page, "hide-hand");
     const dealt = (await hand.getAttribute("cards")).split(" ");
+    // Where each card is drawn on the screen, by card: before the sort, and the moment the cards start to move.
+    const lefts = () =>
+      hand.evaluate((element) => Object.fromEntries([...element.shadowRoot.querySelectorAll(".slot")].map((slot) => [slot.querySelector(".face").dataset.card, Math.round(slot.getBoundingClientRect().left)])));
+    const lay = await lefts();
+    await hand.evaluate((element) => {
+      new MutationObserver((_, watcher) => {
+        const moving = element.shadowRoot.querySelector('.hand[data-moving="true"]');
+        if (moving === null) return;
+        window.sortCaught = Object.fromEntries([...moving.querySelectorAll(".slot")].map((slot) => [slot.querySelector(".face").dataset.card, Math.round(slot.getBoundingClientRect().left)]));
+        watcher.disconnect();
+      }).observe(element.shadowRoot, { subtree: true, attributes: true, childList: true });
+    });
     await tap(page, at("hand-sort"));
-    // Straight after: moving, and each card still where it lay when dealt.
-    const start = await hand.evaluate((element) => ({ moving: element.shadowRoot.querySelector('.hand[data-moving="true"]') !== null }));
-    expect(start.moving).toBe(true);
+    await page.waitForFunction(() => window.sortCaught !== undefined);
+    const start = await page.evaluate(() => window.sortCaught);
+    // Each card starts where it lay when dealt, not where it is going…
+    for (const card of dealt) expect(Math.abs(start[card] - lay[card]), card).toBeLessThanOrEqual(2);
+    const { arrangeCards } = await import("../dist/element.js");
+    expect(dealt.some((card, at) => arrangeCards(dealt, "rank").indexOf(card) !== at), "the sort moves something").toBe(true);
     await settled(page, "hide-hand");
+    // …and ends in the hand's same places, now in rank order.
     const after = await read(page, "hide-hand");
     expect(after.xs).toEqual(before.xs);
     expect(after.width).toBe(before.width);
-    void dealt;
     await sound(page, errors);
   });
 });

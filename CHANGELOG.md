@@ -6,6 +6,26 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.11.0] - 2026-10-01
+
+### Added
+
+- **A realistic design.** Byron Knoll's public-domain deck, round pips and a
+  shaded ace, for its 39 number cards and aces; his ace of spades and his
+  courts are left out (one based on another artist's work, the others traced
+  from a printed pack) and drawn from Fomin's CC0 English pattern instead.
+  `@johnmorrisdotca/toranpu/card-faces/realistic`, or
+  `loadCardDesign("realistic")`, or `design="realistic"` on an element. Every
+  file and its licence, read at its source, is in docs/credits.md.
+- A design may name a `fallback`: the set that draws any card it has none for.
+- The demo's deck lays the rest of the deck beside its seats, face down and a
+  little untidy, as many cards as are left.
+
+### Fixed
+
+- The demo took its lists of designs and backs from the package, so a new one
+  is chosen from the address and has its pictures on the site.
+
 ## [2.10.0] - 2026-10-01
 
 ### Added
@@ -349,7 +369,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.10.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.11.0...HEAD
+[2.11.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.1...v2.9.0
 [2.8.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.0...v2.8.1

@@ -86,6 +86,39 @@ and every id given the card's own prefix. The drawings are otherwise as
 Fomin made them. Each card is fitted to Toranpu's 100 by 140 card by its
 height, and centred.
 
+## The realistic design
+
+The number cards and aces of `@johnmorrisdotca/toranpu/card-faces/realistic`:
+**Byron Knoll**'s vector playing cards, drawn by him in Inkscape and first
+published on Google Code as vector-playing-cards
+([his post](http://byronknoll.blogspot.com/2011/03/vector-playing-cards.html)).
+
+- **Licence:** public domain. Knoll: "I am releasing the images into the
+  public domain. This means that they can be used for any purpose without
+  any attribution." Each file's page on Wikimedia Commons records "This work
+  has been released into the public domain by its author, Byron Knoll. This
+  applies worldwide." Checked on every one of the 39 pages below, 2026-10-01,
+  and each file's SHA-1 matched to the one Commons records.
+- **Not used:** his ace of spades, which he based on artwork by Suzanne Tyson
+  whose licence is not stated; his kings, queens and jacks, which he scanned
+  from a printed pack (the traditional design is old, but a scan of a modern
+  printing copies its maker's redrawing); and the two jokers of the GitHub
+  copy, whose origin is not stated. Those cards are drawn from Fomin's CC0
+  English pattern above.
+
+| Suit | The file of each card, ace to ten |
+| --- | --- |
+| Spades | [`2S`](https://commons.wikimedia.org/wiki/File:2_of_spades.svg) [`3S`](https://commons.wikimedia.org/wiki/File:3_of_spades.svg) [`4S`](https://commons.wikimedia.org/wiki/File:4_of_spades.svg) [`5S`](https://commons.wikimedia.org/wiki/File:5_of_spades.svg) [`6S`](https://commons.wikimedia.org/wiki/File:6_of_spades.svg) [`7S`](https://commons.wikimedia.org/wiki/File:7_of_spades.svg) [`8S`](https://commons.wikimedia.org/wiki/File:8_of_spades.svg) [`9S`](https://commons.wikimedia.org/wiki/File:9_of_spades.svg) [`TS`](https://commons.wikimedia.org/wiki/File:10_of_spades.svg) |
+| Hearts | [`AH`](https://commons.wikimedia.org/wiki/File:Ace_of_hearts.svg) [`2H`](https://commons.wikimedia.org/wiki/File:2_of_hearts.svg) [`3H`](https://commons.wikimedia.org/wiki/File:3_of_hearts.svg) [`4H`](https://commons.wikimedia.org/wiki/File:4_of_hearts.svg) [`5H`](https://commons.wikimedia.org/wiki/File:5_of_hearts.svg) [`6H`](https://commons.wikimedia.org/wiki/File:6_of_hearts.svg) [`7H`](https://commons.wikimedia.org/wiki/File:7_of_hearts.svg) [`8H`](https://commons.wikimedia.org/wiki/File:8_of_hearts.svg) [`9H`](https://commons.wikimedia.org/wiki/File:9_of_hearts.svg) [`TH`](https://commons.wikimedia.org/wiki/File:10_of_hearts.svg) |
+| Diamonds | [`AD`](https://commons.wikimedia.org/wiki/File:Ace_of_diamonds.svg) [`2D`](https://commons.wikimedia.org/wiki/File:2_of_diamonds.svg) [`3D`](https://commons.wikimedia.org/wiki/File:3_of_diamonds.svg) [`4D`](https://commons.wikimedia.org/wiki/File:4_of_diamonds.svg) [`5D`](https://commons.wikimedia.org/wiki/File:5_of_diamonds.svg) [`6D`](https://commons.wikimedia.org/wiki/File:6_of_diamonds.svg) [`7D`](https://commons.wikimedia.org/wiki/File:7_of_diamonds.svg) [`8D`](https://commons.wikimedia.org/wiki/File:8_of_diamonds.svg) [`9D`](https://commons.wikimedia.org/wiki/File:9_of_diamonds.svg) [`TD`](https://commons.wikimedia.org/wiki/File:10_of_diamonds.svg) |
+| Clubs | [`AC`](https://commons.wikimedia.org/wiki/File:Ace_of_clubs.svg) [`2C`](https://commons.wikimedia.org/wiki/File:2_of_clubs.svg) [`3C`](https://commons.wikimedia.org/wiki/File:3_of_clubs.svg) [`4C`](https://commons.wikimedia.org/wiki/File:4_of_clubs.svg) [`5C`](https://commons.wikimedia.org/wiki/File:5_of_clubs.svg) [`6C`](https://commons.wikimedia.org/wiki/File:6_of_clubs.svg) [`7C`](https://commons.wikimedia.org/wiki/File:7_of_clubs.svg) [`8C`](https://commons.wikimedia.org/wiki/File:8_of_clubs.svg) [`9C`](https://commons.wikimedia.org/wiki/File:9_of_clubs.svg) [`TC`](https://commons.wikimedia.org/wiki/File:10_of_clubs.svg) |
+
+**What was done to them**, by `scripts/designs-realistic.mjs`: each file was
+made smaller with svgo (457 kB of SVG became 87 kB), its outline taken off so
+that Toranpu draws the card's paper, and every id given the card's own prefix.
+The drawings are otherwise as Knoll made them. Each card is fitted to
+Toranpu's 100 by 140 card by its height, and centred.
+
 ## Drawn for Toranpu
 
 The card backs, the plain and four-colour faces with their jester's-cap

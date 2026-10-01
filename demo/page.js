@@ -290,6 +290,9 @@ function drawDeck() {
     hand.setAttribute("cards", hands[seat].join(" "));
   });
   $("deck-left").textContent = fillIn(t().pageLeft, { n: 52 - deck.hands * deck.each });
+  // What is left of the deck lies beside it, face down and a little untidy, the same each time for a seed.
+  $("deck-stock").setAttribute("count", String(52 - deck.hands * deck.each));
+  $("deck-stock").setAttribute("seed", String(deck.seed % 100000));
   $("deck-code").textContent = writeCards(shuffledDeck(deck.seed));
 }
 

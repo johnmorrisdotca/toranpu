@@ -14,7 +14,7 @@ import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl, UNSELECTABLE }
 import type { CardSuitLetter } from "./svg.types.ts";
 
 /** The designs drawn here, by name. The English pattern is `ENGLISH_PATTERN` from `@johnmorrisdotca/toranpu/card-faces/english`, or `loadCardDesign("english")`. */
-export const CARD_DESIGNS = ["plain", "four-colour", "english"] as const;
+export const CARD_DESIGNS = ["plain", "four-colour", "english", "realistic"] as const;
 
 /** A design's name. */
 export type CardDesignName = (typeof CARD_DESIGNS)[number];
@@ -164,7 +164,7 @@ function court(rank: string, suit: CardSuitLetter, ink: string): string {
 /** A face drawn by a design handed in, inside the card's paper: its art fitted to the 100 by 140 box by height, and centred. */
 function designed(design: CardDesign, card: string, language: Language): string | null {
   const art = design.art[card];
-  if (art === undefined) return null;
+  if (art === undefined) return design.fallback === undefined ? null : designed(design.fallback, card, language);
   const [width, height] = design.box;
   const scale = CARD_BOX.height / height;
   const left = (CARD_BOX.width - width * scale) / 2;
@@ -239,5 +239,6 @@ export function faceName(card: string, language: Language = "en"): string {
  */
 export async function loadCardDesign(name: CardDesignName | string): Promise<CardDesign | null> {
   if (name === "english") return (await import("../designs/english.ts")).ENGLISH_PATTERN;
+  if (name === "realistic") return (await import("../designs/realistic.ts")).REALISTIC;
   return null;
 }

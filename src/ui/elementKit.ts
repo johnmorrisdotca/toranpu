@@ -13,20 +13,21 @@ import { STRINGS, type Language } from "../strings.ts";
 /** What the elements extend: HTMLElement, or on a server, where there is none, an empty class, so that importing them never throws. */
 export const ElementBase: typeof HTMLElement = typeof HTMLElement === "undefined" ? (class {} as unknown as typeof HTMLElement) : HTMLElement;
 
-let english: CardDesign | null = null;
-let englishLoading: Promise<CardDesign | null> | null = null;
+const loadedDesigns = new Map<string, CardDesign | null>();
+const loadingDesigns = new Map<string, Promise<CardDesign | null>>();
 
 /**
- * A design as an element names it: `plain` and `four-colour` at once; the
- * English pattern once it has been fetched, and until then `null`, with
- * `ready` settling when it arrives.
+ * A design as an element names it: `plain` and `four-colour` at once; a
+ * drawn set (`english`, `realistic`) once it has been fetched, and until then
+ * `null`, with `ready` settling when it arrives.
  */
 export function designNamed(name: string | null): { design: "plain" | "four-colour" | CardDesign | null; ready: Promise<unknown> | null } {
   if (name === "four-colour") return { design: "four-colour", ready: null };
-  if (name !== "english") return { design: "plain", ready: null };
-  if (english !== null) return { design: english, ready: null };
-  englishLoading ??= loadCardDesign("english").then((loaded) => (english = loaded));
-  return { design: null, ready: englishLoading };
+  if (name !== "english" && name !== "realistic") return { design: "plain", ready: null };
+  const loaded = loadedDesigns.get(name);
+  if (loaded !== undefined && loaded !== null) return { design: loaded, ready: null };
+  if (!loadingDesigns.has(name)) loadingDesigns.set(name, loadCardDesign(name).then((design) => (loadedDesigns.set(name, design), design)));
+  return { design: null, ready: loadingDesigns.get(name) as Promise<CardDesign | null> };
 }
 
 /** The language an element speaks: its own `lang`, or the nearest one above it, or the page's; Japanese for anything that starts `ja`. */

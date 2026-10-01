@@ -200,6 +200,7 @@ export type ToranpuStrings = {
   pageDesignPlain: string;
   pageDesignFourColour: string;
   pageDesignEnglish: string;
+  pageDesignRealistic: string;
   cardFaceDown: string;
   pageOneCard: string;
   pageOneCardNote: string;
@@ -468,10 +469,11 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     rulesSpadesTitle: "SPADES",
     rulesSpades: "Bid the tricks you will take\nFollow suit if you can\nSpades are always trumps\nMake your bid: 10 a trick\nFall short: lose your bid",
     pageDesigns: "Card designs",
-    pageDesignsNote: "Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain.",
+    pageDesignsNote: "Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. Realistic is Byron Knoll's public-domain deck, with Fomin's kings, queens and jacks.",
     pageDesignPlain: "Plain",
     pageDesignFourColour: "Four colour",
     pageDesignEnglish: "English pattern",
+    pageDesignRealistic: "Realistic",
     cardFaceDown: "a card, face down",
     pageOneCard: "One card on any page",
     pageOneCardNote: "A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL.",
@@ -734,10 +736,11 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     rulesSpadesTitle: "スペード",
     rulesSpades: "取るトリック数を宣言\n同じスートを出す\nスペードは常に切り札\n宣言どおり：1トリック10点\n足りなければ宣言分を失う",
     pageDesigns: "カードのデザイン",
-    pageDesignsNote: "「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。",
+    pageDesignsNote: "「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。「リアル」は Byron Knoll がパブリックドメインとして公開したデッキで、キング・クイーン・ジャックは Fomin のものです。",
     pageDesignPlain: "シンプル",
     pageDesignFourColour: "4色",
     pageDesignEnglish: "イングリッシュ・パターン",
+    pageDesignRealistic: "リアル",
     cardFaceDown: "伏せたカード",
     pageOneCard: "どのページにもカードを1枚",
     pageOneCardNote: "上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。",

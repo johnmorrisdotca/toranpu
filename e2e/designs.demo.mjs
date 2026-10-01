@@ -58,3 +58,17 @@ test("in Japanese the cards are named in Japanese, and the jokers say ジョー�
   await expect(page.locator(at("design-english"))).toHaveText("イングリッシュ・パターン");
   await sound(page, errors);
 });
+
+test("the realistic design: chosen by a press or by the address, Knoll's cards with Fomin's courts, fetched only when chosen", async ({ page }) => {
+  const fetched = [];
+  page.on("request", (request) => fetched.push(new URL(request.url()).pathname));
+  const errors = await open(page, "?seed=1&design=realistic");
+  await expect(page.locator(at("design-realistic"))).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(at("design-spread"))).toHaveAttribute("data-design", "realistic");
+  expect(fetched.some((path) => path.endsWith("designs/realistic.js"))).toBe(true);
+  await expect(page.locator(at("design-code"))).toContainText('loadCardDesign("realistic")');
+  await tap(page, at("design-plain"));
+  await expect(page.locator(at("design-spread"))).toHaveAttribute("data-design", "plain");
+  expect(new URL(page.url()).search).not.toContain("design=");
+  expect(errors).toEqual([]);
+});

@@ -600,6 +600,7 @@ cardFaceSvg("R1");                                    // a rules card: the rules
 | `plain` | drawn for Toranpu: big corners, the pips laid out as a real deck lays them, kings, queens and jacks as their letter in a frame, jokers in a jester's cap | in the package's 35 kB (11 kB gzipped) with the cards' names |
 | `four-colour` | plain, with diamonds blue and clubs green, as many poker players like them | the same |
 | `english` | the traditional English pattern, with its drawn kings, queens and jacks, by Dmitry Fomin, who gave it to the public domain (CC0); his jokers too | 715 kB (166 kB gzipped), its own entry point, fetched only when asked for |
+| `realistic` | Byron Knoll's public-domain deck, round pips and a shaded ace, with Fomin's kings, queens, jacks, ace of spades and jokers | 91 kB of its own, and the English pattern for its courts; its own entry point, fetched only when asked for |
 
 | Option of `cardFaceSvg` and `cardFaceUrl` | Means | Unless said |
 | --- | --- | --- |
@@ -627,10 +628,13 @@ cardFaceSvg("R1");                                    // a rules card: the rules
 - **The English pattern by import**, where a bundler should carry it:
   `import { ENGLISH_PATTERN } from "@johnmorrisdotca/toranpu/card-faces/english"`.
   **By name**, where it should be fetched only when somebody chooses it:
-  `await loadCardDesign("english")`.
+  `await loadCardDesign("english")`. The realistic design the same way:
+  `REALISTIC` from `@johnmorrisdotca/toranpu/card-faces/realistic`, or
+  `await loadCardDesign("realistic")`.
 - **A design of your own** is `{ name, box: [width, height], art: { KS: "<path …/>", … } }`:
   each card's drawing inside an `<svg>` of that box. A card it has no drawing
-  for is drawn plain.
+  for is drawn by its `fallback` design if it names one (the realistic design
+  names the English pattern), and otherwise plain.
 - Plain and four colour take the CSS custom properties under
   [The drawings](#the-drawings) when put into a page. The English pattern
   keeps its own colours, as a printed deck does.
@@ -927,7 +931,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.10.0",
+  "generator": "toranpu 2.11.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -1162,6 +1166,12 @@ Types: `CardDesign`, `CardDesignName`, `CardFaceOptions`.
 
 `ENGLISH_PATTERN`, the English pattern as a `CardDesign`: all fifty-two cards
 and both jokers in a box 360 by 540.
+
+### `@johnmorrisdotca/toranpu/card-faces/realistic`
+
+`REALISTIC`, the realistic design as a `CardDesign`: Byron Knoll's thirty-nine
+number cards and aces, with `ENGLISH_PATTERN` as its fallback for every
+other card.
 
 ### `@johnmorrisdotca/toranpu/element`
 

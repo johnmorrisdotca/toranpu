@@ -172,7 +172,10 @@ sounds.setMuted(true);</pre>
             <button type="button" id="shuffle" class="fam-button" data-testid="shuffle" data-say="pageShuffle"></button>
           </div>
           <div class="deck-hands" id="fans" data-testid="fans"></div>
-          <p id="deck-left" data-testid="deck-left"></p>
+          <div class="deck-rest">
+            <toranpu-pile id="deck-stock" data-testid="deck-stock" face-down messiness="0.35" size="small"></toranpu-pile>
+            <p id="deck-left" data-testid="deck-left"></p>
+          </div>
           <span class="fam-label" data-say="pageDeckCode"></span>
           <code class="fam-notation deck-code" id="deck-code" data-testid="deck-code"></code>
         </section>

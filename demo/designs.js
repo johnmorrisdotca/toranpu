@@ -4,23 +4,23 @@ import { CARD_DESIGNS, cardFaceSvg, loadCardDesign } from "./dist/card-faces.js"
 import { look, onLook, setLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
-const NAMES = { plain: "pageDesignPlain", "four-colour": "pageDesignFourColour", english: "pageDesignEnglish" };
+const NAMES = { plain: "pageDesignPlain", "four-colour": "pageDesignFourColour", english: "pageDesignEnglish", realistic: "pageDesignRealistic" };
 const SPREAD = ["AS", "KS", "QH", "JD", "TC", "7D", "2H", "RJ", "BJ", "R1", "R2", "BL"];
 const loaded = {};
 
 /** The design as cardFaceSvg takes it: a name for the two drawn in the package, the loaded set for the English pattern. */
 export async function designNamed(name) {
-  if (name !== "english") return name;
-  loaded.english ??= await loadCardDesign("english");
-  return loaded.english;
+  if (name !== "english" && name !== "realistic") return name;
+  loaded[name] ??= await loadCardDesign(name);
+  return loaded[name];
 }
 
 function code() {
-  if (look.design === "english")
+  if (look.design === "english" || look.design === "realistic")
     return `import { cardFaceSvg, loadCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
 
-const english = await loadCardDesign("english");
-element.innerHTML = cardFaceSvg("KS", { design: english });`;
+const ${look.design} = await loadCardDesign("${look.design}");
+element.innerHTML = cardFaceSvg("KS", { design: ${look.design} });`;
   return `import { cardFaceSvg } from "@johnmorrisdotca/toranpu/card-faces";
 
 element.innerHTML = cardFaceSvg("KS"${look.design === "plain" ? "" : `, { design: "${look.design}" }`});`;

@@ -28,7 +28,9 @@ Two commands remake what is made from outside material, and are run by hand,
 once, not in CI: `node scripts/sounds-cut.mjs <Audio folder>` then
 `pnpm sounds` remake the card sounds from Kenney's Casino Audio pack (on a
 Mac: it uses `afconvert`), and `node scripts/designs.mjs <folder>` remakes the
-English pattern from Dmitry Fomin's files on Wikimedia Commons. Anything new
+English pattern from Dmitry Fomin's files on Wikimedia Commons, and
+`node scripts/designs-realistic.mjs <folder>` the realistic design from Byron
+Knoll's (both need svgo, installed for the run and not kept). Anything new
 from outside must be CC0 or public domain, read at its source, and named in
 [docs/credits.md](./docs/credits.md) with the date it was checked; a test
 holds each file to that page. Nothing GPL or LGPL.

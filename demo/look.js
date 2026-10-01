@@ -1,9 +1,13 @@
 // The look the demo is shown in, shared by its panels and kept in the address: the back chosen,
 // its colour and the words in its middle. Each panel draws from here and says when it changes.
+import { CARD_BACKS } from "./dist/card-backs.js";
+import { CARD_DESIGNS } from "./dist/card-faces.js";
+
 const asked = new URLSearchParams(location.search);
-const BACKS = ["classic-red", "classic-blue", "ink-dots"];
+// The backs and designs as the package lists them, so a new one is chosen from the address without anyone remembering these lines.
+const BACKS = CARD_BACKS;
 const colour = asked.get("back-colour");
-const DESIGNS = ["plain", "four-colour", "english"];
+const DESIGNS = CARD_DESIGNS;
 
 export const look = {
   back: BACKS.includes(asked.get("back")) ? asked.get("back") : "classic-red",

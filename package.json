@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, the rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy with computer players, and Klondike, FreeCell and Spider solitaire with solvers. Zero dependencies.",
   "keywords": [
     "cards",
@@ -87,6 +87,7 @@
     "card-faces",
     "card-design",
     "english-pattern",
+    "realistic-playing-cards",
     "court-cards",
     "joker",
     "web-component",
@@ -158,6 +159,11 @@
       "types": "./dist/designs/english.d.ts",
       "import": "./dist/designs/english.js",
       "default": "./dist/designs/english.js"
+    },
+    "./card-faces/realistic": {
+      "types": "./dist/designs/realistic.d.ts",
+      "import": "./dist/designs/realistic.js",
+      "default": "./dist/designs/realistic.js"
     },
     "./element": {
       "types": "./dist/element.d.ts",

@@ -92,3 +92,16 @@ test("the table's stock and discard are piles too, in the look chosen", async ({
   await expect(page.locator(at("discard-pile"))).toHaveAttribute("aria-label", /^a pile, .+ on top, cards: 1$/);
   await sound(page, errors);
 });
+
+test("the deck's rest lies beside its seats, face down and a little untidy, as many as are left", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const rest = page.locator(at("deck-stock"));
+  await expect(rest).toHaveAttribute("count", "32");
+  await expect(rest).toHaveAttribute("face-down", "");
+  await expect(rest).toHaveAttribute("aria-label", /32/);
+  await page.locator(at("deck-hands")).selectOption("3");
+  await page.locator(at("deck-each")).selectOption("10");
+  await expect(rest).toHaveAttribute("count", "22");
+  await expect(page.locator(at("deck-left"))).toContainText("22");
+  await sound(page, errors);
+});
