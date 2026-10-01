@@ -114,7 +114,7 @@ export class ToranpuCard extends ElementBase {
 }
 
 const CARD_STYLE = `
-:host { display: inline-block; width: var(--toranpu-w, 70px); aspect-ratio: 5 / 7; perspective: 800px; vertical-align: middle; -webkit-tap-highlight-color: transparent; }
+:host { display: inline-block; user-select: none; -webkit-user-select: none; width: var(--toranpu-w, 70px); aspect-ratio: 5 / 7; perspective: 800px; vertical-align: middle; -webkit-tap-highlight-color: transparent; }
 :host([flip]) { cursor: pointer; }
 :host(:focus-visible) { outline: 3px solid var(--toranpu-focus, #b5452c); outline-offset: 3px; border-radius: 7%; }
 .card { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform var(--toranpu-flip-ms, 450ms) cubic-bezier(.3, .7, .3, 1); }

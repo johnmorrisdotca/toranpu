@@ -58,6 +58,20 @@ test("the stock lies face down and the discard face up, each laid out from its s
   await sound(page, errors);
 });
 
+test("a pile is one box whatever its messiness: squared up or scattered, the piles and the table round them keep their size", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  const box = (selector) => page.locator(selector).evaluate((element) => { const r = element.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; });
+  const table = () => page.locator(at("stock-demo")).evaluate((pile) => Math.round(pile.parentElement.closest("section, article, div").getBoundingClientRect().height));
+  const sizes = async () => ({ stock: await box(at("stock-demo")), discard: await box(at("discard-demo")), table: await table() });
+  await page.locator(at("messiness")).fill("0");
+  const neat = await sizes();
+  for (const messiness of ["0.4", "1", "0"]) {
+    await page.locator(at("messiness")).fill(messiness);
+    expect(await sizes(), `messiness ${messiness}`).toEqual(neat);
+  }
+  await sound(page, errors);
+});
+
 test("a pile keeps its size as cards come and go, and says so in Japanese", async ({ page }) => {
   const errors = await open(page, "?seed=1");
   const width = (await read(page, "discard-demo")).width;

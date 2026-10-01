@@ -230,8 +230,8 @@ describe("the README on card backs", () => {
 
 describe("the README on card designs", () => {
   it("each line draws what it says", async () => {
-    says('cardFaceSvg("QS");                                    // \'<svg … role="img" aria-label="queen of spades">…\': the plain queen of spades');
-    expect(cardFaces.cardFaceSvg("QS")).toMatch(/^<svg [^>]*role="img" aria-label="queen of spades">/);
+    says('cardFaceSvg("QS");                                    // \'<svg … role="img" aria-label="queen of spades" …>…\': the plain queen of spades');
+    expect(cardFaces.cardFaceSvg("QS")).toMatch(/^<svg [^>]*role="img" aria-label="queen of spades"[ >]/);
     says('cardFaceUrl("TD", { design: "four-colour" });         // "data:image/svg+xml;charset=utf-8,…": a blue ten of diamonds');
     expect(decodeURIComponent(cardFaces.cardFaceUrl("TD", { design: "four-colour" }))).toContain("#1f5fbf");
     says('const english = await loadCardDesign("english");      // the English pattern, fetched now and not before');

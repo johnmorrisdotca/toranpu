@@ -19,9 +19,22 @@ const read = (page, id) =>
       xs: slots.map((slot) => Number(slot.style.getPropertyValue("--x"))),
       delays: slots.map((slot) => slot.style.getPropertyValue("--delay")),
       width: Math.round(hand.getBoundingClientRect().width),
+      // How far the middle of the cards lies from the middle of the hand, in pixels: a hand gathers and spreads about its own middle.
+      offCentre: (() => {
+        const box = hand.getBoundingClientRect();
+        const rects = slots.map((slot) => slot.getBoundingClientRect());
+        return Math.round((Math.min(...rects.map((r) => r.left)) + Math.max(...rects.map((r) => r.right))) / 2 - (box.left + box.width / 2));
+      })(),
       html: hand.shadowRoot.innerHTML,
     };
   });
+/** A layout's places across, laid in the middle of the room a full fan of `count` takes, as the hand lays every state. */
+const centredXs = (count, open) => {
+  const xs = handLayout(count, { open }).map((place) => place.x);
+  const frame = Math.max(0, ...handLayout(count, { open: 1 }).map((place) => place.x));
+  const span = Math.max(0, ...xs);
+  return xs.map((x) => Math.round((x + (frame - span) / 2) * 1000) / 1000);
+};
 const settled = (page, id) => page.waitForFunction((testid) => !document.querySelector(`[data-testid="${testid}"]`).shadowRoot.querySelector('.hand[data-moving="true"]'), id);
 
 test("face down all at once and face up again: while down, no face is in the page", async ({ page }) => {
@@ -51,13 +64,16 @@ test("scrunched, the hand is one bundle that says neither its cards nor how many
   let s = await read(page, "hide-hand");
   expect(s).toMatchObject({ count: 3, faces: 0, down: 3, label: "a hand of cards, squared up face down" });
   expect(s.html).not.toMatch(/aria-label="[^"]*(spades|hearts|diamonds|clubs)/);
-  expect(s.width).toBeLessThan(before.width / 2);
+  // Squared up where the hand lies: the hand keeps its room, and the bundle sits in its middle, so nothing beside it moves.
+  expect(s.width).toBe(before.width);
+  expect(Math.abs(s.offCentre)).toBeLessThanOrEqual(2);
   // Another hand of another size scrunches to the same bundle.
   await tap(page, at("hand-spread"));
   await settled(page, "hide-hand");
   s = await read(page, "hide-hand");
   expect(s).toMatchObject({ count: 7, faces: 7, down: 0 });
   expect(s.xs).toEqual(before.xs);
+  expect(s.width).toBe(before.width);
   await sound(page, errors);
 });
 
@@ -94,21 +110,27 @@ test("a closed hand opens into a fan with a tap, and closes with another; the sl
   expect(s.expanded).toBe("false");
   expect(s.count).toBe(5);
   const closedXs = s.xs;
-  expect(closedXs).toEqual(handLayout(5, { open: 0.1 }).map((place) => place.x));
+  expect(closedXs).toEqual(centredXs(5, 0.1));
+  const closedWidth = s.width;
+  expect(Math.abs(s.offCentre)).toBeLessThanOrEqual(2);
 
   await tap(page, at("reveal-hand"));
   await settled(page, "reveal-hand");
   s = await read(page, "reveal-hand");
   expect(s.expanded).toBe("true");
   expect(s.xs).toEqual([0, 0.42, 0.84, 1.26, 1.68]);
+  // Opened from where it lay, and closed back there: the hand is the same size open and closed.
+  expect(s.width).toBe(closedWidth);
 
   await tap(page, at("reveal-hand"));
   await settled(page, "reveal-hand");
-  expect((await read(page, "reveal-hand")).xs).toEqual(closedXs);
+  s = await read(page, "reveal-hand");
+  expect(s.xs).toEqual(closedXs);
+  expect(s.width).toBe(closedWidth);
 
   await page.locator(at("closed-amount")).fill("0.5");
   await expect(page.locator(at("reveal-hand"))).toHaveAttribute("closed", "0.5");
-  expect((await read(page, "reveal-hand")).xs).toEqual(handLayout(5, { open: 0.5 }).map((place) => place.x));
+  expect((await read(page, "reveal-hand")).xs).toEqual(centredXs(5, 0.5));
   await expect(page.locator(at("reveal-code"))).toContainText('closed="0.5" reveal');
 
   await page.locator(at("reveal-hand")).focus();

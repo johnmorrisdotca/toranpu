@@ -10,7 +10,7 @@
 import { STRINGS, type Language } from "../strings.ts";
 import { cardText } from "../words.ts";
 import type { CardDesign } from "./cardFaces.types.ts";
-import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl } from "./svg.ts";
+import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl, UNSELECTABLE } from "./svg.ts";
 import type { CardSuitLetter } from "./svg.types.ts";
 
 /** The designs drawn here, by name. The English pattern is `ENGLISH_PATTERN` from `@johnmorrisdotca/toranpu/card-faces/english`, or `loadCardDesign("english")`. */
@@ -180,7 +180,7 @@ export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string
       for (const pip of pipPlaces(count)) parts.push(pip.down ? `<g transform="rotate(180 ${pip.x} ${pip.y})">${suitPath(suit, pip.x, pip.y, 17, ink)}</g>` : suitPath(suit, pip.x, pip.y, 17, ink));
     }
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"${size}${label}>${parts.join("")}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"${size}${label}${UNSELECTABLE}>${parts.join("")}</svg>`;
 }
 
 /** A card's face as a data URL, for an <img src>, a CSS background or a canvas. `null` for anything that is not a card. */

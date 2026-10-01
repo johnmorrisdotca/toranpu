@@ -86,9 +86,10 @@ export class ToranpuPile extends ElementBase {
     const top = cards[cards.length - 1];
     this.setAttribute("role", "img");
     this.setAttribute("aria-label", count === 0 ? words.pileEmpty : down || top === undefined ? fillIn(words.pileFaceDown, { n: count }) : fillIn(words.pileFaceUp, { n: count, card: faceName(top, language) }));
-    // Room on every side for the most any card could be nudged or turned at this messiness and depth, whatever the pile holds,
-    // so a pile keeps its size as cards come and go and never overlaps what is next to it.
-    const reach = 0.06 + 0.012 * depth + 0.32 * messiness;
+    // Room on every side for the most any card could be nudged or turned at the MESSIEST a pile can be, at this depth, whatever
+    // the pile holds and however messy it is now: so a pile is one predictable box, the same size squared up as scattered, as
+    // cards come and go, and nothing beside it moves when the messiness changes. The cards lie in the middle of it.
+    const reach = 0.06 + 0.012 * depth + 0.32;
     const layers = places
       .map((place, at) => {
         const card = down ? "AS" : (shown[at] as string);
@@ -101,7 +102,7 @@ export class ToranpuPile extends ElementBase {
 }
 
 const PILE_STYLE = `
-:host { display: inline-block; vertical-align: middle; }
+:host { display: inline-block; user-select: none; -webkit-user-select: none; vertical-align: middle; }
 .pile { position: relative; width: calc(var(--toranpu-w, 70px) * (1 + 2 * var(--reach))); aspect-ratio: auto; height: calc(var(--toranpu-w, 70px) * (1.4 + 2 * var(--reach))); }
 .layer { position: absolute; left: calc(var(--toranpu-w, 70px) * (var(--reach) + var(--x))); top: calc(var(--toranpu-w, 70px) * (var(--reach) + var(--y))); width: var(--toranpu-w, 70px); aspect-ratio: 5 / 7; transform: rotate(var(--r)); }
 .layer svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 .5px 1px rgba(0,0,0,.3)); }

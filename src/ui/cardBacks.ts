@@ -8,7 +8,7 @@
  * of a casino back, a fine lattice inside a white border with a rosette in
  * the middle; they copy no maker's design.
  */
-import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl } from "./svg.ts";
+import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl, UNSELECTABLE } from "./svg.ts";
 
 /** The backs, by name. */
 export const CARD_BACKS = ["classic-red", "classic-blue", "ink-dots"] as const;
@@ -127,7 +127,7 @@ export function cardBackSvg(name: CardBackName | string = "classic-red", options
     );
     parts.push(mark !== null ? marked(50, 70, mark, field, paper, fieldText) : rosette(50, 70, field, ink));
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"${size}${title}>${parts.join("")}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"${size}${title}${UNSELECTABLE}>${parts.join("")}</svg>`;
 }
 
 /** A back as a data URL, for an <img src>, a CSS background or a canvas: the same drawing as `cardBackSvg`, with its own colours. */

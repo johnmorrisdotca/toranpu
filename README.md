@@ -581,12 +581,13 @@ keeps its own colours. Each back is under 5 kB of SVG.
 
 The faces of the cards, drawn as SVG in the same 100 by 140 box as the backs.
 Plain is the default; four colour and the English pattern are there to
-choose.
+choose. A card is a picture, never text: its letters cannot be selected by a
+drag or a long press.
 
 ```ts
 import { cardFaceSvg, cardFaceUrl, loadCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
 
-cardFaceSvg("QS");                                    // '<svg … role="img" aria-label="queen of spades">…': the plain queen of spades
+cardFaceSvg("QS");                                    // '<svg … role="img" aria-label="queen of spades" …>…': the plain queen of spades
 cardFaceUrl("TD", { design: "four-colour" });         // "data:image/svg+xml;charset=utf-8,…": a blue ten of diamonds
 const english = await loadCardDesign("english");      // the English pattern, fetched now and not before
 cardFaceSvg("KS", { design: english, width: 120 });   // the traditional king of spades, 120 pixels wide
@@ -878,7 +879,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.8.0",
+  "generator": "toranpu 2.8.1",
   "game": "goFish",
   "size": 1,
   "players": [

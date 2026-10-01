@@ -6,6 +6,24 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.8.1] - 2026-10-01
+
+### Fixed
+
+- **A card's letters can no longer be selected.** A drag across a hand, or a
+  long press on a phone, highlighted the corner letters and pips as if they
+  were text. Every face and back now carries `user-select: none` on its
+  `<svg>`, and the card, hand and pile elements on their host.
+- **A hand closes back where it lies.** Squared up, scrunched or closed, a
+  hand gathered its cards at its left edge, then shrank to fit them once
+  still, so a centred hand jumped sideways as each effect ended. A hand now
+  keeps the room its whole fan takes in every state, and gathers and spreads
+  about its own middle: nothing moves when an effect ends.
+- **A pile is one box whatever its messiness.** A pile sized itself by how
+  messy it was, so moving the messiness grew and shrank the table round it.
+  It now keeps the room its messiest form takes, at any messiness and count,
+  with the cards in the middle.
+
 ## [2.8.0] - 2026-09-30
 
 ### Added
@@ -291,7 +309,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.1...HEAD
+[2.8.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.5.0...v2.6.0

@@ -190,8 +190,16 @@ export class ToranpuHand extends ElementBase {
     // The cards are drawn where they start, then moved to where they end; a face is drawn only while some card may show it.
     const bundle = from.scrunched && target.scrunched;
     const count = bundle ? BUNDLE_BACKS : cards.length;
-    const startPlaces = this.#places(count, from);
-    const endPlaces = this.#places(count, target);
+    // ONE FRAME FOR EVERY STATE: the hand keeps the room its whole fan takes, open or closed, face up or
+    // squared into a bundle, and each state lies in the middle of it. So closing gathers the cards to
+    // where the hand lies and opening spreads them from there, and the hand never changes size when an
+    // effect ends: a hand drawn smaller once still would slide across the page (a centred one most).
+    const fan = this.#places(cards.length, { open: 1, scrunched: false });
+    const widest = (places: CardPlace[]) => Math.max(0, ...places.map((spot) => spot.x));
+    const frame = Math.max(widest(fan), widest(this.#places(count, from)), widest(this.#places(count, target)));
+    const centred = (places: CardPlace[]) => places.map((spot) => ({ ...spot, x: Math.round((spot.x + (frame - widest(places)) / 2) * 1000) / 1000 }));
+    const startPlaces = centred(this.#places(count, from));
+    const endPlaces = centred(this.#places(count, target));
     const facesNeeded = !bundle && (!from.down || !target.down) && !(target.scrunched && !moving);
     const slots = Array.from({ length: count }, (_, at) => {
       const card = bundle ? "" : (cards[at] as string);
@@ -199,10 +207,11 @@ export class ToranpuHand extends ElementBase {
       const back = cardDrawing(card || "AS", true, this, design, language);
       return `<div class="slot" part="card" data-at="${at}"><div class="turn"><div class="side face">${face}</div><div class="side back">${back}</div></div></div>`;
     });
-    const span = Math.max(...endPlaces.map((place) => place.x), ...(moving ? startPlaces.map((place) => place.x) : [0]), 0);
-    const drop = Math.max(...endPlaces.map((place) => place.y), 0);
-    // A card turned about a point below it swings out sideways: room is kept on both sides for the most any card turns.
-    const turn = Math.max(...endPlaces.map((place) => Math.abs(place.rotate)), ...(moving ? startPlaces.map((place) => Math.abs(place.rotate)) : [0]), 0);
+    const every = [...fan, ...startPlaces, ...endPlaces];
+    const span = frame;
+    const drop = Math.max(...every.map((place) => place.y), 0);
+    // A card turned about a point below it swings out sideways: room is kept on both sides for the most any card of the frame turns.
+    const turn = Math.max(...every.map((place) => Math.abs(place.rotate)), 0);
     const side = Math.round(1.72 * Math.sin((turn * Math.PI) / 180) * 1000) / 1000;
     // The hand is as wide as its cards ask, and never wider than the room it is given: in less room the cards are drawn smaller.
     const across = Math.round((1 + span + 2 * side + 0.12) * 1000) / 1000;
@@ -260,7 +269,7 @@ export class ToranpuHand extends ElementBase {
 }
 
 const HAND_STYLE = `
-:host { display: inline-block; vertical-align: middle; -webkit-tap-highlight-color: transparent; max-width: 100%; width: calc(var(--toranpu-w, 70px) * var(--toranpu-across, 1)); container-type: inline-size; }
+:host { display: inline-block; user-select: none; -webkit-user-select: none; vertical-align: middle; -webkit-tap-highlight-color: transparent; max-width: 100%; width: calc(var(--toranpu-w, 70px) * var(--toranpu-across, 1)); container-type: inline-size; }
 :host([reveal]) { cursor: pointer; }
 :host(:focus-visible) { outline: 3px solid var(--toranpu-focus, #b5452c); outline-offset: 4px; border-radius: 8px; }
 .hand { --cw: min(var(--toranpu-w, 70px), calc(100cqw / var(--across))); position: relative; width: 100%; height: calc(var(--cw) * (1.4 + var(--drop) + .14 + var(--side) * .45)); }

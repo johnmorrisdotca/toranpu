@@ -51,3 +51,9 @@ export const round = (value: number, places = 2): string => String(Number(value.
 export function svgDataUrl(svg: string): string {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
+
+/**
+ * What every card drawing carries on its root, so its letters and pips can never be highlighted
+ * by a drag or a long press: a card is a picture to play with, not text to copy.
+ */
+export const UNSELECTABLE = ` style="user-select:none;-webkit-user-select:none"`;
