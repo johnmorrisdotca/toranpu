@@ -1151,7 +1151,7 @@ Types: `CardBackName`, `CardBackOptions`, `CardSuitLetter`.
 | `cardFaceSvg(card, options?)` | A face as a whole SVG document, or `null` for what is not a card |
 | `cardFaceUrl(card, options?)` | The same as a data URL |
 | `loadCardDesign(name)` | A design by name, fetched when first asked for: `"english"` |
-| `CARD_DESIGNS` | The three designs' names |
+| `CARD_DESIGNS` | The designs' names: plain, four colour, the English pattern and realistic |
 | `JOKERS` | The jokers' ids, `RJ` and `BJ` |
 | `EXTRA_CARDS` | The extras of a deck no game deals: the jokers, the rules cards R1 (Hearts) and R2 (Spades), and the blank BL |
 | `EXTRA_LIMITS` | The most of each a hand holds: four jokers, two rules cards, two blanks |
