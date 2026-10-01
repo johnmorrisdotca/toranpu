@@ -4,16 +4,13 @@
 
 /* Choosing a game. */
 .choose { display: grid; gap: 12px; margin-bottom: 16px; }
-/* Room for as many rows of game buttons as either language takes at this width, measured from 320 to 1280 pixels, with one
-   spare on a phone for fonts wider than a Mac's: changing language never moves the table. A row is a 44-pixel button and its gap. */
-.games { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; min-height: 44px; }
-@media (max-width: 1199px) { .games { min-height: 94px; } }
-@media (max-width: 599px) { .games { min-height: 194px; } }
-@media (max-width: 429px) { .games { min-height: 244px; } }
-/* Room for the longest game's line in either language, and one line spare for wider fonts than a Mac's: measured at 360, 390, 700 and 1280 pixels. */
-.blurb { margin: 0; color: var(--muted); line-height: 1.5; min-height: 3em; }
-@media (max-width: 999px) { .blurb { min-height: 4.5em; } }
-@media (max-width: 599px) { .blurb { min-height: 7.5em; } }
+.games { display: flex; flex-wrap: wrap; gap: 6px; }
+.blurb { margin: 0; color: var(--muted); line-height: 1.5; }
+/* Words shown in one language over the same words in the other, unseen: the box is the size of the larger, in any font. */
+.both { display: inline-grid; }
+p.both { display: grid; }
+.both > * { grid-area: 1 / 1; }
+.both > .ghost { visibility: hidden; }
 .blurb a { white-space: nowrap; }
 .setup label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); font-size: .9rem; }
 /* A select drawn by the page, so that it is 44px to the touch in every browser. */

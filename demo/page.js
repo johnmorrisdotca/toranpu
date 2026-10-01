@@ -38,6 +38,14 @@ const el = (tag, text = "", attributes = {}) => {
   for (const [name, value] of Object.entries(attributes)) made.setAttribute(name, value);
   return made;
 };
+/** The language not being shown. */
+const other = () => (language.lang === "ja" ? "en" : "ja");
+/**
+ * The same words in the other language, laid exactly under the shown ones and never seen or read out: whatever
+ * holds both is as big as the larger of the two in the font this device has, so changing language moves nothing.
+ */
+// Each copy carries its own language, so that it is drawn in the font that language is drawn in when it is the one shown.
+const ghost = (text) => el("span", text, { class: "ghost", "aria-hidden": "true", lang: other() });
 /** The names as the table shows them: a person's first seat is "You" in the page's language. */
 const shown = (players) => players.map((name, seat) => (seat === 0 && name === NAMES[0] ? t().pageYou : name));
 
@@ -204,7 +212,8 @@ function drawChooser() {
   const count = rules().seats(game).players.length;
   $("games").replaceChildren(
     ...CARD_GAME_LIST.map((one) => {
-      const button = el("button", gameName(one, language.lang), { type: "button", class: "fam-button", "aria-pressed": String(one === kind), "data-testid": `game-${one}` });
+      const button = el("button", "", { type: "button", class: "fam-button both", "aria-pressed": String(one === kind), "data-testid": `game-${one}` });
+      button.append(el("span", gameName(one, language.lang), { lang: language.lang }), ghost(gameName(one, other())));
       button.addEventListener("click", () => deal(one));
       return button;
     }),
@@ -213,6 +222,8 @@ function drawChooser() {
   $("players").value = String(count);
   $("seed").value = String(game.seed);
   $("blurb").textContent = gameSays(kind, language.lang);
+  $("blurb-ghost").replaceChildren(el("span", `${gameSays(kind, other())} ${STRINGS[other()].pageRules}`));
+  $("blurb-ghost").lang = other();
   $("rules-link").href = `${RULES}#${ANCHORS[kind]}`;
 }
 
