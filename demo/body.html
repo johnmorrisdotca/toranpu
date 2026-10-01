@@ -1,8 +1,8 @@
       <section class="choose" aria-labelledby="choose-title">
         <h2 id="choose-title" class="fam-sr" data-say="pageChoose"></h2>
-        <div class="games" id="games" data-testid="games"></div>
+        <div class="games" id="games" data-testid="games" data-help-en="Choose which card game to play at the table below." data-help-ja="下のテーブルで遊ぶカードゲームを選びます。" data-help-after></div>
         <p class="blurb both"><span><span id="blurb" data-testid="blurb"></span> <a id="rules-link" data-say="pageRules"></a></span><span id="blurb-ghost" class="ghost" aria-hidden="true"></span></p>
-        <div class="fam-row setup">
+        <div class="fam-row setup" data-help-en="Players is how many sit down. The same seed deals the same cards again. Deal shuffles and deals. Sound plays real card sounds at the table." data-help-ja="「人数」は席につく人数です。同じ「シード」なら、同じカードが配られます。「配る」でシャッフルして配ります。「音」を入れると、卓で本物のカードの音が鳴ります。">
           <label><span class="both"><span data-say="pagePlayers"></span><span class="ghost" data-ghost-say="pagePlayers" aria-hidden="true"></span></span> <select id="players" class="fam-field" data-testid="players"></select></label>
           <label><span class="both"><span data-say="pageSeed"></span><span class="ghost" data-ghost-say="pageSeed" aria-hidden="true"></span></span> <input id="seed" class="fam-field" data-mono="true" data-testid="seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
           <button type="button" id="deal" class="fam-button" data-primary="true" data-testid="deal"><span class="both"><span data-say="pageDeal"></span><span class="ghost" data-ghost-say="pageDeal" aria-hidden="true"></span></span></button>
@@ -36,7 +36,7 @@
             <button type="button" class="fam-button" id="copy" data-testid="copy" data-say="pageCopy"></button>
           </div>
           <label class="fam-label" for="paste" data-say="pagePaste"></label>
-          <div class="paste">
+          <div class="paste" data-help-en="Paste a game&#x27;s code or its JSON, then press Read to play it out." data-help-ja="ゲームのコードまたはJSONを貼りつけ、読み込みボタンを押すと再現します。">
             <input id="paste" class="fam-field" data-mono="true" data-testid="paste" autocomplete="off" autocapitalize="off" spellcheck="false" data-say-placeholder="pagePasteHint" />
             <button type="button" class="fam-button" id="read" data-testid="read" data-say="pageRead"></button>
           </div>
@@ -45,7 +45,7 @@
         <section aria-labelledby="sounds-title" id="sounds">
           <h2 id="sounds-title" data-say="pageSounds"></h2>
           <p data-say="pageSoundsNote"></p>
-          <div class="fam-actions" id="sound-kinds" data-testid="sound-kinds"></div>
+          <div class="fam-actions" id="sound-kinds" data-testid="sound-kinds" data-help-en="Tap a sound to hear it." data-help-ja="音をタップすると聞けます。" data-help-after></div>
           <pre class="snippet" tabindex="0">import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";
 
 const sounds = createCardSounds();
@@ -56,8 +56,8 @@ sounds.setMuted(true);</pre>
         <section aria-labelledby="backs-title" id="backs">
           <h2 id="backs-title" data-say="pageBacks"></h2>
           <p data-say="pageBacksNote"></p>
-          <div class="back-picks" id="back-picks" data-testid="back-picks"></div>
-          <div class="fam-row setup">
+          <div class="back-picks" id="back-picks" data-testid="back-picks" data-help-en="Choose a card back. The picture and the code below show it." data-help-ja="カードの裏面を選びます。下の絵とコードに反映されます。" data-help-after></div>
+          <div class="fam-row setup" data-help-en="Colour gives the chosen back a colour of your own. Its own colour puts the back&#x27;s colour again. Words in the middle writes a short word on it." data-help-ja="「色」で裏面に好きな色をつけます。「元の色」で元に戻します。「中央の文字」で、中央に短い言葉を入れます。">
             <label><span data-say="pageBackColour"></span> <input type="color" id="back-colour" class="fam-field colour" data-testid="back-colour" /></label>
             <button type="button" class="fam-button" id="back-own" data-testid="back-own" data-say="pageBackOwnColour"></button>
             <label><span data-say="pageBackMark"></span> <input id="back-mark" class="fam-field" data-testid="back-mark" maxlength="12" autocomplete="off" /></label>
@@ -70,14 +70,14 @@ sounds.setMuted(true);</pre>
         <section class="wide" aria-labelledby="designs-title" id="designs">
           <h2 id="designs-title" data-say="pageDesigns"></h2>
           <p data-say="pageDesignsNote"></p>
-          <div class="fam-actions" id="design-picks" data-testid="design-picks"></div>
+          <div class="fam-actions" id="design-picks" data-testid="design-picks" data-help-en="Choose a look for the cards. The cards and the code below change with it." data-help-ja="カードの見た目を選びます。下のカードとコードが変わります。" data-help-after></div>
           <div class="spread" id="design-spread" data-testid="design-spread"></div>
           <pre class="snippet" id="design-code" data-testid="design-code" tabindex="0"></pre>
         </section>
         <section class="wide" aria-labelledby="one-card-title" id="one-card-panel">
           <h2 id="one-card-title" data-say="pageOneCard"></h2>
           <p data-say="pageOneCardNote"></p>
-          <div class="fam-row setup">
+          <div class="fam-row setup" data-help-en="Choose which card to show, as a tag and as a picture." data-help-ja="表示するカードを選びます（タグと画像の両方で表示します）。">
             <label><span data-say="pageCardPick"></span> <select id="one-card-pick" class="fam-field" data-testid="one-card-pick"></select></label>
           </div>
           <div class="one-card">
@@ -98,12 +98,12 @@ sounds.setMuted(true);</pre>
           <p data-say="pageHideNote"></p>
           <div class="hand-stage"><toranpu-hand id="hide-hand" data-testid="hide-hand" sound></toranpu-hand></div>
           <div class="hand-controls">
-            <div class="fam-row hand-row"><label class="fam-label" for="hand-card" data-say="pageWhichCard"></label> <div class="hand-buttons"><select id="hand-card" class="fam-field" data-testid="hand-card"></select> <button type="button" class="fam-button" id="hand-new" data-testid="hand-new" data-say="pageNewHand"></button></div></div>
-            <div class="fam-row hand-row" role="group" data-say-label="pageRowTurn"><span class="fam-label" data-say="pageRowTurn"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-hide" data-testid="hand-hide" data-say="pageHideAll"></button> <button type="button" class="fam-button" id="hand-one-by-one" data-testid="hand-one-by-one" data-say="pageHideOneByOne"></button> <button type="button" class="fam-button" id="hand-show" data-testid="hand-show" data-say="pageShowHand"></button> <button type="button" class="fam-button" id="hand-toggle" data-testid="hand-toggle" data-say="pageToggle"></button> <button type="button" class="fam-button" id="hand-toggle-all" data-testid="hand-toggle-all" data-say="pageToggleAll"></button></div></div>
-            <div class="fam-row hand-row" role="group" data-say-label="pageRowGather"><span class="fam-label" data-say="pageRowGather"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-scrunch" data-testid="hand-scrunch" data-say="pageScrunch"></button> <button type="button" class="fam-button" id="hand-spread" data-testid="hand-spread" data-say="pageSpread"></button> <button type="button" class="fam-button" id="hand-part" data-testid="hand-part" data-say="pagePart"></button> <button type="button" class="fam-button" id="hand-unpart" data-testid="hand-unpart" data-say="pageUnpart"></button></div></div>
-            <div class="fam-row hand-row" role="group" data-say-label="pageRowOrder"><span class="fam-label" data-say="pageRowOrder"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-sort" data-testid="hand-sort" data-say="pageSort"></button> <button type="button" class="fam-button" id="hand-group" data-testid="hand-group" data-say="pageGroup"></button> <button type="button" class="fam-button" id="hand-group-face" data-testid="hand-group-face" data-say="pageGroupFace"></button> <button type="button" class="fam-button" id="hand-unsort" data-testid="hand-unsort" data-say="pageUnsort"></button> <button type="button" class="fam-button" id="hand-mix" data-testid="hand-mix" data-say="pageMix"></button></div></div>
-            <div class="fam-row hand-row" role="group" data-say-label="pageRowChange"><span class="fam-label" data-say="pageRowChange"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-toss" data-testid="hand-toss" data-say="pageToss"></button> <button type="button" class="fam-button" id="hand-replace" data-testid="hand-replace" data-say="pageReplace"></button> <label><span data-say="pageLands"></span> <select id="hand-receive" class="fam-field" data-testid="hand-receive"><option value="end" data-say="pageAtEnd"></option><option value="front" data-say="pageAtFront"></option></select></label></div></div>
-            <div class="fam-row hand-row" role="group" data-say-label="pageRowMark"><span class="fam-label" data-say="pageRowMark"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-mark" data-testid="hand-mark" data-say="pageMark"></button> <button type="button" class="fam-button" id="hand-unmark" data-testid="hand-unmark" data-say="pageUnmark"></button> <button type="button" class="fam-button" id="hand-spin" data-testid="hand-spin" data-say="pageSpin"></button> <button type="button" class="fam-button" id="hand-spin-all" data-testid="hand-spin-all" data-say="pageSpinAll"></button> <select id="hand-spin-way" class="fam-field" data-testid="hand-spin-way" data-say-label="pageSpin"><option value="clockwise" data-say="pageClockwise"></option><option value="anticlockwise" data-say="pageAnticlockwise"></option></select></div></div>
+            <div class="fam-row hand-row" data-help-en="Card picks the one card the buttons below work on. Another hand deals a new hand." data-help-ja="「カード」は、下のボタンが使う1枚を選びます。「別の手札」で手札を配り直します。"><label class="fam-label" for="hand-card" data-say="pageWhichCard"></label> <div class="hand-buttons"><select id="hand-card" class="fam-field" data-testid="hand-card"></select> <button type="button" class="fam-button" id="hand-new" data-testid="hand-new" data-say="pageNewHand"></button></div></div>
+            <div class="fam-row hand-row" role="group" data-say-label="pageRowTurn" data-help-en="Turn the whole hand face down or face up, or turn one card or every card over." data-help-ja="手札全体を伏せたり表にしたりします。1枚または全部を裏返すこともできます。"><span class="fam-label" data-say="pageRowTurn"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-hide" data-testid="hand-hide" data-say="pageHideAll"></button> <button type="button" class="fam-button" id="hand-one-by-one" data-testid="hand-one-by-one" data-say="pageHideOneByOne"></button> <button type="button" class="fam-button" id="hand-show" data-testid="hand-show" data-say="pageShowHand"></button> <button type="button" class="fam-button" id="hand-toggle" data-testid="hand-toggle" data-say="pageToggle"></button> <button type="button" class="fam-button" id="hand-toggle-all" data-testid="hand-toggle-all" data-say="pageToggleAll"></button></div></div>
+            <div class="fam-row hand-row" role="group" data-say-label="pageRowGather" data-help-en="Scrunch the hand together or spread it out. Part at it opens a gap at the chosen card, and Close up shuts it." data-help-ja="手札をまとめたり広げたりします。「抜き出す」で選んだカードのところを開き、「戻す」で閉じます。"><span class="fam-label" data-say="pageRowGather"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-scrunch" data-testid="hand-scrunch" data-say="pageScrunch"></button> <button type="button" class="fam-button" id="hand-spread" data-testid="hand-spread" data-say="pageSpread"></button> <button type="button" class="fam-button" id="hand-part" data-testid="hand-part" data-say="pagePart"></button> <button type="button" class="fam-button" id="hand-unpart" data-testid="hand-unpart" data-say="pageUnpart"></button></div></div>
+            <div class="fam-row hand-row" role="group" data-say-label="pageRowOrder" data-help-en="Sort the hand, group it by suit or by number and face cards, put it back as dealt, or mix it up." data-help-ja="手札を並べ替えます。スートごと、数札と絵札ごとにまとめる、配られた順に戻す、混ぜることもできます。"><span class="fam-label" data-say="pageRowOrder"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-sort" data-testid="hand-sort" data-say="pageSort"></button> <button type="button" class="fam-button" id="hand-group" data-testid="hand-group" data-say="pageGroup"></button> <button type="button" class="fam-button" id="hand-group-face" data-testid="hand-group-face" data-say="pageGroupFace"></button> <button type="button" class="fam-button" id="hand-unsort" data-testid="hand-unsort" data-say="pageUnsort"></button> <button type="button" class="fam-button" id="hand-mix" data-testid="hand-mix" data-say="pageMix"></button></div></div>
+            <div class="fam-row hand-row" role="group" data-say-label="pageRowChange" data-help-en="Toss a card out, or replace one with a new card that goes at the end or at the front." data-help-ja="1枚捨てるか、1枚を新しいカードに入れ替えます。新しいカードは最後か先頭に入ります。"><span class="fam-label" data-say="pageRowChange"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-toss" data-testid="hand-toss" data-say="pageToss"></button> <button type="button" class="fam-button" id="hand-replace" data-testid="hand-replace" data-say="pageReplace"></button> <label><span data-say="pageLands"></span> <select id="hand-receive" class="fam-field" data-testid="hand-receive"><option value="end" data-say="pageAtEnd"></option><option value="front" data-say="pageAtFront"></option></select></label></div></div>
+            <div class="fam-row hand-row" role="group" data-say-label="pageRowMark" data-help-en="Mark a card or clear the marks, or spin one card or all of them clockwise or anticlockwise." data-help-ja="カードに印をつけたり消したりします。1枚または全部を、右回りか左回りに回すこともできます。"><span class="fam-label" data-say="pageRowMark"></span> <div class="hand-buttons"><button type="button" class="fam-button" id="hand-mark" data-testid="hand-mark" data-say="pageMark"></button> <button type="button" class="fam-button" id="hand-unmark" data-testid="hand-unmark" data-say="pageUnmark"></button> <button type="button" class="fam-button" id="hand-spin" data-testid="hand-spin" data-say="pageSpin"></button> <button type="button" class="fam-button" id="hand-spin-all" data-testid="hand-spin-all" data-say="pageSpinAll"></button> <select id="hand-spin-way" class="fam-field" data-testid="hand-spin-way" data-say-label="pageSpin"><option value="clockwise" data-say="pageClockwise"></option><option value="anticlockwise" data-say="pageAnticlockwise"></option></select></div></div>
           </div>
           <pre class="snippet" id="hide-code" data-testid="hide-code" tabindex="0">hand.hide({ oneByOne: true });</pre>
         </section>
@@ -111,7 +111,7 @@ sounds.setMuted(true);</pre>
           <h2 id="reveal-title" data-say="pageReveal"></h2>
           <p data-say="pageRevealNote"></p>
           <div class="hand-stage"><toranpu-hand id="reveal-hand" data-testid="reveal-hand" reveal sound></toranpu-hand></div>
-          <div class="fam-row setup">
+          <div class="fam-row setup" data-help-en="Slide to close the hand a little or a lot: 0 is wide open and 1 is shut." data-help-ja="スライダーで手札の閉じ具合を変えます（0は全開、1は全部閉じる）。">
             <label><span data-say="pageClosed"></span> <input type="range" id="closed-amount" data-testid="closed-amount" min="0" max="1" step="0.05" value="0.9" /></label>
           </div>
           <pre class="snippet" id="reveal-code" data-testid="reveal-code" tabindex="0"></pre>
@@ -123,7 +123,7 @@ sounds.setMuted(true);</pre>
             <figure><toranpu-pile id="stock-demo" data-testid="stock-demo" face-down></toranpu-pile><figcaption data-say="pageStockPile"></figcaption></figure>
             <figure><toranpu-pile id="discard-demo" data-testid="discard-demo"></toranpu-pile><figcaption data-say="pageDiscard"></figcaption></figure>
           </div>
-          <div class="fam-row setup">
+          <div class="fam-row setup" data-help-en="Messiness is how untidy the piles look. The pile seed keeps a pile looking the same. Draw a card moves one from the stock to the discard." data-help-ja="「乱れ具合」は山の散らかり方です。同じ「山のシード」なら同じ見た目になります。「1枚引く」で山札から捨て札へ1枚移します。">
             <label><span data-say="pageMessiness"></span> <input type="range" id="messiness" data-testid="messiness" min="0" max="1" step="0.05" /></label>
             <label><span data-say="pagePileSeed"></span> <input id="pile-seed" class="fam-field" data-mono="true" data-testid="pile-seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
             <button type="button" class="fam-button" id="draw-card" data-testid="draw-card" data-say="pageDrawCard"></button>
@@ -133,7 +133,7 @@ sounds.setMuted(true);</pre>
         <section class="wide" aria-labelledby="table-title" id="table-panel">
           <h2 id="table-title" data-say="pageTablePanel"></h2>
           <p data-say="pageTablePanelNote"></p>
-          <div class="fam-row setup">
+          <div class="fam-row setup" data-help-en="Game and Players choose what the table below plays and how many sit at it. Deal deals it again." data-help-ja="「ゲーム」と「人数」で、下の卓で遊ぶゲームと人数を選びます。「配る」で配り直します。">
             <label><span data-say="pageTableGame"></span> <select id="table-game" class="fam-field" data-testid="table-game"></select></label>
             <label><span data-say="pagePlayers"></span> <select id="table-players" class="fam-field" data-testid="table-players"></select></label>
             <button type="button" class="fam-button" id="table-deal" data-testid="table-deal" data-say="pageDeal"></button>
@@ -144,7 +144,7 @@ sounds.setMuted(true);</pre>
         <section class="wide" aria-labelledby="embed-title" id="embed-panel">
           <h2 id="embed-title" data-say="pageEmbed"></h2>
           <p data-say="pageEmbedNote"></p>
-          <div class="fam-row setup">
+          <div class="fam-row setup" data-help-en="Cards is the cards to show, like KS 7H. Size sets how big they are drawn. The frame and the tag below follow." data-help-ja="「カード」には表示するカードを入力します（例: KS 7H）。「大きさ」で表示の大きさを選びます。下のフレームとタグも変わります。">
             <label><span data-say="pageEmbedCards"></span> <input id="embed-cards" class="fam-field" data-mono="true" data-testid="embed-cards" autocomplete="off" autocapitalize="characters" spellcheck="false" /></label>
             <span class="fam-seg" role="group" data-say-label="pageEmbedSize">
               <button type="button" data-embed-size="small" data-testid="embed-small" data-say="pageSizeSmall"></button>
@@ -168,7 +168,7 @@ sounds.setMuted(true);</pre>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>
           <p data-say="pageDeckNote"></p>
-          <div class="fam-row setup">
+          <div class="fam-row setup" data-help-en="Choose how the deck is dealt: the seed, how many hands, how many cards each and the gap between seats. Shuffle deals it again." data-help-ja="デッキの配り方を選びます（シード、人数、1人あたりの枚数、席ごとの間隔）。「シャッフル」でもう一度混ぜます。">
             <label><span data-say="pageDeckSeed"></span> <input id="deck-seed" class="fam-field" data-mono="true" data-testid="deck-seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
             <label><span data-say="pageHands"></span> <select id="deck-hands" class="fam-field" data-testid="deck-hands"></select></label>
             <label><span data-say="pageEach"></span> <select id="deck-each" class="fam-field" data-testid="deck-each"></select></label>
