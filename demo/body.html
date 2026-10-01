@@ -107,6 +107,15 @@ sounds.setMuted(true);</pre>
           </div>
           <pre class="snippet" id="hide-code" data-testid="hide-code" tabindex="0">hand.hide({ oneByOne: true });</pre>
         </section>
+        <section aria-labelledby="reveal-title" id="reveal-panel">
+          <h2 id="reveal-title" data-say="pageReveal"></h2>
+          <p data-say="pageRevealNote"></p>
+          <div class="hand-stage"><toranpu-hand id="reveal-hand" data-testid="reveal-hand" reveal sound></toranpu-hand></div>
+          <div class="fam-row setup">
+            <label><span data-say="pageClosed"></span> <input type="range" id="closed-amount" data-testid="closed-amount" min="0" max="1" step="0.05" value="0.9" /></label>
+          </div>
+          <pre class="snippet" id="reveal-code" data-testid="reveal-code" tabindex="0"></pre>
+        </section>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>
           <p data-say="pageDeckNote"></p>

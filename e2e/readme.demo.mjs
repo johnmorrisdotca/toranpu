@@ -52,3 +52,22 @@ test("Hide a hand: hidden one by one, shown, scrunched and spread, it ends as it
   expect(await hand.evaluate((one) => one.hasAttribute("scrunched") || one.hasAttribute("face-down"))).toBe(false);
   expect(errors).toEqual([]);
 });
+
+test("A closed hand: the example lies closed, opens on a tap and tells the page", async ({ page }) => {
+  const html = block('<toranpu-hand id="yours"');
+  await page.addInitScript(() => {
+    window.opened = [];
+    const log = console.log;
+    console.log = (...said) => {
+      window.opened.push(said[0]);
+      log(...said);
+    };
+  });
+  const errors = await run(page, html);
+  const hand = page.locator("#yours");
+  await expect(hand).toHaveAttribute("aria-expanded", "false");
+  await hand.click();
+  await expect(hand).toHaveAttribute("aria-expanded", "true");
+  await expect.poll(() => page.evaluate(() => window.opened)).toEqual([1]);
+  expect(errors).toEqual([]);
+});

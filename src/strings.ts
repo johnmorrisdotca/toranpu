@@ -205,6 +205,9 @@ export type ToranpuStrings = {
   pageScrunch: string;
   pageSpread: string;
   pageNewHand: string;
+  pageReveal: string;
+  pageRevealNote: string;
+  pageClosed: string;
 };
 
 /** Every string, in both languages. */
@@ -432,6 +435,9 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageScrunch: "Scrunch",
     pageSpread: "Spread out",
     pageNewHand: "Another hand",
+    pageReveal: "A closed hand that opens with a tap",
+    pageRevealNote: "The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it.",
+    pageClosed: "How closed",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -656,6 +662,9 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageScrunch: "まとめる",
     pageSpread: "広げる",
     pageNewHand: "別の手札",
+    pageReveal: "タップで開く手札",
+    pageRevealNote: "手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。",
+    pageClosed: "閉じ具合",
   },
 };
 

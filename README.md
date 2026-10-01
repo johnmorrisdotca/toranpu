@@ -339,8 +339,9 @@ Toranpu has siblings, each made for the same site, each MIT, each at
 - **Card sounds**, recorded from real cards: shuffle, deal, turn over, play,
   gather and fan, off until a table asks. See [Card sounds](#card-sounds).
 - **A hand on any page**: `<toranpu-hand>`, turned face down all at once or
-  one by one, or scrunched into a bundle that shows nothing. See
-  [Hide a hand](#hide-a-hand).
+  one by one, or scrunched into a bundle that shows nothing, or held closed
+  to open into a fan on a tap. See [Hide a hand](#hide-a-hand) and
+  [A closed hand](#a-closed-hand-that-opens-with-a-tap).
 - **One card on any page**: `<toranpu-card>`, turned over by a tap, or any
   card as a picture. See [One card on any page](#one-card-on-any-page).
 - **Card designs**: plain, four colour and the traditional English pattern
@@ -690,6 +691,8 @@ that neither the cards nor how many there are can be read.
 | `cards` | the hand: ids separated by spaces or commas (`AS KH 10D`), or the deck's one-letter codes |
 | `face-down` | every card shows its back, and no face is in the page |
 | `scrunched` | squared up into one face-down bundle of three backs whatever the hand, and nothing in the page says how many |
+| `closed` | how closed the hand lies, from `0` (a clear fan) to `1` (squared up, only the top card showing): see [A closed hand that opens with a tap](#a-closed-hand-that-opens-with-a-tap) |
+| `reveal` | a tap, Enter or Space opens a closed hand into a fan, and closes it again |
 | `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
 
 | Method | What it does |
@@ -697,6 +700,7 @@ that neither the cards nor how many there are can be read.
 | `hide({ oneByOne?, gap? })` | turns every card face down: at once, or one by one, `gap` milliseconds apart (110 unless said) |
 | `show({ oneByOne?, gap? })` | turns them face up again |
 | `scrunch()`, `spread()` | squares the hand into a bundle, and lays it out again |
+| `open()`, `close(closed?)` | fans a closed hand, and squares it again (all the way unless said) |
 
 - Each returns a promise that settles when the cards have stopped moving, and
   each change is a `toranpu-hand` event that bubbles, its `detail`
@@ -712,6 +716,31 @@ that neither the cards nor how many there are can be read.
 - The hand is as wide as its cards ask, and never wider than the room it is
   given: in less room its cards are drawn smaller, so it never pokes out of a
   phone's screen.
+
+## A closed hand that opens with a tap
+
+A hand can lie squared up, only its top card showing and the rest partly
+hidden, and open into a clear fan when it is tapped, as a reveal. `closed`
+says how closed it starts, from `0` (a fan) to `1` (squared up).
+
+```html
+<toranpu-hand id="yours" cards="KS 7C 4C QH 10H" closed="0.9" reveal></toranpu-hand>
+<script type="module">
+  import "https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/element-define.js";
+
+  document.getElementById("yours").addEventListener("toranpu-hand", (event) => console.log(event.detail.open));   // 1 once it is open
+</script>
+```
+
+- A tap, Enter or Space opens it with the cards sliding into a fan, and the
+  next closes it again, as far as it was. A device that asks for less motion
+  gets the fan at once.
+- `open()` and `close(closed?)` do the same from code, and `closed` can be
+  set at any time: `0.5` leaves it half open.
+- It is a button to a screen reader, with `aria-expanded` saying whether it is
+  open, and it names its cards.
+- Where the cards lie is `handLayout(count, { open })`, the same arithmetic
+  the element uses, for a table of your own.
 
 ## Words
 
@@ -769,7 +798,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.5.0",
+  "generator": "toranpu 2.6.0",
   "game": "goFish",
   "size": 1,
   "players": [

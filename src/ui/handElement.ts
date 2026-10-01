@@ -19,28 +19,32 @@ export const BUNDLE_BACKS = 3;
  * A HAND OF CARDS ON ANY PAGE: `<toranpu-hand cards="AS KH QD">`, fanned, in
  * any design and with any back. It can be turned face down where it lies, all
  * at once or one card after another, and back; squared up into one face-down
- * bundle ("scrunched") that shows neither the cards nor how many there are.
+ * bundle ("scrunched") that shows neither the cards nor how many there are;
+ * and held closed, squared up with only the top card showing, to open into a
+ * fan on a tap.
  *
  * ```html
- * <toranpu-hand cards="AS KH QD JC 10S" design="english" face-down></toranpu-hand>
+ * <toranpu-hand cards="AS KH QD JC 10S" design="english" closed="0.9" reveal></toranpu-hand>
  * ```
  *
  * Attributes, all optional:
  *   cards       the hand: ids separated by spaces or commas (`AS KH 10D`), or the deck's one-letter codes
  *   face-down   every card shows its back; their faces are not in the page
  *   scrunched   squared up into one face-down bundle: no faces, and no count, in the page
+ *   closed      how closed the hand lies, from 0 (a clear fan) to 1 (squared up, only the top card showing)
+ *   reveal      a tap, Enter or Space opens a closed hand into a fan, and closes it again
  *   design, back, back-colour, mark, size, width, lang, sound   as on `<toranpu-card>`
  *
  * Methods: `hide(options?)` and `show(options?)` turn the cards over, one by
  * one if asked; `scrunch()` and `spread()` square the hand up and lay it out
- * again. Each returns a promise
+ * again; `open()` and `close()` fan it and square it. Each returns a promise
  * that settles when the cards have finished moving. The motion is skipped on
  * a device that asks for less. Each change is a `toranpu-hand` event that
  * bubbles, its detail `{ faceDown, scrunched, open }`.
  */
 export class ToranpuHand extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["cards", "face-down", "scrunched", "design", "back", "back-colour", "mark", "size", "width", "lang"];
+    return ["cards", "face-down", "scrunched", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
   }
 
   #root: ShadowRoot | null = null;
@@ -81,6 +85,16 @@ export class ToranpuHand extends ElementBase {
     return this.#change(() => this.toggleAttribute("scrunched", false), {}, "fan");
   }
 
+  /** Open a closed hand into a clear fan. */
+  open(): Promise<void> {
+    return this.#change(() => this.setAttribute("closed", "0"), {}, "fan");
+  }
+
+  /** Square the hand up so that only the top card shows: to `closed` (unless said, all the way). */
+  close(closed = 1): Promise<void> {
+    return this.#change(() => this.setAttribute("closed", String(closed)), {}, "gather");
+  }
+
   #change(apply: () => void, options: HandTurnOptions, sound: "flip" | "gather" | "fan"): Promise<void> {
     const before = this.#state();
     this.#stagger = options.oneByOne === true ? Math.max(0, options.gap ?? 110) : 0;
@@ -98,15 +112,34 @@ export class ToranpuHand extends ElementBase {
   }
 
   #state(): { down: boolean; scrunched: boolean; open: number } {
-    return { down: this.hasAttribute("face-down"), scrunched: this.hasAttribute("scrunched"), open: 1 };
+    const closed = Number(this.getAttribute("closed"));
+    return { down: this.hasAttribute("face-down"), scrunched: this.hasAttribute("scrunched"), open: Number.isFinite(closed) ? 1 - Math.min(1, Math.max(0, closed)) : 1 };
   }
 
   connectedCallback(): void {
     if (this.#root === null) {
       this.#root = this.attachShadow({ mode: "open" });
+      const toggle = () => {
+        if (!this.hasAttribute("reveal") || this.hasAttribute("scrunched")) return;
+        const now = this.#state();
+        if (now.open < 1) {
+          // Closed again, it closes as far as it was.
+          this.#closedBefore = 1 - now.open;
+          void this.open();
+        } else void this.close(this.#closedBefore);
+      };
+      this.addEventListener("click", toggle);
+      this.addEventListener("keydown", (event) => {
+        if (!this.hasAttribute("reveal") || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        toggle();
+      });
     }
     this.#draw();
   }
+
+  /** How closed the hand was before a tap opened it, which the next tap closes it to again. */
+  #closedBefore = 1;
 
   attributeChangedCallback(): void {
     if (this.#root !== null) this.#draw();
@@ -137,7 +170,15 @@ export class ToranpuHand extends ElementBase {
     const words = STRINGS[language];
     const label = target.scrunched ? words.handScrunched : target.down ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map((card) => faceName(card, language)), language) });
     this.setAttribute("aria-label", label);
-    this.setAttribute("role", "group");
+    const reveals = this.hasAttribute("reveal") && !target.scrunched;
+    this.setAttribute("role", reveals ? "button" : "group");
+    if (reveals) {
+      this.setAttribute("aria-expanded", String(target.open === 1));
+      if (this.tabIndex < 0) this.tabIndex = 0;
+    } else {
+      this.removeAttribute("aria-expanded");
+      this.removeAttribute("tabindex");
+    }
 
     // The cards are drawn where they start, then moved to where they end; a face is drawn only while some card may show it.
     const bundle = from.scrunched && target.scrunched;
@@ -213,6 +254,8 @@ export class ToranpuHand extends ElementBase {
 
 const HAND_STYLE = `
 :host { display: inline-block; vertical-align: middle; -webkit-tap-highlight-color: transparent; max-width: 100%; width: calc(var(--toranpu-w, 70px) * var(--toranpu-across, 1)); container-type: inline-size; }
+:host([reveal]) { cursor: pointer; }
+:host(:focus-visible) { outline: 3px solid var(--toranpu-focus, #b5452c); outline-offset: 4px; border-radius: 8px; }
 .hand { --cw: min(var(--toranpu-w, 70px), calc(100cqw / var(--across))); position: relative; width: 100%; height: calc(var(--cw) * (1.4 + var(--drop) + .14 + var(--side) * .45)); }
 .slot { position: absolute; left: calc(var(--cw) * (var(--x) + var(--side) + .06)); top: calc(var(--cw) * (var(--y) + .05)); width: var(--cw); aspect-ratio: 5 / 7; transform: rotate(var(--r)); transform-origin: 50% 120%; perspective: 800px; }
 .turn { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }

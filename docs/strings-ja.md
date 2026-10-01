@@ -202,6 +202,9 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageScrunch` | Scrunch | まとめる |
 | `pageSpread` | Spread out | 広げる |
 | `pageNewHand` | Another hand | 別の手札 |
+| `pageReveal` | A closed hand that opens with a tap | タップで開く手札 |
+| `pageRevealNote` | The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it. | 手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。 |
+| `pageClosed` | How closed | 閉じ具合 |
 
 ## The command line's help
 

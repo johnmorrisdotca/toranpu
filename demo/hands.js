@@ -1,5 +1,6 @@
-// The panel for <toranpu-hand>: hiding a hand (face down all at once or one by one, face up,
-// scrunched and spread out), drawn in the look chosen above, with the code that does what was last pressed.
+// Two panels for <toranpu-hand>: hiding a hand (face down all at once or one by one, face up,
+// scrunched and spread out), and a closed hand that opens on a tap, as closed as the slider says.
+// Both are drawn in the look chosen above, and each shows the code that does what was last pressed.
 import { cardId, shuffledDeck } from "./dist/deck.js";
 import { randomSeed } from "./dist/index.js";
 import { look, onLook } from "./look.js";
@@ -25,9 +26,11 @@ const tag = (hand, extra = "") => {
 
 export function wire() {
   const hidden = $("hide-hand");
+  const closed = $("reveal-hand");
   const said = (code) => ($("hide-code").textContent = code);
   const deal = () => {
     hidden.setAttribute("cards", handOf(seed, 7));
+    closed.setAttribute("cards", handOf(seed + 1, 5));
   };
   const actions = {
     "hand-hide": () => {
@@ -60,7 +63,18 @@ export function wire() {
     },
   };
   for (const [id, act] of Object.entries(actions)) $(id).addEventListener("click", () => void act());
+  const slider = $("closed-amount");
+  const showClosed = () => {
+    closed.setAttribute("closed", slider.value);
+    $("reveal-code").textContent = `${tag(closed, ` closed="${slider.value}" reveal`)}\n\n// or by hand:\nhand.open();\nhand.close(${slider.value});`;
+  };
+  slider.addEventListener("input", showClosed);
   deal();
-  onLook(() => wear(hidden));
-  wear(hidden);
+  showClosed();
+  const both = () => {
+    wear(hidden);
+    wear(closed);
+  };
+  onLook(both);
+  both();
 }

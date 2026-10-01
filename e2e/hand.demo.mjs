@@ -1,8 +1,9 @@
 // <toranpu-hand>, by real taps on the demo: turned face down all at once and one by one, face up
-// again, scrunched into a bundle that shows nothing, and spread out.
+// again, scrunched into a bundle that shows nothing, spread out, and a closed hand opened by a tap.
 import { expect, test } from "@playwright/test";
 
 import { STRINGS } from "../dist/index.js";
+import { handLayout } from "../dist/element.js";
 import { at, open, sound, tap } from "./demo.mjs";
 
 /** The hand as the page holds it: what it says, and what is drawn in it. */
@@ -85,6 +86,36 @@ test.describe("with motion", () => {
     await expect(page.locator(at("hide-code"))).toContainText("hand.hide({ oneByOne: true, gap: 110 });");
     await sound(page, errors);
   });
+});
+
+test("a closed hand opens into a fan with a tap, and closes with another; the slider sets how closed", async ({ page }) => {
+  const errors = await open(page, "?seed=1");
+  let s = await read(page, "reveal-hand");
+  expect(s.expanded).toBe("false");
+  expect(s.count).toBe(5);
+  const closedXs = s.xs;
+  expect(closedXs).toEqual(handLayout(5, { open: 0.1 }).map((place) => place.x));
+
+  await tap(page, at("reveal-hand"));
+  await settled(page, "reveal-hand");
+  s = await read(page, "reveal-hand");
+  expect(s.expanded).toBe("true");
+  expect(s.xs).toEqual([0, 0.42, 0.84, 1.26, 1.68]);
+
+  await tap(page, at("reveal-hand"));
+  await settled(page, "reveal-hand");
+  expect((await read(page, "reveal-hand")).xs).toEqual(closedXs);
+
+  await page.locator(at("closed-amount")).fill("0.5");
+  await expect(page.locator(at("reveal-hand"))).toHaveAttribute("closed", "0.5");
+  expect((await read(page, "reveal-hand")).xs).toEqual(handLayout(5, { open: 0.5 }).map((place) => place.x));
+  await expect(page.locator(at("reveal-code"))).toContainText('closed="0.5" reveal');
+
+  await page.locator(at("reveal-hand")).focus();
+  await page.keyboard.press("Enter");
+  await settled(page, "reveal-hand");
+  expect((await read(page, "reveal-hand")).expanded).toBe("true");
+  await sound(page, errors);
 });
 
 test("the hands speak Japanese", async ({ page }) => {

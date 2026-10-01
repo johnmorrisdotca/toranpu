@@ -6,6 +6,22 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-09-30
+
+### Added
+
+- **A closed hand that opens with a tap**: `<toranpu-hand closed="0.9"
+  reveal>` lies squared up, only its top card showing and the rest partly
+  hidden, and a tap, Enter or Space opens it into a clear fan, the cards
+  sliding apart, and closes it again as far as it was. `closed` says how
+  closed it lies, from 0 (a fan) to 1 (squared up), and can be set at any
+  time; `open()` and `close(closed?)` do the same from code. It is a button
+  to a screen reader, with `aria-expanded`. A device that asks for less
+  motion gets the end at once.
+- The demo has a closed-hand panel with a slider for how closed it starts.
+
+Nothing that was exported has changed.
+
 ## [2.5.0] - 2026-09-30
 
 ### Added
@@ -233,7 +249,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.5.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.6.0...HEAD
+[2.6.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.2.0...v2.3.0

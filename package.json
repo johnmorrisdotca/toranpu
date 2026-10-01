@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, the rules of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President and Gin Rummy with computer players, and Klondike, FreeCell and Spider solitaire with solvers. Zero dependencies.",
   "keywords": [
     "cards",
