@@ -74,7 +74,7 @@ if (played.moves.length !== 330 || rulesFor("euchre").winners(played.game).join(
 if (fromJSON(toJSON("euchre", played.game)).game.moves.length !== 330) throw new Error("the saved game did not read back");
 const deck = all[names.indexOf(${JSON.stringify(pkg.name + "/deck")})];
 if (deck.cardName(deck.shuffledDeck(42)[0]) !== "three of clubs") throw new Error("seed 42 shuffled differently");
-for (const kind of m0.CARD_GAME_LIST) if (!names.includes(${JSON.stringify(pkg.name + "/")} + kind)) throw new Error(kind + " has no entry point");
+for (const kind of m0.CARD_GAME_LIST) if (!names.includes(${JSON.stringify(pkg.name + "/")} + kind.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase()))) throw new Error(kind + " has no entry point (its key in kebab case)");
 if (VERSION !== ${JSON.stringify(pkg.version)}) throw new Error("VERSION is " + VERSION);
 console.log(names.join(" "));
 `,

@@ -384,13 +384,15 @@ describe("the version", () => {
 describe("package.json", () => {
   // The games played alone, each an entry of its own beside the table games: no seats, no computer players, a solver.
   const SOLITAIRES = ["klondike", "freecell", "spider"];
+  // An entry point is a game's key in kebab case, as an address is written: ohHell is oh-hell.
+  const entryOf = (kind) => kind.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
   it("names built files directly, and has no dependencies", () => {
     const pointed = [pkg.main, pkg.module, pkg.types, ...Object.values(pkg.bin), ...Object.values(pkg.exports).flatMap((entry) => Object.values(entry))];
     for (const file of pointed) expect(/^\.?\/?(dist|bin)\//.test(file), file).toBe(true);
     expect(pkg.publishConfig.exports).toBeUndefined();
     expect(pkg.dependencies).toBeUndefined();
-    expect(Object.keys(pkg.exports).filter((key) => !["." , "./deck", "./react"].includes(key)).map((key) => key.slice(2))).toEqual([...CARD_GAME_LIST, ...SOLITAIRES]);
+    expect(Object.keys(pkg.exports).filter((key) => !["." , "./deck", "./react"].includes(key)).map((key) => key.slice(2))).toEqual([...CARD_GAME_LIST.map(entryOf), ...SOLITAIRES]);
   });
 
   it("has keywords that are many, lower case and not repeated, and a description that fits", () => {

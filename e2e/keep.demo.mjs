@@ -8,7 +8,7 @@ import { at, open, settled, sound, state, tap } from "./demo.mjs";
 const finished = (kind, players, seed) => playComputers(kind, newGame(kind, { players, seed, computers: players.map(() => true) })).game;
 
 test("a game is kept four ways", async ({ page }) => {
-  const errors = await open(page, "?game=goFish&seed=2026");
+  const errors = await open(page, "?game=go-fish&seed=2026");
   await settled(page);
   const players = ["You", "Aiko", "Ben"];
   const game = playComputers("goFish", newGame("goFish", { players, seed: 2026, computers: [false, true, true] })).game;
@@ -101,7 +101,7 @@ test("the deck on its own: a seeded shuffle, dealt into fans", async ({ page }) 
 });
 
 test("the chooser switches every word, the device remembers, and the address wins", async ({ page }) => {
-  const errors = await open(page, "?game=goFish&seed=2026");
+  const errors = await open(page, "?game=go-fish&seed=2026");
   await settled(page);
   let s = await state(page);
   expect(s).toMatchObject({ lang: "en", pitch: STRINGS.en.pagePitch, unreviewed: false });
@@ -121,11 +121,11 @@ test("the chooser switches every word, the device remembers, and the address win
   await page.reload();
   await settled(page);
   expect((await state(page)).lang).toBe("ja");
-  await page.goto("http://toranpu.test/?lang=en&game=goFish&seed=2026");
+  await page.goto("http://toranpu.test/?lang=en&game=go-fish&seed=2026");
   await settled(page);
   s = await state(page);
   expect(s.lang).toBe("en");
-  expect(s.address).toBe("?lang=en&game=goFish&players=3&seed=2026");
+  expect(s.address).toBe("?lang=en&game=go-fish&players=3&seed=2026");
   const empty = await page.evaluate(() => [...document.querySelectorAll("[data-say]")].filter((el) => el.textContent.trim() === "").map((el) => el.dataset.say));
   expect(empty).toEqual([]);
 });

@@ -526,7 +526,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 1.3.0",
+  "generator": "toranpu 2.0.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -682,8 +682,10 @@ one game. They follow one naming pattern (shown for Hearts):
 | `HeartsGame`, `HeartsMove`, … | The game's types |
 | Game helpers | Scoring and ordering: `heartsPoints`, `trickWinner`, `spadesTrickWinner`, `euchreHeight`, `showCount` (Cribbage), `bestLayout` and `deadwoodOf` (Gin), `bigTwoBeats`, `presidentTitle` and more |
 
-Entry points: `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`,
-`goFish`, `bigTwo`, `president`, `ginRummy`.
+Entry points, each a game's name in kebab case: `hearts`, `spades`, `euchre`,
+`cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`,
+`gin-rummy`. A game's key in a saved game stays as it was (`ohHell`), so a game
+saved before 2.0 still reads.
 
 The solitaires, Klondike, FreeCell and Spider, are entry points too (by those names in lower case),
 with a pattern of their own (they have no seats and no computer player): see

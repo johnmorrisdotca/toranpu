@@ -20,7 +20,10 @@ const whole = (text, least, most) => (/^\d{1,10}$/.test(text ?? "") && Number(te
 // An older link carried the game after a hash: #hearts/4/123.
 const [hashKind, hashCount, hashSeed] = location.hash.slice(1).split("/");
 
-let kind = CARD_GAME_LIST.includes(asked.get("game")) ? asked.get("game") : CARD_GAME_LIST.includes(hashKind) ? hashKind : "hearts";
+// A game is written in an address in kebab case, as its entry point is (crazy-eights), whatever its key in a saved game.
+const inAddress = (kind) => kind.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+const fromAddress = (text) => CARD_GAME_LIST.find((one) => inAddress(one) === text) ?? null;
+let kind = fromAddress(asked.get("game")) ?? fromAddress(hashKind) ?? "hearts";
 let game = null;
 let picked = [];
 let timer = null;
@@ -244,7 +247,7 @@ function drawAll() {
   // The address is the link: the game, the table and the seed.
   const query = new URLSearchParams();
   if (language.asked !== null) query.set("lang", language.asked);
-  query.set("game", kind);
+  query.set("game", inAddress(kind));
   query.set("players", String(rules().seats(game).players.length));
   query.set("seed", String(game.seed));
   if (deck.seed !== 42) query.set("deck", String(deck.seed));

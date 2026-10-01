@@ -57,7 +57,7 @@ test("Hearts: pass three cards, then follow the two of clubs, and the page holds
 });
 
 test("Go Fish, played to the end by pressing buttons: the winner is the one the rules name", async ({ page }) => {
-  const errors = await open(page, "?game=goFish&seed=2026");
+  const errors = await open(page, "?game=go-fish&seed=2026");
   const game = await playThrough(page, "goFish", 2026);
   const rules = rulesFor("goFish");
   expect(rules.over(game)).toBe(true);
@@ -92,7 +92,7 @@ test("Crazy Eights: an eight offers a button for each suit it may call", async (
   const rules = rulesFor("crazyEights");
   let seed = 1;
   for (; seed < 500; seed += 1) if (rules.moves(start("crazyEights", seed)).some((move) => "suit" in move)) break;
-  const errors = await open(page, `?game=crazyEights&seed=${seed}`);
+  const errors = await open(page, `?game=crazy-eights&seed=${seed}`);
   await settled(page);
   const game = start("crazyEights", seed);
   const eight = rules.moves(game).find((move) => "suit" in move).play;

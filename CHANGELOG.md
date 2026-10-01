@@ -6,6 +6,20 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-30
+
+### Changed
+
+- **Entry points are in kebab case**, as addresses are written:
+  `@johnmorrisdotca/toranpu/oh-hell`, `/crazy-eights`, `/go-fish`, `/big-two`
+  and `/gin-rummy` (they were `ohHell`, `crazyEights`, `goFish`, `bigTwo` and
+  `ginRummy`). The other entry points were one word already. This is the only
+  change, and the reason for the new major version.
+- The demo writes a game in its address the same way: `?game=crazy-eights`.
+
+A game's key in a saved game is unchanged (`"g": "crazyEights"`), so every
+game saved by 1.x reads back and replays as it did.
+
 ## [1.3.0] - 2026-09-30
 
 ### Added

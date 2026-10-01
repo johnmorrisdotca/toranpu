@@ -27,7 +27,7 @@ async function shot({ width, height = 844, colorScheme, lang, query, path, fullP
 }
 if (name === "readme") {
   await shot({ width: 1280, height: 1080, colorScheme: "light", lang: "en", query: "game=hearts&players=4&seed=2026", path: join(folder, "desktop.jpg"), fullPage: false });
-  await shot({ width: 390, height: 844, colorScheme: "dark", lang: "ja", query: "game=goFish&players=3&seed=2026", path: join(folder, "phone.jpg"), fullPage: false });
+  await shot({ width: 390, height: 844, colorScheme: "dark", lang: "ja", query: "game=go-fish&players=3&seed=2026", path: join(folder, "phone.jpg"), fullPage: false });
 } else {
   for (const width of [390, 1280]) for (const colorScheme of ["light", "dark"]) for (const lang of ["en", "ja"]) await shot({ width, colorScheme, lang, query: "game=hearts&players=4&seed=2026", path: join(folder, `${name}-${width}-${colorScheme}-${lang}.png`) });
   await shot({ width: 390, colorScheme: "light", lang: "en", query: "", which: "api.html", path: join(folder, `${name}-api-390.png`), fullPage: false });
