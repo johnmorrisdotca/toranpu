@@ -5,7 +5,7 @@ import { look, onLook, setLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
 const NAMES = { plain: "pageDesignPlain", "four-colour": "pageDesignFourColour", english: "pageDesignEnglish" };
-const SPREAD = ["AS", "KS", "QH", "JD", "TC", "7D", "2H", "RJ", "BJ"];
+const SPREAD = ["AS", "KS", "QH", "JD", "TC", "7D", "2H", "RJ", "BJ", "R1", "R2", "BL"];
 const loaded = {};
 
 /** The design as cardFaceSvg takes it: a name for the two drawn in the package, the loaded set for the English pattern. */

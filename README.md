@@ -592,6 +592,7 @@ cardFaceUrl("TD", { design: "four-colour" });         // "data:image/svg+xml;cha
 const english = await loadCardDesign("english");      // the English pattern, fetched now and not before
 cardFaceSvg("KS", { design: english, width: 120 });   // the traditional king of spades, 120 pixels wide
 cardFaceSvg("RJ", { language: "ja" });                // the red joker, ジョーカー down its corners
+cardFaceSvg("R1");                                    // a rules card: the rules of Hearts in five lines
 ```
 
 | Design | What it is | Size |
@@ -607,9 +608,22 @@ cardFaceSvg("RJ", { language: "ja" });                // the red joker, ジョ�
 | `title` | what a screen reader says; `""` for none | the card's name in `language` |
 | `language` | `"en"` or `"ja"`, for the card's name and a joker's corner word | `"en"` |
 
-- **Every card and two jokers.** A card is its id, as everywhere in Toranpu
-  (`"QS"`, `"TD"`); the jokers are `"RJ"` and `"BJ"`. Anything else gives
-  `null`. No game here deals a joker; a table of your own may.
+- **Every card, and the extras of a real deck.** A card is its id, as
+  everywhere in Toranpu (`"QS"`, `"TD"`). The extras a pack is sold with are
+  there too, though no game here deals them: the jokers `"RJ"` and `"BJ"`, two
+  rules cards, `"R1"` (the rules of Hearts) and `"R2"` (of Spades), and the
+  blank `"BL"`, each drawn in every design and named in both languages.
+  Anything else gives `null`. A table of your own may deal them, as wild
+  cards or for the look of it.
+- **A hand writes them as words too.** `JOKER` is the next joker, red then
+  black; `RULES` the next rules card; `BLANK` the blank. A hand holds at most
+  what a pack might (`EXTRA_LIMITS`): four jokers, two rules cards and two
+  blanks.
+
+  ```html
+  <toranpu-hand cards="AS KH QD JC JOKER"></toranpu-hand>
+  <toranpu-hand cards="JOKER JOKER RULES BLANK"></toranpu-hand>
+  ```
 - **The English pattern by import**, where a bundler should carry it:
   `import { ENGLISH_PATTERN } from "@johnmorrisdotca/toranpu/card-faces/english"`.
   **By name**, where it should be fetched only when somebody chooses it:
@@ -702,6 +716,7 @@ that neither the cards nor how many there are can be read.
 | `scrunched` | squared up into one face-down bundle of three backs whatever the hand, and nothing in the page says how many |
 | `closed` | how closed the hand lies, from `0` (a clear fan) to `1` (squared up, only the top card showing): see [A closed hand that opens with a tap](#a-closed-hand-that-opens-with-a-tap) |
 | `reveal` | a tap, Enter or Space opens a closed hand into a fan, and closes it again |
+| `deal-after` | given new cards, how many milliseconds this hand waits before it gathers the old ones in and opens on the new: give each seat a little more than the one before, and the hands are dealt in turn round the table |
 | `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
 
 | Method | What it does |
@@ -717,12 +732,26 @@ that neither the cards nor how many there are can be read.
   hand as a list.
 - The cards turn over in place and slide together; a device that asks for less
   motion gets the end at once.
+- **A new deal is seen.** Given other cards (a shuffle, a new seed), a hand
+  already on the page gathers its old cards into a stack where it lies, then
+  opens on the new ones, in the same room, with the shuffle's sound where
+  `sound` is on. Seat after seat, with `deal-after`:
+
+  ```js
+  seats.forEach((hand, seat) => {
+    hand.setAttribute("deal-after", String(seat * 150)); // seat 1 at once, seat 2 after 150 ms, …
+    hand.cards = newHands[seat];
+  });
+  ```
+- **A hand keeps one box.** Open, closed, squared up or face down, it keeps
+  the room its whole fan takes and lies in the middle of it, so nothing moves
+  when an effect ends.
 - A face down card's face, and a bundle's cards, are taken out of the page
   once the cards are still: a screen reader hears "a hand face down, cards:
   5", or for a bundle only "a hand of cards, squared up face down". What
   the page itself was given (the `cards` attribute) is the page's to keep
   secret: a game should not put an opponent's cards in the page at all.
-- The hand is as wide as its cards ask, and never wider than the room it is
+- The hand is as wide as its whole fan, and never wider than the room it is
   given: in less room its cards are drawn smaller, so it never pokes out of a
   phone's screen.
 
@@ -879,7 +908,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.8.1",
+  "generator": "toranpu 2.9.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -1101,6 +1130,8 @@ Types: `CardBackName`, `CardBackOptions`, `CardSuitLetter`.
 | `loadCardDesign(name)` | A design by name, fetched when first asked for: `"english"` |
 | `CARD_DESIGNS` | The three designs' names |
 | `JOKERS` | The jokers' ids, `RJ` and `BJ` |
+| `EXTRA_CARDS` | The extras of a deck no game deals: the jokers, the rules cards R1 (Hearts) and R2 (Spades), and the blank BL |
+| `EXTRA_LIMITS` | The most of each a hand holds: four jokers, two rules cards, two blanks |
 | `isCardFace(text)` | Whether a face can be drawn for it |
 | `faceName(card, language?)` | A face's name in words, jokers included |
 | `pipPlaces(count)` | Where a number card's pips go, and which are drawn upside down |

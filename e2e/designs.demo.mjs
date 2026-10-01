@@ -23,7 +23,7 @@ test("choose a design: the spread and its code follow, and the English pattern i
   const errors = await open(page, "?seed=1");
   await expect(page.locator(at("design-plain"))).toHaveAttribute("aria-pressed", "true");
   let s = await spread(page);
-  expect(s).toMatchObject({ design: "plain", cards: ["AS", "KS", "QH", "JD", "TC", "7D", "2H", "RJ", "BJ"] });
+  expect(s).toMatchObject({ design: "plain", cards: ["AS", "KS", "QH", "JD", "TC", "7D", "2H", "RJ", "BJ", "R1", "R2", "BL"] });
   expect(s.labels[1]).toBe("king of spades");
   expect(fetched.some((path) => path.endsWith("designs/english.js")), "nothing of the English pattern before it is chosen").toBe(false);
 

@@ -13,6 +13,6 @@
  * element.innerHTML = cardFaceSvg("KS", { design: english });
  * ```
  */
-export { CARD_DESIGNS, CARD_FACE_COLOURS, CARD_FACE_PROPERTIES, JOKERS, cardFaceSvg, cardFaceUrl, faceName, isCardFace, loadCardDesign, pipPlaces } from "./ui/cardFaces.ts";
+export { CARD_DESIGNS, CARD_FACE_COLOURS, CARD_FACE_PROPERTIES, JOKERS, EXTRA_CARDS, EXTRA_LIMITS, cardFaceSvg, cardFaceUrl, faceName, isCardFace, loadCardDesign, pipPlaces } from "./ui/cardFaces.ts";
 export type { CardDesignName, CardFaceOptions } from "./ui/cardFaces.ts";
 export type { CardDesign } from "./ui/cardFaces.types.ts";

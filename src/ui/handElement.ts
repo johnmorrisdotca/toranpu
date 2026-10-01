@@ -33,6 +33,8 @@ export const BUNDLE_BACKS = 3;
  *   scrunched   squared up into one face-down bundle: no faces, and no count, in the page
  *   closed      how closed the hand lies, from 0 (a clear fan) to 1 (squared up, only the top card showing)
  *   reveal      a tap, Enter or Space opens a closed hand into a fan, and closes it again
+ *   deal-after  given new cards, how many milliseconds the hand waits before it gathers the old ones in and
+ *               opens on the new; a table gives each seat a little more, so the hands are dealt in turn
  *   design, back, back-colour, mark, size, width, lang, sound   as on `<toranpu-card>`
  *
  * Methods: `hide(options?)` and `show(options?)` turn the cards over, one by
@@ -44,7 +46,7 @@ export const BUNDLE_BACKS = 3;
  */
 export class ToranpuHand extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["cards", "face-down", "scrunched", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
+    return ["cards", "deal-after", "face-down", "scrunched", "closed", "reveal", "design", "back", "back-colour", "mark", "size", "width", "lang"];
   }
 
   #root: ShadowRoot | null = null;
@@ -57,6 +59,9 @@ export class ToranpuHand extends ElementBase {
   #shown: { down: boolean; scrunched: boolean; open: number } | null = null;
   #settle: (() => void) | null = null;
   #timer: ReturnType<typeof setTimeout> | null = null;
+  /** A new deal on its way: the old cards gathering in, drawn in place of the new until they are squared up. */
+  #dealing: { cards: string[]; target: { down: boolean; scrunched: boolean; open: number } } | null = null;
+  #dealTimer: ReturnType<typeof setTimeout> | null = null;
 
   /** The cards of the hand, as ids. Setting them lays the hand out afresh. */
   get cards(): string[] {
@@ -148,8 +153,52 @@ export class ToranpuHand extends ElementBase {
     this.#forget = null;
   }
 
-  attributeChangedCallback(): void {
-    if (this.#root !== null) this.#draw();
+  attributeChangedCallback(name: string, before: string | null, after: string | null): void {
+    if (this.#root === null) return;
+    if (name === "cards" && this.#redeal(before, after)) return;
+    if (name === "deal-after") return;
+    this.#draw();
+  }
+
+  /**
+   * A NEW DEAL IS SEEN. John, 2026-10-01: a shuffle that only swapped the cards was "so subtle that
+   * you don't know cards changed". When a hand already on the page is given other cards, the old
+   * ones gather into a stack where the hand lies, and the stack opens on the new ones — in the same
+   * box, with the shuffle's sound where sound is on. Instant where motion is reduced, for a hand
+   * squared into a bundle (which shows no cards to change), and for the first cards a hand is given.
+   */
+  #redeal(before: string | null, after: string | null): boolean {
+    const old = readHand(before) ?? [];
+    const next = readHand(after) ?? [];
+    const now = this.#state();
+    if (this.#shown === null || old.length === 0 || next.length === 0 || old.join(" ") === next.join(" ") || now.scrunched || lessMotion() || !this.isConnected) return false;
+    const gathered = { down: now.down, scrunched: false, open: 0 };
+    if (this.#dealTimer !== null) clearTimeout(this.#dealTimer);
+    // `deal-after`: how long this hand waits, still showing its old cards, before it gathers in. A table gives each seat
+    // a little more than the one before, so the hands are dealt in turn round the table, as a dealer deals them.
+    const wait = Math.max(0, Math.min(10_000, Number(this.getAttribute("deal-after")) || 0));
+    const gather = () => {
+      if (isOn(this, "sound")) pageSounds().play("shuffle");
+      // The old cards gather in…
+      this.#dealing = { cards: old, target: gathered };
+      this.#moving = true;
+      this.#draw();
+      // …and the new ones open out of the stack, before the gathering's own redraw would come.
+      this.#dealTimer = setTimeout(() => {
+        this.#dealTimer = null;
+        this.#dealing = null;
+        this.#shown = gathered;
+        this.#moving = true;
+        this.#draw();
+      }, DEAL_GATHER_MS);
+    };
+    if (wait === 0) gather();
+    else {
+      // Waiting its turn, the hand goes on showing the old cards.
+      this.#dealing = { cards: old, target: now };
+      this.#dealTimer = setTimeout(gather, wait);
+    }
+    return true;
   }
 
   #finish(): void {
@@ -160,11 +209,11 @@ export class ToranpuHand extends ElementBase {
 
   #draw(): void {
     const root = this.#root as ShadowRoot;
-    const cards = this.cards;
+    const cards = this.#dealing?.cards ?? this.cards;
     const language = languageOf(this);
     const { design, ready } = designNamed(this.getAttribute("design"));
     if (ready !== null) void ready.then(() => this.#draw());
-    const target = this.#state();
+    const target = this.#dealing?.target ?? this.#state();
     const moving = this.#moving && this.#shown !== null;
     // Drawn where it ends, unless it is to move there.
     const from = moving ? (this.#shown ?? target) : target;
@@ -205,7 +254,7 @@ export class ToranpuHand extends ElementBase {
       const card = bundle ? "" : (cards[at] as string);
       const face = facesNeeded && !bundle ? cardDrawing(card, false, this, design, language) : "";
       const back = cardDrawing(card || "AS", true, this, design, language);
-      return `<div class="slot" part="card" data-at="${at}"><div class="turn"><div class="side face">${face}</div><div class="side back">${back}</div></div></div>`;
+      return `<div class="slot" part="card" data-at="${at}"><div class="turn"><div class="side face"${face === "" ? "" : ` data-card="${card}"`}>${face}</div><div class="side back">${back}</div></div></div>`;
     });
     const every = [...fan, ...startPlaces, ...endPlaces];
     const span = frame;
@@ -267,6 +316,9 @@ export class ToranpuHand extends ElementBase {
     this.dispatchEvent(new CustomEvent("toranpu-hand", { bubbles: true, composed: true, detail: { faceDown: state.down, scrunched: state.scrunched, open: state.open } }));
   }
 }
+
+/** How long the old cards of a new deal take to gather in, before the new ones open: the cards' move (.45 s) and a breath. */
+const DEAL_GATHER_MS = 470;
 
 const HAND_STYLE = `
 :host { display: inline-block; user-select: none; -webkit-user-select: none; vertical-align: middle; -webkit-tap-highlight-color: transparent; max-width: 100%; width: calc(var(--toranpu-w, 70px) * var(--toranpu-across, 1)); container-type: inline-size; }

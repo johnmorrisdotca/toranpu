@@ -104,6 +104,33 @@ test.describe("with motion", () => {
   });
 });
 
+test.describe("a new deal, with motion", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("given new cards, a hand gathers the old ones in and opens on the new, where it lay and the same size", async ({ page }) => {
+    const errors = await open(page, "?seed=1");
+    const hand = page.locator(at("hide-hand"));
+    const before = await read(page, "hide-hand");
+    const firstName = () => hand.evaluate((element) => element.shadowRoot.querySelector('.slot[data-at="0"] .face')?.dataset.card ?? null);
+    const oldName = await firstName();
+    expect(oldName).not.toBeNull();
+    await hand.evaluate((element) => element.setAttribute("cards", "AH 2H 3H 4H 5H 6H 7H"));
+    // Straight after: the OLD cards are on the table, moving, gathering into a stack.
+    expect(await firstName()).toBe(oldName);
+    expect(await hand.evaluate((element) => element.shadowRoot.querySelector('.hand[data-moving="true"]') !== null)).toBe(true);
+    const gathering = await read(page, "hide-hand");
+    expect(Math.max(...gathering.xs) - Math.min(...gathering.xs)).toBeLessThan(Math.max(...before.xs) - Math.min(...before.xs));
+    // Then the new cards open out of the stack, and lie as a hand of seven always lies, in the same room.
+    await expect.poll(firstName).toBe("AH");
+    await settled(page, "hide-hand");
+    const after = await read(page, "hide-hand");
+    expect(after.xs).toEqual(before.xs);
+    expect(after.width).toBe(before.width);
+    expect(Math.abs(after.offCentre)).toBeLessThanOrEqual(2);
+    await sound(page, errors);
+  });
+});
+
 test("a closed hand opens into a fan with a tap, and closes with another; the slider sets how closed", async ({ page }) => {
   const errors = await open(page, "?seed=1");
   let s = await read(page, "reveal-hand");
@@ -151,4 +178,27 @@ test("the hands speak Japanese", async ({ page }) => {
   expect((await read(page, "hide-hand")).label).toBe(STRINGS.ja.handScrunched);
   await expect(page.locator(at("hand-one-by-one"))).toHaveText("1枚ずつ伏せる");
   await sound(page, errors);
+});
+
+test.describe("the deck's seats, dealt again with motion", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("shuffled, the seats gather and open in turn, a seat after the one before, each on its new cards", async ({ page }) => {
+    const errors = await open(page, "?seed=1");
+    const seats = page.locator('[data-testid="fan"]');
+    await expect(seats).toHaveCount(4);
+    await expect(page.locator(at("deck-gap"))).toHaveValue("150");
+    const shown = () => seats.evaluateAll((hands) => hands.map((hand) => ({ moving: hand.shadowRoot.querySelector('.hand[data-moving="true"]') !== null, first: hand.shadowRoot.querySelector('.slot[data-at="0"] .face')?.dataset.card ?? null, cards: hand.getAttribute("cards") })));
+    const before = await shown();
+    await tap(page, at("shuffle"));
+    const now = await shown();
+    // The first seat is on its way; the last still shows its old cards, waiting its turn.
+    expect(now[0].moving).toBe(true);
+    expect(now[3].moving).toBe(false);
+    expect(now[3].first).toBe(before[3].first);
+    expect(now[3].cards).not.toBe(before[3].cards);
+    // In the end every seat lies on its new cards.
+    await expect.poll(async () => (await shown()).every((seat) => !seat.moving && seat.first === seat.cards.split(" ")[0]), { timeout: 5000 }).toBe(true);
+    await sound(page, errors);
+  });
 });

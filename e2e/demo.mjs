@@ -83,7 +83,7 @@ export function state(page) {
       blurb: text("blurb"),
       pitch: q('[data-say="pitch"]').textContent,
       unreviewed: !q("#unreviewed").hidden,
-      fans: all('[data-testid="fan"]').map((fan) => [...fan.querySelectorAll(".card")].map((card) => card.dataset.card)),
+      fans: all('[data-testid="fan"]').map((fan) => (fan.getAttribute("cards") ?? "").split(" ").filter(Boolean)),
       deckCode: text("deck-code"),
       deckLeft: text("deck-left"),
       address: location.search,

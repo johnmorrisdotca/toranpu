@@ -43,9 +43,20 @@ export const CARD_FACE_COLOURS = { paper: "#fffdf8", black: "#1b1b1b", red: "#c2
 const RANK_SHOWN: Record<string, string> = { A: "A", T: "10", J: "J", Q: "Q", K: "K" };
 const RED = new Set(["H", "D"]);
 
-/** Whether a text is a card a face can be drawn for: `QS`, `TD`, `RJ`, `BJ`. */
+/**
+ * THE EXTRAS OF A REAL DECK, which no game here deals but a hand on a page may hold, as a wild
+ * card or for the look of it: the two jokers, the two rules cards a pack is sold with (`R1`,
+ * the rules of Hearts; `R2`, of Spades), and a blank (`BL`). A hand holds at most
+ * `EXTRA_LIMITS` of each kind (`readHand`).
+ */
+export const EXTRA_CARDS = ["RJ", "BJ", "R1", "R2", "BL"] as const;
+
+/** The most of each kind of extra one hand holds: four jokers, as some packs have; two rules cards; two blanks. */
+export const EXTRA_LIMITS = { jokers: 4, rules: 2, blanks: 2 } as const;
+
+/** Whether a text is a card a face can be drawn for: `QS`, `TD`, a joker (`RJ`, `BJ`), a rules card (`R1`, `R2`) or the blank (`BL`). */
 export function isCardFace(text: unknown): text is string {
-  return typeof text === "string" && (/^[A2-9TJQK][SHDC]$/.test(text) || (JOKERS as readonly string[]).includes(text));
+  return typeof text === "string" && (/^[A2-9TJQK][SHDC]$/.test(text) || (EXTRA_CARDS as readonly string[]).includes(text));
 }
 
 /** The middles of a number card's pips, in the 100 by 140 box, and whether each is drawn upside down. */
@@ -117,6 +128,26 @@ function jesterCap(ink: string, red: boolean): string {
     .concat("</g>");
 }
 
+/** A rules card: the game's name at the head, its suit under it, and the rules in five short lines. */
+function rulesCard(card: "R1" | "R2", language: Language, ink: string): string {
+  const words = STRINGS[language];
+  const [title, lines] = card === "R1" ? [words.rulesHeartsTitle, words.rulesHearts] : [words.rulesSpadesTitle, words.rulesSpades];
+  const suit: CardSuitLetter = card === "R1" ? "H" : "S";
+  const suitInkOf = card === "R1" ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red) : ink;
+  return [
+    `<rect x="8" y="8" width="84" height="124" rx="4" fill="none" stroke-width=".8" stroke-opacity=".45"${ink.replace("fill", "stroke")}/>`,
+    `<text x="50" y="25" text-anchor="middle" font-size="11" font-weight="800" letter-spacing=".6" font-family="${SANS}"${ink}>${escapeXml(title)}</text>`,
+    suitPath(suit, 50, 38, 12, suitInkOf),
+    `<path d="M24 49H76" stroke-width=".7" stroke-opacity=".5"${ink.replace("fill", "stroke")}/>`,
+    ...lines.split("\n").map((line, at) => `<text x="50" y="${61 + at * 13.5}" text-anchor="middle" font-size="${language === "ja" ? 5.6 : 5.4}" font-weight="500" font-family="${SANS}"${ink}>${escapeXml(line)}</text>`),
+  ].join("");
+}
+
+/** The blank: the paper and a faint frame, for a card of your own to write on. */
+function blankCard(ink: string): string {
+  return `<rect x="8" y="8" width="84" height="124" rx="4" fill="none" stroke-width=".6" stroke-opacity=".18"${ink.replace("fill", "stroke")}/>`;
+}
+
 /** A court card drawn plain: its letter large in a frame, the suit above and below it. */
 function court(rank: string, suit: CardSuitLetter, ink: string): string {
   const crown = rank === "K" ? "M38 40L41 31L46 37L50 28L54 37L59 31L62 40Z" : rank === "Q" ? "M40 40Q42 33 45 37Q47 30 50 34Q53 30 55 37Q58 33 60 40Z" : "M42 40L44 34H56L58 40Z";
@@ -143,8 +174,8 @@ function designed(design: CardDesign, card: string, language: Language): string 
 }
 
 /**
- * A card's face as a whole SVG document, 100 by 140: `QS`, `TD`, or a joker
- * (`RJ`, `BJ`). `null` for anything that is not a card. The plain design
+ * A card's face as a whole SVG document, 100 by 140: `QS`, `TD`, a joker
+ * (`RJ`, `BJ`), a rules card (`R1`, `R2`) or the blank (`BL`). `null` for anything that is not a card. The plain design
  * unless another is asked for; a design handed in that has no drawing for the
  * card draws it plain.
  *
@@ -165,6 +196,8 @@ export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string
   const parts = [`<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="${CARD_FACE_COLOURS.edge}" stroke-opacity=".2" stroke-width=".8"/>`];
   const drawn = typeof design === "object" && design !== null ? designed(design, card, language) : null;
   if (drawn !== null) parts.push(drawn);
+  else if (card === "R1" || card === "R2") parts.push(rulesCard(card, language, paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)));
+  else if (card === "BL") parts.push(blankCard(paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)));
   else if (card === "RJ" || card === "BJ") {
     const ink = card === "RJ" ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red) : paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black);
     parts.push(jokerCorners(language, ink), jesterCap(ink, card === "RJ"));
@@ -193,6 +226,9 @@ export function cardFaceUrl(card: string, options: CardFaceOptions = {}): string
 export function faceName(card: string, language: Language = "en"): string {
   if (card === "RJ") return STRINGS[language].cardRedJoker;
   if (card === "BJ") return STRINGS[language].cardBlackJoker;
+  if (card === "R1") return STRINGS[language].cardRulesHearts;
+  if (card === "R2") return STRINGS[language].cardRulesSpades;
+  if (card === "BL") return STRINGS[language].cardBlank;
   return cardText(card, language);
 }
 

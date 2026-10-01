@@ -144,6 +144,9 @@ export type ToranpuStrings = {
   pageShuffle: string;
   pageHands: string;
   pageEach: string;
+  /** The demo deck: how long each seat waits after the one before when the cards are dealt again, and a time in milliseconds. */
+  pageSeatAfter: string;
+  pageMs: string;
   pageDeckCode: string;
   pageLeft: string;
   pageKeep: string;
@@ -183,6 +186,15 @@ export type ToranpuStrings = {
   pageBackMark: string;
   cardRedJoker: string;
   cardBlackJoker: string;
+  /** The extras of a deck: a rules card of each game, and the blank. */
+  cardRulesHearts: string;
+  cardRulesSpades: string;
+  cardBlank: string;
+  /** What a rules card says: its game's name at the head, then five short lines, one to a line of the text. */
+  rulesHeartsTitle: string;
+  rulesHearts: string;
+  rulesSpadesTitle: string;
+  rulesSpades: string;
   pageDesigns: string;
   pageDesignsNote: string;
   pageDesignPlain: string;
@@ -394,6 +406,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageShuffle: "Shuffle",
     pageHands: "Hands",
     pageEach: "Cards each",
+    pageSeatAfter: "Each seat after",
+    pageMs: "{n} ms",
     pageDeckCode: "The whole deck as one line, a letter a card",
     pageLeft: "Left over: {n}",
     pageKeep: "Keep this game, and read one back",
@@ -433,6 +447,13 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageBackMark: "Words in the middle",
     cardRedJoker: "red joker",
     cardBlackJoker: "black joker",
+    cardRulesHearts: "rules card, Hearts",
+    cardRulesSpades: "rules card, Spades",
+    cardBlank: "blank card",
+    rulesHeartsTitle: "HEARTS",
+    rulesHearts: "Pass three cards, then play\nFollow suit if you can\nEach heart: 1 point\nQueen of spades: 13\nFewest points wins",
+    rulesSpadesTitle: "SPADES",
+    rulesSpades: "Bid the tricks you will take\nFollow suit if you can\nSpades are always trumps\nMake your bid: 10 a trick\nFall short: lose your bid",
     pageDesigns: "Card designs",
     pageDesignsNote: "Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain.",
     pageDesignPlain: "Plain",
@@ -468,7 +489,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDrawCard: "Draw a card",
     pageStockPile: "Stock",
     embedTurn: "Turn over",
-    embedBad: "Those are not cards. Write them as AS KH 10D, or in the deck's one-letter codes.",
+    embedBad: "Those are not cards. Write them as AS KH 10D (and JOKER, RULES or BLANK), or in the deck's one-letter codes. A hand holds at most four jokers, two rules cards and two blanks.",
     pageEmbed: "Embed a hand",
     pageEmbedNote: "Any hand of cards on any web page: write it in the card codes, choose a size, and copy one of the two. The iframe needs no script on your page; the tag needs one script line.",
     pageEmbedCards: "Cards",
@@ -641,6 +662,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageShuffle: "シャッフル",
     pageHands: "人数",
     pageEach: "1人あたりの枚数",
+    pageSeatAfter: "席ごとの間隔",
+    pageMs: "{n}ミリ秒",
     pageDeckCode: "52枚を1行で表したもの（1文字が1枚）",
     pageLeft: "残り {n}枚",
     pageKeep: "このゲームを保存する、読み込む",
@@ -680,6 +703,13 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageBackMark: "中央の文字",
     cardRedJoker: "赤のジョーカー",
     cardBlackJoker: "黒のジョーカー",
+    cardRulesHearts: "ルールカード（ハーツ）",
+    cardRulesSpades: "ルールカード（スペード）",
+    cardBlank: "白紙のカード",
+    rulesHeartsTitle: "ハーツ",
+    rulesHearts: "3枚渡してから始める\n同じスートを出す\nハート1枚：1点\nスペードのQ：13点\n点が少ない人の勝ち",
+    rulesSpadesTitle: "スペード",
+    rulesSpades: "取るトリック数を宣言\n同じスートを出す\nスペードは常に切り札\n宣言どおり：1トリック10点\n足りなければ宣言分を失う",
     pageDesigns: "カードのデザイン",
     pageDesignsNote: "「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。",
     pageDesignPlain: "シンプル",
@@ -715,7 +745,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDrawCard: "1枚引く",
     pageStockPile: "山札",
     embedTurn: "裏返す",
-    embedBad: "カードとして読めません。AS KH 10D のように、またはデッキの1文字のコードで書いてください。",
+    embedBad: "カードとして読めません。AS KH 10D のように（JOKER、RULES、BLANK も使えます）、またはデッキの1文字のコードで書いてください。1つの手札にはジョーカー4枚、ルールカード2枚、白紙2枚までです。",
     pageEmbed: "手札を埋め込む",
     pageEmbedNote: "どんな手札でも、どのウェブページにも置けます。カードのコードで書き、大きさを選んで、どちらかをコピーしてください。iframe ならページにスクリプトは要りません。タグならスクリプトを1行加えます。",
     pageEmbedCards: "カード",

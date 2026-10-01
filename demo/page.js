@@ -3,7 +3,7 @@
 // Moves are matched to the cards you pick. Every word comes from the package's own table.
 import { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, cardShort, cardText, fillIn, fromJSON, gameName, gameSays, isCard, moveText, namesList, newGame, randomSeed, rulesFor, suitSymbol, toCSV, toCode, toJSON, toText } from "./dist/index.js";
 import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
-import { dealt, moved, wire as wireSound } from "./sound.js";
+import { dealt, moved, table as soundTable, wire as wireSound } from "./sound.js";
 import { wire as wireBacks } from "./backs.js";
 import { wire as wireDesigns } from "./designs.js";
 import { wire as wireOneCard } from "./onecard.js";
@@ -39,7 +39,9 @@ let picked = [];
 let timer = null;
 let log = [];
 let form = "code";
-const deck = { seed: whole(asked.get("deck"), 1, SEED_MOST) ?? 42, hands: 4, each: 5 };
+const deck = { seed: whole(asked.get("deck"), 1, SEED_MOST) ?? 42, hands: 4, each: 5, gap: 150 };
+/** How long each seat waits after the one before, when the hands are dealt again: none, or a little. */
+const DEAL_GAPS = [0, 75, 150, 300, 500];
 
 const rules = () => rulesFor(kind);
 const el = (tag, text = "", attributes = {}) => {
@@ -263,16 +265,30 @@ function drawDeck() {
   $("deck-hands").value = String(deck.hands);
   $("deck-each").replaceChildren(...Array.from({ length: Math.floor(52 / deck.hands) }, (_, at) => el("option", String(at + 1), { value: String(at + 1) })));
   $("deck-each").value = String(deck.each);
+  $("deck-gap").replaceChildren(...DEAL_GAPS.map((gap) => el("option", fillIn(t().pageMs, { n: gap }), { value: String(gap) })));
+  $("deck-gap").value = String(deck.gap);
   const hands = Array.from({ length: deck.hands }, (_, seat) => cards.slice(0, deck.hands * deck.each).filter((_, at) => at % deck.hands === seat));
-  $("fans").replaceChildren(
-    ...hands.map((hand, seat) => {
-      const box = el("div", "", { class: "fan-box" });
-      const fan = el("div", "", { class: "fan", "data-testid": "fan", style: `--mid: ${(hand.length - 1) / 2}; --overlap: ${hand.length > 7 ? 30 : 22}px; --turn-by: ${hand.length > 7 ? 2 : 3}deg` });
-      fan.append(...hand.map((card, at) => Object.assign(cardEl(card, { small: true }), { style: `--at: ${at}` })));
-      box.append(el("span", fillIn(t().seatName, { n: seat + 1 }), { class: "fam-label" }), fan);
-      return box;
-    }),
-  );
+  // Each seat is a <toranpu-hand>, kept from one deal to the next: given new cards, it gathers the old ones in and opens on
+  // the new, so a shuffle is seen happening.
+  const fans = $("fans");
+  const seats = [...fans.querySelectorAll(".fan-box")];
+  if (seats.length !== hands.length) {
+    fans.replaceChildren(
+      ...hands.map(() => {
+        const box = el("div", "", { class: "fan-box" });
+        box.append(el("span", "", { class: "fam-label" }), el("toranpu-hand", "", { "data-testid": "fan", size: "small", closed: "0.55" }));
+        return box;
+      }),
+    );
+  }
+  [...fans.querySelectorAll(".fan-box")].forEach((box, seat) => {
+    box.querySelector(".fam-label").textContent = fillIn(t().seatName, { n: seat + 1 });
+    const hand = box.querySelector("toranpu-hand");
+    // Seat after seat, as a dealer goes round the table; and, taking turns, each seat's shuffle can be heard.
+    hand.setAttribute("deal-after", String(seat * deck.gap));
+    hand.toggleAttribute("sound", soundTable.on);
+    hand.setAttribute("cards", hands[seat].join(" "));
+  });
   $("deck-left").textContent = fillIn(t().pageLeft, { n: 52 - deck.hands * deck.each });
   $("deck-code").textContent = writeCards(shuffledDeck(deck.seed));
 }
@@ -377,6 +393,9 @@ $("deck-seed").addEventListener("change", () => {
 $("deck-hands").addEventListener("change", () => {
   deck.hands = Number($("deck-hands").value);
   drawAll();
+});
+$("deck-gap").addEventListener("change", () => {
+  deck.gap = Number($("deck-gap").value);
 });
 $("deck-each").addEventListener("change", () => {
   deck.each = Number($("deck-each").value);

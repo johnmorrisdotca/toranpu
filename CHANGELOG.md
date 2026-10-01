@@ -6,6 +6,24 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.9.0] - 2026-10-01
+
+### Added
+
+- **The extras of a real deck.** The jokers, two rules cards (`R1`, the
+  rules of Hearts; `R2`, of Spades) and a blank (`BL`), drawn in every
+  design and named in English and Japanese, though no game deals them. A
+  hand writes them as words too: `JOKER` (the next of red and black),
+  `RULES`, `BLANK`, at most four jokers, two rules cards and two blanks to a
+  hand (`EXTRA_CARDS`, `EXTRA_LIMITS`). `AS KH QD JC JOKER` is a hand.
+- **A new deal is seen.** A `<toranpu-hand>` given other cards gathers its
+  old cards into a stack where it lies and opens on the new ones, in the
+  same room, with the shuffle's sound where `sound` is on. `deal-after`
+  makes a hand wait its turn, so a table deals seat after seat; the demo's
+  deck does, 150 ms a seat unless chosen otherwise.
+- A hand's drawn faces carry their card's id (`data-card`); a face-down
+  hand's do not, having no faces in the page.
+
 ## [2.8.1] - 2026-10-01
 
 ### Fixed
@@ -309,7 +327,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.1...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.9.0...HEAD
+[2.9.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.1...v2.9.0
 [2.8.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.6.0...v2.7.0

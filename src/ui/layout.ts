@@ -84,16 +84,35 @@ export function pileLayout(count: number, options: PileLayoutOptions = {}): Card
   return places;
 }
 
+/** The extras a hand may hold (`EXTRA_CARDS` in cardFaces.ts), and the most of each kind (`EXTRA_LIMITS`), spelled here so the layout needs no drawing. */
+const EXTRAS: readonly string[] = ["RJ", "BJ", "R1", "R2", "BL"];
+
+/** Whether a hand holds no more extras than one pack has: four jokers, two rules cards, two blanks. */
+function withinLimits(ids: readonly string[]): boolean {
+  const count = (test: (id: string) => boolean) => ids.filter(test).length;
+  return count((id) => id === "RJ" || id === "BJ") <= 4 && count((id) => id === "R1" || id === "R2") <= 2 && count((id) => id === "BL") <= 2;
+}
+
 /**
  * A hand written as text, as its cards: the two-letter ids separated by spaces
  * or commas (`"AS KH 10D TC RJ"`, with `10` for ten as well as `T`), or the
- * deck's one-letter codes run together (`"pvOZ"`). `null` for anything else.
+ * deck's one-letter codes run together (`"pvOZ"`). The extras by their ids or
+ * their words: `JOKER` (each the next of red and black), `RULES`, `BLANK`.
+ * `null` for anything else, or for more extras than one pack holds.
  */
 export function readHand(text: string | null | undefined): string[] | null {
   const words = String(text ?? "").trim().toUpperCase().split(/[\s,;+]+/).filter(Boolean);
   if (words.length === 0) return [];
-  const ids = words.map((word) => word.replace(/^10(?=[SHDC]$)/, "T"));
-  if (ids.every((id) => /^[A2-9TJQK][SHDC]$/.test(id) || id === "RJ" || id === "BJ")) return ids;
+  // The extras by their words: each JOKER the next of red and black, each RULES the next rules card, BLANK the blank.
+  let jokers = 0;
+  let rules = 0;
+  const ids = words.map((word) => {
+    if (word === "JOKER" || word === "JK") return jokers++ % 2 === 0 ? "RJ" : "BJ";
+    if (word === "RULES") return rules++ % 2 === 0 ? "R1" : "R2";
+    if (word === "BLANK") return "BL";
+    return word.replace(/^10(?=[SHDC]$)/, "T");
+  });
+  if (ids.every((id) => /^[A2-9TJQK][SHDC]$/.test(id) || EXTRAS.includes(id))) return withinLimits(ids) ? ids : null;
   const raw = String(text ?? "").trim();
   if (/^[A-Za-z]+$/.test(raw)) {
     const cards: string[] = [];

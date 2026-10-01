@@ -53,7 +53,7 @@ test("a closed hand opens on a tap; one card turns over on a tap; what is not a 
   await expect(one).toHaveAttribute("aria-label", "a card, face down");
 
   await embed(page, "hand=AS+ZZ&lang=en");
-  await expect(page.locator(".bad")).toHaveText("Those are not cards. Write them as AS KH 10D, or in the deck's one-letter codes.");
+  await expect(page.locator(".bad")).toHaveText("Those are not cards. Write them as AS KH 10D (and JOKER, RULES or BLANK), or in the deck's one-letter codes. A hand holds at most four jokers, two rules cards and two blanks.");
   await expect(page.locator("toranpu-hand")).toHaveCount(0);
   // Only what looks like a colour is taken as one.
   await embed(page, 'hand=AS&back-colour=red"><script>&felt=12345z');
@@ -81,9 +81,17 @@ test("the demo's panel writes the iframe and the tag for the hand typed, at the 
   await expect(page.frameLocator(at("embed-frame")).locator("toranpu-hand")).toHaveAttribute("cards", "TH JD QS");
 
   await page.locator(at("embed-cards")).fill("not cards");
-  await expect(page.locator(at("embed-error"))).toHaveText("Those are not cards. Write them as AS KH 10D, or in the deck's one-letter codes.");
+  await expect(page.locator(at("embed-error"))).toHaveText("Those are not cards. Write them as AS KH 10D (and JOKER, RULES or BLANK), or in the deck's one-letter codes. A hand holds at most four jokers, two rules cards and two blanks.");
   await expect(page.locator(at("embed-cards"))).toHaveAttribute("aria-invalid", "true");
   await page.locator(at("embed-cards")).fill("AS");
   await expect(page.locator(at("embed-error"))).toHaveText("");
+  // A joker, the way it is written on the box: the hand takes it, with the rules card and the blank a pack is sold with.
+  await page.locator(at("embed-cards")).fill("AS KH QD JC JOKER");
+  await expect(page.locator(at("embed-error"))).toHaveText("");
+  await expect(page.locator(at("embed-tag-code"))).toContainText('cards="AS KH QD JC RJ"');
+  await page.locator(at("embed-cards")).fill("JOKER JOKER RULES BLANK");
+  await expect(page.frameLocator(at("embed-frame")).locator("toranpu-hand")).toHaveAttribute("aria-label", /red joker, black joker, rules card, Hearts(,| and) blank card/);
+  await page.locator(at("embed-cards")).fill("JOKER JOKER JOKER JOKER JOKER");
+  await expect(page.locator(at("embed-cards"))).toHaveAttribute("aria-invalid", "true");
   await sound(page, errors);
 });

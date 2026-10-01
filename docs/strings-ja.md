@@ -141,6 +141,8 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageShuffle` | Shuffle | シャッフル |
 | `pageHands` | Hands | 人数 |
 | `pageEach` | Cards each | 1人あたりの枚数 |
+| `pageSeatAfter` | Each seat after | 席ごとの間隔 |
+| `pageMs` | {n} ms | {n}ミリ秒 |
 | `pageDeckCode` | The whole deck as one line, a letter a card | 52枚を1行で表したもの（1文字が1枚） |
 | `pageLeft` | Left over: {n} | 残り {n}枚 |
 | `pageKeep` | Keep this game, and read one back | このゲームを保存する、読み込む |
@@ -180,6 +182,13 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageBackMark` | Words in the middle | 中央の文字 |
 | `cardRedJoker` | red joker | 赤のジョーカー |
 | `cardBlackJoker` | black joker | 黒のジョーカー |
+| `cardRulesHearts` | rules card, Hearts | ルールカード（ハーツ） |
+| `cardRulesSpades` | rules card, Spades | ルールカード（スペード） |
+| `cardBlank` | blank card | 白紙のカード |
+| `rulesHeartsTitle` | HEARTS | ハーツ |
+| `rulesHearts` | Pass three cards, then play<br>Follow suit if you can<br>Each heart: 1 point<br>Queen of spades: 13<br>Fewest points wins | 3枚渡してから始める<br>同じスートを出す<br>ハート1枚：1点<br>スペードのQ：13点<br>点が少ない人の勝ち |
+| `rulesSpadesTitle` | SPADES | スペード |
+| `rulesSpades` | Bid the tricks you will take<br>Follow suit if you can<br>Spades are always trumps<br>Make your bid: 10 a trick<br>Fall short: lose your bid | 取るトリック数を宣言<br>同じスートを出す<br>スペードは常に切り札<br>宣言どおり：1トリック10点<br>足りなければ宣言分を失う |
 | `pageDesigns` | Card designs | カードのデザイン |
 | `pageDesignsNote` | Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. | 「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。 |
 | `pageDesignPlain` | Plain | シンプル |
@@ -215,7 +224,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageDrawCard` | Draw a card | 1枚引く |
 | `pageStockPile` | Stock | 山札 |
 | `embedTurn` | Turn over | 裏返す |
-| `embedBad` | Those are not cards. Write them as AS KH 10D, or in the deck's one-letter codes. | カードとして読めません。AS KH 10D のように、またはデッキの1文字のコードで書いてください。 |
+| `embedBad` | Those are not cards. Write them as AS KH 10D (and JOKER, RULES or BLANK), or in the deck's one-letter codes. A hand holds at most four jokers, two rules cards and two blanks. | カードとして読めません。AS KH 10D のように（JOKER、RULES、BLANK も使えます）、またはデッキの1文字のコードで書いてください。1つの手札にはジョーカー4枚、ルールカード2枚、白紙2枚までです。 |
 | `pageEmbed` | Embed a hand | 手札を埋め込む |
 | `pageEmbedNote` | Any hand of cards on any web page: write it in the card codes, choose a size, and copy one of the two. The iframe needs no script on your page; the tag needs one script line. | どんな手札でも、どのウェブページにも置けます。カードのコードで書き、大きさを選んで、どちらかをコピーしてください。iframe ならページにスクリプトは要りません。タグならスクリプトを1行加えます。 |
 | `pageEmbedCards` | Cards | カード |
