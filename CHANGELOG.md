@@ -6,6 +6,16 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.13.2] - 2026-10-01
+
+### Fixed
+
+- **The realistic design's number cards look like a printed deck's.** Byron
+  Knoll draws his large pips about a fifth of the card's height, so from the
+  seven up they crowded each other and ran into the corners. Each is now drawn
+  at a printed deck's size about its own centre, every suit alike, with the
+  field of pips drawn a little in from the corners.
+
 ## [2.13.1] - 2026-10-01
 
 Nothing that was exported has changed.

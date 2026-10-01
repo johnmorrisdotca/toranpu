@@ -28,6 +28,11 @@ const files = [];
 for (const [suitName, suit] of Object.entries(SUITS))
   for (const [rankName, rank] of Object.entries(RANKS)) if (!(rank === "A" && suit === "S")) files.push({ id: `${rank}${suit}`, file: `${rankName[0].toUpperCase()}${rankName.slice(1)} of ${suitName}.svg` });
 
+/** How tall a number card's large pips are, as a share of the card's height: a printed deck's proportion. */
+const PIP_SHARE = 0.12;
+/** How far the field of pips is drawn in toward the card's middle, clear of the corner indices, as a printed deck lays them. */
+const PIP_FIELD = 0.94;
+
 const small = (svg, id) =>
   optimize(svg, {
     multipass: true,
@@ -49,14 +54,16 @@ let box = null;
 for (const { id, file } of files) {
   const source = readFileSync(join(from, file), "utf8");
   before += source.length;
-  // The diamonds are reshaped before they are made small: the optimiser merges their pips into one shape.
-  const diamonds = id[1] === "D" && id[0] !== "A";
-  await page.setContent(`<body style="margin:0">${diamonds ? source.replace(/<\?xml[^>]*\?>/, "") : small(source, id)}</body>`);
-  const cleaned = await page.evaluate((diamonds) => {
+  // A number card's pips are resized before the card is made small: the optimiser merges them into one shape.
+  const numbered = id[0] !== "A";
+  await page.setContent(`<body style="margin:0">${numbered ? source.replace(/<\?xml[^>]*\?>/, "") : small(source, id)}</body>`);
+  const cleaned = await page.evaluate(({ numbered, PIP_SHARE, PIP_FIELD }) => {
     const svg = document.querySelector("svg");
-    // Knoll's large diamond pips are drawn about a sixth taller than his other suits' (72 units against 62), so from the seven
-    // up they touch and overlap. Each is made heart-sized about its own centre, its place on the card unchanged.
-    if (diamonds) {
+    // Knoll draws his large pips about 22% of the card's height (his diamonds a sixth taller still), where a printed
+    // deck's are about 16%: from the seven up they crowd each other and the corners, and John found the cards
+    // strange (2026-10-01). Each large pip is made PIP_SHARE of the card's height about its own centre, its place on
+    // the card unchanged, so every suit's pips are one size.
+    if (numbered) {
       for (const pip of svg.querySelectorAll("path")) {
         const box = pip.getBBox();
         const local = pip.getCTM();
@@ -69,8 +76,16 @@ for (const { id, file } of files) {
         point.x = box.x + box.width / 2;
         point.y = box.y + box.height / 2;
         const centre = point.matrixTransform(parent.inverse().multiply(local));
+        const scale = Math.round((PIP_SHARE / share) * 1000) / 1000;
+        // The card's own middle, where the pip lies: the field of pips is drawn in toward it, clear of the corners.
+        const [vx, vy, vw, vh] = svg.getAttribute("viewBox").split(/[\s,]+/).map(Number);
+        const mid = svg.createSVGPoint();
+        mid.x = vx + vw / 2;
+        mid.y = vy + vh / 2;
+        const middle = mid.matrixTransform(parent.inverse().multiply(svg.getCTM()));
+        const to = { x: middle.x + (centre.x - middle.x) * PIP_FIELD, y: middle.y + (centre.y - middle.y) * PIP_FIELD };
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        g.setAttribute("transform", `translate(${centre.x} ${centre.y}) scale(0.84) translate(${-centre.x} ${-centre.y})`);
+        g.setAttribute("transform", `translate(${to.x} ${to.y}) scale(${scale}) translate(${-centre.x} ${-centre.y})`);
         pip.replaceWith(g);
         g.append(pip);
       }
@@ -86,7 +101,7 @@ for (const { id, file } of files) {
       }
     }
     return { svg: svg.outerHTML, outlines, width, height };
-  }, diamonds);
+  }, { numbered, PIP_SHARE, PIP_FIELD });
   if (cleaned.outlines !== 1) throw new Error(`${file}: ${cleaned.outlines} outlines`);
   box ??= [cleaned.width, cleaned.height];
   if (Math.abs(box[0] - cleaned.width) > 0.1 || Math.abs(box[1] - cleaned.height) > 0.1) throw new Error(`${file}: another size`);

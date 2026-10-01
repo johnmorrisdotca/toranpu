@@ -1135,7 +1135,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.13.1",
+  "generator": "toranpu 2.13.2",
   "game": "goFish",
   "size": 1,
   "players": [
