@@ -6,6 +6,28 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.7.0] - 2026-09-30
+
+### Added
+
+- **Messy piles**: `<toranpu-pile>`, a stock to draw from (`count="24"
+  face-down`, with no need to say which cards) or a discard pile (`cards`,
+  its top card last), the cards under the top one showing as a stack from
+  neatly squared (`messiness="0"`) to very messy (`1`). Each pile is laid out
+  from its own `seed`, so it always looks the same and a card put on top
+  moves none of those under it; `depth` caps how many cards are drawn; and a
+  pile keeps its size as cards come and go.
+- The demo's table draws its stock and discard pile this way, in the look
+  chosen on the page, and a Messy piles panel has a slider, a seed and a card
+  to draw.
+
+### Changed
+
+- The elements redraw when the page changes its language, so their names
+  for screen readers follow a language chooser.
+- A count in the elements' words is written as the package writes counts
+  elsewhere ("a hand face down, cards: 5"), so one card reads right too.
+
 ## [2.6.0] - 2026-09-30
 
 ### Added
@@ -249,7 +271,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.6.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.7.0...HEAD
+[2.7.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.3.0...v2.4.0

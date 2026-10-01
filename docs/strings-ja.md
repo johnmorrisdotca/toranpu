@@ -192,7 +192,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageAsElement` | As an element | 要素として |
 | `pageAsPicture` | As a picture | 画像として |
 | `handLabel` | Hand: {cards} | 手札：{cards} |
-| `handFaceDown` | a hand of {n} cards, face down | 伏せた手札（{n}枚） |
+| `handFaceDown` | a hand face down, cards: {n} | 伏せた手札（{n}枚） |
 | `handScrunched` | a hand of cards, squared up face down | 伏せてまとめた手札 |
 | `pageHide` | Hide a hand | 手札を隠す |
 | `pageHideNote` | Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read. | 手札をその場で伏せます。全部いっぺんにも、1枚ずつにもできます。表に戻すこともできます。「まとめる」は手札を伏せて1つの束にし、カードも枚数もわからないようにします。 |
@@ -205,6 +205,15 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageReveal` | A closed hand that opens with a tap | タップで開く手札 |
 | `pageRevealNote` | The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it. | 手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。 |
 | `pageClosed` | How closed | 閉じ具合 |
+| `pileFaceDown` | a pile face down, cards: {n} | 伏せた山（{n}枚） |
+| `pileFaceUp` | a pile, {card} on top, cards: {n} | {n}枚の山、いちばん上は{card} |
+| `pileEmpty` | an empty pile | 空の山 |
+| `pagePiles` | Messy piles | 乱れた山 |
+| `pagePilesNote` | A stock to draw from and a discard pile, the cards under the top one showing as a stack, from neatly squared to very messy. The seed keeps a pile looking the same; draw a card and watch only the top change. | 引くための山札と捨て札です。いちばん上の下にあるカードが重なって見え、きれいにそろった状態からひどく乱れた状態まで選べます。シードが同じなら山はいつも同じ見た目です。1枚引くと、変わるのはいちばん上だけです。 |
+| `pageMessiness` | Messiness | 乱れ具合 |
+| `pagePileSeed` | Pile seed | 山のシード |
+| `pageDrawCard` | Draw a card | 1枚引く |
+| `pageStockPile` | Stock | 山札 |
 
 ## The command line's help
 

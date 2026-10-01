@@ -10,6 +10,7 @@ export const look = {
   colour: /^[0-9a-f]{6}$/i.test(colour ?? "") ? `#${colour.toLowerCase()}` : null,
   mark: (asked.get("mark") ?? "").slice(0, 12),
   design: DESIGNS.includes(asked.get("design")) ? asked.get("design") : "plain",
+  messiness: /^(0(\.\d{1,2})?|1)$/.test(asked.get("mess") ?? "") ? Number(asked.get("mess")) : 0.3,
 };
 
 const listeners = [];
@@ -28,4 +29,14 @@ export function lookQuery(query) {
   if (look.colour !== null) query.set("back-colour", look.colour.slice(1));
   if (look.mark.trim() !== "") query.set("mark", look.mark.trim());
   if (look.design !== "plain") query.set("design", look.design);
+  if (look.messiness !== 0.3) query.set("mess", String(look.messiness));
+}
+
+/** The look's attributes, as every element on the page wears them. */
+export function wear(element) {
+  for (const name of ["design", "back", "back-colour", "mark"]) element.removeAttribute(name);
+  if (look.design !== "plain") element.setAttribute("design", look.design);
+  if (look.back !== "classic-red") element.setAttribute("back", look.back);
+  if (look.colour !== null) element.setAttribute("back-colour", look.colour);
+  if (look.mark.trim() !== "") element.setAttribute("mark", look.mark.trim());
 }

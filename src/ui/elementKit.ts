@@ -92,3 +92,21 @@ export function isOn(element: Element, name: string): boolean {
   const value = element.getAttribute(name);
   return value !== null && !["false", "off", "0", "no"].includes(value.toLowerCase());
 }
+
+const speakers = new Set<() => void>();
+let listening: MutationObserver | null = null;
+/**
+ * Redraw an element when the page changes its language (`<html lang>`), as a
+ * language chooser does, until `forget` is called. One watcher serves every
+ * element on the page.
+ */
+export function followLanguage(redraw: () => void): () => void {
+  speakers.add(redraw);
+  if (listening === null && typeof MutationObserver !== "undefined" && typeof document !== "undefined") {
+    listening = new MutationObserver(() => {
+      for (const one of [...speakers]) one();
+    });
+    listening.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  }
+  return () => speakers.delete(redraw);
+}

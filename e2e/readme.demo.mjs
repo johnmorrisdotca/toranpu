@@ -71,3 +71,11 @@ test("A closed hand: the example lies closed, opens on a tap and tells the page"
   await expect.poll(() => page.evaluate(() => window.opened)).toEqual([1]);
   expect(errors).toEqual([]);
 });
+
+test("Messy piles: the two piles of the example, face down and face up, from one seed", async ({ page }) => {
+  const errors = await run(page, `${block('<toranpu-pile count="24"')}<script type="module" src="${CDN}element-define.js"></script>`);
+  const piles = page.locator("toranpu-pile");
+  await expect(piles.nth(0)).toHaveAttribute("aria-label", "a pile face down, cards: 24");
+  await expect(piles.nth(1)).toHaveAttribute("aria-label", "a pile, seven of hearts on top, cards: 4");
+  expect(errors).toEqual([]);
+});

@@ -281,7 +281,7 @@ describe("the README on a hand", () => {
     const named = table("| Attribute of `<toranpu-hand>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
     expect(new Set(named)).toEqual(new Set([...element.ToranpuHand.observedAttributes, "sound"]));
     const methods = table("| Method | What it does |").flatMap((row) => [...row[0].matchAll(/`(\w+)\(/g)].map((m) => m[1]));
-    const own = Object.getOwnPropertyNames(element.ToranpuHand.prototype).filter((name) => typeof Object.getOwnPropertyDescriptor(element.ToranpuHand.prototype, name).value === "function" && !["constructor", "connectedCallback", "attributeChangedCallback"].includes(name));
+    const own = Object.getOwnPropertyNames(element.ToranpuHand.prototype).filter((name) => typeof Object.getOwnPropertyDescriptor(element.ToranpuHand.prototype, name).value === "function" && !["constructor", "connectedCallback", "disconnectedCallback", "attributeChangedCallback"].includes(name));
     expect(methods.sort()).toEqual(own.sort());
   });
 
@@ -290,6 +290,24 @@ describe("the README on a hand", () => {
     expect(readFileSync("src/ui/handElement.ts", "utf8")).toContain("options.gap ?? 110");
     expect(readme).toContain("one face-down bundle of three backs whatever the hand");
     expect(element.BUNDLE_BACKS).toBe(3);
+  });
+});
+
+describe("the README on piles", () => {
+  it("names every attribute the pile watches, and the defaults it takes", () => {
+    const named = table("| Attribute of `<toranpu-pile>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
+    expect(new Set(named)).toEqual(new Set(element.ToranpuPile.observedAttributes));
+    const source = readFileSync("src/ui/pileElement.ts", "utf8");
+    expect(source).toContain('this.#number("messiness", 0.3)');
+    expect(source).toContain('this.#number("seed", 1)');
+    expect(source).toContain('this.#number("depth", 10)');
+    expect(readme).toContain("unless said, `0.3`");
+  });
+
+  it("the words a screen reader hears are the package's own", () => {
+    expect(readme).toContain(`"${toranpu.fillIn(STRINGS.en.pileFaceDown, { n: 24 })}"`);
+    expect(readme.replace(/\n\s*/g, " ")).toContain(`"${toranpu.fillIn(STRINGS.en.pileFaceUp, { n: 4, card: "queen of spades" })}"`);
+    expect(readme.replace(/\n\s*/g, " ")).toContain(`"${toranpu.fillIn(STRINGS.en.handFaceDown, { n: 5 })}"`);
   });
 });
 
@@ -346,7 +364,7 @@ describe("the README's tables", () => {
     for (const name of Object.keys(toranpu)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
     for (const [entry, module] of Object.entries(TABLE_ENTRIES)) for (const name of Object.keys(module)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `${entry}'s ${name}`).toBe(true);
     const everything = new Set([...Object.keys(toranpu), ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)), ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])), ...types, "useCardGame"]);
-    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options", "plain", "english", "art", "box", "KS", "RJ", "BJ", "faceDown", "flip", "card", "size", "width", "design", "back", "mark", "lang", "sound", "sideEffects", "cards", "hide", "show", "scrunch", "spread", "open", "close", "closed", "reveal"].includes(name));
+    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options", "plain", "english", "art", "box", "KS", "RJ", "BJ", "faceDown", "flip", "card", "size", "width", "design", "back", "mark", "lang", "sound", "sideEffects", "cards", "hide", "show", "scrunch", "spread", "open", "close", "closed", "reveal", "count", "messiness", "seed", "depth"].includes(name));
     expect(named.length).toBeGreaterThan(120);
     for (const name of named) expect(everything.has(name), `the README names ${name}`).toBe(true);
   });

@@ -30,6 +30,7 @@ select.fam-field { -webkit-appearance: none; appearance: none; padding-right: 28
 .pile .label { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; opacity: .85; }
 .pile .cards { display: flex; gap: 4px; flex-wrap: wrap; }
 .pile .big { font-size: 2rem; line-height: 1; }
+.pile toranpu-pile { --toranpu-card-width: var(--card-w); }
 .status { font-weight: 600; min-height: 3em; margin: 0; }
 .hand { display: flex; flex-wrap: wrap; gap: 6px; min-height: calc(var(--card-h) + 12px); padding-top: 12px; }
 .moves { display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; }
@@ -93,6 +94,12 @@ button.card[aria-pressed="true"] { transform: translateY(-10px); border-color: v
 /* A hand on the felt, for the hand panels. */
 .hand-stage { background: radial-gradient(circle at 50% 40%, var(--felt), var(--felt-deep)); border-radius: 14px; padding: 16px 12px; min-height: 150px; display: flex; align-items: center; justify-content: center; }
 input[type="range"] { width: 12rem; max-width: 100%; min-height: 44px; accent-color: var(--accent); }
+
+/* Messy piles. */
+.pile-pair { display: flex; flex-wrap: wrap; gap: 12px 22px; justify-content: center; align-items: flex-start; }
+.pile-pair toranpu-pile { --toranpu-card-width: 70px; }
+@media (min-width: 600px) { .pile-pair toranpu-pile { --toranpu-card-width: 104px; } }
+.pile-pair figure { margin: 0; display: grid; justify-items: center; gap: 4px; color: var(--felt-ink); font-size: .8rem; }
 
 /* The deck on its own: each hand a fan. */
 .deck-hands { display: grid; gap: 10px 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }

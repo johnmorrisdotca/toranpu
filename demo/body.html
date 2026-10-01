@@ -116,6 +116,20 @@ sounds.setMuted(true);</pre>
           </div>
           <pre class="snippet" id="reveal-code" data-testid="reveal-code" tabindex="0"></pre>
         </section>
+        <section class="wide" aria-labelledby="piles-title" id="piles-panel">
+          <h2 id="piles-title" data-say="pagePiles"></h2>
+          <p data-say="pagePilesNote"></p>
+          <div class="hand-stage pile-pair">
+            <figure><toranpu-pile id="stock-demo" data-testid="stock-demo" face-down></toranpu-pile><figcaption data-say="pageStockPile"></figcaption></figure>
+            <figure><toranpu-pile id="discard-demo" data-testid="discard-demo"></toranpu-pile><figcaption data-say="pageDiscard"></figcaption></figure>
+          </div>
+          <div class="fam-row setup">
+            <label><span data-say="pageMessiness"></span> <input type="range" id="messiness" data-testid="messiness" min="0" max="1" step="0.05" /></label>
+            <label><span data-say="pagePileSeed"></span> <input id="pile-seed" class="fam-field" data-mono="true" data-testid="pile-seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
+            <button type="button" class="fam-button" id="draw-card" data-testid="draw-card" data-say="pageDrawCard"></button>
+          </div>
+          <pre class="snippet" id="piles-code" data-testid="piles-code" tabindex="0"></pre>
+        </section>
         <section class="wide" aria-labelledby="deck-title">
           <h2 id="deck-title" data-say="pageDeck"></h2>
           <p data-say="pageDeckNote"></p>

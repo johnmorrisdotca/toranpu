@@ -1,4 +1,4 @@
-import { cardDrawing, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./elementKit.ts";
+import { followLanguage, cardDrawing, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./elementKit.ts";
 import { isCardFace } from "./cardFaces.ts";
 
 /**
@@ -27,6 +27,7 @@ export class ToranpuCard extends ElementBase {
   }
 
   #root: ShadowRoot | null = null;
+  #forget: (() => void) | null = null;
   #turning = false;
 
   /** Whether the card shows its back. Setting it turns the card over, as a tap would, but with no event and no sound. */
@@ -49,6 +50,7 @@ export class ToranpuCard extends ElementBase {
   }
 
   connectedCallback(): void {
+    this.#forget ??= followLanguage(() => this.#draw());
     if (this.#root === null) {
       this.#root = this.attachShadow({ mode: "open" });
       this.addEventListener("click", () => {
@@ -61,6 +63,11 @@ export class ToranpuCard extends ElementBase {
       });
     }
     this.#draw();
+  }
+
+  disconnectedCallback(): void {
+    this.#forget?.();
+    this.#forget = null;
   }
 
   attributeChangedCallback(): void {

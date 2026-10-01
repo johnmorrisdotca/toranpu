@@ -1,7 +1,7 @@
 import { STRINGS, fillIn } from "../strings.ts";
 import { namesList } from "../words.ts";
 import { faceName } from "./cardFaces.ts";
-import { cardDrawing, designNamed, ElementBase, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./elementKit.ts";
+import { followLanguage, cardDrawing, designNamed, ElementBase, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./elementKit.ts";
 import { handLayout, readHand, type CardPlace } from "./layout.ts";
 
 /** How a hand's cards are turned face down or face up. */
@@ -48,6 +48,7 @@ export class ToranpuHand extends ElementBase {
   }
 
   #root: ShadowRoot | null = null;
+  #forget: (() => void) | null = null;
   /** How the cards are turned over next: one by one with this gap, or all at once (0). */
   #stagger = 0;
   /** Whether the next change moves the cards (true) or simply draws them where they end. */
@@ -117,6 +118,7 @@ export class ToranpuHand extends ElementBase {
   }
 
   connectedCallback(): void {
+    this.#forget ??= followLanguage(() => this.#draw());
     if (this.#root === null) {
       this.#root = this.attachShadow({ mode: "open" });
       const toggle = () => {
@@ -140,6 +142,11 @@ export class ToranpuHand extends ElementBase {
 
   /** How closed the hand was before a tap opened it, which the next tap closes it to again. */
   #closedBefore = 1;
+
+  disconnectedCallback(): void {
+    this.#forget?.();
+    this.#forget = null;
+  }
 
   attributeChangedCallback(): void {
     if (this.#root !== null) this.#draw();

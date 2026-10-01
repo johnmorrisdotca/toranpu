@@ -3,20 +3,11 @@
 // Both are drawn in the look chosen above, and each shows the code that does what was last pressed.
 import { cardId, shuffledDeck } from "./dist/deck.js";
 import { randomSeed } from "./dist/index.js";
-import { look, onLook } from "./look.js";
+import { onLook, wear } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
 const handOf = (seed, size) => shuffledDeck(seed).slice(0, size).map(cardId).join(" ");
 let seed = 2026;
-
-/** The look's attributes, as both hands wear them. */
-function wear(hand) {
-  for (const name of ["design", "back", "back-colour", "mark"]) hand.removeAttribute(name);
-  if (look.design !== "plain") hand.setAttribute("design", look.design);
-  if (look.back !== "classic-red") hand.setAttribute("back", look.back);
-  if (look.colour !== null) hand.setAttribute("back-colour", look.colour);
-  if (look.mark.trim() !== "") hand.setAttribute("mark", look.mark.trim());
-}
 
 /** The element as written in a page: its cards, the look it wears, and what else is asked. */
 const tag = (hand, extra = "") => {

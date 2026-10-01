@@ -8,7 +8,8 @@ import { wire as wireBacks } from "./backs.js";
 import { wire as wireDesigns } from "./designs.js";
 import { wire as wireOneCard } from "./onecard.js";
 import { wire as wireHands } from "./hands.js";
-import { lookQuery, onLook } from "./look.js";
+import { wire as wirePiles } from "./piles.js";
+import { look, lookQuery, onLook, wear } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
 const NAMES = ["You", "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
@@ -93,6 +94,19 @@ function pile(label, cards, small = true) {
   box.append(el("span", label, { class: "label" }), row);
   return box;
 }
+/** A pile on the table, as <toranpu-pile>: the stock face down, a discard pile face up, in the page's look. */
+function heap(label, attributes) {
+  const box = el("div", "", { class: "pile" });
+  const made = document.createElement("toranpu-pile");
+  for (const [name, value] of Object.entries(attributes)) if (value !== false) made.setAttribute(name, value === true ? "" : String(value));
+  made.setAttribute("messiness", String(look.messiness));
+  // The table's own seed, so a pile looks the same all game.
+  made.setAttribute("seed", String(game.seed));
+  made.setAttribute("depth", "6");
+  wear(made);
+  box.append(el("span", label, { class: "label" }), made);
+  return box;
+}
 const sign = (label, text) => {
   const box = el("div", "", { class: "pile" });
   box.append(el("span", label, { class: "label" }), el("span", text, { class: "big" }));
@@ -107,13 +121,13 @@ function drawPiles(names) {
   else if (g.lastTrick?.plays?.length) piles.push(pile(fillIn(t().pageLastTrick, { player: names[g.lastTrick.winner] }), plays(g.lastTrick.plays)));
   if (g.pile?.cards) piles.push(pile(fillIn(t().pageToBeat, { player: names[g.pile.seat] }), g.pile.cards, false));
   if (g.run?.length) piles.push(pile(fillIn(t().pageCount, { n: g.count }), plays(g.run), false));
-  if (g.discard?.length) piles.push(pile(t().pageDiscard, [g.discard[g.discard.length - 1]], false));
+  if (g.discard?.length) piles.push(heap(t().pageDiscard, { cards: g.discard.join(" "), "data-testid": "discard-pile" }));
   if (g.suit && kind === "crazyEights") piles.push(sign(t().pageSuitToFollow, suitSymbol(g.suit)));
   if (g.upcard && g.phase !== "playing" && g.trump === null) piles.push(pile(t().pageTurnedUp, [g.upcard], false));
   if (g.turned && kind === "ohHell") piles.push(pile(t().pageTurnedUp, [g.turned]));
   if (g.trump) piles.push(sign(t().pageTrump, suitSymbol(g.trump)));
   if (g.starter) piles.push(pile(t().pageStarter, [g.starter], false));
-  if (g.stock) piles.push(sign(t().pageStock.replace("{n}", ""), String(g.stock.length)));
+  if (g.stock) piles.push(heap(fillIn(t().pageStock, { n: g.stock.length }), { count: g.stock.length, "face-down": true, "data-testid": "stock-pile" }));
   $("piles").replaceChildren(...piles);
 }
 
@@ -302,7 +316,9 @@ wireBacks((key) => t()[key]);
 afterLanguage.push(wireDesigns((key) => t()[key], () => language.lang));
 afterLanguage.push(wireOneCard(() => language.lang));
 wireHands();
+wirePiles();
 onLook(writeAddress);
+onLook(() => drawPiles(shown(rules().seats(game).players)));
 $("players").addEventListener("change", () => deal(kind, { seed: game.seed }));
 $("seed").addEventListener("change", () => {
   const seed = whole($("seed").value.trim(), 1, SEED_MOST);

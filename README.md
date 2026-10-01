@@ -342,6 +342,9 @@ Toranpu has siblings, each made for the same site, each MIT, each at
   one by one, or scrunched into a bundle that shows nothing, or held closed
   to open into a fan on a tap. See [Hide a hand](#hide-a-hand) and
   [A closed hand](#a-closed-hand-that-opens-with-a-tap).
+- **Messy piles**: `<toranpu-pile>`, a stock or a discard pile from neatly
+  squared to very messy, the same every time for the same seed. See
+  [Messy piles](#messy-piles).
 - **One card on any page**: `<toranpu-card>`, turned over by a tap, or any
   card as a picture. See [One card on any page](#one-card-on-any-page).
 - **Card designs**: plain, four colour and the traditional English pattern
@@ -709,8 +712,8 @@ that neither the cards nor how many there are can be read.
 - The cards turn over in place and slide together; a device that asks for less
   motion gets the end at once.
 - A face down card's face, and a bundle's cards, are taken out of the page
-  once the cards are still: a screen reader hears "a hand of 5 cards, face
-  down", or for a bundle only "a hand of cards, squared up face down". What
+  once the cards are still: a screen reader hears "a hand face down, cards:
+  5", or for a bundle only "a hand of cards, squared up face down". What
   the page itself was given (the `cards` attribute) is the page's to keep
   secret: a game should not put an opponent's cards in the page at all.
 - The hand is as wide as its cards ask, and never wider than the room it is
@@ -741,6 +744,38 @@ says how closed it starts, from `0` (a fan) to `1` (squared up).
   open, and it names its cards.
 - Where the cards lie is `handLayout(count, { open })`, the same arithmetic
   the element uses, for a table of your own.
+
+## Messy piles
+
+`<toranpu-pile>` is a stock to draw from or a discard pile: its top card on
+top, and the cards under it showing as a stack, from neatly squared to very
+messy. Each pile is laid out from its own seed, so it always looks the same,
+and a card put on top moves none of those under it.
+
+```html
+<toranpu-pile count="24" face-down messiness="0.4" seed="7"></toranpu-pile>
+<toranpu-pile cards="3C 9D QS 7H" messiness="0.6" seed="7"></toranpu-pile>
+```
+
+| Attribute of `<toranpu-pile>` | What it does |
+| --- | --- |
+| `cards` | the pile from the bottom up, its top card last: ids or one-letter codes |
+| `count` | for a face-down pile, how many cards, with no need to say which |
+| `face-down` | every card shows its back, and no face is in the page |
+| `messiness` | from `0` (squared up, each card's edge showing under the one above) to `1` (very messy): unless said, `0.3` |
+| `seed` | the pile's own seed, a whole number: unless said, `1` |
+| `depth` | how many cards under the top are drawn at most, so a pile of fifty costs what a pile of ten does: unless said, `10` |
+| `design`, `back`, `back-colour`, `mark`, `size`, `width`, `lang` | as on `<toranpu-card>` |
+
+- A pile keeps its size as cards come and go: the room round it is set by
+  its messiness and depth, never by what it holds, so nothing next to it
+  moves when a card is drawn.
+- A screen reader hears "a pile face down, cards: 24" or "a pile, queen of
+  spades on top, cards: 4"; an empty pile is drawn as a dashed outline.
+- Where each card lies is `pileLayout(count, { messiness, seed, depth })`, the
+  same arithmetic the element uses, for a pile of your own.
+- The demo's own table draws its stock and its discard pile this way, in
+  the look and the messiness chosen on the page.
 
 ## Words
 
@@ -798,7 +833,7 @@ The JSON:
 ```json
 {
   "format": 1,
-  "generator": "toranpu 2.6.0",
+  "generator": "toranpu 2.7.0",
   "game": "goFish",
   "size": 1,
   "players": [
@@ -1039,6 +1074,7 @@ and both jokers in a box 360 by 540.
 | `defineToranpuElements()` | Registers the elements under their tags, once |
 | `ToranpuCard` | The `<toranpu-card>` element's class |
 | `ToranpuHand` | The `<toranpu-hand>` element's class |
+| `ToranpuPile` | The `<toranpu-pile>` element's class |
 | `BUNDLE_BACKS` | How many backs a scrunched hand shows, whatever its size: 3 |
 | `TORANPU_TAGS` | The elements' tags |
 | `ELEMENT_SIZES` | The card widths `size` names: small 46, medium 70, large 104 |

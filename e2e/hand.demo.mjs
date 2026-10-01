@@ -33,7 +33,7 @@ test("face down all at once and face up again: while down, no face is in the pag
   await tap(page, at("hand-hide"));
   await settled(page, "hide-hand");
   s = await read(page, "hide-hand");
-  expect(s).toMatchObject({ count: 7, faces: 0, down: 7, label: "a hand of 7 cards, face down" });
+  expect(s).toMatchObject({ count: 7, faces: 0, down: 7, label: "a hand face down, cards: 7" });
   await expect(page.locator(at("hide-code"))).toContainText("hand.hide();");
 
   await tap(page, at("hand-show"));

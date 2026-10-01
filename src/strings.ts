@@ -208,6 +208,15 @@ export type ToranpuStrings = {
   pageReveal: string;
   pageRevealNote: string;
   pageClosed: string;
+  pileFaceDown: string;
+  pileFaceUp: string;
+  pileEmpty: string;
+  pagePiles: string;
+  pagePilesNote: string;
+  pageMessiness: string;
+  pagePileSeed: string;
+  pageDrawCard: string;
+  pageStockPile: string;
 };
 
 /** Every string, in both languages. */
@@ -425,7 +434,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageAsElement: "As an element",
     pageAsPicture: "As a picture",
     handLabel: "Hand: {cards}",
-    handFaceDown: "a hand of {n} cards, face down",
+    handFaceDown: "a hand face down, cards: {n}",
     handScrunched: "a hand of cards, squared up face down",
     pageHide: "Hide a hand",
     pageHideNote: "Turn a hand face down where it lies, all at once or one card after another, and back. Scrunch squares it into one face-down bundle, so neither the cards nor how many there are can be read.",
@@ -438,6 +447,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageReveal: "A closed hand that opens with a tap",
     pageRevealNote: "The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it.",
     pageClosed: "How closed",
+    pileFaceDown: "a pile face down, cards: {n}",
+    pileFaceUp: "a pile, {card} on top, cards: {n}",
+    pileEmpty: "an empty pile",
+    pagePiles: "Messy piles",
+    pagePilesNote: "A stock to draw from and a discard pile, the cards under the top one showing as a stack, from neatly squared to very messy. The seed keeps a pile looking the same; draw a card and watch only the top change.",
+    pageMessiness: "Messiness",
+    pagePileSeed: "Pile seed",
+    pageDrawCard: "Draw a card",
+    pageStockPile: "Stock",
   },
   ja: {
     gameHearts: "ハーツ",
@@ -665,6 +683,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageReveal: "タップで開く手札",
     pageRevealNote: "手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。",
     pageClosed: "閉じ具合",
+    pileFaceDown: "伏せた山（{n}枚）",
+    pileFaceUp: "{n}枚の山、いちばん上は{card}",
+    pileEmpty: "空の山",
+    pagePiles: "乱れた山",
+    pagePilesNote: "引くための山札と捨て札です。いちばん上の下にあるカードが重なって見え、きれいにそろった状態からひどく乱れた状態まで選べます。シードが同じなら山はいつも同じ見た目です。1枚引くと、変わるのはいちばん上だけです。",
+    pageMessiness: "乱れ具合",
+    pagePileSeed: "山のシード",
+    pageDrawCard: "1枚引く",
+    pageStockPile: "山札",
   },
 };
 
