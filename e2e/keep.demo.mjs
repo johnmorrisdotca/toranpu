@@ -115,7 +115,7 @@ test("the chooser switches every word, the device remembers, and the address win
   expect(s.moves).toHaveLength(english.length);
   expect(s.log[0]).toBe("ゴーフィッシュ（3人）、シード 2026。");
   await expect(page.locator(`${at("game-president")} > span:not(.ghost)`)).toHaveText("大富豪");
-  await expect(page.locator(at("deal"))).toHaveText("配る");
+  await expect(page.locator(`${at("deal")} [data-say]`)).toHaveText("配る");
   await sound(page, errors);
 
   await page.reload();

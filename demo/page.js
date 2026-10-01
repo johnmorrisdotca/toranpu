@@ -224,6 +224,10 @@ function drawChooser() {
   $("blurb").textContent = gameSays(kind, language.lang);
   $("blurb-ghost").replaceChildren(el("span", `${gameSays(kind, other())} ${STRINGS[other()].pageRules}`));
   $("blurb-ghost").lang = other();
+  for (const unseen of document.querySelectorAll("[data-ghost-say]")) {
+    unseen.textContent = STRINGS[other()][unseen.dataset.ghostSay];
+    unseen.lang = other();
+  }
   $("rules-link").href = `${RULES}#${ANCHORS[kind]}`;
 }
 

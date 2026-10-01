@@ -3,9 +3,9 @@
         <div class="games" id="games" data-testid="games"></div>
         <p class="blurb both"><span><span id="blurb" data-testid="blurb"></span> <a id="rules-link" data-say="pageRules"></a></span><span id="blurb-ghost" class="ghost" aria-hidden="true"></span></p>
         <div class="fam-row setup">
-          <label><span data-say="pagePlayers"></span> <select id="players" class="fam-field" data-testid="players"></select></label>
-          <label><span data-say="pageSeed"></span> <input id="seed" class="fam-field" data-mono="true" data-testid="seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
-          <button type="button" id="deal" class="fam-button" data-primary="true" data-testid="deal" data-say="pageDeal"></button>
+          <label><span class="both"><span data-say="pagePlayers"></span><span class="ghost" data-ghost-say="pagePlayers" aria-hidden="true"></span></span> <select id="players" class="fam-field" data-testid="players"></select></label>
+          <label><span class="both"><span data-say="pageSeed"></span><span class="ghost" data-ghost-say="pageSeed" aria-hidden="true"></span></span> <input id="seed" class="fam-field" data-mono="true" data-testid="seed" inputmode="numeric" autocomplete="off" maxlength="10" /></label>
+          <button type="button" id="deal" class="fam-button" data-primary="true" data-testid="deal"><span class="both"><span data-say="pageDeal"></span><span class="ghost" data-ghost-say="pageDeal" aria-hidden="true"></span></span></button>
         </div>
       </section>
       <div class="fam-felt table" aria-live="polite">
