@@ -1,6 +1,6 @@
-import { computerSeats } from "../cardGameCodec.ts";
-import { CRIBBAGE_SIZES } from "../cardGames.constants.ts";
-import type { CardId } from "../cardGames.types.ts";
+import { computerSeats } from "../card-game-codec.ts";
+import { CRIBBAGE_SIZES } from "../card-games.constants.ts";
+import type { CardId } from "../card-games.types.ts";
 import { dealRound, rankOf, shuffledDeck, suitOf, without } from "../cards.ts";
 
 import type { CribbageCount, CribbageGame, CribbageHandScore, CribbageMove, CribbagePeg } from "./cribbage.types.ts";

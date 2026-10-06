@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from "vitest";
 
-import { cardBackNames, cardBackSvg, cardBackUrl } from "./cardBacks.ts";
-import { cardFaceFromArt, cardFaceSvg, faceName, isCardFace, loadCardDesign } from "./cardFaces.ts";
-import type { CardDesign } from "./cardFaces.types.ts";
+import { cardBackNames, cardBackSvg, cardBackUrl } from "./card-backs.ts";
+import { cardFaceFromArt, cardFaceSvg, faceName, isCardFace, loadCardDesign } from "./card-faces.ts";
+import type { CardDesign } from "./card-faces.types.ts";
 import { cleanMarkup, safeImageUrl } from "./markup.ts";
 import { readHand } from "./layout.ts";
 import { customCardKnown, registerBack, registerDesign, registeredBack, registeredBackNames, registeredDesign, registeredDesignNames, unregisterBack, unregisterDesign } from "./registry.ts";

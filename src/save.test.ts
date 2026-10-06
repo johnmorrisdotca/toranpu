@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/cardGames.constants.ts";
-import type { CardGameKind } from "./games/cardGames.constants.ts";
+import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.ts";
+import type { CardGameKind } from "./games/card-games.constants.ts";
 import { newGame, playComputers, rulesFor } from "./play.ts";
 import type { GameOf } from "./play.ts";
 import { CSV_COLUMNS, SAVE_FORMAT, fromCode, fromJSON, recordOf, savedGame, toCSV, toCode, toJSON, toText } from "./save.ts";

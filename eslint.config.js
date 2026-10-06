@@ -1,5 +1,6 @@
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
+import unicorn from "eslint-plugin-unicorn";
 
 const browser = Object.fromEntries(["document", "window", "location", "history", "navigator", "setTimeout", "clearTimeout", "console", "URLSearchParams", "familyLanguage", "localStorage", "customElements", "requestAnimationFrame", "matchMedia", "navigator", "HTMLElement", "URL", "Blob", "encodeURIComponent"].map((name) => [name, "readonly"]));
 
@@ -11,4 +12,5 @@ export default tseslint.config(
   { files: ["e2e/**/*.mjs", "playwright.config.mjs"], languageOptions: { globals: { console: "readonly", URL: "readonly", document: "readonly", window: "readonly", location: "readonly", AudioBufferSourceNode: "readonly", getComputedStyle: "readonly", matchMedia: "readonly", DOMParser: "readonly", customElements: "readonly", requestAnimationFrame: "readonly", MutationObserver: "readonly" } } },
   { files: ["demo/**/*.js"], languageOptions: { globals: browser } },
   { files: ["src/**/*.test.js"], languageOptions: { globals: { atob: "readonly", setTimeout: "readonly" } } },
+  { files: ["src/**/*.ts", "scripts/**/*.mjs", "demo/**/*.js", "e2e/**/*.mjs"], plugins: { unicorn }, rules: { "unicorn/filename-case": ["error", { case: "kebabCase" }] } },
 );

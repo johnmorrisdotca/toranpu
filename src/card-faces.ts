@@ -29,9 +29,9 @@
  * element.innerHTML = cardFaceSvg("land-ridge", { design: "frontier" });
  * ```
  */
-export { CARD_DESIGNS, CARD_FACE_COLOURS, CARD_FACE_PROPERTIES, JOKERS, EXTRA_CARDS, EXTRA_LIMITS, cardFaceSvg, cardFaceUrl, faceName, isCardFace, loadCardDesign, pipPlaces } from "./ui/cardFaces.ts";
-export { cardFaceFromArt } from "./ui/cardFaces.ts";
-export type { CardDesignName, CardFaceOptions } from "./ui/cardFaces.ts";
-export type { CardDesign } from "./ui/cardFaces.types.ts";
+export { CARD_DESIGNS, CARD_FACE_COLOURS, CARD_FACE_PROPERTIES, JOKERS, EXTRA_CARDS, EXTRA_LIMITS, cardFaceSvg, cardFaceUrl, faceName, isCardFace, loadCardDesign, pipPlaces } from "./ui/card-faces.ts";
+export { cardFaceFromArt } from "./ui/card-faces.ts";
+export type { CardDesignName, CardFaceOptions } from "./ui/card-faces.ts";
+export type { CardDesign } from "./ui/card-faces.types.ts";
 export { CUSTOM_CARD_ID, registerDesign as registerCardDesign, registeredDesignNames as registeredCardDesigns, unregisterDesign as unregisterCardDesign } from "./ui/registry.ts";
 export { cleanMarkup, safeImageUrl } from "./ui/markup.ts";

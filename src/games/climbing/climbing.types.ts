@@ -1,4 +1,4 @@
-import type { CardId } from "../cardGames.types.ts";
+import type { CardId } from "../card-games.types.ts";
 
 /**
  * A CLIMBING GAME'S TRICK: Big Two and President are both played this way.

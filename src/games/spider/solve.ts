@@ -1,4 +1,4 @@
-import { bestFirst } from "../solitaire/bestFirst.ts";
+import { bestFirst } from "../solitaire/best-first.ts";
 
 import type { SpiderMove, SpiderTable } from "./spider.types.ts";
 import { COLUMNS, canDeal, countOnto, playSpider, rankOf, runLength, spiderWon, suitOf } from "./rules.ts";

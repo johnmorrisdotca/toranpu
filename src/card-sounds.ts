@@ -14,5 +14,5 @@
  * The recordings themselves are `@johnmorrisdotca/toranpu/sounds`, loaded by
  * the first sound played. Kenney's Casino Audio, CC0: see docs/credits.md.
  */
-export { CARD_SOUND_KINDS, MOST_SOUNDS_AT_ONCE, createCardSounds, soundTimes } from "./ui/cardSounds.ts";
-export type { CardSoundData, CardSoundKind, CardSounds, CardSoundsOptions, CardSoundWindow, PlayCardSoundOptions } from "./ui/cardSounds.ts";
+export { CARD_SOUND_KINDS, MOST_SOUNDS_AT_ONCE, createCardSounds, soundTimes } from "./ui/card-sounds.ts";
+export type { CardSoundData, CardSoundKind, CardSounds, CardSoundsOptions, CardSoundWindow, PlayCardSoundOptions } from "./ui/card-sounds.ts";

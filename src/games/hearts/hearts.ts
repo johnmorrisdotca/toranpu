@@ -1,6 +1,6 @@
-import { computerSeats } from "../cardGameCodec.ts";
-import { HEARTS_SIZES } from "../cardGames.constants.ts";
-import type { CardId } from "../cardGames.types.ts";
+import { computerSeats } from "../card-game-codec.ts";
+import { HEARTS_SIZES } from "../card-games.constants.ts";
+import type { CardId } from "../card-games.types.ts";
 import { allDifferent, choices, dealRound, nextSeat, rankOf, shuffledDeck, suitOf, without } from "../cards.ts";
 
 import type { HeartsGame, HeartsMove, HeartsPlay } from "./hearts.types.ts";

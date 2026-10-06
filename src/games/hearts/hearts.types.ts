@@ -1,5 +1,5 @@
-import type { KeptCardGame } from "../cardGameCodec.ts";
-import type { CardId } from "../cardGames.types.ts";
+import type { KeptCardGame } from "../card-game-codec.ts";
+import type { CardId } from "../card-games.types.ts";
 
 /** Passing three cards before the deal is played, playing it out trick by trick, or the game over. */
 export type HeartsPhase = "passing" | "playing" | "over";

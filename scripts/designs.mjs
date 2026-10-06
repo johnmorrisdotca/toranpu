@@ -101,7 +101,7 @@ writeFileSync(
     ' * cardFaceSvg("KS", { design: ENGLISH_PATTERN });',
     " * ```",
     " */",
-    'import type { CardDesign } from "../ui/cardFaces.types.ts";',
+    'import type { CardDesign } from "../ui/card-faces.types.ts";',
     "",
     "/** The English pattern, every card and two jokers, drawn in a box 360 by 540. About 700 kB, so it is its own entry point and is loaded only by a page that uses it. */",
     "export const ENGLISH_PATTERN: CardDesign = {",

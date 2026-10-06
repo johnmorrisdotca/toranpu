@@ -1,5 +1,5 @@
 /** Gin Rummy: its rules, its computer player and its saved-game format. */
-export * from "./games/ginRummy/ginComputer.ts";
-export * from "./games/ginRummy/ginRummy.ts";
-export type * from "./games/ginRummy/ginRummy.types.ts";
-export * from "./games/ginRummy/ginRummyRules.ts";
+export * from "./games/ginRummy/gin-computer.ts";
+export * from "./games/ginRummy/gin-rummy.ts";
+export type * from "./games/ginRummy/gin-rummy.types.ts";
+export * from "./games/ginRummy/gin-rummy-rules.ts";

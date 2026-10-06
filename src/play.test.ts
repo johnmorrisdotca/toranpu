@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/cardGames.constants.ts";
+import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.ts";
 import { newGame, playComputers, rulesFor } from "./play.ts";
 
 describe("starting and playing any game by name", () => {

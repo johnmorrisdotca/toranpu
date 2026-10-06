@@ -1,5 +1,5 @@
-import type { KeptCardGame } from "../cardGameCodec.ts";
-import type { CardId } from "../cardGames.types.ts";
+import type { KeptCardGame } from "../card-game-codec.ts";
+import type { CardId } from "../card-games.types.ts";
 
 /** Two cards laid away to the crib, or one card played in the pegging. */
 export type CribbageMove = { crib: [CardId, CardId] } | { play: CardId };

@@ -12,10 +12,10 @@
  * imports `./element`. `defineToranpuTable()` registers it, and the card, hand and pile elements it lays out.
  */
 import { defineToranpuElements } from "./element.ts";
-import { ToranpuTable } from "./ui/tableElement.ts";
+import { ToranpuTable } from "./ui/table-element.ts";
 
-export { TABLE_CLOTHS, ToranpuTable } from "./ui/tableElement.ts";
-export type { TableCloth } from "./ui/tableElement.ts";
+export { TABLE_CLOTHS, ToranpuTable } from "./ui/table-element.ts";
+export type { TableCloth } from "./ui/table-element.ts";
 
 /** Registers `<toranpu-table>`, and the card, hand and pile elements, once. Nothing happens where there is no browser. */
 export function defineToranpuTable(): void {

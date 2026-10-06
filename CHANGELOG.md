@@ -9,6 +9,7 @@ All notable changes to this project are written here. The format follows
 ### Changed
 
 - Repository only: the package and everything it exports are unchanged. `CONTRIBUTING.md` is the family's one text with a section of its own for Toranpu, held to the master in johnmorrisdotca/.github by `src/family.test.js`; `ci.yml` and `pages.yml` are the family's one text (`pnpm check`, the demo, and the package on Linux, macOS and Windows), and any jobs of the package's own after them.
+- Source files are named in kebab-case, and a lint rule keeps them so.
 - The demo's page titles read `Toranpu · pitch`, like the rest of the family's.
 - The demo's own stylesheet is `demo/toranpu.css`, named for the package like the family's.
 

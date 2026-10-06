@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { FULL_DECK } from "../cards.ts";
 
 import { isWarMove, playWar, startWar, warMoves, warRank, warWinners, WAR_FACE_DOWN } from "./war.ts";
-import { warComputer } from "./warComputer.ts";
-import { decodeWar, encodeWar, WAR_RULES } from "./warRules.ts";
+import { warComputer } from "./war-computer.ts";
+import { decodeWar, encodeWar, WAR_RULES } from "./war-rules.ts";
 import type { WarGame } from "./war.types.ts";
 
 const started = (size = 100, seed = 7, computers: boolean[] = [false, true]) => startWar(size, ["Ann", "Ben"], undefined, seed, computers) as WarGame;

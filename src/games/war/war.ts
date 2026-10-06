@@ -1,6 +1,6 @@
-import { computerSeats } from "../cardGameCodec.ts";
-import { WAR_ROUNDS } from "../cardGames.constants.ts";
-import type { CardId } from "../cardGames.types.ts";
+import { computerSeats } from "../card-game-codec.ts";
+import { WAR_ROUNDS } from "../card-games.constants.ts";
+import type { CardId } from "../card-games.types.ts";
 import { dealRound, rankOf, reshuffled, shuffledDeck } from "../cards.ts";
 
 import type { WarEnd, WarGame, WarLaid, WarMove } from "./war.types.ts";

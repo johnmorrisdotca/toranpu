@@ -1,8 +1,8 @@
 import { DECK_SIZE } from "./cards/cards.constants.ts";
 import { cardId, shuffledDeck } from "./cards/deck.ts";
-import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/cardGames.constants.ts";
-import type { CardGameKind } from "./games/cardGames.constants.ts";
-import type { CardId } from "./games/cardGames.types.ts";
+import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.ts";
+import type { CardGameKind } from "./games/card-games.constants.ts";
+import type { CardId } from "./games/card-games.types.ts";
 import { isCard } from "./games/cards.ts";
 import { newGame, playComputers, randomSeed, rulesFor } from "./play.ts";
 import { SAVE_FORMAT, fromJSON, savedGame, toCSV, toText } from "./save.ts";

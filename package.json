@@ -305,6 +305,7 @@
     "@playwright/test": "^1.63.0",
     "@types/react": "^19.0.0",
     "eslint": "^9.0.0",
+    "eslint-plugin-unicorn": "^56.0.0",
     "react": "^19.0.0",
     "svgo": "^4.1.0",
     "typescript": "^5.9.0",

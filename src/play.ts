@@ -1,8 +1,8 @@
-import { CARD_GAME_RULES } from "./games/cardGameRules.ts";
-import type { CardGamePlays } from "./games/cardGameRules.ts";
-import { CARD_GAME_TABLES } from "./games/cardGames.constants.ts";
-import type { CardGameKind } from "./games/cardGames.constants.ts";
-import type { CardGameRules } from "./games/cardGames.types.ts";
+import { CARD_GAME_RULES } from "./games/card-game-rules.ts";
+import type { CardGamePlays } from "./games/card-game-rules.ts";
+import { CARD_GAME_TABLES } from "./games/card-games.constants.ts";
+import type { CardGameKind } from "./games/card-games.constants.ts";
+import type { CardGameRules } from "./games/card-games.types.ts";
 
 /**
  * THE FRIENDLY FRONT DOOR: start any game by name, let the computers take

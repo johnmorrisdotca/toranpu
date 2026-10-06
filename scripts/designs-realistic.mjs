@@ -126,7 +126,7 @@ writeFileSync(
     ' * cardFaceSvg("7H", { design: await loadCardDesign("realistic") });',
     " * ```",
     " */",
-    'import type { CardDesign } from "../ui/cardFaces.types.ts";',
+    'import type { CardDesign } from "../ui/card-faces.types.ts";',
     'import { ENGLISH_PATTERN } from "./english.ts";',
     "",
     `/** The realistic design: Knoll's 39 cards in a box ${box[0]} by ${box[1]}, and Fomin's English pattern for every other card. */`,

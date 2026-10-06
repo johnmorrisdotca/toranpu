@@ -281,145 +281,145 @@ loads only what it uses.
 
 ```text
 src/
-├── big-two.ts         the "/big-two" entry: Big Two, with its rules, computer player and saved-game format
-├── card-backs.ts      the "/card-backs" entry: the backs of the cards, drawn as SVG
-├── card-faces.ts      the "/card-faces" entry: the faces of the cards, drawn as SVG
-├── card-sounds.ts     the "/card-sounds" entry: the sounds of a card table, played on request
-├── cli.ts             the command line as a pure function: arguments in, text and an exit code out
-├── crazy-eights.ts    the "/crazy-eights" entry: Crazy Eights, with its rules, computer player and saved-game format
-├── cribbage.ts        the "/cribbage" entry: Cribbage, with its rules, computer player and saved-game format
-├── deck.ts            the "/deck" entry: the deck on its own, for a solitaire or any game of your own
-├── element-define.ts  the "/element/define" entry: registers the custom elements by being imported
-├── element.ts         the "/element" entry: the card, hand and pile custom elements, and the arithmetic behind them
-├── euchre.ts          the "/euchre" entry: Euchre, with its rules, computer player and saved-game format
-├── freecell.ts        the "/freecell" entry: FreeCell, the same way
-├── gin-rummy.ts       the "/gin-rummy" entry: Gin Rummy, with its rules, computer player and saved-game format
-├── go-fish.ts         the "/go-fish" entry: Go Fish, with its rules, computer player and saved-game format
-├── hearts.ts          the "/hearts" entry: Hearts, with its rules, computer player and saved-game format
-├── index.ts           the main entry: the deck, the eleven games' front door, saving, words and the command line
-├── klondike.ts        the "/klondike" entry: Klondike, with its table, rules, moves as text, solver and what a tap means
-├── oh-hell.ts         the "/oh-hell" entry: Oh Hell, with its rules, computer player and saved-game format
-├── play.ts            the friendly front door: start any game by name, let the computers play, play yours
-├── president.ts       the "/president" entry: President, with its rules, computer player and saved-game format
-├── random.ts          seeded randomness, the one thing every deal is made from
-├── react.ts           the "/react" entry: a card game in React state, with computers taking their turns
-├── save.ts            a game written out and read back: JSON, a short code, a record in words, CSV
-├── sounds.ts          the "/sounds" entry: the recorded sounds themselves, as data
-├── spades.ts          the "/spades" entry: Spades, with its rules, computer player and saved-game format
-├── spider.ts          the "/spider" entry: Spider, at one, two or four suits, the same way
-├── strings.ts         every word Toranpu says to a person, in English and Japanese
-├── table-define.ts    the "/table/define" entry: registers <toranpu-table> by being imported
-├── table.ts           the "/table" entry: the <toranpu-table> element, any of the eleven games ready to play on a page
-├── version.ts         the version of this package, as package.json has it
-├── war.ts             the "/war" entry: War, with its rules, computer player and saved-game format
-├── words.ts           the games, the cards and the moves in words, English or Japanese
-├── cards/  the deck's vocabulary and what any game does with a deck before its own rules begin
-│   ├── cards.constants.ts  the suits and ranks, in the order a fresh deck is sorted
-│   ├── cards.types.ts      the types of a deck of playing cards
-│   └── deck.ts             make a deck, shuffle it from a seed, deal it out, write it down
-├── designs/  the two ready-made card designs
-│   ├── english.ts    the "/card-faces/english" entry: the English pattern, kings, queens and jacks drawn as vectors
-│   └── realistic.ts  the "/card-faces/realistic" entry: the realistic design: number cards and aces from a public-domain set, with the English pattern's court cards
-├── games/  the rules of every game, one folder each, and what they share
-│   ├── cardGameCodec.ts        how a card game is kept as text
-│   ├── cardGameRules.ts        each game's game and move types, so a table can be written for any of them
-│   ├── cardGames.constants.ts  what a game's table offers: how many may sit and how long it lasts
-│   ├── cardGames.types.ts      the card games' shared vocabulary: every game answers the same questions
-│   ├── cards.ts                the cards a table game is dealt, as short names such as QS
-│   ├── bigTwo/  Big Two
-│   │   ├── bigTwo.ts          the rules of Big Two
-│   │   ├── bigTwo.types.ts    Big Two's types
-│   │   ├── bigTwoComputer.ts  Big Two's computer player
-│   │   ├── bigTwoHands.ts     what a play is worth in Big Two, and every play a hand could make
-│   │   └── bigTwoRules.ts     Big Two kept as its table, seed and moves, and what a table asks of its rules
-│   ├── climbing/  what Big Two and President share
-│   │   ├── climbing.ts        whose turn it is after a play or a pass, and when a trick is cleared
-│   │   └── climbing.types.ts  the types of a climbing game's play
-│   ├── crazyEights/  Crazy Eights
-│   │   ├── crazyEights.ts          the rules of Crazy Eights
-│   │   ├── crazyEights.types.ts    Crazy Eights' types
-│   │   ├── crazyEightsComputer.ts  Crazy Eights' computer player
-│   │   └── crazyEightsRules.ts     Crazy Eights kept as its table, seed and moves, and what a table asks of its rules
-│   ├── cribbage/  Cribbage
-│   │   ├── cribbage.ts          the rules of Cribbage, with its scoring of hands and pegging
-│   │   ├── cribbage.types.ts    Cribbage's types
-│   │   ├── cribbageComputer.ts  Cribbage's computer player
-│   │   └── cribbageRules.ts     Cribbage kept as its table, seed and moves, and what a table asks of its rules
-│   ├── euchre/  Euchre
-│   │   ├── euchre.ts          the rules of Euchre
-│   │   ├── euchre.types.ts    Euchre's types
-│   │   ├── euchreComputer.ts  Euchre's computer player
-│   │   └── euchreRules.ts     Euchre kept as its table, seed and moves, and what a table asks of its rules
-│   ├── freecell/  FreeCell
-│   │   ├── code.ts            a FreeCell game written down: the deal and the moves as short strings
-│   │   ├── freecell.types.ts  the vocabulary of a FreeCell table
-│   │   ├── intent.ts          what a person meant by a drag or a tap, read against the rules, as a move
-│   │   ├── rules.ts           the rules of FreeCell, pure
-│   │   └── solve.ts           the FreeCell solver
-│   ├── ginRummy/  Gin Rummy
-│   │   ├── ginComputer.ts     Gin Rummy's computer player
-│   │   ├── ginRummy.ts        the rules of Gin Rummy, with its melds and deadwood
-│   │   ├── ginRummy.types.ts  Gin Rummy's types
-│   │   └── ginRummyRules.ts   Gin Rummy kept as its table, seed and moves, and what a table asks of its rules
-│   ├── goFish/  Go Fish
-│   │   ├── goFish.ts          the rules of Go Fish
-│   │   ├── goFish.types.ts    Go Fish's types
-│   │   ├── goFishComputer.ts  Go Fish's computer player
-│   │   └── goFishRules.ts     Go Fish kept as its table, seed and moves, and what a table asks of its rules
-│   ├── hearts/  Hearts
-│   │   ├── hearts.ts          the rules of Hearts
-│   │   ├── hearts.types.ts    Hearts' types
-│   │   ├── heartsComputer.ts  Hearts' computer player
-│   │   └── heartsRules.ts     Hearts kept as its table, seed and moves, and what a table asks of its rules
-│   ├── klondike/  Klondike
-│   │   ├── code.ts            a Klondike game written down: the deal and the moves as short strings
-│   │   ├── intent.ts          what a person meant by a drag or a tap, read against the rules, as a move
-│   │   ├── klondike.ts        the rules of Klondike, pure
-│   │   ├── klondike.types.ts  the vocabulary of a Klondike table
-│   │   └── solve.ts           the Klondike solver, which gives up after a fixed number of tables, never a fixed time
-│   ├── ohHell/  Oh Hell
-│   │   ├── ohHell.ts          the rules of Oh Hell
-│   │   ├── ohHell.types.ts    Oh Hell's types
-│   │   ├── ohHellComputer.ts  Oh Hell's computer player
-│   │   └── ohHellRules.ts     Oh Hell kept as its table, seed and moves, and what a table asks of its rules
-│   ├── president/  President
-│   │   ├── president.ts          the rules of President
-│   │   ├── president.types.ts    President's types
-│   │   ├── presidentComputer.ts  President's computer player
-│   │   └── presidentRules.ts     President kept as its table, seed and moves, and what a table asks of its rules
-│   ├── solitaire/  what the solitaires share
-│   │   └── bestFirst.ts  a best-first search for a game played alone, shared by the FreeCell and Spider solvers
-│   ├── spades/  Spades
-│   │   ├── spades.ts          the rules of Spades
-│   │   ├── spades.types.ts    Spades' types
-│   │   ├── spadesComputer.ts  Spades' computer player
-│   │   └── spadesRules.ts     Spades kept as its table, seed and moves, and what a table asks of its rules
-│   ├── spider/  Spider
-│   │   ├── code.ts          a Spider game written down: the deal and the moves as short strings
-│   │   ├── intent.ts        what a person meant by a drag or a tap, read against the rules, as a move
-│   │   ├── rules.ts         the rules of Spider, pure
-│   │   ├── solve.ts         the Spider solver
-│   │   └── spider.types.ts  the vocabulary of a Spider table
-│   └── war/  War
-│       ├── war.ts          the rules of War: a turn through however many wars it takes, and the end
-│       ├── war.types.ts    War's types
-│       ├── warComputer.ts  War's computer player, which turns the cards over, there being nothing else to do
-│       └── warRules.ts     War kept as its table, seed and moves, and what a table asks of its rules
-└── ui/  everything that draws or plays something on a page
-    ├── cardBacks.ts        the backs of the cards
-    ├── cardElement.ts      <toranpu-card>: one card on any page, in any design and with any back, or your own face as a slot
-    ├── cardFaces.ts        the faces of the cards, drawn as SVG
-    ├── cardFaces.types.ts  a set of drawn cards: its name, its box and each card's drawing
-    ├── cardSounds.ts       the sounds of a card table
-    ├── elementKit.ts       what the custom elements share: a base class, the designs, the language
-    ├── handElement.ts      <toranpu-hand>: a hand of cards, fanned or squared up
-    ├── layout.ts           where cards lie: the arithmetic behind the elements, with no DOM
-    ├── markup.ts           a page's own artwork made safe to draw: scripts and handlers taken out, picture addresses checked
-    ├── pileElement.ts      <toranpu-pile>: a stock or a discard pile, as neat or as messy as asked
-    ├── registry.ts         the designs and backs a page registered, by name, and what tells elements to draw again
-    ├── svg.ts              what every drawing shares: the card's box, the suits as shapes, safe SVG helpers
-    ├── svg.types.ts        a suit as one letter, as a card's id writes it
-    └── tableElement.ts     the <toranpu-table> element itself, and the cloths it may be laid in
+├── big-two.ts
+├── card-backs.ts
+├── card-faces.ts
+├── card-sounds.ts
+├── cards/
+│   ├── cards.constants.ts
+│   ├── cards.types.ts
+│   └── deck.ts
+├── cli.ts
+├── crazy-eights.ts
+├── cribbage.ts
+├── deck.ts
+├── designs/
+│   ├── english.ts
+│   └── realistic.ts
+├── element-define.ts
+├── element.ts
+├── euchre.ts
+├── freecell.ts
+├── games/
+│   ├── bigTwo/
+│   │   ├── big-two-computer.ts
+│   │   ├── big-two-hands.ts
+│   │   ├── big-two-rules.ts
+│   │   ├── big-two.ts
+│   │   └── big-two.types.ts
+│   ├── card-game-codec.ts
+│   ├── card-game-rules.ts
+│   ├── card-games.constants.ts
+│   ├── card-games.types.ts
+│   ├── cards.ts
+│   ├── climbing/
+│   │   ├── climbing.ts
+│   │   └── climbing.types.ts
+│   ├── crazyEights/
+│   │   ├── crazy-eights-computer.ts
+│   │   ├── crazy-eights-rules.ts
+│   │   ├── crazy-eights.ts
+│   │   └── crazy-eights.types.ts
+│   ├── cribbage/
+│   │   ├── cribbage-computer.ts
+│   │   ├── cribbage-rules.ts
+│   │   ├── cribbage.ts
+│   │   └── cribbage.types.ts
+│   ├── euchre/
+│   │   ├── euchre-computer.ts
+│   │   ├── euchre-rules.ts
+│   │   ├── euchre.ts
+│   │   └── euchre.types.ts
+│   ├── freecell/
+│   │   ├── code.ts
+│   │   ├── freecell.types.ts
+│   │   ├── intent.ts
+│   │   ├── rules.ts
+│   │   └── solve.ts
+│   ├── ginRummy/
+│   │   ├── gin-computer.ts
+│   │   ├── gin-rummy-rules.ts
+│   │   ├── gin-rummy.ts
+│   │   └── gin-rummy.types.ts
+│   ├── goFish/
+│   │   ├── go-fish-computer.ts
+│   │   ├── go-fish-rules.ts
+│   │   ├── go-fish.ts
+│   │   └── go-fish.types.ts
+│   ├── hearts/
+│   │   ├── hearts-computer.ts
+│   │   ├── hearts-rules.ts
+│   │   ├── hearts.ts
+│   │   └── hearts.types.ts
+│   ├── klondike/
+│   │   ├── code.ts
+│   │   ├── intent.ts
+│   │   ├── klondike.ts
+│   │   ├── klondike.types.ts
+│   │   └── solve.ts
+│   ├── ohHell/
+│   │   ├── oh-hell-computer.ts
+│   │   ├── oh-hell-rules.ts
+│   │   ├── oh-hell.ts
+│   │   └── oh-hell.types.ts
+│   ├── president/
+│   │   ├── president-computer.ts
+│   │   ├── president-rules.ts
+│   │   ├── president.ts
+│   │   └── president.types.ts
+│   ├── solitaire/
+│   │   └── best-first.ts
+│   ├── spades/
+│   │   ├── spades-computer.ts
+│   │   ├── spades-rules.ts
+│   │   ├── spades.ts
+│   │   └── spades.types.ts
+│   ├── spider/
+│   │   ├── code.ts
+│   │   ├── intent.ts
+│   │   ├── rules.ts
+│   │   ├── solve.ts
+│   │   └── spider.types.ts
+│   └── war/
+│       ├── war-computer.ts
+│       ├── war-rules.ts
+│       ├── war.ts
+│       └── war.types.ts
+├── gin-rummy.ts
+├── go-fish.ts
+├── hearts.ts
+├── index.ts
+├── klondike.ts
+├── oh-hell.ts
+├── play.ts
+├── president.ts
+├── random.ts
+├── react.ts
+├── save.ts
+├── sounds.ts
+├── spades.ts
+├── spider.ts
+├── strings.ts
+├── table-define.ts
+├── table.ts
+├── ui/
+│   ├── card-backs.ts
+│   ├── card-element.ts
+│   ├── card-faces.ts
+│   ├── card-faces.types.ts
+│   ├── card-sounds.ts
+│   ├── element-kit.ts
+│   ├── hand-element.ts
+│   ├── layout.ts
+│   ├── markup.ts
+│   ├── pile-element.ts
+│   ├── registry.ts
+│   ├── svg.ts
+│   ├── svg.types.ts
+│   └── table-element.ts
+├── version.ts
+├── war.ts
+└── words.ts
 ```
 
 Tests sit beside the code they test (`*.test.ts`). `bin/` is the few lines

@@ -1,5 +1,5 @@
-import type { KeptCardGame } from "../cardGameCodec.ts";
-import type { CardId } from "../cardGames.types.ts";
+import type { KeptCardGame } from "../card-game-codec.ts";
+import type { CardId } from "../card-games.types.ts";
 import type { ClimbMove, ClimbTrick } from "../climbing/climbing.types.ts";
 
 /** A climbing move, or the cards a President or Vice-President hands back down at the start of a round. */

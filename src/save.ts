@@ -1,7 +1,7 @@
-import { CARD_GAME_RULES } from "./games/cardGameRules.ts";
-import { CARD_GAME_LIST } from "./games/cardGames.constants.ts";
-import type { CardGameKind } from "./games/cardGames.constants.ts";
-import type { KeptCardGame } from "./games/cardGameCodec.ts";
+import { CARD_GAME_RULES } from "./games/card-game-rules.ts";
+import { CARD_GAME_LIST } from "./games/card-games.constants.ts";
+import type { CardGameKind } from "./games/card-games.constants.ts";
+import type { KeptCardGame } from "./games/card-game-codec.ts";
 import { rulesFor } from "./play.ts";
 import type { GameOf, MoveOf } from "./play.ts";
 import { STRINGS, fillIn, type Language } from "./strings.ts";

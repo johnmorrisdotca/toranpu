@@ -4,4 +4,4 @@ export type * from "./games/klondike/klondike.types.ts";
 export * from "./games/klondike/code.ts";
 export * from "./games/klondike/solve.ts";
 export * from "./games/klondike/intent.ts";
-export * from "./games/solitaire/bestFirst.ts";
+export * from "./games/solitaire/best-first.ts";

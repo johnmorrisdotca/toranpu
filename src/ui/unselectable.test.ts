@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { CARD_BACKS, cardBackSvg } from "./cardBacks.ts";
+import { CARD_BACKS, cardBackSvg } from "./card-backs.ts";
 import { ENGLISH_PATTERN } from "../designs/english.ts";
-import { cardFaceSvg } from "./cardFaces.ts";
+import { cardFaceSvg } from "./card-faces.ts";
 
 /**
  * A CARD IS NEVER TEXT TO SELECT. A drag across a hand, or a long press on a phone, must never

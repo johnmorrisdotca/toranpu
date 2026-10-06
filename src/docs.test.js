@@ -281,11 +281,11 @@ describe("the README on one card", () => {
   it("gives the sizes the element draws, and the elements' custom properties as their stylesheet has them", () => {
     expect(readme).toContain("`small` (46 pixels wide), `medium` (70, unless said) or `large` (104)");
     expect(element.ELEMENT_SIZES).toEqual({ small: 46, medium: 70, large: 104 });
-    const style = readFileSync("src/ui/cardElement.ts", "utf8");
+    const style = readFileSync("src/ui/card-element.ts", "utf8");
     for (const [property, , fallback] of table("| Custom property | Sizes or times |")) {
       const name = property.replaceAll("`", "");
       const value = fallback.replaceAll("`", "");
-      expect(style.includes(`var(${name}, ${value})`) || readFileSync("src/ui/elementKit.ts", "utf8").includes(`var(${name}, \${ELEMENT_SIZES.medium}px)`), name).toBe(true);
+      expect(style.includes(`var(${name}, ${value})`) || readFileSync("src/ui/element-kit.ts", "utf8").includes(`var(${name}, \${ELEMENT_SIZES.medium}px)`), name).toBe(true);
     }
   });
 });
@@ -311,7 +311,7 @@ describe("the README on a hand", () => {
 
   it("the gap it gives is the one the hand takes, and the bundle shows as many cards as it says", () => {
     expect(readme).toContain("`gap` milliseconds apart (110 unless said)");
-    expect(readFileSync("src/ui/handElement.ts", "utf8")).toContain("options.gap ?? 110");
+    expect(readFileSync("src/ui/hand-element.ts", "utf8")).toContain("options.gap ?? 110");
     expect(readme).toContain("one bundle of three cards whatever the hand");
     expect(element.BUNDLE_BACKS).toBe(3);
   });
@@ -321,7 +321,7 @@ describe("the README on piles", () => {
   it("names every attribute the pile watches, and the defaults it takes", () => {
     const named = table("| Attribute of `<toranpu-pile>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
     expect(new Set(named)).toEqual(new Set(element.ToranpuPile.observedAttributes));
-    const source = readFileSync("src/ui/pileElement.ts", "utf8");
+    const source = readFileSync("src/ui/pile-element.ts", "utf8");
     expect(source).toContain('this.#number("messiness", 0.3)');
     expect(source).toContain('this.#number("seed", 1)');
     expect(source).toContain('this.#number("depth", 10)');
@@ -762,7 +762,7 @@ describe("the README's promises", () => {
     expect(typeof element.registerCardBack).toBe("function");
     const fields = table("| Field of a design | Means |").map((row) => row[0].replace(/`/g, "").replace(/\(.*\)/, ""));
     expect(fields).toEqual(["name", "box", "art", "draw", "label", "frame", "fallback"]);
-    const types = readFileSync("src/ui/cardFaces.types.ts", "utf8");
+    const types = readFileSync("src/ui/card-faces.types.ts", "utf8");
     for (const field of fields) expect(types, field).toMatch(new RegExp(`\\b${field}\\??:`));
   });
 });

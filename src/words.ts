@@ -1,6 +1,6 @@
 import { RANK_DISPLAY, SUIT_DISPLAY } from "./cards/cards.constants.ts";
-import type { CardGameKind } from "./games/cardGames.constants.ts";
-import type { CardId, CardRank, CardSuit } from "./games/cardGames.types.ts";
+import type { CardGameKind } from "./games/card-games.constants.ts";
+import type { CardId, CardRank, CardSuit } from "./games/card-games.types.ts";
 import { cardOfId, isCard, rankOf, rankWords, suitOf } from "./games/cards.ts";
 import type { MoveOf } from "./play.ts";
 import { STRINGS, fillIn, type Language, type ToranpuStrings } from "./strings.ts";

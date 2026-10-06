@@ -1,6 +1,6 @@
-import { computerSeats } from "../cardGameCodec.ts";
-import { SPADES_SIZES } from "../cardGames.constants.ts";
-import type { CardId } from "../cardGames.types.ts";
+import { computerSeats } from "../card-game-codec.ts";
+import { SPADES_SIZES } from "../card-games.constants.ts";
+import type { CardId } from "../card-games.types.ts";
 import { dealRound, nextSeat, rankOf, shuffledDeck, suitOf } from "../cards.ts";
 
 import type { SpadesDealScore, SpadesGame, SpadesMove, SpadesPlay } from "./spades.types.ts";

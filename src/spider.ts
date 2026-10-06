@@ -4,4 +4,4 @@ export type * from "./games/spider/spider.types.ts";
 export * from "./games/spider/code.ts";
 export * from "./games/spider/solve.ts";
 export * from "./games/spider/intent.ts";
-export * from "./games/solitaire/bestFirst.ts";
+export * from "./games/solitaire/best-first.ts";

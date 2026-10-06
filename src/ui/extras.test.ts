@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ENGLISH_PATTERN } from "../designs/english.ts";
-import { EXTRA_CARDS, EXTRA_LIMITS, cardFaceSvg, faceName, isCardFace } from "./cardFaces.ts";
+import { EXTRA_CARDS, EXTRA_LIMITS, cardFaceSvg, faceName, isCardFace } from "./card-faces.ts";
 import { readHand } from "./layout.ts";
 
 /**

@@ -21,8 +21,8 @@
  * element.innerHTML = cardBackSvg("frontier", { width: 70 });
  * ```
  */
-export { CARD_BACKS, CARD_BACK_LOOK, CARD_BACK_PROPERTIES, cardBackNames, cardBackSvg, cardBackUrl } from "./ui/cardBacks.ts";
-export type { CardBackName, CardBackOptions } from "./ui/cardBacks.ts";
+export { CARD_BACKS, CARD_BACK_LOOK, CARD_BACK_PROPERTIES, cardBackNames, cardBackSvg, cardBackUrl } from "./ui/card-backs.ts";
+export type { CardBackName, CardBackOptions } from "./ui/card-backs.ts";
 export { registerBack as registerCardBack, registeredBackNames as registeredCardBacks, unregisterBack as unregisterCardBack } from "./ui/registry.ts";
 export type { RegisteredCardBack } from "./ui/registry.ts";
 export { CARD_BOX, SUIT_PATHS } from "./ui/svg.ts";

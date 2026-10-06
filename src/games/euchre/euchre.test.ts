@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { EUCHRE_DECK, euchreHeight, euchreMoves, euchrePlayable, euchreTrickWinner, euchreWinners, handPoints, playEuchre, startEuchre, suitIn } from "./euchre.ts";
-import { euchreComputer, throwAway, trumpWorth } from "./euchreComputer.ts";
-import { decodeEuchre, encodeEuchre } from "./euchreRules.ts";
+import { euchreComputer, throwAway, trumpWorth } from "./euchre-computer.ts";
+import { decodeEuchre, encodeEuchre } from "./euchre-rules.ts";
 import type { EuchreGame } from "./euchre.types.ts";
 
 const FOUR = ["Ann", "Ben", "Cy", "Di"];

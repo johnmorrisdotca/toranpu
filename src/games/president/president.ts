@@ -1,6 +1,6 @@
-import { computerSeats } from "../cardGameCodec.ts";
-import { PRESIDENT_ROUNDS } from "../cardGames.constants.ts";
-import type { CardId, CardSuit } from "../cardGames.types.ts";
+import { computerSeats } from "../card-game-codec.ts";
+import { PRESIDENT_ROUNDS } from "../card-games.constants.ts";
+import type { CardId, CardSuit } from "../card-games.types.ts";
 import { dealRound, rankOf, shuffledDeck, suitOf, without } from "../cards.ts";
 import { afterTurn, freshTrick, laid, passedOn, seatsIn } from "../climbing/climbing.ts";
 import type { ClimbMove } from "../climbing/climbing.types.ts";

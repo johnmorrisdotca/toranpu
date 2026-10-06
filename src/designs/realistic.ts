@@ -10,7 +10,7 @@
  * cardFaceSvg("7H", { design: await loadCardDesign("realistic") });
  * ```
  */
-import type { CardDesign } from "../ui/cardFaces.types.ts";
+import type { CardDesign } from "../ui/card-faces.types.ts";
 import { ENGLISH_PATTERN } from "./english.ts";
 
 /** The realistic design: Knoll's 39 cards in a box 167.0869141 by 242.6669922, and Fomin's English pattern for every other card. */

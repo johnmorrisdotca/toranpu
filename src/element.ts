@@ -23,18 +23,18 @@
  * them by name, so `design="frontier"` and `back="frontier"` work on every element of the page; a card also takes
  * an element in `slot="face"` or `slot="back"`, or a `face` function.
  */
-import { ToranpuCard } from "./ui/cardElement.ts";
-import { ToranpuHand } from "./ui/handElement.ts";
-import { ToranpuPile } from "./ui/pileElement.ts";
+import { ToranpuCard } from "./ui/card-element.ts";
+import { ToranpuHand } from "./ui/hand-element.ts";
+import { ToranpuPile } from "./ui/pile-element.ts";
 
-export { ToranpuCard } from "./ui/cardElement.ts";
-export type { CardFaceContext, CardFaceRenderer } from "./ui/cardElement.ts";
+export { ToranpuCard } from "./ui/card-element.ts";
+export type { CardFaceContext, CardFaceRenderer } from "./ui/card-element.ts";
 export { registerDesign as registerCardDesign, registerBack as registerCardBack } from "./ui/registry.ts";
-export { BUNDLE_BACKS, ToranpuHand } from "./ui/handElement.ts";
-export type { HandTurnOptions } from "./ui/handElement.ts";
-export { ToranpuPile } from "./ui/pileElement.ts";
-export { ELEMENT_SIZES } from "./ui/elementKit.ts";
-export type { SpinOptions } from "./ui/elementKit.ts";
+export { BUNDLE_BACKS, ToranpuHand } from "./ui/hand-element.ts";
+export type { HandTurnOptions } from "./ui/hand-element.ts";
+export { ToranpuPile } from "./ui/pile-element.ts";
+export { ELEMENT_SIZES } from "./ui/element-kit.ts";
+export type { SpinOptions } from "./ui/element-kit.ts";
 export { arrangeCards, handLayout, mixCards, partedHandLayout, pileLayout, readHand, replaceCard, tossCard } from "./ui/layout.ts";
 export type { CardLands, CardOrder, CardPlace, HandLayoutOptions, PartOptions, PileLayoutOptions } from "./ui/layout.ts";
 

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { cliLanguage, runCli } from "./cli.ts";
 import { cardId, shuffledDeck } from "./cards/deck.ts";
-import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/cardGames.constants.ts";
+import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.ts";
 import { newGame, playComputers, rulesFor } from "./play.ts";
 import { fromJSON, toCSV, toCode, toJSON, toText } from "./save.ts";
 import { STRINGS } from "./strings.ts";

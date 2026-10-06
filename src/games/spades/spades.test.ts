@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { chooseBid, handWorth, spadesComputer, spadesView } from "./spadesComputer.ts";
+import { chooseBid, handWorth, spadesComputer, spadesView } from "./spades-computer.ts";
 import { NIL, partnershipScore, playSpades, spadesMoves, spadesPlayable, spadesTrickWinner, spadesWinners, startSpades } from "./spades.ts";
-import { decodeSpades, encodeSpades } from "./spadesRules.ts";
+import { decodeSpades, encodeSpades } from "./spades-rules.ts";
 import type { SpadesGame } from "./spades.types.ts";
 
 const FOUR = ["Ann", "Ben", "Cy", "Di"];

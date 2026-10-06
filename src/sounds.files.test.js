@@ -37,7 +37,7 @@ describe("the recordings", () => {
 
   it("are never part of the core: only a sound played imports them", () => {
     for (const path of ["src/index.ts", "src/deck.ts", "src/react.ts", "src/card-sounds.ts"]) expect(readFileSync(path, "utf8")).not.toMatch(/from "\.\/sounds\.ts"/);
-    const player = readFileSync("src/ui/cardSounds.ts", "utf8");
+    const player = readFileSync("src/ui/card-sounds.ts", "utf8");
     expect(player).toContain('import("../sounds.ts")');
     expect(player).not.toMatch(/^import .*sounds\.ts/m);
   });

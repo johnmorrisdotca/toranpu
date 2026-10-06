@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { playPresident, presidentMayPlay, presidentMoves, presidentRank, presidentTitle, startPresident } from "./president.ts";
-import { presidentComputer } from "./presidentComputer.ts";
+import { presidentComputer } from "./president-computer.ts";
 import type { PresidentGame } from "./president.types.ts";
 
 function started(players = 4, seed = 3): PresidentGame {

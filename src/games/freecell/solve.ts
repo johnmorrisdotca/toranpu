@@ -1,4 +1,4 @@
-import { bestFirst } from "../solitaire/bestFirst.ts";
+import { bestFirst } from "../solitaire/best-first.ts";
 
 import type { FreeCellMove, FreeCellPile, FreeCellTable } from "./freecell.types.ts";
 import {

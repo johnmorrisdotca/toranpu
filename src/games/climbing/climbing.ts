@@ -1,5 +1,5 @@
-import { isCardList } from "../cardGameCodec.ts";
-import type { CardId } from "../cardGames.types.ts";
+import { isCardList } from "../card-game-codec.ts";
+import type { CardId } from "../card-games.types.ts";
 import { without } from "../cards.ts";
 
 import type { ClimbMove, ClimbTrick } from "./climbing.types.ts";

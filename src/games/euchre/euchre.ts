@@ -1,6 +1,6 @@
-import { computerSeats } from "../cardGameCodec.ts";
-import { EUCHRE_SIZES } from "../cardGames.constants.ts";
-import type { CardId, CardSuit } from "../cardGames.types.ts";
+import { computerSeats } from "../card-game-codec.ts";
+import { EUCHRE_SIZES } from "../card-games.constants.ts";
+import type { CardId, CardSuit } from "../card-games.types.ts";
 import { FULL_DECK, dealRound, nextSeat, rankOf, shuffledDeck, suitOf, without } from "../cards.ts";
 
 import type { EuchreGame, EuchreHandScore, EuchreMove, EuchrePlay } from "./euchre.types.ts";

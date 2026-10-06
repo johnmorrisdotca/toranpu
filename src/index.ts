@@ -15,10 +15,10 @@
  * - The command line as a function: `runCli`.
  */
 export * from "./play.ts";
-export * from "./games/cardGameRules.ts";
-export * from "./games/cardGames.constants.ts";
-export type * from "./games/cardGames.types.ts";
-export * from "./games/cardGameCodec.ts";
+export * from "./games/card-game-rules.ts";
+export * from "./games/card-games.constants.ts";
+export type * from "./games/card-games.types.ts";
+export * from "./games/card-game-codec.ts";
 export * from "./games/cards.ts";
 export { seededRandom, shuffled } from "./random.ts";
 export type { Random } from "./random.ts";

@@ -4,8 +4,8 @@
  * This file draws nothing and imports no drawing, so the layout arithmetic can ask it whether a card id is one a
  * design of the page draws.
  */
-import type { CardBackOptions } from "./cardBacks.ts";
-import type { CardDesign } from "./cardFaces.types.ts";
+import type { CardBackOptions } from "./card-backs.ts";
+import type { CardDesign } from "./card-faces.types.ts";
 
 /** Names the package keeps for its own designs and backs; a page cannot register over them. */
 const OWN_DESIGNS: readonly string[] = ["plain", "four-colour", "english", "realistic"];

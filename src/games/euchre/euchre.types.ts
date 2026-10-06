@@ -1,5 +1,5 @@
-import type { KeptCardGame } from "../cardGameCodec.ts";
-import type { CardId, CardSuit } from "../cardGames.types.ts";
+import type { KeptCardGame } from "../card-game-codec.ts";
+import type { CardId, CardSuit } from "../card-games.types.ts";
 
 /**
  * Ordering up the card turned up, or passing; naming another suit, or passing;

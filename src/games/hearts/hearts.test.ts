@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { choosePass, heartsComputer, heartsView } from "./heartsComputer.ts";
+import { choosePass, heartsComputer, heartsView } from "./hearts-computer.ts";
 import { HEARTS_ALL_POINTS, QUEEN_OF_SPADES, TWO_OF_CLUBS, heartsMoves, heartsPlayable, passOffset, playHearts, startHearts, trickWinner } from "./hearts.ts";
-import { HEARTS_RULES, decodeHearts, encodeHearts } from "./heartsRules.ts";
+import { HEARTS_RULES, decodeHearts, encodeHearts } from "./hearts-rules.ts";
 import type { HeartsGame } from "./hearts.types.ts";
 
 const FOUR = ["Ann", "Ben", "Cy", "Di"];

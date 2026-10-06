@@ -3,7 +3,7 @@ import type { Card } from "../cards/cards.types.ts";
 import { cardFromId, cardId, cardName, freshDeck, shuffledDeck as shuffledCards } from "../cards/deck.ts";
 import { seededRandom, shuffled } from "../random.ts";
 
-import type { CardId, CardRank, CardSuit } from "./cardGames.types.ts";
+import type { CardId, CardRank, CardSuit } from "./card-games.types.ts";
 
 /**
  * THE CARDS THE TABLE GAMES ARE DEALT, as the rules see them: fifty-two

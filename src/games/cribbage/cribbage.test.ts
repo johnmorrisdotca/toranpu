@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { cribbageMoves, cribbageWinners, pegPoints, playCribbage, showCount, startCribbage } from "./cribbage.ts";
-import { chooseCrib, choosePeg, cribbageComputer } from "./cribbageComputer.ts";
-import { decodeCribbage, encodeCribbage } from "./cribbageRules.ts";
+import { chooseCrib, choosePeg, cribbageComputer } from "./cribbage-computer.ts";
+import { decodeCribbage, encodeCribbage } from "./cribbage-rules.ts";
 import type { CribbageGame } from "./cribbage.types.ts";
 
 const TWO = ["Ann", "Ben"];
