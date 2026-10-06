@@ -6,6 +6,10 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Repository only: `e2e/shots.mjs` no longer takes the README's pictures (`pnpm screenshots:readme` does, since the last release) and keeps its general pictures.
+
 ## [2.14.2] - 2026-10-06
 
 Nothing that was exported has changed.
