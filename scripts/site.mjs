@@ -14,7 +14,7 @@ const frame = ({ title, description, links, body, scripts }) => `<!doctype html>
     ${familyHead({ id, title, description, ogTitle: "Toranpu トランプ: eleven card games with computer players", ogDescription: "A deck of playing cards and eleven card games, each with a computer player." })}
     <link rel="icon" href="${icon}" />
     <link rel="stylesheet" href="family.css" />
-    <link rel="stylesheet" href="site.css" />
+    <link rel="stylesheet" href="toranpu.css" />
   </head>
   <body>
     <main>
@@ -39,7 +39,7 @@ cpSync("dist", "site/dist", { recursive: true });
 writeFileSync(
   "site/index.html",
   frame({
-    title: "Toranpu トランプ: eleven card games with computer players",
+    title: "Toranpu · eleven card games with computer players",
     description: "Play a hand of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy or War against computer players, all run by the Toranpu TypeScript package. Free and open source.",
     links: [{ href: "api.html", say: "pageApi" }],
     body: readFileSync("demo/body.html", "utf8").replace("__UNREVIEWED__", familyUnreviewed({ id })).trimEnd(),

@@ -1597,7 +1597,7 @@ does draw, the card backs, takes the custom properties under
 The demo's table is themed, and is the worked example. It wears the family's
 one stylesheet, [`demo/family.css`](./demo/family.css), which is the same file
 byte for byte on every sibling's site (a test holds it to its hash), and one
-of its own for the cards and the table, [`demo/site.css`](./demo/site.css).
+of its own for the cards and the table, [`demo/toranpu.css`](./demo/toranpu.css).
 Every colour and size in both is a CSS custom property on `:root`:
 
 | Property | What it colours or sizes | Light | Dark |

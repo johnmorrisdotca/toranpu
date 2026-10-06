@@ -672,11 +672,11 @@ describe("the family's look", () => {
   it("the site script uses the family's header and footer, and its own stylesheet after the family's", () => {
     const site = readFileSync("scripts/site.mjs", "utf8");
     for (const part of ["familyHead(", "familyHeader(", "familyUnreviewed(", "familyFooter(", "FAMILY_SCRIPT"]) expect(site).toContain(part);
-    expect(site.indexOf('href="family.css"')).toBeLessThan(site.indexOf('href="site.css"'));
+    expect(site.indexOf('href="family.css"')).toBeLessThan(site.indexOf('href="toranpu.css"'));
   });
 
   it("the README's theming table gives the stylesheets' own values", () => {
-    const own = readFileSync("demo/site.css", "utf8");
+    const own = readFileSync("demo/toranpu.css", "utf8");
     const light = css.slice(css.indexOf(":root {"), css.indexOf("@media (prefers-color-scheme: dark)"));
     const dark = css.slice(css.indexOf("@media (prefers-color-scheme: dark)"), css.indexOf(':root[data-theme="dark"]'));
     const value = (block, name) => new RegExp(`${name}: ([^;]+);`).exec(block)?.[1];
