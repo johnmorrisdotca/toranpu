@@ -6,8 +6,16 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.14.2] - 2026-10-06
+
+Nothing that was exported has changed.
+
 ### Changed
 
+- The README takes the family's one layout, fully: a hero picture of the demo on a desk and on a phone in light and dark, a picture of the three card games on the table and of each part of the demo (the designs, the backs, your own branding, one card, a hand, the piles, a whole table and the sounds), an Install section, an Examples section of twelve examples whose output is what they print, and a short list of the calls to learn first. Its pictures are in `docs/images` (WebP, light and dark) and are retaken with `pnpm screenshots:readme` (it replaces `pnpm pictures`, `docs/desktop.jpg` and `docs/phone.jpg`; `e2e/shots.mjs` keeps its general pictures); they are not in the tarball, and `pnpm test:package` fails if one is.
+- To keep the README under the 64,000 characters npm can show, the long sections moved to pages under `docs/`, each with its heading and a summary left in the README: the rules interface and the solitaires to `docs/RULES-API.md`; card sounds, backs, designs and your own branding to `docs/CARDS.md`; the card, hand, pile, embed and table elements to `docs/ELEMENTS.md`; the tables of every export to `docs/API.md`; the source tree to `docs/ARCHITECTURE.md`. Nothing was removed, and the tests that hold these to the code read the README and these pages together.
+- `docs/games.md`, `docs/strings-ja.md` and `docs/credits.md` are no longer in the tarball: the family's standard keeps `docs/` out of what npm installs, and the README links them on GitHub, where they are read. The card artwork and sounds that ship are CC0 or public domain, and the README's Licence section now says which and where each came from.
+- The command line's help in the README names its language (`text`).
 - Repository only: the package and everything it exports are unchanged. `CONTRIBUTING.md` is the family's one text with a section of its own for Toranpu, held to the master in johnmorrisdotca/.github by `src/family.test.js`; `ci.yml` and `pages.yml` are the family's one text (`pnpm check`, the demo, and the package on Linux, macOS and Windows), and any jobs of the package's own after them.
 - Source files are named in kebab-case, and a lint rule keeps them so.
 - The demo's page titles read `Toranpu · pitch`, like the rest of the family's.

@@ -6,9 +6,10 @@ import { expect, test } from "@playwright/test";
 
 import { serve } from "./demo.mjs";
 
-const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+// The README and the pages its long sections moved to.
+const readme = ["README.md", "docs/ELEMENTS.md", "docs/CARDS.md"].map((file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8")).join("\n");
 const CDN = "https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/";
-/** The README's ```html block that holds `holding`. */
+/** The README's (or its pages') ```html block that holds `holding`. */
 const block = (holding) => [...readme.matchAll(/```html\n([\s\S]*?)```/g)].map((m) => m[1]).find((one) => one.includes(holding));
 
 async function run(page, html) {

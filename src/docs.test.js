@@ -23,11 +23,14 @@ const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds":
 const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText, fromCode, fromJSON, gameName, moveText, newGame, playComputers, rulesFor, runCli, toCSV, toCode, toJSON, toText } = toranpu;
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
 
-const readme = readFileSync("README.md", "utf8");
+// The README and the pages its long sections moved to: what the package says about itself is held to the code across all of them.
+const moved = ["docs/RULES-API.md", "docs/CARDS.md", "docs/ELEMENTS.md", "docs/API.md"].map((file) => readFileSync(file, "utf8")).join("\n");
+const readme = `${readFileSync("README.md", "utf8")}\n${moved}`;
 const games = readFileSync("docs/games.md", "utf8");
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 const says = (code) => expect(readme, code).toContain(code);
-const blocks = (language, doc = readme) => [...doc.matchAll(new RegExp(`\`\`\`${language}\\n([\\s\\S]*?)\`\`\``, "g"))].map((m) => m[1]);
+// A fence may carry a flag after its language (`ts no-run`, `ts no-check`): the block is the same block.
+const blocks = (language, doc = readme) => [...doc.matchAll(new RegExp(`\`\`\`${language}(?: no-[a-z]+)?\\n([\\s\\S]*?)\`\`\``, "g"))].map((m) => m[1]);
 /**
  * Run a README block as it is written: the block that starts with `first`, its imports taken out and
  * the names they brought handed in as `names`. What the block's last line says is returned.
@@ -108,7 +111,7 @@ describe("the README's framework examples", () => {
   });
 
   it("the plain page is the one opened, but for where it finds the package", () => {
-    expect(proof).toContain(blocks("html")[0].trimEnd());
+    expect(proof).toContain(blocks("html").find((block) => block.includes("./node_modules/@johnmorrisdotca/toranpu/dist/index.js")).trimEnd());
   });
 });
 
@@ -359,7 +362,7 @@ describe("the README on embedding", () => {
 
 describe("the README on the command line", () => {
   it("prints the help as it is", () => {
-    expect(readme).toContain(`\`\`\`\n${STRINGS.en.cliUsage}\`\`\``);
+    expect(readme).toContain(`\`\`\`text\n${STRINGS.en.cliUsage}\`\`\``);
   });
 
   it("the runs it shows come out as shown", () => {
@@ -404,7 +407,8 @@ describe("the README's tables", () => {
   });
 
   it("the API tables name only what is exported, and every export of the front door and the deck is named", () => {
-    const api = readme.slice(readme.indexOf("## API"), readme.indexOf("## Theming"));
+    // The API section keeps the entry points and the calls to learn first; the tables of every export are in docs/API.md, which it links.
+    const api = readme.slice(readme.indexOf("## API"), readme.indexOf("## Theming")) + readFileSync("docs/API.md", "utf8");
     const source = (dir) => readdirSync(dir, { recursive: true }).filter((name) => String(name).endsWith(".ts") && !String(name).includes(".test.")).map((name) => readFileSync(`${dir}/${name}`, "utf8")).join("\n");
     const types = [...source("src").matchAll(/^export type (\w+)/gm)].map((m) => m[1]);
     for (const name of Object.keys(toranpu)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
@@ -700,11 +704,11 @@ describe("the family's look", () => {
 });
 
 describe("the README's promises", () => {
-  const section = (heading) => {
-    const from = readme.indexOf(`\n## ${heading}\n`);
+  const section = (heading, text = readme) => {
+    const from = text.indexOf(`\n## ${heading}\n`);
     if (from < 0) throw new Error(`no section “${heading}”`);
-    const next = readme.indexOf("\n## ", from + 4);
-    return readme.slice(from, next < 0 ? undefined : next);
+    const next = text.indexOf("\n## ", from + 4);
+    return text.slice(from, next < 0 ? undefined : next);
   };
 
   it("has the sections a package of this family has, each with something in it", () => {
@@ -715,13 +719,14 @@ describe("the README's promises", () => {
   });
 
   it("links only to files that exist, and to anchors a heading makes", () => {
-    const targets = [...readme.matchAll(/\]\((?!https?:|#|mailto:)([^)\s#]+)/g)].map((match) => match[1]);
+    const front = readFileSync("README.md", "utf8");   // the links of the README itself: the pages it moved to link back from their own folder
+    const targets = [...front.matchAll(/\]\((?!https?:|#|mailto:)([^)\s#]+)/g)].map((match) => match[1]);
     expect(targets.length).toBeGreaterThan(5);
     for (const target of targets) expect(existsSync(target), target).toBe(true);
-    for (const picture of readme.matchAll(/src="(docs\/[^"]+)"/g)) expect(existsSync(picture[1]), picture[1]).toBe(true);
+    for (const picture of front.matchAll(/src="(docs\/[^"]+)"/g)) expect(existsSync(picture[1]), picture[1]).toBe(true);
     const slug = (heading) => heading.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, "").trim().replace(/\s/g, "-");
-    const made = new Set([...readme.matchAll(/^#{1,6} (.+)$/gm)].map((match) => slug(match[1])));
-    for (const link of readme.matchAll(/\]\(#([^)]+)\)/g)) expect(made.has(link[1]), link[1]).toBe(true);
+    const made = new Set([...front.matchAll(/^#{1,6} (.+)$/gm)].map((match) => slug(match[1])));
+    for (const link of front.matchAll(/\]\(#([^)]+)\)/g)) expect(made.has(link[1]), link[1]).toBe(true);
   });
 
   it("lists every package of the family, with its kana, as the demo's footer does", () => {
@@ -753,7 +758,7 @@ describe("the README's promises", () => {
   });
 
   it("documents the branding it has: every option of a back, every field of a design, every export", () => {
-    const branding = section("Your own branding");
+    const branding = section("Your own branding", moved);
     for (const name of ["registerCardBack", "registerCardDesign", "cardFaceFromArt", "cleanMarkup", "safeImageUrl", "registeredCardDesigns", "registeredCardBacks", "unregisterCardDesign", "unregisterCardBack", "back-image", "back-logo", 'slot="face"', 'slot="back"', "label"]) expect(branding, name).toContain(name);
     for (const name of ["registerCardBack", "registerCardDesign", "cardFaceFromArt", "cleanMarkup", "safeImageUrl", "registeredCardDesigns", "registeredCardBacks", "unregisterCardDesign", "unregisterCardBack", "CUSTOM_CARD_ID", "cardBackNames"]) {
       expect(typeof (cardFaces[name] ?? cardBacks[name]), name).not.toBe("undefined");

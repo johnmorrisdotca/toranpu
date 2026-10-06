@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.14.1",
+  "version": "2.14.2",
   "description": "Playing cards and eleven card games with computer players, for JavaScript and TypeScript: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War, plus solitaires. Zero dependencies.",
   "keywords": [
     "cards",
@@ -261,9 +261,6 @@
   "files": [
     "dist",
     "bin",
-    "docs/games.md",
-    "docs/strings-ja.md",
-    "docs/credits.md",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
@@ -287,10 +284,11 @@
     "test:frameworks": "pnpm build && node scripts/check-frameworks.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "site": "pnpm build && node scripts/site.mjs",
-    "pictures": "pnpm site && node e2e/shots.mjs docs readme",
     "docs:make": "node scripts/docs.mjs",
     "prepublishOnly": "pnpm check && pnpm build",
-    "sounds": "node scripts/sounds.mjs"
+    "sounds": "node scripts/sounds.mjs",
+    "screenshots:readme": "pnpm site && node scripts/readme-pictures.mjs",
+    "test:readme": "pnpm build && node scripts/check-readme-examples.mjs"
   },
   "peerDependencies": {
     "react": ">=18"
