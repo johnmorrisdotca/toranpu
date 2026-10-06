@@ -6,6 +6,20 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.14.1] - 2026-10-05
+
+Nothing that was exported has changed.
+
+### Added
+
+- A test holds every `@johnmorrisdotca/toranpu@N` version pin in the README to this package's major version.
+
+### Changed
+
+- The family's list, in the README and in the demo's footer, names all twenty-four packages, Karakuri and Houseki included.
+- The npm description is one sentence of 250 characters or fewer, so npm and its search show it whole; it is also the repository's About text. `homepage` is the demo site and `author` is `"John Morris"`, the same in every package.
+- The GitHub Actions workflows use the current versions of the actions (checkout 7, setup-node 7, pnpm/action-setup 6; configure-pages 6, upload-pages-artifact 5 and deploy-pages 5 for Pages), which clears GitHub's Node 20 deprecation warning.
+
 ## [2.14.0] - 2026-10-01
 
 ### Added
@@ -503,7 +517,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.1...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.1...HEAD
+[2.14.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.0...v2.14.1
 [2.12.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.0...v2.12.1
 [2.12.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.10.0...v2.11.0

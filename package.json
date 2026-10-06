@@ -1,7 +1,7 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.14.0",
-  "description": "Playing cards and a card game engine for JavaScript and TypeScript: a seeded 52-card deck, Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War with computer players, and Klondike, FreeCell and Spider solitaire. Backs, faces and custom cards in your own branding. Zero dependencies.",
+  "version": "2.14.1",
+  "description": "Playing cards and eleven card games with computer players, for JavaScript and TypeScript: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War, plus solitaires. Zero dependencies.",
   "keywords": [
     "cards",
     "playing-cards",
@@ -116,11 +116,7 @@
     "url": "git+https://github.com/johnmorrisdotca/toranpu.git"
   },
   "license": "MIT",
-  "author": {
-    "name": "John Morris",
-    "email": "john@johnmorris.ca",
-    "url": "https://johnmorris.ca"
-  },
+  "author": "John Morris",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
