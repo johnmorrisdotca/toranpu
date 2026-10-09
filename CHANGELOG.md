@@ -6,6 +6,11 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+
+### Changed
+
+- Group the package family by kind, alphabetize each group, and include the geography packages and REST in Pieces in the shared footer and README.
+
 ### Changed
 
 - Repository only: `e2e/shots.mjs` no longer takes the README's pictures (`pnpm screenshots:readme` does, since the last release) and keeps its general pictures.

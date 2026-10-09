@@ -1,3 +1,4 @@
+import { FAMILY, familyRepo } from "../scripts/family-template.mjs";
 // The documents that are made from the source, or that quote it, checked against it.
 // Plain JavaScript, so that reading files needs no Node types. `pnpm docs:make` rewrites what is made.
 import { createHash } from "node:crypto";
@@ -24,7 +25,7 @@ const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText,
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
 
 // The README and the pages its long sections moved to: what the package says about itself is held to the code across all of them.
-const moved = ["docs/RULES-API.md", "docs/CARDS.md", "docs/ELEMENTS.md", "docs/API.md"].map((file) => readFileSync(file, "utf8")).join("\n");
+const moved = ["docs/RULES-API.md", "docs/CARDS.md", "docs/ELEMENTS.md", "docs/API.md", "docs/export-and-import.md"].map((file) => readFileSync(file, "utf8")).join("\n");
 const readme = `${readFileSync("README.md", "utf8")}\n${moved}`;
 const games = readFileSync("docs/games.md", "utf8");
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
@@ -663,7 +664,7 @@ describe("docs/strings-ja.md", () => {
 describe("the family's look", () => {
   const css = readFileSync("demo/family.css", "utf8");
   const FAMILY_CSS = "c1e392564a7fd94d0bb5cfaefb6d4fedfd147fc3e27f3a7afd8d8dac8c94a227";
-  const FAMILY_TEMPLATE = "a2dc81808be980438bdef8b91f5c0bbff920a739bc50930cd4632cb017c8fa48";
+  const FAMILY_TEMPLATE = "e6e481a1f2ecb9702bdb87c3c27c172e7090edef0691c5f590a7eb66e4eea470";
 
   it("demo/family.css and scripts/family-template.mjs are the family's files, byte for byte: never edit them here", () => {
     const [first, ...rest] = css.split("\n");
@@ -730,12 +731,11 @@ describe("the README's promises", () => {
   });
 
   it("lists every package of the family, with its kana, as the demo's footer does", () => {
-    const template = readFileSync("scripts/family-template.mjs", "utf8");
-    const family = [...template.matchAll(/\{ id: "([\w-]+)", name: "(\w+)", kana: "([^"]+)" \}/g)].map((match) => ({ id: match[1], name: match[2], kana: match[3] }));
+    const family = FAMILY;
     expect(family.length).toBeGreaterThanOrEqual(16);
     const block = readme.slice(readme.indexOf("### The family"), readme.indexOf("\n## ", readme.indexOf("### The family")));
-    for (const { id, name, kana } of family) expect(block, id).toContain(`- [${name}](https://github.com/johnmorrisdotca/${id}) (${kana}`);
-    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four"];
+    for (const { id, name, kana } of family) expect(block, id).toContain(`- [${name}](${familyRepo(id)}) (${kana}`);
+    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven", "twenty-eight"];
     expect(block).toContain(`one of ${words[family.length]} packages`);
     expect([...block.matchAll(/^- \[/gm)]).toHaveLength(family.length);
   });
