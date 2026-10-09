@@ -10,6 +10,8 @@ All notable changes to this project are written here. The format follows
 
 ### Added
 
+- Add the shared hand/card/pile builder, validated iframe pages and reflected display attributes, preserving card methods and structured getters.
+
 - Share a package-independent embed builder for option controls, preview adapters, code tabs and shareable links.
 
 ### Changed

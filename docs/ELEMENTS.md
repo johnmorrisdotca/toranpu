@@ -35,6 +35,7 @@ document.addEventListener("toranpu-flip", (event) => console.log(event.detail));
 | `width` | its width in pixels, in place of `size` |
 | `sound` | the turn makes a sound (see [Card sounds](#card-sounds)) |
 | `lang` | `ja` for the card's name in Japanese; the page's language unless said |
+| `theme` | Light, dark or auto colour-scheme preference; artwork keeps its own colours |
 
 - `slot="face"` and `slot="back"` put your own element in as a side, and a
   `face` property that is a function draws the face from the card's id: see
@@ -104,6 +105,8 @@ table.
 | `reveal` | a tap, Enter or Space opens a closed hand into a fan, and closes it again |
 | `deal-after` | given new cards, how many milliseconds this hand waits before it gathers the old ones in and opens on the new: give each seat a little more than the one before, and the hands are dealt in turn round the table |
 | `design`, `back`, `back-colour`, `back-image`, `back-logo`, `mark`, `size`, `width`, `lang`, `sound` | as on `<toranpu-card>` |
+| `theme` | Light, dark or auto colour-scheme preference; artwork keeps its own colours |
+| `label` | An optional accessible name |
 
 | Method | What it does |
 | --- | --- |
@@ -215,6 +218,8 @@ and a card put on top moves none of those under it.
 | `seed` | the pile's own seed, a whole number: unless said, `1` |
 | `depth` | how many cards under the top are drawn at most, so a pile of fifty costs what a pile of ten does: unless said, `10` |
 | `design`, `back`, `back-colour`, `back-image`, `back-logo`, `mark`, `size`, `width`, `lang` | as on `<toranpu-card>` |
+| `theme` | Light, dark or auto colour-scheme preference; artwork keeps its own colours |
+| `label` | An optional accessible name |
 
 - A pile keeps its size as cards come and go: the room round it is set by
   its messiness and depth, never by what it holds, so nothing next to it
@@ -253,7 +258,8 @@ One tag, where the page may run a script, with nothing to install:
 The iframe's address takes `hand` (or `card` for one card, which turns over
 on a tap), `size`, `lang` (`en` or `ja`), `design`, `back`, `back-colour` and
 `felt` and `ink` as `rrggbb`, `mark`, `face-down`, `closed` (a closed hand
-that opens on a tap) and `sound`. Anything that is not a hand is answered
+that opens on a tap), `flip`, `reveal`, `marked`, `turned`, `parted`,
+`order`, `scrunched`, `theme`, `width`, `label` and `sound`. Anything that is not a hand is answered
 with a line saying how to write one, and only what looks like a colour is
 taken as one. The page tracks nothing, loads nothing from anywhere else and
 keeps nothing on the visitor's device. It tells the page that frames it its
@@ -296,3 +302,23 @@ computers in the other seats, playing after a short pause.
   `{ seat, move, over, winners }`.
 - The table carries the rules of all eleven games, so it is an entry point of
   its own: a page that wants only a card or a hand imports `element`.
+
+
+## The shared builder and standard iframe pages
+
+[Build your cards](https://johnmorrisdotca.github.io/toranpu/builder.html) to arrange a hand, card or pile, preview it and copy custom-element, iframe, ES-module, React 19, Vue, Svelte, Angular, plain-HTML or URL-only code. A card also has a static SVG image fallback. The URL hash shares the complete setup and selected code format. The element script uses the current npm major.
+
+The standard routes are embed/ for a hand, embed/card/ for one card, and embed/pile/ for a pile. Existing hand and card aliases on embed/ remain supported. Inputs use attribute names and are validated: card ids use the package parser, enums use their declared choices, numbers are finite and bounded, colours are hex, and labels stay text. Invalid card input shows a status message. Pages are transparent, noindex and free of document scrolling, use local built files, and save no preferences or history.
+
+Every observed attribute has a reflected property, with camel-case aliases for hyphenated names. Structured cards/count getters and existing methods retain their behaviour. Boolean off, false, no and 0 values are supported. A host can register a hand under another tag with defineHand(tag).
+
+Native hand/flip events bubble and are composed. The iframe forwards the same JSON-safe detail in `{ type, detail }`. It contains card state, not personal or session information. Check both event.origin and event.source before using a message:
+
+```js
+const frame = document.querySelector("iframe");
+window.addEventListener("message", (event) => {
+  if (event.origin !== "https://johnmorrisdotca.github.io") return;
+  if (event.source !== frame.contentWindow) return;
+  if (event.data?.type === "toranpu-hand") console.log(event.data.detail);
+});
+```

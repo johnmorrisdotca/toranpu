@@ -12,7 +12,7 @@
     <meta name="color-scheme" content="light dark" />
     <title>Toranpu · a hand of cards</title>
     <style>
-      html, body { margin: 0; }
+      html, body { margin: 0; overflow: hidden; }
       body { padding: 8px; background: transparent; color: CanvasText; font-family: ui-rounded, "Hiragino Maru Gothic ProN", "Hiragino Sans", system-ui, -apple-system, "Segoe UI", sans-serif; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; justify-items: center; text-align: center; }
       .felt { width: 100%; min-width: 0; box-sizing: border-box; border-radius: 14px; padding: 12px 8px; display: flex; justify-content: center; }
       .felt[data-felt="true"] { background: radial-gradient(circle at 50% 40%, var(--felt, #2f5d4a), var(--felt-deep, #1f4135)); }
@@ -29,10 +29,13 @@
     <a class="credit" href="https://johnmorrisdotca.github.io/toranpu/" target="_blank" rel="noopener">Toranpu</a>
     <script type="module">
       import { STRINGS, namesList } from "../dist/index.js";
-      import { faceName, isCardFace } from "../dist/card-faces.js";
+      import { CARD_DESIGNS, faceName, isCardFace } from "../dist/card-faces.js";
+      import { CARD_BACKS } from "../dist/card-backs.js";
       import { readHand } from "../dist/element-define.js";
 
       const q = new URLSearchParams(location.search.length > 1 ? location.search : location.hash.slice(1));
+      const legacy = q.has("hand") || q.has("card");
+      if (!legacy) { document.body.style.padding = "4px"; document.getElementById("felt").style.padding = "0"; document.getElementById("felt").dataset.felt = "false"; document.querySelector(".credit").hidden = true; }
       const size = ["small", "medium", "large"].includes(q.get("size")) ? q.get("size") : "medium";
       const on = (name) => q.has(name) && !["off", "0", "false", "no"].includes((q.get(name) ?? "").toLowerCase());
       const lang = (q.get("lang") ?? navigator.language).toLowerCase().startsWith("ja") ? "ja" : "en";
@@ -45,7 +48,7 @@
         felt.style.setProperty("--felt", hex("felt"));
         felt.style.setProperty("--felt-deep", hex("felt"));
       }
-      if (q.get("felt") === "none") felt.dataset.felt = "false";
+      if (!legacy || q.get("felt") === "none") felt.dataset.felt = "false";
       if (hex("ink") !== null) document.body.style.color = hex("ink");
 
       const one = q.get("card");
@@ -58,23 +61,37 @@
         else shown.setAttribute("cards", cards.join(" "));
         shown.setAttribute("size", size);
         shown.setAttribute("lang", lang);
-        for (const name of ["design", "back", "mark"]) if (q.has(name)) shown.setAttribute(name, q.get(name).slice(0, 40));
-        if (hex("back-colour") !== null) shown.setAttribute("back-colour", hex("back-colour"));
-        if (on("face-down")) shown.setAttribute("face-down", "");
-        if (on("sound")) shown.setAttribute("sound", "");
-        if (one !== null && size !== "small") shown.setAttribute("flip", "");
-        if (one === null && q.has("closed")) {
-          shown.setAttribute("closed", String(Math.min(1, Math.max(0, Number(q.get("closed")) || 0))));
-          shown.setAttribute("reveal", "");
-        }
+  const choices = { size: ["small", "medium", "large"], theme: ["auto", "light", "dark"], lang: ["en", "ja"], order: ["rank", "suit", "face"], receive: ["front", "end"], design: CARD_DESIGNS, back: CARD_BACKS };
+  for (const [name, values] of Object.entries(choices)) if (values.includes(q.get(name))) shown.setAttribute(name, q.get(name));
+
+  for (const name of ["face-down", "flip", "reveal", "scrunched", "sound"]) {
+    const value = q.get(name);
+    if (value !== null && ["", "on", "true", "1", "off", "false", "no", "0"].includes(value.trim().toLowerCase())) shown.setAttribute(name, ["off", "false", "no", "0"].includes(value.trim().toLowerCase()) ? "false" : "");
+  }
+  for (const [name, min, max] of [["width",20,600],["closed",0,1],["count",0,200],["depth",1,30],["messiness",0,1],["seed",0,1000000],["deal-after",0,10000]]) {
+    const value = Number(q.get(name)); if (q.has(name) && Number.isFinite(value) && value >= min && value <= max) shown.setAttribute(name, String(value));
+  }
+  if (one !== null && q.has("marked") && ["", "1", "true", "on", "0", "false", "off", "no"].includes(q.get("marked").toLowerCase())) shown.setAttribute("marked", ["0", "false", "off", "no"].includes(q.get("marked").toLowerCase()) ? "false" : "");
+  for (const name of one !== null ? ["turned"] : ["turned", "marked"]) if (q.has(name) && readHand(q.get(name)) !== null) shown.setAttribute(name, readHand(q.get(name)).join(" "));
+  const parted = q.get("parted"); if (parted && isCardFace(parted.toUpperCase())) shown.setAttribute("parted", parted.toUpperCase());
+  const colour = q.get("back-colour"); if (/^#[0-9a-f]{3,8}$/i.test(colour ?? "")) shown.setAttribute("back-colour", colour);
+  for (const name of ["label", "mark"]) if (q.has(name) && q.get(name).length <= 200) shown.setAttribute(name, q.get(name));
+
+        if (legacy && one !== null && size !== "small" && !q.has("flip")) shown.setAttribute("flip", "");
+        if (legacy && one === null && q.has("closed") && !q.has("reveal")) shown.setAttribute("reveal", "");
         felt.append(shown);
         // The page that frames this one is told how tall it is, so it can make the frame fit: { toranpu: "height", height }.
         if (parent !== window && typeof ResizeObserver === "function") new ResizeObserver(() => parent.postMessage({ toranpu: "height", height: Math.ceil(document.documentElement.getBoundingClientRect().height) }, "*")).observe(document.body);
         // Each change is told to the page that frames this one.
-        const tell = (event) => parent !== window && parent.postMessage({ toranpu: event.type.replace("toranpu-", ""), ...event.detail }, "*");
+        const tell = (event) => {
+          if (parent === window) return;
+          const detail = JSON.parse(JSON.stringify(event.detail));
+          parent.postMessage({ type: event.type, detail }, "*");
+          parent.postMessage({ toranpu: event.type.replace("toranpu-", ""), ...detail }, "*");
+        };
         shown.addEventListener("toranpu-flip", tell);
         shown.addEventListener("toranpu-hand", tell);
-        if (size === "large") {
+        if (legacy && size === "large") {
           const names = document.getElementById("names");
           names.hidden = false;
           const turn = document.getElementById("turn");

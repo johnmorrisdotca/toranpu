@@ -51,3 +51,18 @@ export function defineToranpuElements(): void {
   ];
   for (const [tag, made] of all) if (customElements.get(tag) === undefined) customElements.define(tag, made);
 }
+
+/**
+ * Register a hand under its standard tag or a host-supplied tag. Safe when no browser is present.
+ * @param tag - The tag to register, toranpu-hand by default.
+ * @returns Nothing; the tag is registered once where a browser is present.
+ * @example
+ * ```ts
+ * import { defineHand } from "@johnmorrisdotca/toranpu/element";
+ * defineHand("my-hand");
+ * ```
+ */
+export function defineHand(tag = TORANPU_TAGS.hand): void {
+  if (typeof customElements === "undefined" || customElements.get(tag)) return;
+  customElements.define(tag, tag === TORANPU_TAGS.hand ? ToranpuHand : class extends ToranpuHand {});
+}

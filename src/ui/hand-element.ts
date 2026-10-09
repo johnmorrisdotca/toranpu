@@ -1,7 +1,7 @@
 import { STRINGS, fillIn } from "../strings.ts";
 import { namesList } from "../words.ts";
 import { faceName } from "./card-faces.ts";
-import { attributeText, followLanguage, cardDrawing, cardIds, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markedCards, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./element-kit.ts";
+import { writeElementAttribute, elementTheme, attributeText, followLanguage, cardDrawing, cardIds, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markedCards, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./element-kit.ts";
 import { arrangeCards, handLayout, mixCards, partedHandLayout, readHand, replaceCard, tossCard, type CardLands, type CardOrder, type CardPlace } from "./layout.ts";
 
 /** How a hand's cards are turned face down or face up. */
@@ -63,8 +63,59 @@ const sameState = (a: HandState, b: HandState) => JSON.stringify(a) === JSON.str
  * open, turned, parted }`.
  */
 export class ToranpuHand extends ElementBase {
+  get order(): string | null { return this.getAttribute("order"); }
+  set order(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "order", value); }
+  get receive(): string | null { return this.getAttribute("receive"); }
+  set receive(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "receive", value); }
+  get dealAfter(): string | null { return this.getAttribute("deal-after"); }
+  set dealAfter(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "deal-after", value); }
+  get ["deal-after"](): string | null { return this.getAttribute("deal-after"); }
+  set ["deal-after"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "deal-after", value); }
+  get faceDown(): boolean { return isOn(this, "face-down"); }
+  set faceDown(value: boolean | string | null | undefined) { writeElementAttribute(this, "face-down", value, true); }
+  get ["face-down"](): boolean { return isOn(this, "face-down"); }
+  set ["face-down"](value: boolean | string | null | undefined) { writeElementAttribute(this, "face-down", value, true); }
+  get turned(): string | null { return this.getAttribute("turned"); }
+  set turned(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "turned", value); }
+  get scrunched(): boolean { return isOn(this, "scrunched"); }
+  set scrunched(value: boolean | string | null | undefined) { writeElementAttribute(this, "scrunched", value, true); }
+  get parted(): string | null { return this.getAttribute("parted"); }
+  set parted(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "parted", value); }
+  get marked(): string | null { return this.getAttribute("marked"); }
+  set marked(value: string | readonly string[] | null | undefined) { writeElementAttribute(this, "marked", value); }
+  get closed(): string | null { return this.getAttribute("closed"); }
+  set closed(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "closed", value); }
+  get reveal(): boolean { return isOn(this, "reveal"); }
+  set reveal(value: boolean | string | null | undefined) { writeElementAttribute(this, "reveal", value, true); }
+  get design(): string | null { return this.getAttribute("design"); }
+  set design(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "design", value); }
+  get back(): string | null { return this.getAttribute("back"); }
+  set back(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back", value); }
+  get backColour(): string | null { return this.getAttribute("back-colour"); }
+  set backColour(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
+  get ["back-colour"](): string | null { return this.getAttribute("back-colour"); }
+  set ["back-colour"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
+  get backImage(): string | null { return this.getAttribute("back-image"); }
+  set backImage(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
+  get ["back-image"](): string | null { return this.getAttribute("back-image"); }
+  set ["back-image"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
+  get backLogo(): string | null { return this.getAttribute("back-logo"); }
+  set backLogo(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
+  get ["back-logo"](): string | null { return this.getAttribute("back-logo"); }
+  set ["back-logo"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
+  get size(): string | null { return this.getAttribute("size"); }
+  set size(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "size", value); }
+  get width(): string | null { return this.getAttribute("width"); }
+  set width(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "width", value); }
+  get theme(): string | null { return this.getAttribute("theme"); }
+  set theme(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "theme", value); }
+  get label(): string | null { return this.getAttribute("label"); }
+  set label(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "label", value); }
+
+  get sound(): boolean { return isOn(this, "sound"); }
+  set sound(value: boolean | string | null | undefined) { writeElementAttribute(this, "sound", value, true); }
   static get observedAttributes(): readonly string[] {
-    return ["cards", "order", "receive", "deal-after", "face-down", "turned", "scrunched", "parted", "marked", "closed", "reveal", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang"];
+    return ["cards", "order", "receive", "deal-after", "face-down", "turned", "scrunched", "parted", "marked", "closed", "reveal", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang", "theme", "label", "sound"];
   }
 
   #root: ShadowRoot | null = null;
@@ -123,7 +174,7 @@ export class ToranpuHand extends ElementBase {
       }
       // Every card turned the other way is the whole hand turned: it is written as the hand's own side.
       if (hand.every((card) => turned.has(card))) {
-        this.toggleAttribute("face-down", !this.hasAttribute("face-down"));
+        this.toggleAttribute("face-down", !isOn(this, "face-down"));
         this.removeAttribute("turned");
       } else if (turned.size === 0) this.removeAttribute("turned");
       else this.setAttribute("turned", [...turned].join(" "));
@@ -307,7 +358,7 @@ export class ToranpuHand extends ElementBase {
     const closed = Number(this.getAttribute("closed"));
     const turned = [...new Set(readHand(this.getAttribute("turned")) ?? [])].sort();
     const parted = readHand(this.getAttribute("parted"))?.[0] ?? null;
-    return { down: this.hasAttribute("face-down"), scrunched: this.hasAttribute("scrunched"), open: Number.isFinite(closed) ? 1 - Math.min(1, Math.max(0, closed)) : 1, turned, parted };
+    return { down: isOn(this, "face-down"), scrunched: isOn(this, "scrunched"), open: Number.isFinite(closed) ? 1 - Math.min(1, Math.max(0, closed)) : 1, turned, parted };
   }
 
   connectedCallback(): void {
@@ -315,7 +366,7 @@ export class ToranpuHand extends ElementBase {
     if (this.#root === null) {
       this.#root = this.attachShadow({ mode: "open" });
       const toggle = () => {
-        if (!this.hasAttribute("reveal") || this.hasAttribute("scrunched") || this.hasAttribute("parted")) return;
+        if (!isOn(this, "reveal") || isOn(this, "scrunched") || this.hasAttribute("parted")) return;
         const now = this.#state();
         if (now.open < 1) {
           // Closed again, it closes as far as it was.
@@ -325,7 +376,7 @@ export class ToranpuHand extends ElementBase {
       };
       this.addEventListener("click", toggle);
       this.addEventListener("keydown", (event) => {
-        if (!this.hasAttribute("reveal") || (event.key !== "Enter" && event.key !== " ")) return;
+        if (!isOn(this, "reveal") || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();
         toggle();
       });
@@ -420,6 +471,7 @@ export class ToranpuHand extends ElementBase {
   }
 
   #draw(): void {
+    elementTheme(this);
     const root = this.#root as ShadowRoot;
     const order = this.getAttribute("order");
     const cards = arrangeCards(this.#dealing?.cards ?? this.cards, order === "rank" || order === "suit" || order === "face" ? order : "dealt");
@@ -446,8 +498,8 @@ export class ToranpuHand extends ElementBase {
     };
     const allDown = cards.every((card) => downIn(card, target));
     const label = target.scrunched ? (downIn(top ?? "", target) || top === undefined ? words.handScrunched : fillIn(words.handSquared, { card: faceName(top, language, typeof design === "object" && design !== null ? design : undefined) })) : allDown && marked.size === 0 ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map(named), language) });
-    this.setAttribute("aria-label", label);
-    const reveals = this.hasAttribute("reveal") && !target.scrunched;
+    this.setAttribute("aria-label", this.getAttribute("label") ?? label);
+    const reveals = isOn(this, "reveal") && !target.scrunched;
     this.setAttribute("role", reveals ? "button" : "group");
     if (reveals) {
       this.setAttribute("aria-expanded", String(target.open === 1));

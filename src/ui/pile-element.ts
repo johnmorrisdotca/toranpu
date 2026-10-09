@@ -1,6 +1,6 @@
 import { STRINGS, fillIn } from "../strings.ts";
 import { faceName } from "./card-faces.ts";
-import { attributeText, followLanguage, cardDrawing, designNamed, ElementBase, languageOf, widthOf } from "./element-kit.ts";
+import { writeElementAttribute, elementTheme, isOn, attributeText, followLanguage, cardDrawing, designNamed, ElementBase, languageOf, widthOf } from "./element-kit.ts";
 import { pileLayout, readHand } from "./layout.ts";
 
 /** The most cards a face-down pile is counted to, so a pile given an absurd count draws in no time. */
@@ -27,8 +27,45 @@ const MOST_IN_A_PILE = 1000;
  *   design, back, back-colour, mark, size, width, lang   as on `<toranpu-card>`
  */
 export class ToranpuPile extends ElementBase {
+  get faceDown(): boolean { return isOn(this, "face-down"); }
+  set faceDown(value: boolean | string | null | undefined) { writeElementAttribute(this, "face-down", value, true); }
+  get ["face-down"](): boolean { return isOn(this, "face-down"); }
+  set ["face-down"](value: boolean | string | null | undefined) { writeElementAttribute(this, "face-down", value, true); }
+  get messiness(): string | null { return this.getAttribute("messiness"); }
+  set messiness(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "messiness", value); }
+  get seed(): string | null { return this.getAttribute("seed"); }
+  set seed(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "seed", value); }
+  get depth(): string | null { return this.getAttribute("depth"); }
+  set depth(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "depth", value); }
+  get design(): string | null { return this.getAttribute("design"); }
+  set design(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "design", value); }
+  get back(): string | null { return this.getAttribute("back"); }
+  set back(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back", value); }
+  get backColour(): string | null { return this.getAttribute("back-colour"); }
+  set backColour(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
+  get ["back-colour"](): string | null { return this.getAttribute("back-colour"); }
+  set ["back-colour"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
+  get backImage(): string | null { return this.getAttribute("back-image"); }
+  set backImage(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
+  get ["back-image"](): string | null { return this.getAttribute("back-image"); }
+  set ["back-image"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
+  get backLogo(): string | null { return this.getAttribute("back-logo"); }
+  set backLogo(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
+  get ["back-logo"](): string | null { return this.getAttribute("back-logo"); }
+  set ["back-logo"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
+  get mark(): string | null { return this.getAttribute("mark"); }
+  set mark(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "mark", value); }
+  get size(): string | null { return this.getAttribute("size"); }
+  set size(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "size", value); }
+  get width(): string | null { return this.getAttribute("width"); }
+  set width(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "width", value); }
+  get theme(): string | null { return this.getAttribute("theme"); }
+  set theme(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "theme", value); }
+  get label(): string | null { return this.getAttribute("label"); }
+  set label(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "label", value); }
+
   static get observedAttributes(): readonly string[] {
-    return ["cards", "count", "face-down", "messiness", "seed", "depth", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang"];
+    return ["cards", "count", "face-down", "messiness", "seed", "depth", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang", "theme", "label"];
   }
 
   #root: ShadowRoot | null = null;
@@ -74,10 +111,11 @@ export class ToranpuPile extends ElementBase {
   }
 
   #draw(): void {
+    elementTheme(this);
     const root = this.#root as ShadowRoot;
     const cards = this.cards;
     const count = this.count;
-    const down = this.hasAttribute("face-down") || cards.length === 0;
+    const down = isOn(this, "face-down") || cards.length === 0;
     const language = languageOf(this);
     const { design, ready } = designNamed(this.getAttribute("design"));
     if (ready !== null) void ready.then(() => this.#draw());
@@ -88,7 +126,7 @@ export class ToranpuPile extends ElementBase {
     const words = STRINGS[language];
     const top = cards[cards.length - 1];
     this.setAttribute("role", "img");
-    this.setAttribute("aria-label", count === 0 ? words.pileEmpty : down || top === undefined ? fillIn(words.pileFaceDown, { n: count }) : fillIn(words.pileFaceUp, { n: count, card: faceName(top, language, typeof design === "object" && design !== null ? design : undefined) }));
+    this.setAttribute("aria-label", this.getAttribute("label") ?? count === 0 ? words.pileEmpty : down || top === undefined ? fillIn(words.pileFaceDown, { n: count }) : fillIn(words.pileFaceUp, { n: count, card: faceName(top, language, typeof design === "object" && design !== null ? design : undefined) }));
     // Room on every side for the most any card could be nudged or turned at the MESSIEST a pile can be, at this depth, whatever
     // the pile holds and however messy it is now: so a pile is one predictable box, the same size squared up as scattered, as
     // cards come and go, and nothing beside it moves when the messiness changes. The cards lie in the middle of it.

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><meta name="color-scheme" content="light dark"><title>Toranpu · cards</title>
+<style>html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden}body{display:flex;align-items:center;justify-content:center;padding:4px;box-sizing:border-box}.bad{font-family:system-ui;color:CanvasText}</style>
+</head><body><div id="stage"></div><p id="status" role="status" class="bad" hidden></p><script type="module">
+import { readHand } from "../../dist/element.js";
+import { CARD_DESIGNS, isCardFace } from "../../dist/card-faces.js";
+import { CARD_BACKS } from "../../dist/card-backs.js";
+import "../../dist/element-define.js";
+const q = new URLSearchParams(location.search.length > 1 ? location.search : location.hash.slice(1));
+const kind = "card";
+const element = document.createElement(`toranpu-${kind}`);
+const cards = readHand(q.get("cards") ?? q.get("hand") ?? "AS KH 10D");
+const card = String(q.get("card") ?? "AS").toUpperCase();
+if ((kind === "card" && !isCardFace(card)) || (kind !== "card" && cards === null)) {
+  const status = document.getElementById("status"); status.hidden = false; status.textContent = "Use valid card ids, such as AS KH 10D.";
+} else {
+  element.setAttribute(kind === "card" ? "card" : "cards", kind === "card" ? card : cards.join(" "));
+  const choices = { size: ["small", "medium", "large"], theme: ["auto", "light", "dark"], lang: ["en", "ja"], order: ["rank", "suit", "face"], receive: ["front", "end"], design: CARD_DESIGNS, back: CARD_BACKS };
+  for (const [name, values] of Object.entries(choices)) if (values.includes(q.get(name))) element.setAttribute(name, q.get(name));
+  if (q.get("lang") === "ja") document.documentElement.lang = "ja";
+  for (const name of ["face-down", "flip", "reveal", "scrunched", "sound"]) {
+    const value = q.get(name);
+    if (value !== null && ["", "on", "true", "1", "off", "false", "no", "0"].includes(value.trim().toLowerCase())) element.setAttribute(name, ["off", "false", "no", "0"].includes(value.trim().toLowerCase()) ? "false" : "");
+  }
+  for (const [name, min, max] of [["width",20,600],["closed",0,1],["count",0,200],["depth",1,30],["messiness",0,1],["seed",0,1000000],["deal-after",0,10000]]) {
+    const value = Number(q.get(name)); if (q.has(name) && Number.isFinite(value) && value >= min && value <= max) element.setAttribute(name, String(value));
+  }
+  if (kind === "card" && q.has("marked") && ["", "1", "true", "on", "0", "false", "off", "no"].includes(q.get("marked").toLowerCase())) element.setAttribute("marked", ["0", "false", "off", "no"].includes(q.get("marked").toLowerCase()) ? "false" : "");
+  for (const name of kind === "card" ? ["turned"] : ["turned", "marked"]) if (q.has(name) && readHand(q.get(name)) !== null) element.setAttribute(name, readHand(q.get(name)).join(" "));
+  const parted = q.get("parted"); if (parted && isCardFace(parted.toUpperCase())) element.setAttribute("parted", parted.toUpperCase());
+  const colour = q.get("back-colour"); if (/^#[0-9a-f]{3,8}$/i.test(colour ?? "")) element.setAttribute("back-colour", colour);
+  for (const name of ["label", "mark"]) if (q.has(name) && q.get(name).length <= 200) element.setAttribute(name, q.get(name));
+  for (const name of ["toranpu-hand", "toranpu-flip"]) element.addEventListener(name, (event) => { if (parent !== window) parent.postMessage({ type: event.type, detail: JSON.parse(JSON.stringify(event.detail)) }, "*"); });
+  document.getElementById("stage").replaceWith(element);
+}
+</script></body></html>

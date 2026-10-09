@@ -144,6 +144,7 @@ other card.
 | Export | What it does |
 | --- | --- |
 | `defineToranpuElements()` | Registers the elements under their tags, once |
+| `defineHand(tag?)` | Registers a hand under its standard or host-supplied tag |
 | `ToranpuCard` | The `<toranpu-card>` element's class |
 | `ToranpuHand` | The `<toranpu-hand>` element's class |
 | `registerCardDesign(design)`, `registerCardBack(name, back)` | As from `card-faces` and `card-backs`: your own faces and backs, by name |

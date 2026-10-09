@@ -1,4 +1,4 @@
-import { followLanguage, cardDrawing, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./element-kit.ts";
+import { writeElementAttribute, elementTheme, followLanguage, cardDrawing, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./element-kit.ts";
 import { STRINGS, fillIn, type Language } from "../strings.ts";
 import { cardFaceFromArt, isCardFace } from "./card-faces.ts";
 import type { CardDesign } from "./card-faces.types.ts";
@@ -41,8 +41,41 @@ export type CardFaceRenderer = (card: string, context: CardFaceContext) => strin
  * spins it where it lies, slowing to a stop as it was.
  */
 export class ToranpuCard extends ElementBase {
+  get card(): string | null { return this.getAttribute("card"); }
+  set card(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "card", value); }
+  get design(): string | null { return this.getAttribute("design"); }
+  set design(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "design", value); }
+  get back(): string | null { return this.getAttribute("back"); }
+  set back(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back", value); }
+  get backColour(): string | null { return this.getAttribute("back-colour"); }
+  set backColour(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
+  get ["back-colour"](): string | null { return this.getAttribute("back-colour"); }
+  set ["back-colour"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
+  get backImage(): string | null { return this.getAttribute("back-image"); }
+  set backImage(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
+  get ["back-image"](): string | null { return this.getAttribute("back-image"); }
+  set ["back-image"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
+  get backLogo(): string | null { return this.getAttribute("back-logo"); }
+  set backLogo(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
+  get ["back-logo"](): string | null { return this.getAttribute("back-logo"); }
+  set ["back-logo"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
+  get mark(): string | null { return this.getAttribute("mark"); }
+  set mark(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "mark", value); }
+  get label(): string | null { return this.getAttribute("label"); }
+  set label(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "label", value); }
+  get marked(): boolean { return isOn(this, "marked"); }
+  set marked(value: boolean | string | null | undefined) { writeElementAttribute(this, "marked", value, true); }
+  get size(): string | null { return this.getAttribute("size"); }
+  set size(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "size", value); }
+  get width(): string | null { return this.getAttribute("width"); }
+  set width(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "width", value); }
+  get theme(): string | null { return this.getAttribute("theme"); }
+  set theme(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "theme", value); }
+
+  get sound(): boolean { return isOn(this, "sound"); }
+  set sound(value: boolean | string | null | undefined) { writeElementAttribute(this, "sound", value, true); }
   static get observedAttributes(): readonly string[] {
-    return ["card", "design", "back", "back-colour", "back-image", "back-logo", "mark", "label", "face-down", "flip", "marked", "size", "width", "lang"];
+    return ["card", "design", "back", "back-colour", "back-image", "back-logo", "mark", "label", "face-down", "flip", "marked", "size", "width", "lang", "theme", "sound"];
   }
 
   #root: ShadowRoot | null = null;
@@ -53,10 +86,10 @@ export class ToranpuCard extends ElementBase {
 
   /** Whether the card shows its back. Setting it turns the card over, as a tap would, but with no event and no sound. */
   get faceDown(): boolean {
-    return this.hasAttribute("face-down");
+    return isOn(this, "face-down");
   }
-  set faceDown(down: boolean) {
-    this.toggleAttribute("face-down", down);
+  set faceDown(down: boolean | string | null | undefined) {
+    writeElementAttribute(this, "face-down", down, true);
   }
 
   /** A function that draws this card's face from its id, in place of its design's (`CardFaceRenderer`); null for none. Setting it draws the card afresh. */
@@ -90,10 +123,10 @@ export class ToranpuCard extends ElementBase {
     if (this.#root === null) {
       this.#root = this.attachShadow({ mode: "open" });
       this.addEventListener("click", () => {
-        if (this.hasAttribute("flip")) this.flip();
+        if (isOn(this, "flip")) this.flip();
       });
       this.addEventListener("keydown", (event) => {
-        if (!this.hasAttribute("flip") || (event.key !== "Enter" && event.key !== " ")) return;
+        if (!isOn(this, "flip") || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();
         this.flip();
       });
@@ -131,6 +164,7 @@ export class ToranpuCard extends ElementBase {
   }
 
   #draw(): void {
+    elementTheme(this);
     const root = this.#root as ShadowRoot;
     const card = this.getAttribute("card") ?? "";
     const language = languageOf(this);
@@ -140,12 +174,12 @@ export class ToranpuCard extends ElementBase {
     const down = this.faceDown;
     const turning = this.#turning;
     this.#turning = false;
-    const flips = this.hasAttribute("flip");
+    const flips = isOn(this, "flip");
     this.setAttribute("role", flips ? "button" : "img");
     if (flips) this.tabIndex = this.tabIndex < 0 ? 0 : this.tabIndex;
     else this.removeAttribute("tabindex");
     // Marked: the attribute is all it takes on one card.
-    const marked = known && this.hasAttribute("marked");
+    const marked = known && isOn(this, "marked");
     const given = this.getAttribute("label");
     const name = !down && given !== null && given !== "" ? given : cardLabel(card, down, language, design);
     this.setAttribute("aria-label", known ? (marked ? fillIn(STRINGS[language].cardMarked, { card: name }) : name) : "");

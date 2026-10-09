@@ -99,7 +99,7 @@ export function lessMotion(): boolean {
 /** An attribute that is on when present, unless it says "false" or "off". */
 export function isOn(element: Element, name: string): boolean {
   const value = element.getAttribute(name);
-  return value !== null && !["false", "off", "0", "no"].includes(value.toLowerCase());
+  return value !== null && !["false", "off", "0", "no"].includes(value.trim().toLowerCase());
 }
 
 const speakers = new Set<() => void>();
@@ -202,4 +202,16 @@ export function attributeText(value: unknown): string | null {
   if (value === null || value === undefined || value === false) return null;
   if (Array.isArray(value)) return value.join(" ");
   return value === true ? "" : String(value);
+}
+
+/** Reflect a custom element's plain attributes without replacing its existing methods or structured getters. */
+export function writeElementAttribute(element: Element, name: string, value: unknown, flag = false): void {
+  if (value === null || value === undefined || value === false) element.removeAttribute(name);
+  else if (flag) element.setAttribute(name, value === true || value === "" ? "" : String(value));
+  else element.setAttribute(name, attributeText(value) ?? "");
+}
+/** Apply the standard light/dark/auto preference without changing the artwork's own colours. */
+export function elementTheme(element: HTMLElement): void {
+  const theme = element.getAttribute("theme");
+  element.style.colorScheme = theme === "light" || theme === "dark" ? theme : "light dark";
 }
