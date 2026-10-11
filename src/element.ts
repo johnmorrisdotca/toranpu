@@ -38,10 +38,24 @@ export type { SpinOptions } from "./ui/element-kit.ts";
 export { arrangeCards, handLayout, mixCards, partedHandLayout, pileLayout, readHand, replaceCard, tossCard } from "./ui/layout.ts";
 export type { CardLands, CardOrder, CardPlace, HandLayoutOptions, PartOptions, PileLayoutOptions } from "./ui/layout.ts";
 
-/** The elements' tags. */
+/** The elements' tags.
+ * @example
+ * ```ts
+ * import { TORANPU_TAGS } from "@johnmorrisdotca/toranpu/element";
+ * console.log(typeof TORANPU_TAGS); // object
+ * ```
+ */
 export const TORANPU_TAGS = { card: "toranpu-card", hand: "toranpu-hand", pile: "toranpu-pile" } as const;
 
-/** Register the elements under their tags, once; a tag already taken is left as it is. Does nothing where there are no custom elements, as on a server. */
+/** Register the elements under their tags, once; a tag already taken is left as it is. Does nothing where there are no custom elements, as on a server.
+ * @returns Nothing; existing definitions and server imports remain safe.
+ * @example
+ * ```ts
+ * import { defineToranpuElements } from "@johnmorrisdotca/toranpu/element";
+ * defineToranpuElements();
+ * console.log(typeof defineToranpuElements); // function
+ * ```
+ */
 export function defineToranpuElements(): void {
   if (typeof customElements === "undefined") return;
   const all: [string, CustomElementConstructor][] = [

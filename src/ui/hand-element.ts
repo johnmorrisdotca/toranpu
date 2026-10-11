@@ -61,6 +61,11 @@ const sameState = (a: HandState, b: HandState) => JSON.stringify(a) === JSON.str
  * moving. The motion is skipped on a device that asks for less. Each change is
  * a `toranpu-hand` event that bubbles, its detail `{ faceDown, scrunched,
  * open, turned, parted }`.
+ * @example
+ * ```ts
+ * import { ToranpuHand } from "@johnmorrisdotca/toranpu/element";
+ * console.log(ToranpuHand.observedAttributes.includes("lang")); // true
+ * ```
  */
 export class ToranpuHand extends ElementBase {
   get order(): string | null { return this.getAttribute("order"); }

@@ -39,6 +39,11 @@ export type CardFaceRenderer = (card: string, context: CardFaceContext) => strin
  *
  * Each turn is a `toranpu-flip` event that bubbles, with `{ card, faceDown }` as its detail. `spin(options?)`
  * spins it where it lies, slowing to a stop as it was.
+ * @example
+ * ```ts
+ * import { ToranpuCard } from "@johnmorrisdotca/toranpu/element";
+ * console.log(ToranpuCard.observedAttributes.includes("lang")); // true
+ * ```
  */
 export class ToranpuCard extends ElementBase {
   get card(): string | null { return this.getAttribute("card"); }

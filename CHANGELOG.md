@@ -5,9 +5,6 @@ All notable changes to this project are written here. The format follows
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-
-
-
 ### Added
 
 - Add the shared hand/card/pile builder, validated iframe pages and reflected display attributes, preserving card methods and structured getters.
@@ -18,9 +15,9 @@ All notable changes to this project are written here. The format follows
 
 - Group the package family by kind, alphabetize each group, and include the geography packages and REST in Pieces in the shared footer and README.
 
-### Changed
-
 - Repository only: `e2e/shots.mjs` no longer takes the README's pictures (`pnpm screenshots:readme` does, since the last release) and keeps its general pictures.
+
+- Update the shared family description for addresses in all seven supported countries, including France and Germany.
 
 ## [2.14.2] - 2026-10-06
 

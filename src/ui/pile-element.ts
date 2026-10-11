@@ -25,6 +25,11 @@ const MOST_IN_A_PILE = 1000;
  *   seed        the pile's own seed, a whole number; unless said, 1
  *   depth       how many cards under the top are drawn at most; unless said, 10
  *   design, back, back-colour, mark, size, width, lang   as on `<toranpu-card>`
+ * @example
+ * ```ts
+ * import { ToranpuPile } from "@johnmorrisdotca/toranpu/element";
+ * console.log(ToranpuPile.observedAttributes.includes("lang")); // true
+ * ```
  */
 export class ToranpuPile extends ElementBase {
   get faceDown(): boolean { return isOn(this, "face-down"); }
