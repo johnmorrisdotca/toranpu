@@ -4,7 +4,7 @@
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 
 import { apiBody } from "./api.mjs";
-import { FAMILY_SCRIPT, familyEmbedBuilder, familyFooter, familyHead, familyHeader, familyUnreviewed } from "./family-template.mjs";
+import { FAMILY_SCRIPT, FAMILY_EMBED_BUILDER_WORDS, familyEmbedBuilder, familyFooter, familyHead, familyHeader, familyUnreviewed } from "./family-template.mjs";
 
 const id = "toranpu";
 const icon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='14' y='6' width='72' height='88' rx='12' fill='%23fffdf8' stroke='%232f5d4a' stroke-width='8'/%3E%3Cpath d='M50 26 C 66 44, 74 52, 74 62 C 74 74, 58 76, 54 66 L 58 80 L 42 80 L 46 66 C 42 76, 26 74, 26 62 C 26 52, 34 44, 50 26 Z' fill='%231f2320'/%3E%3C/svg%3E`;
@@ -85,7 +85,7 @@ console.log(`site/ is ready (${api.total} exports in api.html, ${pictures} pictu
 
 cpSync("demo/embed", "site/embed", { recursive: true });
 for (const file of ["builder.js", "builder.css"]) cpSync(`demo/${file}`, `site/${file}`);
-writeFileSync("site/family-embed-builder.js", `export ${familyEmbedBuilder.toString()};\n`);
+writeFileSync("site/family-embed-builder.js", `export const FAMILY_EMBED_BUILDER_WORDS = ${JSON.stringify(FAMILY_EMBED_BUILDER_WORDS)};\nexport ${familyEmbedBuilder.toString()};\n`);
 const builderParts = {
   builderHead: familyHead({ id, title: "Toranpu · build a hand of cards", description: "Arrange cards, preview them and copy the embed code." }),
   builderHeader: familyHeader({ id, links: [{ href: "./", say: "toGallery" }] }),

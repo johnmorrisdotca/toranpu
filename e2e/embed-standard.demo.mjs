@@ -21,7 +21,7 @@ test("the shared builder previews a hand, card and pile and writes host formats"
   }
   await expect(page.locator("#bld-code")).toContainText("/embed/pile/");
   await page.locator('[data-lang="ja"]').click();
-  await expect(page.locator("#bld-maker-says")).toContainText("山札");
+  await expect(page.locator("#bld-maker-says")).toContainText("カードの山");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   expect(errors).toEqual([]);
 });

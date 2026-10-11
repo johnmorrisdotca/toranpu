@@ -664,7 +664,7 @@ describe("docs/strings-ja.md", () => {
 describe("the family's look", () => {
   const css = readFileSync("demo/family.css", "utf8");
   const FAMILY_CSS = "c1e392564a7fd94d0bb5cfaefb6d4fedfd147fc3e27f3a7afd8d8dac8c94a227";
-  const FAMILY_TEMPLATE = "59dd609cdffd845540d6f047d6c74bf6ed121b6baca9ff2a7a70aa0d33d32888";
+  const FAMILY_TEMPLATE = "3d90724c7ed364c994d03549b7562dd98b7841d7827b492dc7ddcdc4604192ff";
 
   it("demo/family.css and scripts/family-template.mjs are the family's files, byte for byte: never edit them here", () => {
     const [first, ...rest] = css.split("\n");

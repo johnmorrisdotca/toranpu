@@ -3,21 +3,47 @@ import { ToranpuCard, ToranpuHand, ToranpuPile, readHand } from "./dist/element.
 import { CARD_DESIGNS, faceName, isCardFace } from "./dist/card-faces.js";
 import { CARD_BACKS } from "./dist/card-backs.js";
 import "./dist/element-define.js";
-import { familyEmbedBuilder } from "./family-embed-builder.js";
+import { familyEmbedBuilder, FAMILY_EMBED_BUILDER_WORDS } from "./family-embed-builder.js";
 
 const words = {
-  en: { pitch: "Arrange a hand, card or pile, preview it, and copy the code for your page.", name: "Toranpu is the Japanese word for playing cards.", nameLink: "About the name", foot: "The setup is in the link. No game or personal data is stored.", toGallery: "The card table",
-    previewTitle: "Your cards", makerLabel: "What to build", makerHand: "A hand", makerCard: "One card", makerPile: "A pile", makerHandSays: "A hand for a strategy article or a card display.", makerCardSays: "One card in the chosen design.", makerPileSays: "A stock or discard pile.",
-    notSet: "Not set", on: "On", off: "Off", reset: "Reset", startAgain: "Start again", copy: "Copy", copied: "Copied.", copyLink: "Copy a link to these cards", linkCopied: "The link is copied.", codeTitle: "The code", codeText: "Choose how to include these cards on your page.", defaultIs: "Default: {value}", badCards: "Use valid card ids, such as AS KH 10D." },
-  ja: { pitch: "手札、カード、山札を選んで表示を確認し、ページに載せるコードをコピーします。", name: "「トランプ」は playing cards に当たる日本語です。", nameLink: "名前について", foot: "設定はリンクに入ります。ゲームや個人情報は保存しません。", toGallery: "カードテーブル",
-    previewTitle: "あなたのカード", makerLabel: "作るもの", makerHand: "手札", makerCard: "カード1枚", makerPile: "山札", makerHandSays: "攻略記事やカードの表示に使う手札です。", makerCardSays: "選んだデザインのカード1枚です。", makerPileSays: "山札や捨て札の山です。",
-    notSet: "指定なし", on: "オン", off: "オフ", reset: "元に戻す", startAgain: "最初からやり直す", copy: "コピー", copied: "コピーしました。", copyLink: "このカードへのリンクをコピー", linkCopied: "リンクをコピーしました。", codeTitle: "コード", codeText: "ページへの載せ方を選びます。", defaultIs: "初期値: {value}", badCards: "AS KH 10D のような、有効なカードの記号を使ってください。" },
+  en: {
+    ...FAMILY_EMBED_BUILDER_WORDS.en,
+    pitch: "Arrange a hand, card or pile, preview it, and copy the code for your page.",
+    name: "Toranpu is the Japanese word for playing cards.",
+    nameLink: "About the name",
+    foot: "The setup is in the link. No game or personal data is stored.",
+    toGallery: "The card table",
+    makerHand: "A hand",
+    makerCard: "One card",
+    makerPile: "A pile",
+    makerHandSays: "A hand for a strategy article or a card display.",
+    makerCardSays: "One card in the chosen design.",
+    makerPileSays: "A stock or discard pile.",
+    copyLink: "Copy a link to these cards",
+    badCards: "Use valid card ids, such as AS KH 10D."
+  },
+  ja: {
+    ...FAMILY_EMBED_BUILDER_WORDS.ja,
+    pitch: "手札、カード、山札を選んで表示を確認し、ページに埋め込むコードをコピーできます。",
+    name: "「トランプ」は、日本語で playing cards を指す言葉です。",
+    nameLink: "名前について",
+    foot: "設定はリンクに入ります。ゲームや個人情報は保存しません。",
+    toGallery: "カードテーブル",
+    makerHand: "手札",
+    makerCard: "カード1枚",
+    makerPile: "カードの山",
+    makerHandSays: "攻略記事などで、手札を見せるために使います。",
+    makerCardSays: "選んだデザインのカード1枚です。",
+    makerPileSays: "山札や捨て札の山です。",
+    copyLink: "このカードへのリンクをコピー",
+    badCards: "AS KH 10D のような、有効なカードIDを使ってください。"
+  },
 };
 const both = (name) => ({ hand: name, card: name, pile: name });
 const row = (id, kind, names, en, ja, extra = {}) => ({ id, group: "cards", kind, names, say: { en: { label: en[0], help: en[1] }, ja: { label: ja[0], help: ja[1] } }, ...extra });
 const options = [
   row("cards", "text", { hand: "cards", pile: "cards" }, ["Cards", "Card ids separated by spaces, such as AS KH 10D."], ["カード", "AS KH 10D のように、記号を空白で区切ります。"], { default: "AS KH 10D" }),
-  row("card", "text", { card: "card" }, ["Card", "One card id, such as AS."], ["カード", "AS のようなカード1枚の記号です。"], { default: "AS" }),
+  row("card", "text", { card: "card" }, ["Card", "One card id, such as AS."], ["カード", "AS のようなカードIDです。"], { default: "AS" }),
   row("size", "choice", both("size"), ["Display size", "Small, medium or large cards."], ["表示の大きさ", "小・中・大のカードを選びます。"], { default: "medium", choices: ["small", "medium", "large"] }),
   row("width", "number", both("width"), ["Card width", "Each card's width in pixels."], ["カードの幅", "カード1枚の幅をピクセルで指定します。"], { range: { min: 20, max: 300, step: 2 } }),
   row("design", "choice", both("design"), ["Design", "The artwork used for the card faces."], ["デザイン", "カードの表に使う絵柄です。"], { default: "plain", choices: CARD_DESIGNS }),
@@ -35,7 +61,7 @@ const options = [
   row("order", "choice", { hand: "order" }, ["Order", "Sort by rank, suit or face."], ["並べ方", "数字・スート・絵札で並べます。"], { choices: ["rank", "suit", "face"] }),
   row("turned", "text", { hand: "turned" }, ["Turned cards", "Cards showing the opposite side."], ["反対向きのカード", "ほかのカードと反対の面を表示するカードです。"]),
   row("parted", "text", { hand: "parted" }, ["Part at card", "Lift one card out of the fan."], ["取り出すカード", "扇形の手札からカード1枚を取り出します。"]),
-  row("marked", "text", { hand: "marked" }, ["Marked cards", "Card ids that carry the mark."], ["印を付けるカード", "印を付けるカードの記号です。"]),
+  row("marked", "text", { hand: "marked" }, ["Marked cards", "Card ids that carry the mark."], ["印を付けるカード", "印を付けるカードIDです。"]),
   row("card-marked", "boolean", { card: "marked" }, ["Marked", "Put the chosen mark on this card."], ["印", "このカードに選んだ印を付けます。"], { default: false }),
   row("mark", "text", both("mark"), ["Mark", "The mark drawn on marked cards."], ["印の種類", "印を付けたカードに表示する印です。"]),
   row("count", "number", { pile: "count" }, ["Count", "A face-down pile's number of cards."], ["枚数", "裏向きの山札の枚数です。"], { range: { min: 0, max: 200, step: 1 } }),
@@ -50,7 +76,7 @@ leftOut["hand.deal-after"] = "Deal delay is for a table dealing hands over time.
 const formats = ["element", "iframe", "module", "react", "vue", "svelte", "angular", "html", "url"];
 let mounted;
 const page = globalThis.familyLanguage({ id: "toranpu", words, onChange: () => mounted?.draw() });
-const builder = familyEmbedBuilder({ id: "toranpu", packageName: "@johnmorrisdotca/toranpu", major: VERSION.split(".")[0], site: "https://johnmorrisdotca.github.io/toranpu/", title: "Toranpu · cards", options, leftOut, groups: { cards: { en: "The cards", ja: "カードの設定" } },
+const builder = familyEmbedBuilder({ id: "toranpu", packageName: "@johnmorrisdotca/toranpu", major: VERSION.split(".")[0], site: "https://johnmorrisdotca.github.io/toranpu/", title: "Toranpu · cards", titleJa: "カードの埋め込み", options, leftOut, groups: { cards: { en: "The cards", ja: "カードの設定" } },
   makers: {
     hand: { names: "hand", element: "hand", tag: "toranpu-hand", embed: "embed/", required: ["cards"], description: "makerHandSays", formats, width: 480, height: (settings) => ({ small: 160, medium: 200, large: 360 }[settings.size] ?? 200) },
     card: { names: "card", element: "card", tag: "toranpu-card", embed: "embed/card/", required: ["card"], description: "makerCardSays", formats: [...formats, "image"], width: (settings) => (Number(settings.width) || ({ small: 46, medium: 70, large: 104 }[settings.size] ?? 70)) + 8, height: (settings) => Math.ceil((Number(settings.width) || ({ small: 46, medium: 70, large: 104 }[settings.size] ?? 70)) * 1.4) + 8, image: (settings) => `https://johnmorrisdotca.github.io/toranpu/${settings["face-down"] ? `backs/${settings.back ?? "classic-red"}` : `cards/${settings.design ?? "plain"}/${settings.card ?? "AS"}`}.svg` },
