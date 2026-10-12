@@ -20,10 +20,28 @@ import { gameName, moveText, namesList } from "./words.ts";
  * the game those moves make, or nothing.
  */
 
-/** The shape of the JSON this package writes. It goes up only when a reader of the old shape would be wrong about the new one. */
+/** The shape of the JSON this package writes. It goes up only when a reader of the old shape would be wrong about the new one.
+ *
+ * @example
+ * ```ts
+ * import { SAVE_FORMAT } from "@johnmorrisdotca/toranpu";
+ * console.log(SAVE_FORMAT);
+ * ```
+ */
 export const SAVE_FORMAT = 1;
 
-/** A game as `toJSON` writes it. */
+/** A game as `toJSON` writes it.
+ *
+ * @example
+ * ```ts
+ * import { newGame, savedGame } from "@johnmorrisdotca/toranpu";
+ * import type { SavedGame } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * const value: SavedGame<"hearts"> = savedGame("hearts", game);
+ * console.log(value.seed);
+ * ```
+ */
 export type SavedGame<K extends CardGameKind = CardGameKind> = {
   /** The shape of this object: `SAVE_FORMAT`. */
   format: typeof SAVE_FORMAT;
@@ -43,26 +61,87 @@ export type SavedGame<K extends CardGameKind = CardGameKind> = {
   moves: MoveOf<K>[];
 };
 
-/** A game read back: which game it is, and the game itself. */
+/** A game read back: which game it is, and the game itself.
+ *
+ * @example
+ * ```ts
+ * import { fromJSON, newGame, toJSON } from "@johnmorrisdotca/toranpu";
+ * import type { ReadGame } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * const value: ReadGame = fromJSON(toJSON("hearts", game))!;
+ * console.log(value.kind);
+ * ```
+ */
 export type ReadGame = { [K in CardGameKind]: { kind: K; game: GameOf<K> } }[CardGameKind];
 
-/** One move of a record: which seat made it, and the move. */
+/** One move of a record: which seat made it, and the move.
+ *
+ * @example
+ * ```ts
+ * import { newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import type { RecordedMove } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * const value: RecordedMove<"hearts"> = { seat: 0, move: rulesFor("hearts").moves(game)[0]! };
+ * console.log(value.seat);
+ * ```
+ */
 export type RecordedMove<K extends CardGameKind = CardGameKind> = { seat: number; move: MoveOf<K> };
 
 const kept = <K extends CardGameKind>(game: GameOf<K>) => game as unknown as KeptCardGame<MoveOf<K>>;
 
-/** A game as the object `toJSON` writes: its table, its seed and its moves. */
+/** A game as the object `toJSON` writes: its table, its seed and its moves.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game as the object `toJSON` writes: its table, its seed and its moves.
+ *
+ * @example
+ * ```ts
+ * import { newGame, savedGame } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(savedGame("hearts", game));
+ * ```
+ */
 export function savedGame<K extends CardGameKind>(kind: K, game: GameOf<K>): SavedGame<K> {
   const { size, players, computers, seed, moves } = kept(game);
   return { format: SAVE_FORMAT, generator: `toranpu ${VERSION}`, game: kind, size, players: [...players], computers: [...computers], seed, moves: [...moves] };
 }
 
-/** A game as JSON, two spaces deep, with the format's number first. `fromJSON` reads it back. */
+/** A game as JSON, two spaces deep, with the format's number first. `fromJSON` reads it back.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game as JSON, two spaces deep, with the format's number first. `fromJSON` reads it back.
+ *
+ * @example
+ * ```ts
+ * import { newGame, toJSON } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(toJSON("hearts", game));
+ * ```
+ */
 export function toJSON<K extends CardGameKind>(kind: K, game: GameOf<K>): string {
   return `${JSON.stringify(savedGame(kind, game), null, 2)}\n`;
 }
 
-/** A game as its code: the one line its own rules' `encode` writes. Shorter than the JSON, and what Itsutsu keeps. */
+/** A game as its code: the one line its own rules' `encode` writes. Shorter than the JSON, and what Itsutsu keeps.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game as its code: the one line its own rules' `encode` writes. Shorter than the JSON, and what Itsutsu keeps.
+ *
+ * @example
+ * ```ts
+ * import { newGame, toCode } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(toCode("hearts", game));
+ * ```
+ */
 export function toCode<K extends CardGameKind>(kind: K, game: GameOf<K>): string {
   return rulesFor(kind).encode(game);
 }
@@ -77,6 +156,17 @@ function isKind(value: unknown): value is CardGameKind {
  * a move the rules refuse means the text is not a game. Null for text that is
  * not JSON, names no game, is of a later format than this version reads, or
  * cannot be played out.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns A game from text that `toJSON` or `toCode` wrote, whichever game it is. Nothing in it is trusted: every move is played through the rules again, and a move the rules refuse means the text is not a game. null for text that is not JSON, names no game, is of a later format than this version reads, or cannot be played out.
+ *
+ * @example
+ * ```ts
+ * import { fromJSON, newGame, toJSON } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(fromJSON(toJSON("hearts", game))?.kind);
+ * ```
  */
 export function fromJSON(text: string): ReadGame | null {
   let data: unknown;
@@ -99,13 +189,37 @@ export function fromJSON(text: string): ReadGame | null {
   return game === null ? null : ({ kind, game } as ReadGame);
 }
 
-/** A game from its code or its JSON: the same as `fromJSON`, under the name that pairs with `toCode`. */
+/** A game from its code or its JSON: the same as `fromJSON`, under the name that pairs with `toCode`.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns The reconstructed game, or null when the code or JSON does not represent a supported legal game.
+ *
+ * @example
+ * ```ts
+ * import { fromCode, newGame, toCode } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(fromCode(toCode("hearts", game))?.kind);
+ * ```
+ */
 export const fromCode = fromJSON;
 
 /**
  * Every move of a game with the seat that made it, in order, found by playing
  * the game through again from its seed. Null if the moves do not play out,
  * which a game the rules made never does.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move of a game with the seat that made it, in order, found by playing the game through again from its seed. null if the moves do not play out, which a game the rules made never does.
+ *
+ * @example
+ * ```ts
+ * import { newGame, recordOf } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(recordOf("hearts", game));
+ * ```
  */
 export function recordOf<K extends CardGameKind>(kind: K, game: GameOf<K>): RecordedMove<K>[] | null {
   const rules = rulesFor(kind);
@@ -128,6 +242,19 @@ export function recordOf<K extends CardGameKind>(kind: K, game: GameOf<K>): Reco
  *
  * It names every card, the ones passed face down too. It is a record for
  * afterwards, not something to show a player while the game is on.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param game - The current native game; applying a move returns a new state.
+ * @param language - English or Japanese for the displayed words.
+ * @returns A game as a record a person can read: a heading, a numbered line a move with who made it, and how it stands. In English unless said. It names every card, the ones passed face down too. It is a record for afterwards, not something to show a player while the game is on.
+ *
+ * @example
+ * ```ts
+ * import { newGame, toText } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(toText("hearts", game));
+ * ```
  */
 export function toText<K extends CardGameKind>(kind: K, game: GameOf<K>, language: Language = "en"): string {
   const rules = rulesFor(kind);
@@ -140,7 +267,14 @@ export function toText<K extends CardGameKind>(kind: K, game: GameOf<K>, languag
   return `${lines.join("\n")}\n`;
 }
 
-/** The columns of the CSV, in order. */
+/** The columns of the CSV, in order.
+ *
+ * @example
+ * ```ts
+ * import { CSV_COLUMNS } from "@johnmorrisdotca/toranpu";
+ * console.log(CSV_COLUMNS);
+ * ```
+ */
 export const CSV_COLUMNS = ["move", "seat", "player", "action", "cards", "detail", "text"] as const;
 
 /** A field of CSV: quoted when it holds a comma, a quote or a line break. */
@@ -154,6 +288,18 @@ function field(text: string): string {
  * (`play`, `bid`, `pass`…), the cards it names as two-letter ids with spaces
  * between, the move itself as JSON, and the move in English. Lines end CRLF,
  * as RFC 4180 has it. It is for reading, and is not read back.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game's moves as CSV for a spreadsheet: a header, then a row a move, with its number from 1, the seat from 1 and its player, the kind of move (`play`, `bid`, `pass`…), the cards it names as two-letter ids with spaces between, the move itself as JSON, and the move in English. Lines end CRLF, as RFC 4180 has it. It is for reading, and is not read back.
+ *
+ * @example
+ * ```ts
+ * import { newGame, toCSV } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(toCSV("hearts", game));
+ * ```
  */
 export function toCSV<K extends CardGameKind>(kind: K, game: GameOf<K>): string {
   const { players } = kept(game);

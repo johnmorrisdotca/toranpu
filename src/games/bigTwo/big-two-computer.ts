@@ -17,7 +17,20 @@ import type { BigTwoGame } from "./big-two.types.ts";
  * table, how many cards each player holds, and nothing else.
  */
 
-/** What one seat can see of a game of Big Two: its own hand, the table, and what has been said and shown. */
+/** What one seat can see of a game of Big Two: its own hand, the table, and what has been said and shown.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { BigTwoView } from "@johnmorrisdotca/toranpu/big-two";
+ * import { bigTwoView } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * const value: BigTwoView = bigTwoView(game);
+ * console.log(value.hand.length);
+ * ```
+ */
 export type BigTwoView = {
   seat: number;
   hand: readonly CardId[];
@@ -27,7 +40,21 @@ export type BigTwoView = {
   legal: readonly ClimbMove[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { bigTwoView } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * console.log(bigTwoView(game));
+ * ```
+ */
 export function bigTwoView(game: BigTwoGame): BigTwoView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], pile: game.pile, counts: game.hands.map((hand) => hand.length), legal: bigTwoMoves(game) };
@@ -47,7 +74,21 @@ function broken(cards: readonly CardId[], hand: readonly CardId[]): number {
   return count;
 }
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { bigTwoComputer } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * console.log(bigTwoComputer(game));
+ * ```
+ */
 export function bigTwoComputer(game: BigTwoGame): ClimbMove {
   const view = bigTwoView(game);
   const plays = view.legal.flatMap((move) => ("play" in move ? [move.play] : []));

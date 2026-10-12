@@ -4,7 +4,16 @@ import { faceName } from "./card-faces.ts";
 import { writeElementAttribute, elementTheme, attributeText, followLanguage, cardDrawing, cardIds, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markedCards, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./element-kit.ts";
 import { arrangeCards, handLayout, mixCards, partedHandLayout, readHand, replaceCard, tossCard, type CardLands, type CardOrder, type CardPlace } from "./layout.ts";
 
-/** How a hand's cards are turned face down or face up. */
+/** How a hand's cards are turned face down or face up.
+ *
+ * @example
+ * ```ts
+ * import type { HandTurnOptions } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: HandTurnOptions = { oneByOne: true, gap: 80 };
+ * console.log(value.gap);
+ * ```
+ */
 export type HandTurnOptions = {
   /** One card after another, from the first, rather than all at once. Unless said, all at once. */
   oneByOne?: boolean;
@@ -12,7 +21,14 @@ export type HandTurnOptions = {
   gap?: number;
 };
 
-/** How many backs a squared-up bundle shows, whatever the hand: a bundle never tells how many cards are in it. */
+/** How many backs a squared-up bundle shows, whatever the hand: a bundle never tells how many cards are in it.
+ *
+ * @example
+ * ```ts
+ * import { BUNDLE_BACKS } from "@johnmorrisdotca/toranpu/element";
+ * console.log(BUNDLE_BACKS);
+ * ```
+ */
 export const BUNDLE_BACKS = 3;
 
 /** How a hand lies: face down or up, squared into a bundle, how open, which cards are turned the other way, and the card it is parted at. */

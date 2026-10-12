@@ -10,23 +10,66 @@
  * Toranpu never makes a sound by itself. A table asks for one with `play`.
  */
 
-/** Every kind of sound, in the order a game meets them. */
+/** Every kind of sound, in the order a game meets them.
+ *
+ * @example
+ * ```ts
+ * import { CARD_SOUND_KINDS } from "@johnmorrisdotca/toranpu/card-sounds";
+ * console.log(CARD_SOUND_KINDS);
+ * ```
+ */
 export const CARD_SOUND_KINDS = ["shuffle", "deal", "flip", "play", "gather", "fan"] as const;
 
-/** One kind of sound: `deal` a card sent to a hand, `flip` a card turned over, `play` a card laid on the table, `shuffle` the deck shuffled, `gather` a pile swept in, `fan` a hand spread open. */
+/** One kind of sound: `deal` a card sent to a hand, `flip` a card turned over, `play` a card laid on the table, `shuffle` the deck shuffled, `gather` a pile swept in, `fan` a hand spread open.
+ *
+ * @example
+ * ```ts
+ * import type { CardSoundKind } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * const value: CardSoundKind = "play";
+ * console.log(value);
+ * ```
+ */
 export type CardSoundKind = (typeof CARD_SOUND_KINDS)[number];
 
-/** The recordings, by name (`deal-2`), as base64 AAC. */
+/** The recordings, by name (`deal-2`), as base64 AAC.
+ *
+ * @example
+ * ```ts
+ * import type { CardSoundData } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * const value: CardSoundData = {};
+ * console.log(Object.keys(value));
+ * ```
+ */
 export type CardSoundData = Readonly<Record<string, string>>;
 
-/** The parts of a window the sounds use: an audio context and `atob`. Any of them may be missing. */
+/** The parts of a window the sounds use: an audio context and `atob`. Any of them may be missing.
+ *
+ * @example
+ * ```ts
+ * import type { CardSoundWindow } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * const value: CardSoundWindow = {};
+ * console.log(value.AudioContext === undefined);
+ * ```
+ */
 export type CardSoundWindow = {
   AudioContext?: typeof AudioContext;
   webkitAudioContext?: typeof AudioContext;
   atob?: (text: string) => string;
 };
 
-/** How a table's sounds are made. Every field may be left out. */
+/** How a table's sounds are made. Every field may be left out.
+ *
+ * @example
+ * ```ts
+ * import type { CardSoundsOptions } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * const value: CardSoundsOptions = { muted: true, volume: 0.5, window: null };
+ * console.log(value.volume);
+ * ```
+ */
 export type CardSoundsOptions = {
   /** Start muted: nothing plays, and nothing is fetched, until `setMuted(false)`. Unless said, not muted. */
   muted?: boolean;
@@ -38,7 +81,16 @@ export type CardSoundsOptions = {
   window?: CardSoundWindow | null;
 };
 
-/** How one sound is played. */
+/** How one sound is played.
+ *
+ * @example
+ * ```ts
+ * import type { PlayCardSoundOptions } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * const value: PlayCardSoundOptions = { count: 3, gap: 80, delay: 20 };
+ * console.log(value.count);
+ * ```
+ */
 export type PlayCardSoundOptions = {
   /** How many cards: `deal` with 13 is thirteen cards dealt one after another (heard as at most `MOST_SOUNDS_AT_ONCE`). Unless said, one. */
   count?: number;
@@ -48,7 +100,17 @@ export type PlayCardSoundOptions = {
   delay?: number;
 };
 
-/** A table's sounds: `play` one, mute and unmute, change the volume, `close` when the table goes. */
+/** A table's sounds: `play` one, mute and unmute, change the volume, `close` when the table goes.
+ *
+ * @example
+ * ```ts
+ * import type { CardSounds } from "@johnmorrisdotca/toranpu/card-sounds";
+ * import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * const value: CardSounds = createCardSounds({ muted: true, window: null });
+ * console.log(value.muted);
+ * ```
+ */
 export type CardSounds = {
   /** Play a sound, or several of one kind in a row; nothing while muted or closed. */
   play(kind: CardSoundKind, options?: PlayCardSoundOptions): void;
@@ -64,10 +126,29 @@ export type CardSounds = {
   close(): void;
 };
 
-/** As many sounds as one call plays: thirteen cards dealt are eight slides, not a wall of noise. */
+/** As many sounds as one call plays: thirteen cards dealt are eight slides, not a wall of noise.
+ *
+ * @example
+ * ```ts
+ * import { MOST_SOUNDS_AT_ONCE } from "@johnmorrisdotca/toranpu/card-sounds";
+ * console.log(MOST_SOUNDS_AT_ONCE);
+ * ```
+ */
 export const MOST_SOUNDS_AT_ONCE = 8;
 
-/** When each of `count` sounds starts, in milliseconds from the first: one every `gap`, and no more than `MOST_SOUNDS_AT_ONCE`, spread over the same time. */
+/** When each of `count` sounds starts, in milliseconds from the first: one every `gap`, and no more than `MOST_SOUNDS_AT_ONCE`, spread over the same time.
+ *
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @param gap - Milliseconds between successive sounds.
+ * @returns When each of `count` sounds starts, in milliseconds from the first: one every `gap`, and no more than `MOST_SOUNDS_AT_ONCE`, spread over the same time.
+ *
+ * @example
+ * ```ts
+ * import { soundTimes } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * console.log(soundTimes(5, 80));
+ * ```
+ */
 export function soundTimes(count: number, gap = 85): number[] {
   const whole = Math.max(1, Math.floor(Number.isFinite(count) ? count : 1));
   const span = (whole - 1) * Math.max(0, gap);
@@ -105,7 +186,18 @@ const MADE: Record<CardSoundKind, { ticks: number; over: number; length: number;
   fan: { ticks: 8, over: 0.3, length: 0.025, pitch: 3400 },
 };
 
-/** A table's card sounds. Nothing is fetched and no audio context is made until the first sound. */
+/** A table's card sounds. Nothing is fetched and no audio context is made until the first sound.
+ *
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A table's card sounds. Nothing is fetched and no audio context is made until the first sound.
+ *
+ * @example
+ * ```ts
+ * import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";
+ *
+ * console.log(createCardSounds({ muted: true, window: null }).muted);
+ * ```
+ */
 export function createCardSounds(options: CardSoundsOptions = {}): CardSounds {
   const win: CardSoundWindow | undefined = options.window === null ? undefined : (options.window ?? (typeof window === "undefined" ? undefined : (window as unknown as CardSoundWindow)));
   const load = options.load ?? ((): Promise<{ CARD_SOUND_DATA: CardSoundData }> => import("../sounds.ts"));

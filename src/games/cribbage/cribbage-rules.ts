@@ -15,12 +15,47 @@ function isCribbageMove(value: unknown): value is CribbageMove {
 }
 
 const codec = cardGameCodec<CribbageGame, CribbageMove>("cribbage", startCribbage, playCribbage, isCribbageMove);
-/** A game of Cribbage as text: its table, its seed and its moves, never a hand. */
+/** A game of Cribbage as text: its table, its seed and its moves, never a hand.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game of Cribbage as text: its table, its seed and its moves, never a hand.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { encodeCribbage } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("cribbage", { players: names, seed: 42 })!;
+ * console.log(encodeCribbage(game));
+ * ```
+ */
 export const encodeCribbage = codec.encode;
-/** Text read back into the game of Cribbage it records, by playing every move again through the rules; null for anything they cannot play out. */
+/** Text read back into the game of Cribbage it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns Text read back into the game of Cribbage it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { decodeCribbage, encodeCribbage } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("cribbage", { players: names, seed: 42 })!;
+ * console.log(decodeCribbage(encodeCribbage(game))?.phase);
+ * ```
+ */
 export const decodeCribbage = codec.decode;
 
-/** Cribbage as one `CardGameRules`: everything a table asks of the game. */
+/** Cribbage as one `CardGameRules`: everything a table asks of the game.
+ *
+ * @example
+ * ```ts
+ * import { CRIBBAGE_RULES } from "@johnmorrisdotca/toranpu/cribbage";
+ * console.log(Object.keys(CRIBBAGE_RULES));
+ * ```
+ */
 export const CRIBBAGE_RULES: CardGameRules<CribbageGame, CribbageMove> = {
   start: startCribbage,
   moves: cribbageMoves,

@@ -14,6 +14,18 @@ import type { OhHellGame, OhHellMove, OhHellPlay } from "./oh-hell.types.ts";
  *
  * It reads a view of the game (`ohHellView`): its own hand, the turned card,
  * the bids and the cards played — nothing of another hand.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { OhHellView } from "@johnmorrisdotca/toranpu/oh-hell";
+ * import { ohHellView } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("ohHell", { players: names, seed: 42 })!;
+ * const value: OhHellView = ohHellView(game);
+ * console.log(value.hand.length);
+ * ```
  */
 export type OhHellView = {
   seat: number;
@@ -26,13 +38,43 @@ export type OhHellView = {
   playable: readonly CardId[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ohHellView } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(ohHellView(game));
+ * ```
+ */
 export function ohHellView(game: OhHellGame): OhHellView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], trump: game.trump, bid: game.bids[seat], took: game.tricks[seat], trick: game.trick, seats: game.players.length, playable: ohHellPlayable(game) };
 }
 
-/** The tricks a hand should take with these trumps, roughly. */
+/** The tricks a hand should take with these trumps, roughly.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param trump - The current trump suit.
+ * @param seats - The seat count or seat state supplied by this API.
+ * @returns The tricks a hand should take with these trumps, roughly.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ohHellWorth } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(ohHellWorth(game.hands[0]!, game.trump, game.players.length));
+ * ```
+ */
 export function ohHellWorth(hand: readonly CardId[], trump: string, seats: number): number {
   const trumps = hand.filter((card) => suitOf(card) === trump).map(ohHellHeight);
   let worth = 0;
@@ -49,12 +91,38 @@ export function ohHellWorth(hand: readonly CardId[], trump: string, seats: numbe
   return worth;
 }
 
-/** The bid nearest what the hand is worth, among those allowed. */
+/** The bid nearest what the hand is worth, among those allowed.
+ *
+ * @param worth - The estimated number of tricks this hand can win.
+ * @param allowed - The legal bids available to this player.
+ * @returns The bid nearest what the hand is worth, among those allowed.
+ *
+ * @example
+ * ```ts
+ * import { chooseOhHellBid } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * console.log(chooseOhHellBid(1.4, [0, 1, 2, 3]));
+ * ```
+ */
 export function chooseOhHellBid(worth: number, allowed: readonly number[]): number {
   return allowed.reduce((best, bid) => (Math.abs(bid - worth) < Math.abs(best - worth) ? bid : best));
 }
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ohHellComputer } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(ohHellComputer(game));
+ * ```
+ */
 export function ohHellComputer(game: OhHellGame): OhHellMove {
   const view = ohHellView(game);
   if (game.phase === "bidding") return { bid: chooseOhHellBid(ohHellWorth(view.hand, view.trump, view.seats), ohHellBids(game)) };

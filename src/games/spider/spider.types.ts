@@ -8,10 +8,32 @@
  * two suits four each of spades and hearts.
  */
 
-/** One of the ten columns: its cards from the bottom up, of which the first `down` lie face down. */
+/** One of the ten columns: its cards from the bottom up, of which the first `down` lie face down.
+ *
+ * @example
+ * ```ts
+ * import { dealSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ * import type { SpiderColumn } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * const value: SpiderColumn = table.tableau[0]!;
+ * console.log(value.down);
+ * ```
+ */
 export type SpiderColumn = { down: number; cards: readonly number[] };
 
-/** A game of Spider as it stands: the columns, the cards still to deal, and the runs sent home. */
+/** A game of Spider as it stands: the columns, the cards still to deal, and the runs sent home.
+ *
+ * @example
+ * ```ts
+ * import { dealSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ * import type { SpiderTable } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * const value: SpiderTable = table;
+ * console.log(value.stock.length);
+ * ```
+ */
 export type SpiderTable = {
   /** Ten columns. */
   tableau: readonly SpiderColumn[];
@@ -25,5 +47,13 @@ export type SpiderTable = {
  * One move: deal a card from the stock onto every column (`deal`), or carry
  * `count` cards from the top of one column onto another. Columns are named
  * `0` to `9`, from the left.
+ *
+ * @example
+ * ```ts
+ * import type { SpiderMove } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const value: SpiderMove = { kind: "deal" };
+ * console.log(value.kind);
+ * ```
  */
 export type SpiderMove = { kind: "deal" } | { kind: "carry"; from: number; to: number; count: number };

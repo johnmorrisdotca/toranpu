@@ -8,6 +8,12 @@ import { cardDrawing, designNamed, ElementBase, followLanguage, isOn, languageOf
 /**
  * THE CLOTHS A TABLE MAY BE LAID IN: the same five the whole family offers, and itsutsu.com's boards. Each is the
  * felt's colour, its deep edge and the ink written on it.
+ *
+ * @example
+ * ```ts
+ * import { TABLE_CLOTHS } from "@johnmorrisdotca/toranpu/table";
+ * console.log(TABLE_CLOTHS);
+ * ```
  */
 export const TABLE_CLOTHS = {
   green: { felt: "#2f5d4a", deep: "#1f4135", ink: "#f3efe4" },
@@ -17,7 +23,16 @@ export const TABLE_CLOTHS = {
   wood: { felt: "#e2ba7a", deep: "#c4954f", ink: "#2b1d0e" },
 } as const;
 
-/** A cloth's name. */
+/** A cloth's name.
+ *
+ * @example
+ * ```ts
+ * import type { TableCloth } from "@johnmorrisdotca/toranpu/table";
+ *
+ * const value: TableCloth = "green";
+ * console.log(value);
+ * ```
+ */
 export type TableCloth = keyof typeof TABLE_CLOTHS;
 
 /** A game's key as an attribute writes it, in kebab case (`crazy-eights`), or as its key (`crazyEights`). */
@@ -82,6 +97,17 @@ const NAMES = [YOU, "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
  *
  * `deal()` deals again, with a new seed unless one is given; the `game` property is the game as it stands.
  * Each move is a `toranpu-table` event that bubbles, its detail `{ seat, move, over, winners }`.
+ *
+ * @example
+ * ```ts no-run
+ * import { ToranpuTable } from "@johnmorrisdotca/toranpu/table";
+ * import "@johnmorrisdotca/toranpu/table/define";
+ * const table = document.createElement("toranpu-table") as ToranpuTable;
+ * table.setAttribute("game", "hearts");
+ * table.setAttribute("seed", "42");
+ * document.body.append(table);
+ * console.log(table.game);
+ * ```
  */
 export class ToranpuTable extends ElementBase {
   static get observedAttributes(): readonly string[] {

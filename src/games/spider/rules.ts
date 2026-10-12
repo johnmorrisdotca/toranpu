@@ -18,23 +18,91 @@ import type { SpiderColumn, SpiderMove, SpiderTable } from "./spider.types.ts";
  *   all, and only while no column is empty.
  */
 
-/** How many columns the tableau has. */
+/** How many columns the tableau has.
+ *
+ * @example
+ * ```ts
+ * import { COLUMNS } from "@johnmorrisdotca/toranpu/spider";
+ * console.log(COLUMNS);
+ * ```
+ */
 export const COLUMNS = 10;
-/** How many ranks a suit has, ace to king. */
+/** How many ranks a suit has, ace to king.
+ *
+ * @example
+ * ```ts
+ * import { RANKS_A_SUIT } from "@johnmorrisdotca/toranpu/spider";
+ * console.log(RANKS_A_SUIT);
+ * ```
+ */
 export const RANKS_A_SUIT = 13;
-/** Full runs to make: two decks of four suits. */
+/** Full runs to make: two decks of four suits.
+ *
+ * @example
+ * ```ts
+ * import { RUNS_TO_WIN } from "@johnmorrisdotca/toranpu/spider";
+ * console.log(RUNS_TO_WIN);
+ * ```
+ */
 export const RUNS_TO_WIN = 8;
-/** Cards dealt to the columns before play; the rest are the stock. */
+/** Cards dealt to the columns before play; the rest are the stock.
+ *
+ * @example
+ * ```ts
+ * import { DEALT } from "@johnmorrisdotca/toranpu/spider";
+ * console.log(DEALT);
+ * ```
+ */
 export const DEALT = 54;
-/** How many cards two decks hold, which Spider is played with at any number of suits. */
+/** How many cards two decks hold, which Spider is played with at any number of suits.
+ *
+ * @example
+ * ```ts
+ * import { DECK_SIZE } from "@johnmorrisdotca/toranpu/spider";
+ * console.log(DECK_SIZE);
+ * ```
+ */
 export const DECK_SIZE = 104;
 
-/** A card's suit, 0 to 3 in `SUITS` order. */
+/** A card's suit, 0 to 3 in `SUITS` order.
+ *
+ * @param card - The packed card number from 0 to 51.
+ * @returns A card's suit, 0 to 3 in `SUITS` order.
+ *
+ * @example
+ * ```ts
+ * import { suitOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(suitOf(0));
+ * ```
+ */
 export const suitOf = (card: number): number => Math.floor(card / RANKS_A_SUIT);
-/** A card's rank, 1 for an ace to 13 for a king. */
+/** A card's rank, 1 for an ace to 13 for a king.
+ *
+ * @param card - The packed card number from 0 to 51.
+ * @returns A card's rank, 1 for an ace to 13 for a king.
+ *
+ * @example
+ * ```ts
+ * import { rankOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(rankOf(0));
+ * ```
+ */
 export const rankOf = (card: number): number => (card % RANKS_A_SUIT) + 1;
 
-/** The suits a game of so many suits is played with, in `SUITS` order: spades; spades and hearts; all four. */
+/** The suits a game of so many suits is played with, in `SUITS` order: spades; spades and hearts; all four.
+ *
+ * @param suits - The allowed suits.
+ * @returns The suits a game of so many suits is played with, in `SUITS` order: spades; spades and hearts; all four.
+ *
+ * @example
+ * ```ts
+ * import { suitsFor } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(suitsFor(1));
+ * ```
+ */
 export function suitsFor(suits: number): number[] {
   if (suits === 1) return [0];
   if (suits === 2) return [0, 1];
@@ -42,7 +110,18 @@ export function suitsFor(suits: number): number[] {
   throw new Error(`Spider is played with one suit, two or four, not ${suits}`);
 }
 
-/** The hundred and four cards of a game of so many suits, sorted: each suit's thirteen, as many times as fill two decks. */
+/** The hundred and four cards of a game of so many suits, sorted: each suit's thirteen, as many times as fill two decks.
+ *
+ * @param suits - The allowed suits.
+ * @returns The hundred and four cards of a game of so many suits, sorted: each suit's thirteen, as many times as fill two decks.
+ *
+ * @example
+ * ```ts
+ * import { spiderDeck } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(spiderDeck(1).length);
+ * ```
+ */
 export function spiderDeck(suits: number): number[] {
   const kept = suitsFor(suits);
   const deck: number[] = [];
@@ -52,7 +131,18 @@ export function spiderDeck(suits: number): number[] {
   return deck;
 }
 
-/** Deal a shuffled deck (card numbers, the first dealt first) into a table. */
+/** Deal a shuffled deck (card numbers, the first dealt first) into a table.
+ *
+ * @param deck - The deck in its current order; the input is left unchanged.
+ * @returns Deal a shuffled deck (card numbers, the first dealt first) into a table.
+ *
+ * @example
+ * ```ts
+ * import { dealSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!).stock.length);
+ * ```
+ */
 export function dealSpider(deck: readonly number[]): SpiderTable {
   if (deck.length !== DECK_SIZE) throw new Error("a Spider deal needs two whole decks");
   const columns: number[][] = Array.from({ length: COLUMNS }, () => []);
@@ -60,7 +150,18 @@ export function dealSpider(deck: readonly number[]): SpiderTable {
   return { tableau: columns.map((cards) => ({ down: cards.length - 1, cards })), stock: deck.slice(DEALT), done: [] };
 }
 
-/** How many cards on top of a column are one suit and in order, all face up: the most a carry can take. */
+/** How many cards on top of a column are one suit and in order, all face up: the most a carry can take.
+ *
+ * @param column - The column with its face-down count and bottom-to-top cards.
+ * @returns How many cards on top of a column are one suit and in order, all face up: the most a carry can take.
+ *
+ * @example
+ * ```ts
+ * import { runLength } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(runLength({ down: 0, cards: [4, 3, 2] }));
+ * ```
+ */
 export function runLength(column: SpiderColumn): number {
   const { cards, down } = column;
   if (cards.length === 0) return 0;
@@ -101,12 +202,37 @@ function settle(tableau: readonly SpiderColumn[], done: readonly number[], lande
   return { tableau: columns, done: taken };
 }
 
-/** Whether the stock can deal now: cards left, and no column empty. */
+/** Whether the stock can deal now: cards left, and no column empty.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns Whether the stock can deal now: cards left, and no column empty.
+ *
+ * @example
+ * ```ts
+ * import { canDeal, dealSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * console.log(canDeal(table));
+ * ```
+ */
 export function canDeal(table: SpiderTable): boolean {
   return table.stock.length > 0 && table.tableau.every((column) => column.cards.length > 0);
 }
 
-/** The table after a move, or null where the rules refuse it. */
+/** The table after a move, or null where the rules refuse it.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param move - The native move to validate or apply.
+ * @returns The table after a move, or null where the rules refuse it.
+ *
+ * @example
+ * ```ts
+ * import { dealSpider, playSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * console.log(playSpider(table, { kind: "deal" })?.stock.length);
+ * ```
+ */
 export function playSpider(table: SpiderTable, move: SpiderMove): SpiderTable | null {
   if (move.kind === "deal") {
     if (!canDeal(table)) return null;
@@ -136,6 +262,19 @@ export function playSpider(table: SpiderTable, move: SpiderMove): SpiderTable | 
  * How many cards a carry from one column onto another takes, where it is not
  * the player's to say: onto a card, the one count whose foot is one lower.
  * Into an empty column any count up to the run would do, so none is chosen here.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param from - The source position or source state specified by this API.
+ * @param to - The destination position or state specified by this API.
+ * @returns The unique legal carried-card count for a nonempty destination, or null when there is no such count or the destination is empty and the player must choose.
+ *
+ * @example
+ * ```ts
+ * import { countOnto, dealSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * console.log(countOnto(table, 0, 1));
+ * ```
  */
 export function countOnto(table: SpiderTable, from: number, to: number): number | null {
   const top = table.tableau[to].cards.at(-1);
@@ -148,17 +287,53 @@ export function countOnto(table: SpiderTable, from: number, to: number): number 
   return null;
 }
 
-/** Whether all eight runs are made. */
+/** Whether all eight runs are made.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns Whether all eight runs are made.
+ *
+ * @example
+ * ```ts
+ * import { dealSpider, spiderDealOfSeed, spiderDeckOf, spiderWon } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * console.log(spiderWon(table));
+ * ```
+ */
 export function spiderWon(table: SpiderTable): boolean {
   return table.done.length === RUNS_TO_WIN;
 }
 
-/** Whether every card is dealt and face up: from here the game plays itself out, where it can (`finishingMoves`). */
+/** Whether every card is dealt and face up: from here the game plays itself out, where it can (`finishingMoves`).
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns Whether every card is dealt and face up: from here the game plays itself out, where it can (`finishingMoves`).
+ *
+ * @example
+ * ```ts
+ * import { allShowing, dealSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * console.log(allShowing(table));
+ * ```
+ */
 export function allShowing(table: SpiderTable): boolean {
   return table.stock.length === 0 && table.tableau.every((column) => column.down === 0);
 }
 
-/** Every move the rules allow from a table, one of each (the whole run into an empty column), for a stuck-game check. */
+/** Every move the rules allow from a table, one of each (the whole run into an empty column), for a stuck-game check.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns Every move the rules allow from a table, one of each (the whole run into an empty column), for a stuck-game check.
+ *
+ * @example
+ * ```ts
+ * import { dealSpider, movesFrom, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * console.log(movesFrom(table).slice(0, 5));
+ * ```
+ */
 export function movesFrom(table: SpiderTable): SpiderMove[] {
   const moves: SpiderMove[] = [];
   table.tableau.forEach((column, from) => {

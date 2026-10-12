@@ -16,6 +16,18 @@ import type { EuchreGame, EuchreMove, EuchrePlay } from "./euchre.types.ts";
  *
  * It reads a view of the game (`euchreView`): its own hand, the card turned
  * up, the making so far and the cards played — nothing of another hand.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { EuchreView } from "@johnmorrisdotca/toranpu/euchre";
+ * import { euchreView } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("euchre", { players: names, seed: 42 })!;
+ * const value: EuchreView = euchreView(game);
+ * console.log(value.hand.length);
+ * ```
  */
 export type EuchreView = {
   seat: number;
@@ -31,7 +43,21 @@ export type EuchreView = {
   playable: readonly CardId[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { euchreView } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * console.log(euchreView(game));
+ * ```
+ */
 export function euchreView(game: EuchreGame): EuchreView {
   const seat = game.toPlay ?? 0;
   return {
@@ -49,7 +75,22 @@ export function euchreView(game: EuchreGame): EuchreView {
   };
 }
 
-/** How much a hand is worth with this suit as trumps, roughly in tricks. */
+/** How much a hand is worth with this suit as trumps, roughly in tricks.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param trump - The current trump suit.
+ * @returns How much a hand is worth with this suit as trumps, roughly in tricks.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { trumpWorth } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * console.log(trumpWorth(game.hands[0]!, "H"));
+ * ```
+ */
 export function trumpWorth(hand: readonly CardId[], trump: CardSuit): number {
   let worth = 0;
   const trumps = hand.filter((card) => suitIn(card, trump) === trump);
@@ -70,7 +111,21 @@ export function trumpWorth(hand: readonly CardId[], trump: CardSuit): number {
 /** The worth a side needs to make trumps: three tricks between two hands, one of them this one. */
 const MAKE = 2.1;
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { euchreComputer } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * console.log(euchreComputer(game));
+ * ```
+ */
 export function euchreComputer(game: EuchreGame): EuchreMove {
   const view = euchreView(game);
   const offered = euchreMoves(game);
@@ -99,7 +154,22 @@ function choose(view: EuchreView): EuchreMove {
   return { play: chooseCard(view) };
 }
 
-/** After picking the turned card up: the lowest card outside trumps, from the shortest suit, never an ace. */
+/** After picking the turned card up: the lowest card outside trumps, from the shortest suit, never an ace.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param trump - The current trump suit.
+ * @returns After picking the turned card up: the lowest card outside trumps, from the shortest suit, never an ace.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { throwAway } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * console.log(throwAway(game.hands[0]!, "H"));
+ * ```
+ */
 export function throwAway(hand: readonly CardId[], trump: CardSuit): CardId {
   const side = hand.filter((card) => suitIn(card, trump) !== trump);
   const pool = side.length > 0 ? side : [...hand];

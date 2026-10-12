@@ -15,7 +15,20 @@ import type { PresidentGame, PresidentMove } from "./president.types.ts";
  * table, how many cards each player holds, and nothing else.
  */
 
-/** What one seat can see of a game of President: its own hand, the table, and what has been said and shown. */
+/** What one seat can see of a game of President: its own hand, the table, and what has been said and shown.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { PresidentView } from "@johnmorrisdotca/toranpu/president";
+ * import { presidentView } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("president", { players: names, seed: 42 })!;
+ * const value: PresidentView = presidentView(game);
+ * console.log(value.hand.length);
+ * ```
+ */
 export type PresidentView = {
   seat: number;
   hand: readonly CardId[];
@@ -24,7 +37,21 @@ export type PresidentView = {
   legal: readonly PresidentMove[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { presidentView } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("president", { players: names, seed: 42 })!;
+ * console.log(presidentView(game));
+ * ```
+ */
 export function presidentView(game: PresidentGame): PresidentView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], pile: game.pile, counts: game.hands.map((hand) => hand.length), legal: presidentMoves(game) };
@@ -32,7 +59,21 @@ export function presidentView(game: PresidentGame): PresidentView {
 
 const heldOf = (hand: readonly CardId[], rank: number) => hand.filter((card) => presidentRank(card) === rank).length;
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { presidentComputer } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("president", { players: names, seed: 42 })!;
+ * console.log(presidentComputer(game));
+ * ```
+ */
 export function presidentComputer(game: PresidentGame): PresidentMove {
   const view = presidentView(game);
   const gives = view.legal.filter((move): move is { give: CardId[] } => "give" in move);

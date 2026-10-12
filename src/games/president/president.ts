@@ -30,12 +30,34 @@ import type { PresidentGame, PresidentMove } from "./president.types.ts";
 
 const SUIT_ORDER: Record<CardSuit, number> = { C: 0, D: 1, H: 2, S: 3 };
 
-/** A rank's height: the three lowest (0), the two highest (12). */
+/** A rank's height: the three lowest (0), the two highest (12).
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A rank's height: the three lowest (0), the two highest (12).
+ *
+ * @example
+ * ```ts
+ * import { presidentRank } from "@johnmorrisdotca/toranpu/president";
+ *
+ * console.log(presidentRank("2D"));
+ * ```
+ */
 export function presidentRank(card: CardId): number {
   return (rankOf(card) + 10) % 13;
 }
 
-/** Cards in President's order, lowest first, suits in a fixed order only so a hand always sorts the same way. */
+/** Cards in President's order, lowest first, suits in a fixed order only so a hand always sorts the same way.
+ *
+ * @param cards - The cards in their current order.
+ * @returns Cards in President's order, lowest first, suits in a fixed order only so a hand always sorts the same way.
+ *
+ * @example
+ * ```ts
+ * import { sortPresident } from "@johnmorrisdotca/toranpu/president";
+ *
+ * console.log(sortPresident(["2S", "3D", "AC"]));
+ * ```
+ */
 export function sortPresident(cards: readonly CardId[]): CardId[] {
   return [...cards].sort((a, b) => presidentRank(a) - presidentRank(b) || SUIT_ORDER[suitOf(a)] - SUIT_ORDER[suitOf(b)]);
 }
@@ -45,7 +67,18 @@ function best(hand: readonly CardId[], count: number): CardId[] {
   return sortPresident(hand).slice(-count);
 }
 
-/** How many cards the President and the Beggar swap: two, or one when only three are at the table. */
+/** How many cards the President and the Beggar swap: two, or one when only three are at the table.
+ *
+ * @param seats - The seat count or seat state supplied by this API.
+ * @returns How many cards the President and the Beggar swap: two, or one when only three are at the table.
+ *
+ * @example
+ * ```ts
+ * import { presidentSwapCount } from "@johnmorrisdotca/toranpu/president";
+ *
+ * console.log(presidentSwapCount(4));
+ * ```
+ */
 export function presidentSwapCount(seats: number): number {
   return seats >= 4 ? 2 : 1;
 }
@@ -74,7 +107,24 @@ function newRound(game: Omit<PresidentGame, "hands" | "pile" | "passed" | "toPla
   return { ...game, ...freshTrick(held.map(sortPresident), owed[0].from), phase: "exchange", out: [], owed, swaps };
 }
 
-/** A new game of President for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table President is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of President for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table President is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of President for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table President is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startPresident } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startPresident(CARD_GAME_TABLES.president.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startPresident(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): PresidentGame | null {
   if (!(PRESIDENT_ROUNDS as readonly number[]).includes(size)) return null;
   if (players.length < 3 || players.length > 8) return null;
@@ -91,7 +141,22 @@ export function startPresident(size: number, players: readonly string[], _langua
   });
 }
 
-/** Whether these cards may be played now by the seat to play: one rank, one to four of it, higher than the table's and as many. */
+/** Whether these cards may be played now by the seat to play: one rank, one to four of it, higher than the table's and as many.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param cards - The cards in their current order.
+ * @returns Whether these cards may be played now by the seat to play: one rank, one to four of it, higher than the table's and as many.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { presidentMayPlay } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("president", { players: names, seed: 42 })!;
+ * console.log(presidentMayPlay(game, [game.hands[game.toPlay!]![0]!]));
+ * ```
+ */
 export function presidentMayPlay(game: PresidentGame, cards: readonly CardId[]): boolean {
   if (game.phase !== "playing" || game.toPlay === null) return false;
   if (cards.length < 1 || cards.length > 4 || new Set(cards).size !== cards.length) return false;
@@ -101,7 +166,21 @@ export function presidentMayPlay(game: PresidentGame, cards: readonly CardId[]):
   return game.pile.cards.length === cards.length && presidentRank(cards[0]) > presidentRank(game.pile.cards[0]);
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { presidentMoves } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("president", { players: names, seed: 42 })!;
+ * console.log(presidentMoves(game));
+ * ```
+ */
 export function presidentMoves(game: PresidentGame): PresidentMove[] {
   if (game.toPlay === null) return [];
   const hand = game.hands[game.toPlay];
@@ -153,24 +232,74 @@ function climb(game: PresidentGame, seat: number, move: ClimbMove): PresidentGam
   return seatsIn(next).length <= 1 ? endRound(next) : afterTurn(next, seat);
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playPresident } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("president", { players: names, seed: 42 })!;
+ * console.log(playPresident(game, rulesFor("president").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playPresident(game: PresidentGame, move: PresidentMove): PresidentGame | null {
   if (game.toPlay === null) return null;
   const next = "give" in move ? (game.phase === "exchange" ? give(game, move.give) : null) : game.phase === "playing" ? climb(game, game.toPlay, move) : null;
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 
-/** The most points wins; level on the most shares it. */
+/** The most points wins; level on the most shares it.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The most points wins; level on the most shares it.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { presidentWinners } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.president.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("president", { players: names, seed: 42 })!;
+ * console.log(presidentWinners(game));
+ * ```
+ */
 export function presidentWinners(game: PresidentGame): number[] {
   if (game.phase !== "over") return [];
   const top = Math.max(...game.scores);
   return game.scores.flatMap((score, seat) => (score === top ? [seat] : []));
 }
 
-/** Each seat's title from a round's finishing order: 0 President, 1 Vice-President, the last two Vice-Beggar and Beggar, everybody else a Citizen. */
+/** Each seat's title from a round's finishing order: 0 President, 1 Vice-President, the last two Vice-Beggar and Beggar, everybody else a Citizen.
+ *
+ * @example
+ * ```ts
+ * import type { PresidentTitle } from "@johnmorrisdotca/toranpu/president";
+ *
+ * const value: PresidentTitle = "president";
+ * console.log(value);
+ * ```
+ */
 export type PresidentTitle = "president" | "vicePresident" | "citizen" | "viceBeggar" | "beggar";
 
-/** A seat's title from a round's finishing order. */
+/** A seat's title from a round's finishing order.
+ *
+ * @param order - Seats in their finishing order, from first to last.
+ * @param seat - The zero-based player seat.
+ * @returns A seat's title from a round's finishing order.
+ *
+ * @example
+ * ```ts
+ * import { presidentTitle } from "@johnmorrisdotca/toranpu/president";
+ *
+ * console.log(presidentTitle([0, 1, 2, 3], 0));
+ * ```
+ */
 export function presidentTitle(order: readonly number[], seat: number): PresidentTitle {
   const place = order.indexOf(seat);
   const seats = order.length;

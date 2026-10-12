@@ -11,7 +11,14 @@ import type { CardDesign } from "./card-faces.types.ts";
 const OWN_DESIGNS: readonly string[] = ["plain", "four-colour", "english", "realistic"];
 const OWN_BACKS: readonly string[] = ["classic-red", "classic-blue", "ink-dots"];
 
-/** What a card's id may be, when a design of the page draws it: letters and digits, with `-`, `_`, `.` and `:` inside, up to 40. */
+/** What a card's id may be, when a design of the page draws it: letters and digits, with `-`, `_`, `.` and `:` inside, up to 40.
+ *
+ * @example
+ * ```ts
+ * import { CUSTOM_CARD_ID } from "@johnmorrisdotca/toranpu/card-faces";
+ * console.log(CUSTOM_CARD_ID);
+ * ```
+ */
 export const CUSTOM_CARD_ID = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,39}$/;
 
 /** A name a design or back may be registered under: kebab case, up to 40 letters, digits and hyphens. */
@@ -38,7 +45,16 @@ export function onBrandChange(draw: () => void): () => void {
 }
 const backs = new Map<string, RegisteredCardBack>();
 
-/** A back registered by name: how it is drawn, and the built-in back it starts from. */
+/** A back registered by name: how it is drawn, and the built-in back it starts from.
+ *
+ * @example
+ * ```ts
+ * import type { RegisteredCardBack } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * const value: RegisteredCardBack = { base: "classic-blue", mark: "D" };
+ * console.log(value.base);
+ * ```
+ */
 export type RegisteredCardBack = CardBackOptions & {
   /** The built-in back this one is drawn from where it says nothing: `"classic-red"` (unless said), `"classic-blue"` or `"ink-dots"`. */
   base?: "classic-red" | "classic-blue" | "ink-dots";
@@ -49,7 +65,20 @@ function checkName(kind: string, name: unknown, own: readonly string[]): asserts
   if (own.includes(name)) throw new RangeError(`"${name}" is one of Toranpu's own ${kind}s, and cannot be registered over`);
 }
 
-/** Keep a design by its name, in place of any earlier one of that name. Throws for a name that is not kebab case or is one of the package's own. */
+/** Keep a design by its name, in place of any earlier one of that name. Throws for a name that is not kebab case or is one of the package's own.
+ *
+ * @param design - The card-face design or registered design name.
+ * @returns Nothing; the registration or removal is applied to the host registry.
+ *
+ * @example
+ * ```ts
+ * import { registerCardDesign, registeredCardDesigns, unregisterCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * registerCardDesign({ name: "docs-face", box: [100, 140], art: { "docs-card": `<circle cx="50" cy="70" r="20"/>` } });
+ * console.log(registeredCardDesigns());
+ * unregisterCardDesign("docs-face");
+ * ```
+ */
 export function registerDesign(design: CardDesign): void {
   checkName("design", design?.name, OWN_DESIGNS);
   if (typeof design.art !== "object" || design.art === null) throw new TypeError("a design has an `art` object, empty if every card is drawn by `draw`");
@@ -58,7 +87,20 @@ export function registerDesign(design: CardDesign): void {
   changed();
 }
 
-/** Forget a registered design. Does nothing for a name never registered. */
+/** Forget a registered design. Does nothing for a name never registered.
+ *
+ * @param name - The registered card design or card-back name.
+ * @returns Nothing; the registration or removal is applied to the host registry.
+ *
+ * @example
+ * ```ts
+ * import { registerCardDesign, registeredCardDesigns, unregisterCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * registerCardDesign({ name: "docs-face", box: [100, 140], art: { "docs-card": `<circle cx="50" cy="70" r="20"/>` } });
+ * console.log(registeredCardDesigns());
+ * unregisterCardDesign("docs-face");
+ * ```
+ */
 export function unregisterDesign(name: string): void {
   if (designs.delete(name)) changed();
 }
@@ -68,19 +110,58 @@ export function registeredDesign(name: unknown): CardDesign | undefined {
   return typeof name === "string" ? designs.get(name) : undefined;
 }
 
-/** The names of the designs registered now, in the order they were. */
+/** The names of the designs registered now, in the order they were.
+ *
+ * @returns The names of the designs registered now, in the order they were.
+ *
+ * @example
+ * ```ts
+ * import { registerCardDesign, registeredCardDesigns, unregisterCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * registerCardDesign({ name: "docs-face", box: [100, 140], art: { "docs-card": `<circle cx="50" cy="70" r="20"/>` } });
+ * console.log(registeredCardDesigns());
+ * unregisterCardDesign("docs-face");
+ * ```
+ */
 export function registeredDesignNames(): string[] {
   return [...designs.keys()];
 }
 
-/** Keep a back by its name. Throws for a name that is not kebab case or is one of the package's own. */
+/** Keep a back by its name. Throws for a name that is not kebab case or is one of the package's own.
+ *
+ * @param name - The registered card design or card-back name.
+ * @param back - The custom card-back definition to register.
+ * @returns Nothing; the registration or removal is applied to the host registry.
+ *
+ * @example
+ * ```ts
+ * import { registerCardBack, registeredCardBacks, unregisterCardBack } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * registerCardBack("docs-back", { base: "classic-blue", mark: "D" });
+ * console.log(registeredCardBacks());
+ * unregisterCardBack("docs-back");
+ * ```
+ */
 export function registerBack(name: string, back: RegisteredCardBack): void {
   checkName("back", name, OWN_BACKS);
   backs.set(name, { ...back });
   changed();
 }
 
-/** Forget a registered back. Does nothing for a name never registered. */
+/** Forget a registered back. Does nothing for a name never registered.
+ *
+ * @param name - The registered card design or card-back name.
+ * @returns Nothing; the registration or removal is applied to the host registry.
+ *
+ * @example
+ * ```ts
+ * import { registerCardBack, registeredCardBacks, unregisterCardBack } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * registerCardBack("docs-back", { base: "classic-blue", mark: "D" });
+ * console.log(registeredCardBacks());
+ * unregisterCardBack("docs-back");
+ * ```
+ */
 export function unregisterBack(name: string): void {
   if (backs.delete(name)) changed();
 }
@@ -90,7 +171,19 @@ export function registeredBack(name: unknown): RegisteredCardBack | undefined {
   return typeof name === "string" ? backs.get(name) : undefined;
 }
 
-/** The names of the backs registered now, in the order they were. */
+/** The names of the backs registered now, in the order they were.
+ *
+ * @returns The names of the backs registered now, in the order they were.
+ *
+ * @example
+ * ```ts
+ * import { registerCardBack, registeredCardBacks, unregisterCardBack } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * registerCardBack("docs-back", { base: "classic-blue", mark: "D" });
+ * console.log(registeredCardBacks());
+ * unregisterCardBack("docs-back");
+ * ```
+ */
 export function registeredBackNames(): string[] {
   return [...backs.keys()];
 }

@@ -7,16 +7,52 @@ import type { Rank } from "../cards/cards.types.ts";
  * (`CardGameRules`), so one table can play any of them.
  */
 
-/** A card by its short name: rank letter then suit letter, "QS", "TD", "AH" (`cards.ts`). */
+/** A card by its short name: rank letter then suit letter, "QS", "TD", "AH" (`cards.ts`).
+ *
+ * @example
+ * ```ts
+ * import type { CardId } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardId = "AS";
+ * console.log(value);
+ * ```
+ */
 export type CardId = string;
 
-/** Clubs, diamonds, hearts, spades. */
+/** Clubs, diamonds, hearts, spades.
+ *
+ * @example
+ * ```ts
+ * import type { CardSuit } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardSuit = "S";
+ * console.log(value);
+ * ```
+ */
 export type CardSuit = "C" | "D" | "H" | "S";
 
-/** The deck's rank, ace low: 1 is the ace, 11 the jack, 12 the queen, 13 the king. Each game orders them its own way. */
+/** The deck's rank, ace low: 1 is the ace, 11 the jack, 12 the queen, 13 the king. Each game orders them its own way.
+ *
+ * @example
+ * ```ts
+ * import type { CardRank } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardRank = 1;
+ * console.log(value);
+ * ```
+ */
 export type CardRank = Rank;
 
-/** Who sits in each seat: the name the set-up gave, and whether a computer plays it. */
+/** Who sits in each seat: the name the set-up gave, and whether a computer plays it.
+ *
+ * @example
+ * ```ts
+ * import type { CardSeats } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardSeats = { players: ["Aki", "Ben"], computers: [false, true] };
+ * console.log(value.computers);
+ * ```
+ */
 export type CardSeats = {
   players: readonly string[];
   /** One a seat: true where a computer plays it. A seat nobody named a computer for is a person's. */
@@ -36,6 +72,15 @@ export type CardSeats = {
  * so far). Each game's computer reads a view built for it (`<game>View`), so
  * a player cannot be beaten by a program that looked at their hand; the tests
  * beside each computer hold that.
+ *
+ * @example
+ * ```ts
+ * import type { CardGameRules, GameOf, MoveOf } from "@johnmorrisdotca/toranpu";
+ * import { rulesFor } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardGameRules<GameOf<"hearts">, MoveOf<"hearts">> = rulesFor("hearts");
+ * console.log(typeof value.play);
+ * ```
  */
 export type CardGameRules<S, M> = {
   /**

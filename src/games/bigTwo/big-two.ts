@@ -43,7 +43,24 @@ function threeHanded(deck: readonly CardId[]): { hands: CardId[][] } {
   return { hands: hands.map((hand, seat) => (seat === holder ? [...hand, ...stock] : hand)) };
 }
 
-/** A new game of Big Two for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Big Two is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Big Two for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Big Two is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Big Two for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Big Two is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startBigTwo } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startBigTwo(CARD_GAME_TABLES.bigTwo.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startBigTwo(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): BigTwoGame | null {
   if (!(BIG_TWO_DEALS as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 4) return null;
@@ -60,7 +77,22 @@ export function startBigTwo(size: number, players: readonly string[], _language?
   });
 }
 
-/** Whether these cards may be played now by the seat to play. */
+/** Whether these cards may be played now by the seat to play.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param cards - The cards in their current order.
+ * @returns Whether these cards may be played now by the seat to play.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { bigTwoMayPlay } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * console.log(bigTwoMayPlay(game, [game.opening!]));
+ * ```
+ */
 export function bigTwoMayPlay(game: BigTwoGame, cards: readonly CardId[]): boolean {
   if (game.toPlay === null) return false;
   const value = bigTwoValue(cards);
@@ -73,7 +105,21 @@ export function bigTwoMayPlay(game: BigTwoGame, cards: readonly CardId[]): boole
   return table !== null && bigTwoBeats(value, table);
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { bigTwoMoves } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * console.log(bigTwoMoves(game));
+ * ```
+ */
 export function bigTwoMoves(game: BigTwoGame): ClimbMove[] {
   if (game.phase === "over" || game.toPlay === null) return [];
   const plays = bigTwoPlays(game.hands[game.toPlay])
@@ -82,7 +128,18 @@ export function bigTwoMoves(game: BigTwoGame): ClimbMove[] {
   return game.pile === null ? plays : [...plays, { pass: true }];
 }
 
-/** What a hand left in is charged when somebody goes out: a point a card, double for ten or more, treble for thirteen or more. */
+/** What a hand left in is charged when somebody goes out: a point a card, double for ten or more, treble for thirteen or more.
+ *
+ * @param left - The remaining hand or the first comparison value.
+ * @returns What a hand left in is charged when somebody goes out: a point a card, double for ten or more, treble for thirteen or more.
+ *
+ * @example
+ * ```ts
+ * import { bigTwoCharge } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * console.log(bigTwoCharge(13));
+ * ```
+ */
 export function bigTwoCharge(left: number): number {
   return left >= 13 ? left * 3 : left >= 10 ? left * 2 : left;
 }
@@ -95,7 +152,22 @@ function endDeal(game: BigTwoGame, winner: number): BigTwoGame {
   return dealBigTwo({ ...finished, deal: game.deal + 1 });
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playBigTwo } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * console.log(playBigTwo(game, rulesFor("bigTwo").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playBigTwo(game: BigTwoGame, move: ClimbMove): BigTwoGame | null {
   if (game.phase === "over" || game.toPlay === null) return null;
   const seat = game.toPlay;
@@ -112,7 +184,21 @@ export function playBigTwo(game: BigTwoGame, move: ClimbMove): BigTwoGame | null
   return { ...next, moves: [...game.moves, move] };
 }
 
-/** The fewest penalty points wins; level on the fewest shares it. */
+/** The fewest penalty points wins; level on the fewest shares it.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The fewest penalty points wins; level on the fewest shares it.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { bigTwoWinners } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * console.log(bigTwoWinners(game));
+ * ```
+ */
 export function bigTwoWinners(game: BigTwoGame): number[] {
   if (game.phase !== "over") return [];
   const best = Math.min(...game.penalties);

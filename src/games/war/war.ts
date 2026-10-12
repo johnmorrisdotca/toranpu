@@ -20,16 +20,51 @@ import type { WarEnd, WarGame, WarLaid, WarMove } from "./war.types.ts";
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-/** The cards a player lays in a war before the one turned up. */
+/** The cards a player lays in a war before the one turned up.
+ *
+ * @example
+ * ```ts
+ * import { WAR_FACE_DOWN } from "@johnmorrisdotca/toranpu/war";
+ * console.log(WAR_FACE_DOWN);
+ * ```
+ */
 export const WAR_FACE_DOWN = 3;
 
-/** How a rank counts at War: the ace highest, then king down to two. */
+/** How a rank counts at War: the ace highest, then king down to two.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns How a rank counts at War: the ace highest, then king down to two.
+ *
+ * @example
+ * ```ts
+ * import { warRank } from "@johnmorrisdotca/toranpu/war";
+ *
+ * console.log(warRank("AS"));
+ * ```
+ */
 export function warRank(card: CardId): number {
   const rank = rankOf(card);
   return rank === 1 ? 14 : rank;
 }
 
-/** A new game of War for these two players at this size (how many turns it may last), dealt from the seed, or null for a table War is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of War for these two players at this size (how many turns it may last), dealt from the seed, or null for a table War is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of War for these two players at this size (how many turns it may last), dealt from the seed, or null for a table War is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startWar } from "@johnmorrisdotca/toranpu/war";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.war.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startWar(CARD_GAME_TABLES.war.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startWar(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): WarGame | null {
   if (!(WAR_ROUNDS as readonly number[]).includes(size)) return null;
   if (players.length !== 2) return null;
@@ -56,12 +91,37 @@ function seatToPlay(game: Pick<WarGame, "computers">): number {
   return person < 0 ? 0 : person;
 }
 
-/** Every move the table may make now: turning the cards over, until the game is over. */
+/** Every move the table may make now: turning the cards over, until the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the table may make now: turning the cards over, until the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { warMoves } from "@johnmorrisdotca/toranpu/war";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.war.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("war", { players: names, seed: 42 })!;
+ * console.log(warMoves(game));
+ * ```
+ */
 export function warMoves(game: WarGame): WarMove[] {
   return game.phase === "over" ? [] : [{ turn: true }];
 }
 
-/** Whether something is the one move War has. */
+/** Whether something is the one move War has.
+ *
+ * @param value - The unknown value to validate.
+ * @returns Whether something is the one move War has.
+ *
+ * @example
+ * ```ts
+ * import { isWarMove } from "@johnmorrisdotca/toranpu/war";
+ *
+ * console.log(isWarMove({ turn: true }));
+ * ```
+ */
 export function isWarMove(value: unknown): value is WarMove {
   return typeof value === "object" && value !== null && (value as Record<string, unknown>).turn === true;
 }
@@ -69,7 +129,22 @@ export function isWarMove(value: unknown): value is WarMove {
 /** The salt a turn's winnings are shuffled with, so they are never shuffled the way the deck was. */
 const WINNINGS_SALT = 7919;
 
-/** The game after the cards are turned over: the whole turn, through however many wars it takes, or null for a move the rules refuse. */
+/** The game after the cards are turned over: the whole turn, through however many wars it takes, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after the cards are turned over: the whole turn, through however many wars it takes, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playWar } from "@johnmorrisdotca/toranpu/war";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.war.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("war", { players: names, seed: 42 })!;
+ * console.log(playWar(game, rulesFor("war").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playWar(game: WarGame, move: WarMove): WarGame | null {
   if (game.phase === "over" || !isWarMove(move)) return null;
   const hands = game.hands.map((hand) => [...hand]);
@@ -119,7 +194,21 @@ export function playWar(game: WarGame, move: WarMove): WarGame | null {
   return { ...next, toPlay: over ? null : seatToPlay(next) };
 }
 
-/** The seats that won a game that is over: the player with more cards, both when the piles are level or the game was a draw; nobody while it goes on. */
+/** The seats that won a game that is over: the player with more cards, both when the piles are level or the game was a draw; nobody while it goes on.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The seats that won a game that is over: the player with more cards, both when the piles are level or the game was a draw; nobody while it goes on.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { warWinners } from "@johnmorrisdotca/toranpu/war";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.war.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("war", { players: names, seed: 42 })!;
+ * console.log(warWinners(game));
+ * ```
+ */
 export function warWinners(game: WarGame): number[] {
   if (game.phase !== "over") return [];
   if (game.ended === "drawn") return [0, 1];

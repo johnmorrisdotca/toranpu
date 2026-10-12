@@ -12,7 +12,17 @@
 /** The version of what is written, so a later shape can refuse an older one rather than misread it. */
 const KEPT_VERSION = 1;
 
-/** What every card game's state carries for its keeping. */
+/** What every card game's state carries for its keeping.
+ *
+ * @example
+ * ```ts
+ * import type { KeptCardGame, MoveOf } from "@johnmorrisdotca/toranpu";
+ * import { newGame } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: KeptCardGame<MoveOf<"hearts">> = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(value.seed);
+ * ```
+ */
 export type KeptCardGame<M> = {
   size: number;
   players: readonly string[];
@@ -21,7 +31,17 @@ export type KeptCardGame<M> = {
   moves: readonly M[];
 };
 
-/** A game's keeping: `encode` writes it as text, `decode` reads it back or gives null. */
+/** A game's keeping: `encode` writes it as text, `decode` reads it back or gives null.
+ *
+ * @example
+ * ```ts
+ * import type { CardGameCodec, GameOf } from "@johnmorrisdotca/toranpu";
+ * import { rulesFor } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardGameCodec<GameOf<"hearts">> = rulesFor("hearts");
+ * console.log(typeof value.decode);
+ * ```
+ */
 export type CardGameCodec<S> = {
   encode: (game: S) => string;
   decode: (text: string | null) => S | null;
@@ -31,6 +51,22 @@ export type CardGameCodec<S> = {
  * The keeping for one game: `game` names it, so one game's text is never read
  * as another's; `start` and `play` are its rules; `isMove` checks a move's
  * shape before the rules are asked about it.
+ *
+ * @param game - The short game name recorded in the saved format.
+ * @param start - The native function that starts a game from size, names, seed and computer flags.
+ * @param play - The native function that applies one legal move and returns the next game.
+ * @param isMove - The game-specific structural validator for a move.
+ * @returns The keeping for one game: `game` names it, so one game's text is never read as another's; `start` and `play` are its rules; `isMove` checks a move's shape before the rules are asked about it.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, cardGameCodec, newGame } from "@johnmorrisdotca/toranpu";
+ * import { encodeWar, isWarMove, playWar, startWar } from "@johnmorrisdotca/toranpu/war";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.war.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("war", { players: names, seed: 42 })!;
+ * console.log(cardGameCodec("war", startWar, playWar, isWarMove).decode(encodeWar(game))?.phase);
+ * ```
  */
 export function cardGameCodec<S extends KeptCardGame<M>, M>(
   game: string,
@@ -65,12 +101,35 @@ export function cardGameCodec<S extends KeptCardGame<M>, M>(
   };
 }
 
-/** The seats a computer plays, one a seat, from what the set-up said: a seat it said nothing about is a person's. */
+/** The seats a computer plays, one a seat, from what the set-up said: a seat it said nothing about is a person's.
+ *
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns The seats a computer plays, one a seat, from what the set-up said: a seat it said nothing about is a person's.
+ *
+ * @example
+ * ```ts
+ * import { computerSeats } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(computerSeats(4, [false, true]));
+ * ```
+ */
 export function computerSeats(count: number, computers?: readonly boolean[]): boolean[] {
   return Array.from({ length: count }, (_, seat) => computers?.[seat] === true);
 }
 
-/** A list of card names, checked for shape only: whether they are cards the game holds is the rules' to say. */
+/** A list of card names, checked for shape only: whether they are cards the game holds is the rules' to say.
+ *
+ * @param value - The unknown value to validate.
+ * @returns A list of card names, checked for shape only: whether they are cards the game holds is the rules' to say.
+ *
+ * @example
+ * ```ts
+ * import { isCardList } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(isCardList(["AS", "KH"]));
+ * ```
+ */
 export function isCardList(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((card) => typeof card === "string");
 }

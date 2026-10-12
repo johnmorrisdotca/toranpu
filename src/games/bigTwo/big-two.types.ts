@@ -5,6 +5,17 @@ import type { ClimbMove, ClimbTrick } from "../climbing/climbing.types.ts";
 /**
  * A GAME OF BIG TWO: its table and moves (what is kept), and the deal they
  * have reached. `size` is how many deals the game lasts: 1, 3 or 5.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { BigTwoGame } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.bigTwo.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("bigTwo", { players: names, seed: 42 })!;
+ * const value: BigTwoGame = game;
+ * console.log(value.phase);
+ * ```
  */
 export type BigTwoGame = KeptCardGame<ClimbMove> &
   ClimbTrick & {

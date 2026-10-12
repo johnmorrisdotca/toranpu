@@ -27,28 +27,79 @@ import type { CribbageCount, CribbageGame, CribbageHandScore, CribbageMove, Crib
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-/** How many play Cribbage here: two. */
+/** How many play Cribbage here: two.
+ *
+ * @example
+ * ```ts
+ * import { CRIBBAGE_SEATS } from "@johnmorrisdotca/toranpu/cribbage";
+ * console.log(CRIBBAGE_SEATS);
+ * ```
+ */
 export const CRIBBAGE_SEATS = 2;
 const DEALT = 6;
 const MOST = 31;
 const JACK = 11;
 
-/** A card's worth in the count: ace one, court cards ten. */
+/** A card's worth in the count: ace one, court cards ten.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A card's worth in the count: ace one, court cards ten.
+ *
+ * @example
+ * ```ts
+ * import { cardValue } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(cardValue("JS"));
+ * ```
+ */
 export function cardValue(card: CardId): number {
   return Math.min(10, rankOf(card));
 }
 
-/** The seat that deals this hand: the first seat, then the other, turn about. */
+/** The seat that deals this hand: the first seat, then the other, turn about.
+ *
+ * @param deal - The deal number or dealing specification.
+ * @returns The seat that deals this hand: the first seat, then the other, turn about.
+ *
+ * @example
+ * ```ts
+ * import { dealerOf } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(dealerOf(0));
+ * ```
+ */
 export function dealerOf(deal: number): number {
   return deal % CRIBBAGE_SEATS;
 }
 
-/** The seat that is not this one. */
+/** The seat that is not this one.
+ *
+ * @param seat - The zero-based player seat.
+ * @returns The seat that is not this one.
+ *
+ * @example
+ * ```ts
+ * import { otherOf } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(otherOf(0));
+ * ```
+ */
 export function otherOf(seat: number): number {
   return 1 - seat;
 }
 
-/** A hand sorted as a player holds it: ace low to king, by rank then suit. */
+/** A hand sorted as a player holds it: ace low to king, by rank then suit.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns A hand sorted as a player holds it: ace low to king, by rank then suit.
+ *
+ * @example
+ * ```ts
+ * import { sortCribbage } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(sortCribbage(["JS", "5H", "AC"]));
+ * ```
+ */
 export function sortCribbage(hand: readonly CardId[]): CardId[] {
   return [...hand].sort((a, b) => rankOf(a) - rankOf(b) || "SHCD".indexOf(suitOf(a)) - "SHCD".indexOf(suitOf(b)));
 }
@@ -72,26 +123,80 @@ function dealCribbage(game: Omit<CribbageGame, "phase" | "hands" | "kept" | "cri
   };
 }
 
-/** A new game of Cribbage for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Cribbage is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Cribbage for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Cribbage is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Cribbage for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Cribbage is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startCribbage } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startCribbage(CARD_GAME_TABLES.cribbage.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startCribbage(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): CribbageGame | null {
   if (!(CRIBBAGE_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== CRIBBAGE_SEATS) return null;
   return dealCribbage({ size, players: [...players], computers: computerSeats(players.length, computers), seed: dealt ?? 1, moves: [], deal: 0, scores: [0, 0], results: [] });
 }
 
-/** The cards a seat may play on the count now: any that keeps it to thirty-one. */
+/** The cards a seat may play on the count now: any that keeps it to thirty-one.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @returns The cards a seat may play on the count now: any that keeps it to thirty-one.
+ *
+ * @example
+ * ```ts
+ * import { cribbagePlayable } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(cribbagePlayable(["AS", "5H", "KS"], 25));
+ * ```
+ */
 export function cribbagePlayable(hand: readonly CardId[], count: number): CardId[] {
   return hand.filter((card) => count + cardValue(card) <= MOST);
 }
 
-/** Every way to lay two of a hand away. */
+/** Every way to lay two of a hand away.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns Every way to lay two of a hand away.
+ *
+ * @example
+ * ```ts
+ * import { cribPairs } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(cribPairs(["AS", "2H", "3D", "4C", "5S", "6H"]).slice(0, 3));
+ * ```
+ */
 export function cribPairs(hand: readonly CardId[]): [CardId, CardId][] {
   const pairs: [CardId, CardId][] = [];
   for (let a = 0; a < hand.length; a += 1) for (let b = a + 1; b < hand.length; b += 1) pairs.push([hand[a], hand[b]]);
   return pairs;
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { cribbageMoves } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("cribbage", { players: names, seed: 42 })!;
+ * console.log(cribbageMoves(game));
+ * ```
+ */
 export function cribbageMoves(game: CribbageGame): CribbageMove[] {
   if (game.toPlay === null) return [];
   const hand = game.hands[game.toPlay];
@@ -108,7 +213,19 @@ function runAtEnd(cards: readonly CardId[]): number {
   return 0;
 }
 
-/** What laying the last card of `cards` scores, the count now `count`: fifteen, thirty-one, pairs and runs. */
+/** What laying the last card of `cards` scores, the count now `count`: fifteen, thirty-one, pairs and runs.
+ *
+ * @param cards - The cards in their current order.
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @returns What laying the last card of `cards` scores, the count now `count`: fifteen, thirty-one, pairs and runs.
+ *
+ * @example
+ * ```ts
+ * import { pegPoints } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(pegPoints(["5H", "5D", "5C"], 15));
+ * ```
+ */
 export function pegPoints(cards: readonly CardId[], count: number): { points: number; why: string[] } {
   let points = 0;
   const why: string[] = [];
@@ -135,7 +252,20 @@ export function pegPoints(cards: readonly CardId[], count: number): { points: nu
   return { points, why };
 }
 
-/** What four cards and the starter are worth in the show. A crib's flush counts only when all five are one suit. */
+/** What four cards and the starter are worth in the show. A crib's flush counts only when all five are one suit.
+ *
+ * @param four - The four cards retained for cribbage scoring.
+ * @param starter - The turned-up starter card.
+ * @param crib - Whether the scored hand is the crib.
+ * @returns What four cards and the starter are worth in the show. A crib's flush counts only when all five are one suit.
+ *
+ * @example
+ * ```ts
+ * import { showCount } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * console.log(showCount(["5H", "5D", "5C", "JS"], "5S"));
+ * ```
+ */
 export function showCount(four: readonly CardId[], starter: CardId, crib = false): CribbageCount {
   const all = [...four, starter];
   let fifteens = 0;
@@ -238,7 +368,22 @@ function playCard(game: CribbageGame, seat: number, card: CardId): CribbageGame 
   return hands.every((held) => held.length === 0) ? show(next) : next;
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playCribbage } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("cribbage", { players: names, seed: 42 })!;
+ * console.log(playCribbage(game, rulesFor("cribbage").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playCribbage(game: CribbageGame, move: CribbageMove): CribbageGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
@@ -248,7 +393,21 @@ export function playCribbage(game: CribbageGame, move: CribbageMove): CribbageGa
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 
-/** The first to the total. */
+/** The first to the total.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The first to the total.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { cribbageWinners } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("cribbage", { players: names, seed: 42 })!;
+ * console.log(cribbageWinners(game));
+ * ```
+ */
 export function cribbageWinners(game: CribbageGame): number[] {
   if (game.phase !== "over") return [];
   return [game.scores[0] >= game.size ? 0 : 1];

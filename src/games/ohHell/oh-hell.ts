@@ -22,28 +22,82 @@ import type { OhHellDealScore, OhHellGame, OhHellMove, OhHellPlay } from "./oh-h
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-/** The most cards dealt to a hand of Oh Hell: seven. */
+/** The most cards dealt to a hand of Oh Hell: seven.
+ *
+ * @example
+ * ```ts
+ * import { OH_HELL_MOST_CARDS } from "@johnmorrisdotca/toranpu/oh-hell";
+ * console.log(OH_HELL_MOST_CARDS);
+ * ```
+ */
 export const OH_HELL_MOST_CARDS = 7;
 const MADE = 10;
 
-/** A card's height in a trick: ace high. */
+/** A card's height in a trick: ace high.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A card's height in a trick: ace high.
+ *
+ * @example
+ * ```ts
+ * import { ohHellHeight } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * console.log(ohHellHeight("AS"));
+ * ```
+ */
 export function ohHellHeight(card: CardId): number {
   const rank = rankOf(card);
   return rank === 1 ? 14 : rank;
 }
 
-/** The cards dealt to each seat in each deal of a game of this length: up to seven, and back down in the long game. */
+/** The cards dealt to each seat in each deal of a game of this length: up to seven, and back down in the long game.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @returns The cards dealt to each seat in each deal of a game of this length: up to seven, and back down in the long game.
+ *
+ * @example
+ * ```ts
+ * import { dealSizes } from "@johnmorrisdotca/toranpu/oh-hell";
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(dealSizes(CARD_GAME_TABLES.ohHell.defaultSize));
+ * ```
+ */
 export function dealSizes(size: number): number[] {
   const up = Array.from({ length: OH_HELL_MOST_CARDS }, (_, at) => at + 1);
   return size <= OH_HELL_MOST_CARDS ? up : [...up, ...up.slice(0, -1).reverse()];
 }
 
-/** The seat that deals this deal: the first seat, then round to the left. */
+/** The seat that deals this deal: the first seat, then round to the left.
+ *
+ * @param deal - The deal number or dealing specification.
+ * @param seats - The seat count or seat state supplied by this API.
+ * @returns The seat that deals this deal: the first seat, then round to the left.
+ *
+ * @example
+ * ```ts
+ * import { dealerOf } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * console.log(dealerOf(0, 4));
+ * ```
+ */
 export function dealerOf(deal: number, seats: number): number {
   return deal % seats;
 }
 
-/** A hand as a player holds it: by suit, trumps last, high cards to the right. */
+/** A hand as a player holds it: by suit, trumps last, high cards to the right.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param trump - The current trump suit.
+ * @returns A hand as a player holds it: by suit, trumps last, high cards to the right.
+ *
+ * @example
+ * ```ts
+ * import { sortOhHell } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * console.log(sortOhHell(["AS", "KH", "2C"], "S"));
+ * ```
+ */
 export function sortOhHell(hand: readonly CardId[], trump: string): CardId[] {
   const order = (card: CardId) => (suitOf(card) === trump ? 4 : "SHCD".indexOf(suitOf(card)));
   return [...hand].sort((a, b) => order(a) - order(b) || ohHellHeight(a) - ohHellHeight(b));
@@ -70,14 +124,45 @@ function dealOhHell(game: Omit<OhHellGame, "phase" | "cards" | "hands" | "turned
   };
 }
 
-/** A new game of Oh Hell for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Oh Hell is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Oh Hell for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Oh Hell is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Oh Hell for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Oh Hell is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startOhHell } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startOhHell(CARD_GAME_TABLES.ohHell.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startOhHell(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): OhHellGame | null {
   if (!(OH_HELL_DEALS as readonly number[]).includes(size)) return null;
   if (players.length < 3 || players.length > 4) return null;
   return dealOhHell({ size, players: [...players], computers: computerSeats(players.length, computers), seed: dealt ?? 1, moves: [], deal: 0, lastTrick: null, scores: new Array<number>(players.length).fill(0), dealScores: [] });
 }
 
-/** The bids open to the seat to bid: nought to the cards in hand, less the one a dealer may not make. */
+/** The bids open to the seat to bid: nought to the cards in hand, less the one a dealer may not make.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The bids open to the seat to bid: nought to the cards in hand, less the one a dealer may not make.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ohHellBids } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(ohHellBids(game));
+ * ```
+ */
 export function ohHellBids(game: OhHellGame): number[] {
   if (game.phase !== "bidding" || game.toPlay === null) return [];
   const all = Array.from({ length: game.cards + 1 }, (_, bid) => bid);
@@ -86,7 +171,28 @@ export function ohHellBids(game: OhHellGame): number[] {
   return all.filter((bid) => others + bid !== game.cards);
 }
 
-/** The cards the seat to play may lay: the suit led if it holds any. */
+/** The cards the seat to play may lay: the suit led if it holds any.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The cards the seat to play may lay: the suit led if it holds any.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { ohHellPlayable } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * const rules = rulesFor("ohHell");
+ * for (let setup = 0; setup < 100 && game.phase !== "playing" && game.phase !== "over"; setup += 1) {
+ *   const next = rules.play(game, rules.computer(game));
+ *   if (next === null) throw new Error("Unexpected illegal setup move");
+ *   game = next;
+ * }
+ * if (game.phase !== "playing") throw new Error("Setup did not reach playing");
+ * console.log(ohHellPlayable(game));
+ * ```
+ */
 export function ohHellPlayable(game: OhHellGame): CardId[] {
   if (game.phase !== "playing" || game.toPlay === null) return [];
   const hand = game.hands[game.toPlay];
@@ -96,20 +202,58 @@ export function ohHellPlayable(game: OhHellGame): CardId[] {
   return following.length > 0 ? following : hand;
 }
 
-/** Who takes a trick: the highest trump, or else the highest card of the suit led. */
+/** Who takes a trick: the highest trump, or else the highest card of the suit led.
+ *
+ * @param trick - The cards and seats in the current trick.
+ * @param trump - The current trump suit.
+ * @returns Who takes a trick: the highest trump, or else the highest card of the suit led.
+ *
+ * @example
+ * ```ts
+ * import { ohHellTrickWinner } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * console.log(ohHellTrickWinner([{ seat: 0, card: "AH" }, { seat: 1, card: "KS" }, { seat: 2, card: "TH" }, { seat: 3, card: "QC" }], "S"));
+ * ```
+ */
 export function ohHellTrickWinner(trick: readonly OhHellPlay[], trump: string): number {
   const led = suitOf(trick[0].card);
   const power = (card: CardId) => (suitOf(card) === trump ? 100 : suitOf(card) === led ? 0 : -100) + ohHellHeight(card);
   return trick.reduce((best, play) => (power(play.card) > power(best.card) ? play : best)).seat;
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ohHellMoves } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(ohHellMoves(game));
+ * ```
+ */
 export function ohHellMoves(game: OhHellGame): OhHellMove[] {
   if (game.phase === "bidding") return ohHellBids(game).map((bid) => ({ bid }));
   return ohHellPlayable(game).map((play) => ({ play }));
 }
 
-/** What a seat scores for a deal: ten and its bid for exactly what it bid, nothing otherwise. */
+/** What a seat scores for a deal: ten and its bid for exactly what it bid, nothing otherwise.
+ *
+ * @param bid - The bid being checked or scored.
+ * @param tricks - The number of tricks won.
+ * @returns What a seat scores for a deal: ten and its bid for exactly what it bid, nothing otherwise.
+ *
+ * @example
+ * ```ts
+ * import { dealPoints } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * console.log(dealPoints(2, 2));
+ * ```
+ */
 export function dealPoints(bid: number, tricks: number): number {
   return bid === tricks ? MADE + bid : 0;
 }
@@ -144,7 +288,22 @@ function playCard(game: OhHellGame, seat: number, card: CardId): OhHellGame | nu
   return hands[0].length === 0 ? endDeal(after) : after;
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playOhHell } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(playOhHell(game, rulesFor("ohHell").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playOhHell(game: OhHellGame, move: OhHellMove): OhHellGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
@@ -152,7 +311,21 @@ export function playOhHell(game: OhHellGame, move: OhHellMove): OhHellGame | nul
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 
-/** The highest score after the last deal: every seat that has it. */
+/** The highest score after the last deal: every seat that has it.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The highest score after the last deal: every seat that has it.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ohHellWinners } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(ohHellWinners(game));
+ * ```
+ */
 export function ohHellWinners(game: OhHellGame): number[] {
   if (game.phase !== "over") return [];
   const best = Math.max(...game.scores);

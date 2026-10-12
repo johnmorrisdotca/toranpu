@@ -14,12 +14,47 @@ function isGinMove(value: unknown): value is GinMove {
 }
 
 const codec = cardGameCodec<GinGame, GinMove>("ginRummy", startGin, playGin, isGinMove);
-/** A game of Gin Rummy as text: its table, its seed and its moves, never a hand. */
+/** A game of Gin Rummy as text: its table, its seed and its moves, never a hand.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game of Gin Rummy as text: its table, its seed and its moves, never a hand.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { encodeGin } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ginRummy.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ginRummy", { players: names, seed: 42 })!;
+ * console.log(encodeGin(game));
+ * ```
+ */
 export const encodeGin = codec.encode;
-/** Text read back into the game of Gin Rummy it records, by playing every move again through the rules; null for anything they cannot play out. */
+/** Text read back into the game of Gin Rummy it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns Text read back into the game of Gin Rummy it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { decodeGin, encodeGin } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ginRummy.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ginRummy", { players: names, seed: 42 })!;
+ * console.log(decodeGin(encodeGin(game))?.phase);
+ * ```
+ */
 export const decodeGin = codec.decode;
 
-/** Gin Rummy as one `CardGameRules`: everything a table asks of the game. */
+/** Gin Rummy as one `CardGameRules`: everything a table asks of the game.
+ *
+ * @example
+ * ```ts
+ * import { GIN_RUMMY_RULES } from "@johnmorrisdotca/toranpu/gin-rummy";
+ * console.log(Object.keys(GIN_RUMMY_RULES));
+ * ```
+ */
 export const GIN_RUMMY_RULES: CardGameRules<GinGame, GinMove> = {
   start: startGin,
   moves: ginMoves,

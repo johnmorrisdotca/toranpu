@@ -1,5 +1,15 @@
 
-/** What a game's table offers: how many may sit at it, and how long a game may last. */
+/** What a game's table offers: how many may sit at it, and how long a game may last.
+ *
+ * @example
+ * ```ts
+ * import type { CardGameTable } from "@johnmorrisdotca/toranpu";
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardGameTable = CARD_GAME_TABLES.hearts;
+ * console.log(value.defaultPlayers);
+ * ```
+ */
 export type CardGameTable = {
   /** The fewest players a table may start with. */
   fewestPlayers: number;
@@ -31,10 +41,25 @@ export type CardGameTable = {
  *
  * Every seat may be a person's or a computer's, so a table of one person and
  * three computers is a game of Hearts as much as four people round a phone.
+ *
+ * @example
+ * ```ts
+ * import type { CardGameKind } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardGameKind = "hearts";
+ * console.log(value);
+ * ```
  */
 export type CardGameKind = "hearts" | "bigTwo" | "president" | "goFish" | "crazyEights" | "spades" | "ginRummy" | "euchre" | "cribbage" | "ohHell" | "war";
 
-/** The eleven kinds by name, for code that would rather not type a string twice. */
+/** The eleven kinds by name, for code that would rather not type a string twice.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_KINDS } from "@johnmorrisdotca/toranpu";
+ * console.log(CARD_GAME_KINDS);
+ * ```
+ */
 export const CARD_GAME_KINDS = {
   hearts: "hearts",
   bigTwo: "bigTwo",
@@ -49,7 +74,14 @@ export const CARD_GAME_KINDS = {
   war: "war",
 } as const satisfies Record<CardGameKind, CardGameKind>;
 
-/** Every card game. */
+/** Every card game.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_LIST } from "@johnmorrisdotca/toranpu";
+ * console.log(CARD_GAME_LIST);
+ * ```
+ */
 export const CARD_GAME_LIST: readonly CardGameKind[] = [
   CARD_GAME_KINDS.hearts,
   CARD_GAME_KINDS.spades,
@@ -64,30 +96,114 @@ export const CARD_GAME_LIST: readonly CardGameKind[] = [
   CARD_GAME_KINDS.war,
 ];
 
-/** How long each game lasts, in its own terms (see above). */
+/** How long each game lasts, in its own terms (see above).
+ *
+ * @example
+ * ```ts
+ * import { HEARTS_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(HEARTS_SIZES);
+ * ```
+ */
 export const HEARTS_SIZES = { short: 50, full: 100 } as const;
-/** How many deals a game of Big Two may last. */
+/** How many deals a game of Big Two may last.
+ *
+ * @example
+ * ```ts
+ * import { BIG_TWO_DEALS } from "@johnmorrisdotca/toranpu";
+ * console.log(BIG_TWO_DEALS);
+ * ```
+ */
 export const BIG_TWO_DEALS = [1, 3, 5] as const;
-/** How many rounds a game of President may last. */
+/** How many rounds a game of President may last.
+ *
+ * @example
+ * ```ts
+ * import { PRESIDENT_ROUNDS } from "@johnmorrisdotca/toranpu";
+ * console.log(PRESIDENT_ROUNDS);
+ * ```
+ */
 export const PRESIDENT_ROUNDS = [3, 5, 7] as const;
-/** Go Fish is one deal: its only size is 1. */
+/** Go Fish is one deal: its only size is 1.
+ *
+ * @example
+ * ```ts
+ * import { GO_FISH_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(GO_FISH_SIZES);
+ * ```
+ */
 export const GO_FISH_SIZES = [1] as const;
-/** The scores a game of Crazy Eights may be played to. */
+/** The scores a game of Crazy Eights may be played to.
+ *
+ * @example
+ * ```ts
+ * import { CRAZY_EIGHTS_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(CRAZY_EIGHTS_SIZES);
+ * ```
+ */
 export const CRAZY_EIGHTS_SIZES = [50, 100, 200] as const;
-/** The scores a game of Spades may be played to. */
+/** The scores a game of Spades may be played to.
+ *
+ * @example
+ * ```ts
+ * import { SPADES_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(SPADES_SIZES);
+ * ```
+ */
 export const SPADES_SIZES = [200, 300, 500] as const;
-/** The scores a game of Gin Rummy may be played to. */
+/** The scores a game of Gin Rummy may be played to.
+ *
+ * @example
+ * ```ts
+ * import { GIN_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(GIN_SIZES);
+ * ```
+ */
 export const GIN_SIZES = [50, 100, 150] as const;
-/** The scores a game of Euchre may be played to. */
+/** The scores a game of Euchre may be played to.
+ *
+ * @example
+ * ```ts
+ * import { EUCHRE_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(EUCHRE_SIZES);
+ * ```
+ */
 export const EUCHRE_SIZES = [5, 10] as const;
-/** The scores a game of Cribbage may be played to: once round the board, or twice. */
+/** The scores a game of Cribbage may be played to: once round the board, or twice.
+ *
+ * @example
+ * ```ts
+ * import { CRIBBAGE_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(CRIBBAGE_SIZES);
+ * ```
+ */
 export const CRIBBAGE_SIZES = [61, 121] as const;
-/** How many deals a game of Oh Hell may last: up to seven cards, or up and back down. */
+/** How many deals a game of Oh Hell may last: up to seven cards, or up and back down.
+ *
+ * @example
+ * ```ts
+ * import { OH_HELL_DEALS } from "@johnmorrisdotca/toranpu";
+ * console.log(OH_HELL_DEALS);
+ * ```
+ */
 export const OH_HELL_DEALS = [7, 13] as const;
-/** How many turns of the cards a game of War may last before the player holding more cards wins. */
+/** How many turns of the cards a game of War may last before the player holding more cards wins.
+ *
+ * @example
+ * ```ts
+ * import { WAR_ROUNDS } from "@johnmorrisdotca/toranpu";
+ * console.log(WAR_ROUNDS);
+ * ```
+ */
 export const WAR_ROUNDS = [25, 50, 100, 200, 1000] as const;
 
-/** Every game's table: the fewest, the most and the usual number of players, the lengths of game offered and the usual one. */
+/** Every game's table: the fewest, the most and the usual number of players, the lengths of game offered and the usual one.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * console.log(Object.keys(CARD_GAME_TABLES));
+ * ```
+ */
 export const CARD_GAME_TABLES: Record<CardGameKind, CardGameTable> = {
   hearts: { fewestPlayers: 3, mostPlayers: 4, defaultPlayers: 4, sizes: [HEARTS_SIZES.short, HEARTS_SIZES.full], defaultSize: HEARTS_SIZES.full },
   bigTwo: { fewestPlayers: 2, mostPlayers: 4, defaultPlayers: 4, sizes: BIG_TWO_DEALS, defaultSize: 3 },

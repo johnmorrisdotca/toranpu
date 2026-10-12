@@ -16,7 +16,20 @@ import type { HeartsGame, HeartsMove, HeartsPlay } from "./hearts.types.ts";
  * not holding.
  */
 
-/** What the seat to move can see: its own hand and the table. */
+/** What the seat to move can see: its own hand and the table.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { HeartsView } from "@johnmorrisdotca/toranpu/hearts";
+ * import { heartsView } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("hearts", { players: names, seed: 42 })!;
+ * const value: HeartsView = heartsView(game);
+ * console.log(value.hand.length);
+ * ```
+ */
 export type HeartsView = {
   seat: number;
   seats: number;
@@ -28,7 +41,21 @@ export type HeartsView = {
   playable: readonly CardId[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { heartsView } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("hearts", { players: names, seed: 42 })!;
+ * console.log(heartsView(game));
+ * ```
+ */
 export function heartsView(game: HeartsGame): HeartsView {
   const seat = game.toPlay ?? 0;
   return {
@@ -42,7 +69,21 @@ export function heartsView(game: HeartsGame): HeartsView {
   };
 }
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { heartsComputer } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("hearts", { players: names, seed: 42 })!;
+ * console.log(heartsComputer(game));
+ * ```
+ */
 export function heartsComputer(game: HeartsGame): HeartsMove {
   const view = heartsView(game);
   if (view.phase === "passing") {
@@ -72,7 +113,21 @@ function passWorth(card: CardId, hand: readonly CardId[]): number {
   return height * 2 + (count <= 3 ? 30 - count * 5 : 0);
 }
 
-/** The three cards a computer passes from a hand of Hearts: the queen of spades and the high spades that catch her, high hearts, and cards from a short suit. */
+/** The three cards a computer passes from a hand of Hearts: the queen of spades and the high spades that catch her, high hearts, and cards from a short suit.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns The three cards a computer passes from a hand of Hearts: the queen of spades and the high spades that catch her, high hearts, and cards from a short suit.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { choosePass } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("hearts", { players: names, seed: 42 })!;
+ * console.log(choosePass(game.hands[0]!));
+ * ```
+ */
 export function choosePass(hand: readonly CardId[]): CardId[] {
   return [...hand]
     .sort((a, b) => passWorth(b, hand) - passWorth(a, hand) || heartsHeight(b) - heartsHeight(a))

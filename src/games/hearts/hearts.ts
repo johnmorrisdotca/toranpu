@@ -20,21 +20,64 @@ import type { HeartsGame, HeartsMove, HeartsPlay } from "./hearts.types.ts";
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-/** The queen of spades, worth thirteen points to whoever takes her. */
+/** The queen of spades, worth thirteen points to whoever takes her.
+ *
+ * @example
+ * ```ts
+ * import { QUEEN_OF_SPADES } from "@johnmorrisdotca/toranpu/hearts";
+ * console.log(QUEEN_OF_SPADES);
+ * ```
+ */
 export const QUEEN_OF_SPADES = "QS";
-/** The two of clubs, which leads the first trick of every deal. */
+/** The two of clubs, which leads the first trick of every deal.
+ *
+ * @example
+ * ```ts
+ * import { TWO_OF_CLUBS } from "@johnmorrisdotca/toranpu/hearts";
+ * console.log(TWO_OF_CLUBS);
+ * ```
+ */
 export const TWO_OF_CLUBS = "2C";
 const PASSED = 3;
-/** Every point in a deal: thirteen hearts and the queen. */
+/** Every point in a deal: thirteen hearts and the queen.
+ *
+ * @example
+ * ```ts
+ * import { HEARTS_ALL_POINTS } from "@johnmorrisdotca/toranpu/hearts";
+ * console.log(HEARTS_ALL_POINTS);
+ * ```
+ */
 export const HEARTS_ALL_POINTS = 26;
 
-/** A card's height in a trick: ace high. */
+/** A card's height in a trick: ace high.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A card's height in a trick: ace high.
+ *
+ * @example
+ * ```ts
+ * import { heartsHeight } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * console.log(heartsHeight("AS"));
+ * ```
+ */
 export function heartsHeight(card: CardId): number {
   const rank = rankOf(card);
   return rank === 1 ? 14 : rank;
 }
 
-/** A card's points: a heart one, the queen of spades thirteen. */
+/** A card's points: a heart one, the queen of spades thirteen.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A card's points: a heart one, the queen of spades thirteen.
+ *
+ * @example
+ * ```ts
+ * import { heartsPoints } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * console.log(heartsPoints("QS"));
+ * ```
+ */
 export function heartsPoints(card: CardId): number {
   if (card === QUEEN_OF_SPADES) return 13;
   return suitOf(card) === "H" ? 1 : 0;
@@ -45,13 +88,36 @@ function leftOut(seats: number): CardId[] {
   return seats === 3 ? ["2D"] : [];
 }
 
-/** How far round the table the cards go this deal: 1 to the left, seats − 1 to the right, 2 across, 0 held. */
+/** How far round the table the cards go this deal: 1 to the left, seats − 1 to the right, 2 across, 0 held.
+ *
+ * @param deal - The deal number or dealing specification.
+ * @param seats - The seat count or seat state supplied by this API.
+ * @returns How far round the table the cards go this deal: 1 to the left, seats − 1 to the right, 2 across, 0 held.
+ *
+ * @example
+ * ```ts
+ * import { passOffset } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * console.log(passOffset(0, 4));
+ * ```
+ */
 export function passOffset(deal: number, seats: number): number {
   const cycle = seats === 4 ? [1, 3, 2, 0] : [1, seats - 1, 0];
   return cycle[deal % cycle.length];
 }
 
-/** A hand sorted as a player holds it: clubs, diamonds, spades, hearts, low to high within each. */
+/** A hand sorted as a player holds it: clubs, diamonds, spades, hearts, low to high within each.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns A hand sorted as a player holds it: clubs, diamonds, spades, hearts, low to high within each.
+ *
+ * @example
+ * ```ts
+ * import { sortHearts } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * console.log(sortHearts(["QS", "2C", "AH"]));
+ * ```
+ */
 export function sortHearts(hand: readonly CardId[]): CardId[] {
   const order = "CDSH";
   return [...hand].sort((a, b) => order.indexOf(suitOf(a)) - order.indexOf(suitOf(b)) || heartsHeight(a) - heartsHeight(b));
@@ -82,7 +148,24 @@ function beginPlay(game: HeartsGame): HeartsGame {
   return { ...game, phase: "playing", toPlay: leader };
 }
 
-/** A new game of Hearts for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Hearts is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Hearts for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Hearts is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Hearts for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Hearts is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startHearts } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startHearts(CARD_GAME_TABLES.hearts.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startHearts(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): HeartsGame | null {
   if (size !== HEARTS_SIZES.short && size !== HEARTS_SIZES.full) return null;
   if (players.length < 3 || players.length > 4) return null;
@@ -105,7 +188,28 @@ function firstTrick(game: HeartsGame): boolean {
   return game.played.length === 0;
 }
 
-/** The cards the seat to play may lay on the trick now. */
+/** The cards the seat to play may lay on the trick now.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The cards the seat to play may lay on the trick now.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { heartsPlayable } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("hearts", { players: names, seed: 42 })!;
+ * const rules = rulesFor("hearts");
+ * for (let setup = 0; setup < 100 && game.phase !== "playing" && game.phase !== "over"; setup += 1) {
+ *   const next = rules.play(game, rules.computer(game));
+ *   if (next === null) throw new Error("Unexpected illegal setup move");
+ *   game = next;
+ * }
+ * if (game.phase !== "playing") throw new Error("Setup did not reach playing");
+ * console.log(heartsPlayable(game));
+ * ```
+ */
 export function heartsPlayable(game: HeartsGame): CardId[] {
   if (game.phase !== "playing" || game.toPlay === null) return [];
   const hand = game.hands[game.toPlay];
@@ -122,7 +226,18 @@ export function heartsPlayable(game: HeartsGame): CardId[] {
   return safe.length > 0 ? safe : hand;
 }
 
-/** Who takes a finished trick: the highest card of the suit led. */
+/** Who takes a finished trick: the highest card of the suit led.
+ *
+ * @param trick - The cards and seats in the current trick.
+ * @returns Who takes a finished trick: the highest card of the suit led.
+ *
+ * @example
+ * ```ts
+ * import { trickWinner } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * console.log(trickWinner([{ seat: 0, card: "2C" }, { seat: 1, card: "AC" }, { seat: 2, card: "KH" }, { seat: 3, card: "QC" }]));
+ * ```
+ */
 export function trickWinner(trick: readonly HeartsPlay[]): number {
   const led = suitOf(trick[0].card);
   let best = trick[0];
@@ -130,7 +245,21 @@ export function trickWinner(trick: readonly HeartsPlay[]): number {
   return best.seat;
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { heartsMoves } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("hearts", { players: names, seed: 42 })!;
+ * console.log(heartsMoves(game));
+ * ```
+ */
 export function heartsMoves(game: HeartsGame): HeartsMove[] {
   if (game.phase === "passing" && game.toPlay !== null) return choices(game.hands[game.toPlay], PASSED).map((pass) => ({ pass }));
   return heartsPlayable(game).map((play) => ({ play }));
@@ -172,7 +301,22 @@ function endDeal(game: HeartsGame): HeartsGame {
   return dealHearts({ ...finished, deal: game.deal + 1 });
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playHearts } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("hearts", { players: names, seed: 42 })!;
+ * console.log(playHearts(game, rulesFor("hearts").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playHearts(game: HeartsGame, move: HeartsMove): HeartsGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
@@ -180,7 +324,21 @@ export function playHearts(game: HeartsGame, move: HeartsMove): HeartsGame | nul
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 
-/** The lowest score wins; level on the lowest shares it. */
+/** The lowest score wins; level on the lowest shares it.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The lowest score wins; level on the lowest shares it.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { heartsWinners } from "@johnmorrisdotca/toranpu/hearts";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.hearts.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("hearts", { players: names, seed: 42 })!;
+ * console.log(heartsWinners(game));
+ * ```
+ */
 export function heartsWinners(game: HeartsGame): number[] {
   if (game.phase !== "over") return [];
   const best = Math.min(...game.scores);

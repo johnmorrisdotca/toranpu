@@ -17,7 +17,18 @@ import { ToranpuTable } from "./ui/table-element.ts";
 export { TABLE_CLOTHS, ToranpuTable } from "./ui/table-element.ts";
 export type { TableCloth } from "./ui/table-element.ts";
 
-/** Registers `<toranpu-table>`, and the card, hand and pile elements, once. Nothing happens where there is no browser. */
+/** Registers `<toranpu-table>`, and the card, hand and pile elements, once. Nothing happens where there is no browser.
+ *
+ * @returns Nothing; the registration or removal is applied to the host registry.
+ *
+ * @example
+ * ```ts no-run
+ * import { defineToranpuTable } from "@johnmorrisdotca/toranpu/table";
+ *
+ * defineToranpuTable();
+ * console.log(customElements.get("toranpu-table") !== undefined);
+ * ```
+ */
 export function defineToranpuTable(): void {
   if (typeof customElements === "undefined") return;
   defineToranpuElements();

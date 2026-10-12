@@ -73,7 +73,8 @@ export function defineToranpuElements(): void {
  * @example
  * ```ts
  * import { defineHand } from "@johnmorrisdotca/toranpu/element";
- * defineHand("my-hand");
+ * defineHand();
+ * console.log(typeof defineHand);
  * ```
  */
 export function defineHand(tag = TORANPU_TAGS.hand): void {

@@ -12,6 +12,14 @@
  * `settle` is what a game does by itself after every move (FreeCell's safe
  * cards sent home): its moves are part of the line, so a replay of the line
  * makes exactly the tables the search saw.
+ *
+ * @example
+ * ```ts
+ * import type { BestFirstGame } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const value: BestFirstGame<number, number> = { candidates: (at) => at < 3 ? [1] : [], play: (at, move) => at + move, won: (at) => at === 3, key: String, distance: (at) => 3 - at };
+ * console.log(value.won(3));
+ * ```
  */
 export type BestFirstGame<Table, Move> = {
   candidates: (table: Table) => Move[];
@@ -74,6 +82,18 @@ function lineTo<Table, Move>(node: Node<Table, Move>): Move[] {
 /**
  * A winning line from this table — every move a replay of it makes, the
  * settling ones included — or null when none was found within `budget` tables.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param start - The initial game or state before the recorded moves.
+ * @param budget - Limits on the solver’s search work.
+ * @returns A winning line from this table — every move a replay of it makes, the settling ones included — or null when none was found within `budget` tables.
+ *
+ * @example
+ * ```ts
+ * import { bestFirst } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * console.log(bestFirst({ candidates: (at: number) => at < 3 ? [1] : [], play: (at: number, move: number) => at + move, won: (at: number) => at === 3, key: String, distance: (at: number) => 3 - at }, 0, 20));
+ * ```
  */
 export function bestFirst<Table, Move>(game: BestFirstGame<Table, Move>, start: Table, budget: number): { moves: Move[] | null; tables: number } {
   const settle = game.settle ?? ((table: Table) => ({ table, moves: [] as Move[] }));

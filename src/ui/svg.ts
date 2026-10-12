@@ -5,13 +5,26 @@
  */
 import type { CardSuitLetter } from "./svg.types.ts";
 
-/** A card is drawn in a box 100 wide and 140 tall, the 5:7 of a poker-size card, and scales to any width. */
+/** A card is drawn in a box 100 wide and 140 tall, the 5:7 of a poker-size card, and scales to any width.
+ *
+ * @example
+ * ```ts
+ * import { CARD_BOX } from "@johnmorrisdotca/toranpu/card-backs";
+ * console.log(CARD_BOX);
+ * ```
+ */
 export const CARD_BOX = { width: 100, height: 140, radius: 7 } as const;
 
 /**
  * The four suits, each a path in a box of 100 filled in one colour. A club is
  * three lobes and a stem, a spade a heart turned over with a stem, so the
  * four are told apart by their outline alone.
+ *
+ * @example
+ * ```ts
+ * import { SUIT_PATHS } from "@johnmorrisdotca/toranpu/card-backs";
+ * console.log(Object.keys(SUIT_PATHS));
+ * ```
  */
 export const SUIT_PATHS: Readonly<Record<CardSuitLetter, string>> = {
   S: "M50 6C42 22 10 38 10 60C10 73 20 81 31 81C39 81 45 77 48 71C47 82 43 89 34 95H66C57 89 53 82 52 71C55 77 61 81 69 81C80 81 90 73 90 60C90 38 58 22 50 6Z",

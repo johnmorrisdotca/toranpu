@@ -12,20 +12,52 @@ import { cleanMarkup, safeImageUrl } from "./markup.ts";
 import { registeredBack, registeredBackNames } from "./registry.ts";
 import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl, UNSELECTABLE } from "./svg.ts";
 
-/** The backs, by name. */
+/** The backs, by name.
+ *
+ * @example
+ * ```ts
+ * import { CARD_BACKS } from "@johnmorrisdotca/toranpu/card-backs";
+ * console.log(CARD_BACKS);
+ * ```
+ */
 export const CARD_BACKS = ["classic-red", "classic-blue", "ink-dots"] as const;
 
-/** One back's name. */
+/** One back's name.
+ *
+ * @example
+ * ```ts
+ * import type { CardBackName } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * const value: CardBackName = "classic-blue";
+ * console.log(value);
+ * ```
+ */
 export type CardBackName = (typeof CARD_BACKS)[number];
 
-/** Each back's own colours: its field, the lines and dots drawn on the field, and the paper round it. */
+/** Each back's own colours: its field, the lines and dots drawn on the field, and the paper round it.
+ *
+ * @example
+ * ```ts
+ * import { CARD_BACK_LOOK } from "@johnmorrisdotca/toranpu/card-backs";
+ * console.log(CARD_BACK_LOOK);
+ * ```
+ */
 export const CARD_BACK_LOOK: Readonly<Record<CardBackName, { field: string; ink: string; paper: string }>> = {
   "classic-red": { field: "#b3262d", ink: "#fffaf0", paper: "#fffdf8" },
   "classic-blue": { field: "#1f4e8c", ink: "#fffaf0", paper: "#fffdf8" },
   "ink-dots": { field: "#24231f", ink: "#fffaf0", paper: "#fffdf8" },
 };
 
-/** How a back is drawn. Every field may be left out. */
+/** How a back is drawn. Every field may be left out.
+ *
+ * @example
+ * ```ts
+ * import type { CardBackOptions } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * const value: CardBackOptions = { width: 80, colour: "#2f5d4a", mark: "D" };
+ * console.log(value.mark);
+ * ```
+ */
 export type CardBackOptions = {
   /** The field's colour, in place of the back's own: `#8f2826`, `rebeccapurple`, `rgb(…)`. Anything else is ignored. */
   colour?: string;
@@ -60,12 +92,29 @@ export type CardBackOptions = {
   logoSize?: number;
 };
 
-/** The CSS custom properties a back drawn into a page takes its colours from, when no colour is given. */
+/** The CSS custom properties a back drawn into a page takes its colours from, when no colour is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_BACK_PROPERTIES } from "@johnmorrisdotca/toranpu/card-backs";
+ * console.log(CARD_BACK_PROPERTIES);
+ * ```
+ */
 export const CARD_BACK_PROPERTIES = { field: "--toranpu-back", ink: "--toranpu-back-ink", paper: "--toranpu-back-paper" } as const;
 
 const isBack = (name: unknown): name is CardBackName => (CARD_BACKS as readonly unknown[]).includes(name);
 
-/** The backs a page may ask for by name: the package's own, and any the page registered (`registerCardBack`). */
+/** The backs a page may ask for by name: the package's own, and any the page registered (`registerCardBack`).
+ *
+ * @returns The backs a page may ask for by name: the package's own, and any the page registered (`registerCardBack`).
+ *
+ * @example
+ * ```ts
+ * import { cardBackNames } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * console.log(cardBackNames());
+ * ```
+ */
 export function cardBackNames(): string[] {
   return [...CARD_BACKS, ...registeredBackNames()];
 }
@@ -109,6 +158,17 @@ function marked(cx: number, cy: number, words: string, field: string, paper: str
  * Drawn into a page, a back takes its colours from the CSS custom properties
  * `--toranpu-back`, `--toranpu-back-ink` and `--toranpu-back-paper` where they
  * are set and no colour is given here; as an image, it keeps its own.
+ *
+ * @param name - The registered card design or card-back name.
+ * @param given - Explicit card-back settings to override the defaults.
+ * @returns A back as a whole SVG document, 100 by 140. `name` is one of `CARD_BACKS` (an unknown name draws the classic red); the options recolour it, put words in its middle, size it and name it. Drawn into a page, a back takes its colours from the CSS custom properties `--toranpu-back`, `--toranpu-back-ink` and `--toranpu-back-paper` where they are set and no colour is given here; as an image, it keeps its own.
+ *
+ * @example
+ * ```ts
+ * import { cardBackSvg } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * console.log(cardBackSvg("classic-red", { width: 80 }).slice(0, 160));
+ * ```
  */
 export function cardBackSvg(name: CardBackName | string = "classic-red", given: CardBackOptions = {}): string {
   // A back the page registered by name starts from its own options and the built-in back it names; what is asked for now wins.
@@ -192,7 +252,19 @@ function logoOn(logo: string, field: string, paper: string, wanted: number | und
   return plate ? `<circle cx="50" cy="70" r="${round(radius)}"${field}/><circle cx="50" cy="70" r="${round(radius - 2.5)}"${paper}/>${drawn}` : drawn;
 }
 
-/** A back as a data URL, for an <img src>, a CSS background or a canvas: the same drawing as `cardBackSvg`, with its own colours. */
+/** A back as a data URL, for an <img src>, a CSS background or a canvas: the same drawing as `cardBackSvg`, with its own colours.
+ *
+ * @param name - The registered card design or card-back name.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A back as a data URL, for an <img src>, a CSS background or a canvas: the same drawing as `cardBackSvg`, with its own colours.
+ *
+ * @example
+ * ```ts
+ * import { cardBackUrl } from "@johnmorrisdotca/toranpu/card-backs";
+ *
+ * console.log(cardBackUrl("ink-dots").slice(0, 40));
+ * ```
+ */
 export function cardBackUrl(name: CardBackName | string = "classic-red", options: CardBackOptions = {}): string {
   return svgDataUrl(cardBackSvg(name, options));
 }

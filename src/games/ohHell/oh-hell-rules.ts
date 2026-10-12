@@ -14,12 +14,47 @@ function isOhHellMove(value: unknown): value is OhHellMove {
 }
 
 const codec = cardGameCodec<OhHellGame, OhHellMove>("ohHell", startOhHell, playOhHell, isOhHellMove);
-/** A game of Oh Hell as text: its table, its seed and its moves, never a hand. */
+/** A game of Oh Hell as text: its table, its seed and its moves, never a hand.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game of Oh Hell as text: its table, its seed and its moves, never a hand.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { encodeOhHell } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(encodeOhHell(game));
+ * ```
+ */
 export const encodeOhHell = codec.encode;
-/** Text read back into the game of Oh Hell it records, by playing every move again through the rules; null for anything they cannot play out. */
+/** Text read back into the game of Oh Hell it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns Text read back into the game of Oh Hell it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { decodeOhHell, encodeOhHell } from "@johnmorrisdotca/toranpu/oh-hell";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ohHell.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ohHell", { players: names, seed: 42 })!;
+ * console.log(decodeOhHell(encodeOhHell(game))?.phase);
+ * ```
+ */
 export const decodeOhHell = codec.decode;
 
-/** Oh Hell as one `CardGameRules`: everything a table asks of the game. */
+/** Oh Hell as one `CardGameRules`: everything a table asks of the game.
+ *
+ * @example
+ * ```ts
+ * import { OH_HELL_RULES } from "@johnmorrisdotca/toranpu/oh-hell";
+ * console.log(Object.keys(OH_HELL_RULES));
+ * ```
+ */
 export const OH_HELL_RULES: CardGameRules<OhHellGame, OhHellMove> = {
   start: startOhHell,
   moves: ohHellMoves,

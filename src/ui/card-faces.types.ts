@@ -9,6 +9,14 @@
  * such a card any id of letters, digits, `-`, `_`, `.` or `:` (up to 40), and
  * either its drawing in `art` or a function that draws it in `draw`. See
  * `registerCardDesign`.
+ *
+ * @example
+ * ```ts
+ * import type { CardDesign } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * const value: CardDesign = { name: "docs-face", box: [100, 140], art: { "docs-card": `<circle cx="50" cy="70" r="20"/>` } };
+ * console.log(value.name);
+ * ```
  */
 export type CardDesign = {
   /** The design's name, as `cardFaceSvg` and an element's `design` attribute take it. */

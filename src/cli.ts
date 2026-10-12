@@ -17,7 +17,16 @@ import { cardsShort, gameName, gameSays, namesList } from "./words.ts";
  * network, so every line of it is tested as plain data.
  */
 
-/** What the command line is run in. All of it is optional. */
+/** What the command line is run in. All of it is optional.
+ *
+ * @example
+ * ```ts
+ * import type { CliSurroundings } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CliSurroundings = { env: {}, locale: "en", colour: false, seed: () => 42 };
+ * console.log(value.locale);
+ * ```
+ */
 export type CliSurroundings = {
   /** The environment, for the language (`LC_ALL`, `LC_MESSAGES`, `LANG`) and `NO_COLOR`. */
   env?: Record<string, string | undefined>;
@@ -33,7 +42,17 @@ export type CliSurroundings = {
   seed?: () => number;
 };
 
-/** What the command line came to. */
+/** What the command line came to.
+ *
+ * @example
+ * ```ts
+ * import type { CliResult } from "@johnmorrisdotca/toranpu";
+ * import { runCli } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CliResult = runCli(["--help"]);
+ * console.log(value.code);
+ * ```
+ */
 export type CliResult = {
   /** 0 when all went well, 1 when what was asked for could not be done, 2 when the command itself was wrong. */
   code: 0 | 1 | 2;
@@ -43,7 +62,20 @@ export type CliResult = {
   err: string;
 };
 
-/** The language the command line speaks: `--lang`, or the environment's, or the system's; Japanese for `ja…`, English for anything else. */
+/** The language the command line speaks: `--lang`, or the environment's, or the system's; Japanese for `ja…`, English for anything else.
+ *
+ * @param flag - An explicit language flag, when supplied.
+ * @param env - Environment variables used to select the CLI language.
+ * @param locale - The host locale used when no explicit language is supplied.
+ * @returns The language the command line speaks: `--lang`, or the environment's, or the system's; Japanese for `ja…`, English for anything else.
+ *
+ * @example
+ * ```ts
+ * import { cliLanguage } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(cliLanguage(undefined, { LANG: "ja_JP.UTF-8" }));
+ * ```
+ */
 export function cliLanguage(flag: string | undefined, env: Record<string, string | undefined> = {}, locale?: string): Language {
   const named = [flag, env.LC_ALL, env.LC_MESSAGES, env.LANG].find((value) => value !== undefined && value !== "" && value !== "C" && value !== "POSIX" && !value.startsWith("C."));
   return (named ?? locale ?? "en").toLowerCase().startsWith("ja") ? "ja" : "en";
@@ -98,6 +130,17 @@ function sizesText(kind: CardGameKind): string {
  * Run the command line. See `toranpu --help` for what it takes. Every deal
  * comes from the seed, so the same command prints the same cards on every
  * machine.
+ *
+ * @param args - Arguments after the command name.
+ * @param around - Environment, locale, input and random source supplied by the host.
+ * @returns Run the command line. See `toranpu --help` for what it takes. Every deal comes from the seed, so the same command prints the same cards on every machine.
+ *
+ * @example
+ * ```ts
+ * import { runCli } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(runCli(["--help"], { colour: false }).code);
+ * ```
  */
 export function runCli(args: readonly string[], around: CliSurroundings = {}): CliResult {
   const asked = sortArguments(args);

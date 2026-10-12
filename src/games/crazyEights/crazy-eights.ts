@@ -27,23 +27,63 @@ import type { CrazyEightsGame, CrazyEightsMove, CrazyEightsResult } from "./craz
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-/** The rank that is wild in Crazy Eights. */
+/** The rank that is wild in Crazy Eights.
+ *
+ * @example
+ * ```ts
+ * import { EIGHT } from "@johnmorrisdotca/toranpu/crazy-eights";
+ * console.log(EIGHT);
+ * ```
+ */
 export const EIGHT = 8;
 const SUITS_CALLED: readonly CardSuit[] = ["C", "D", "H", "S"];
 
-/** What a card left in hand is worth to the winner of the hand. */
+/** What a card left in hand is worth to the winner of the hand.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns What a card left in hand is worth to the winner of the hand.
+ *
+ * @example
+ * ```ts
+ * import { crazyPoints } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * console.log(crazyPoints("8H"));
+ * ```
+ */
 export function crazyPoints(card: CardId): number {
   const rank = rankOf(card);
   if (rank === EIGHT) return 50;
   return rank >= 11 ? 10 : rank;
 }
 
-/** Seven cards each for two players, five for more. */
+/** Seven cards each for two players, five for more.
+ *
+ * @param seats - The seat count or seat state supplied by this API.
+ * @returns Seven cards each for two players, five for more.
+ *
+ * @example
+ * ```ts
+ * import { crazyHandSize } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * console.log(crazyHandSize(4));
+ * ```
+ */
 export function crazyHandSize(seats: number): number {
   return seats === 2 ? 7 : 5;
 }
 
-/** A hand as a player holds it: eights last, the rest by suit and rank. */
+/** A hand as a player holds it: eights last, the rest by suit and rank.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns A hand as a player holds it: eights last, the rest by suit and rank.
+ *
+ * @example
+ * ```ts
+ * import { sortCrazy } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * console.log(sortCrazy(["8H", "AS", "2C"]));
+ * ```
+ */
 export function sortCrazy(hand: readonly CardId[]): CardId[] {
   const order = "CDSH";
   const key = (card: CardId) => (rankOf(card) === EIGHT ? 100 : order.indexOf(suitOf(card)) * 20 + rankOf(card));
@@ -71,7 +111,24 @@ function dealHand(game: Omit<CrazyEightsGame, "hands" | "stock" | "discard" | "s
   };
 }
 
-/** A new game of Crazy Eights for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Crazy Eights is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Crazy Eights for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Crazy Eights is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Crazy Eights for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Crazy Eights is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startCrazyEights } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startCrazyEights(CARD_GAME_TABLES.crazyEights.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startCrazyEights(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): CrazyEightsGame | null {
   if (!(CRAZY_EIGHTS_SIZES as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 7) return null;
@@ -87,12 +144,41 @@ export function startCrazyEights(size: number, players: readonly string[], _lang
   });
 }
 
-/** The card on top of the discard pile. */
+/** The card on top of the discard pile.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The card on top of the discard pile.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { crazyTop } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(crazyTop(game));
+ * ```
+ */
 export function crazyTop(game: CrazyEightsGame): CardId {
   return game.discard[game.discard.length - 1];
 }
 
-/** Whether this card may go on the pile now: an eight always; otherwise the suit to follow or the top card's rank. */
+/** Whether this card may go on the pile now: an eight always; otherwise the suit to follow or the top card's rank.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns Whether this card may go on the pile now: an eight always; otherwise the suit to follow or the top card's rank.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { crazyMatches } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(crazyMatches(game, game.hands[game.toPlay!]![0]!));
+ * ```
+ */
 export function crazyMatches(game: CrazyEightsGame, card: CardId): boolean {
   return rankOf(card) === EIGHT || suitOf(card) === game.suit || rankOf(card) === rankOf(crazyTop(game));
 }
@@ -102,14 +188,49 @@ function canDraw(game: CrazyEightsGame): boolean {
   return game.stock.length > 0 || game.discard.length > 1;
 }
 
-/** The cards the player to move may play now: after drawing, only the card drawn. */
+/** The cards the player to move may play now: after drawing, only the card drawn.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The cards the player to move may play now: after drawing, only the card drawn.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { crazyPlayable } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * const rules = rulesFor("crazyEights");
+ * for (let setup = 0; setup < 100 && game.phase !== "playing" && game.phase !== "over"; setup += 1) {
+ *   const next = rules.play(game, rules.computer(game));
+ *   if (next === null) throw new Error("Unexpected illegal setup move");
+ *   game = next;
+ * }
+ * if (game.phase !== "playing") throw new Error("Setup did not reach playing");
+ * console.log(crazyPlayable(game));
+ * ```
+ */
 export function crazyPlayable(game: CrazyEightsGame): CardId[] {
   if (game.phase === "over" || game.toPlay === null) return [];
   const from = game.drawn !== null ? [game.drawn] : game.hands[game.toPlay];
   return from.filter((card) => crazyMatches(game, card));
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { crazyEightsMoves } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(crazyEightsMoves(game));
+ * ```
+ */
 export function crazyEightsMoves(game: CrazyEightsGame): CrazyEightsMove[] {
   if (game.phase === "over" || game.toPlay === null) return [];
   const plays = crazyPlayable(game).flatMap((card): CrazyEightsMove[] =>
@@ -169,7 +290,22 @@ function pass(game: CrazyEightsGame, seat: number): CrazyEightsGame | null {
   return endHand(game, held.flatMap((points, at) => (points === least ? [at] : [])), true);
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playCrazyEights } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(playCrazyEights(game, rulesFor("crazyEights").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playCrazyEights(game: CrazyEightsGame, move: CrazyEightsMove): CrazyEightsGame | null {
   const seat = game.toPlay;
   if (game.phase === "over" || seat === null) return null;
@@ -180,7 +316,21 @@ export function playCrazyEights(game: CrazyEightsGame, move: CrazyEightsMove): C
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 
-/** The highest score wins, once somebody reaches the game's size; level on it shares the win. */
+/** The highest score wins, once somebody reaches the game's size; level on it shares the win.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The highest score wins, once somebody reaches the game's size; level on it shares the win.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { crazyEightsWinners } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(crazyEightsWinners(game));
+ * ```
+ */
 export function crazyEightsWinners(game: CrazyEightsGame): number[] {
   if (game.phase !== "over") return [];
   const top = Math.max(...game.scores);

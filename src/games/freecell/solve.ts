@@ -149,6 +149,18 @@ function distance(table: FreeCellTable): number {
  * A winning line from this table — every move a replay of it makes, the safe
  * ones home included — or null when none was found within `budget` tables.
  * Best first (`bestFirst`): the table that looks nearest to won is opened next.
+ *
+ * @param start - The initial game or state before the recorded moves.
+ * @param budget - Limits on the solver’s search work.
+ * @returns A winning line from this table — every move a replay of it makes, the safe ones home included — or null when none was found within `budget` tables. Best first (`bestFirst`): the table that looks nearest to won is opened next.
+ *
+ * @example
+ * ```ts no-run
+ * import { dealFreeCell, dealOfSeed, deckOf, solveFreeCell } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(solveFreeCell(table, 100));
+ * ```
  */
 export function solveFreeCell(start: FreeCellTable, budget = 10_000): { moves: FreeCellMove[] | null; tables: number } {
   return bestFirst({ candidates, play: playFreeCell, settle: playSafe, won: freeCellWon, key: keyOf, distance }, start, budget);

@@ -17,7 +17,7 @@
  * ```ts
  * import { registerCardBack, cardBackSvg } from "@johnmorrisdotca/toranpu/card-backs";
  *
- * registerCardBack("frontier", { colour: "#2f4a3a", ink: "#e7d9a8", logo: "<circle cx='50' cy='50' r='40'/>" });
+ * registerCardBack("frontier", { colour: "#2f4a3a", ink: "#e7d9a8", logo: `<circle cx='50' cy='50' r='40'/>` });
  * element.innerHTML = cardBackSvg("frontier", { width: 70 });
  * ```
  */

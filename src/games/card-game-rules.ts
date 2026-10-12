@@ -24,7 +24,17 @@ import { SPADES_RULES } from "./spades/spades-rules.ts";
 import type { WarGame, WarMove } from "./war/war.types.ts";
 import { WAR_RULES } from "./war/war-rules.ts";
 
-/** Each card game's game and move, so its rules can be named with their own types. */
+/** Each card game's game and move, so its rules can be named with their own types.
+ *
+ * @example
+ * ```ts
+ * import type { CardGamePlays } from "@johnmorrisdotca/toranpu";
+ * import { newGame } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: CardGamePlays["hearts"]["game"] = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(value.phase);
+ * ```
+ */
 export type CardGamePlays = {
   hearts: { game: HeartsGame; move: HeartsMove };
   bigTwo: { game: BigTwoGame; move: ClimbMove };
@@ -43,6 +53,12 @@ export type CardGamePlays = {
  * EVERY CARD GAME'S RULES, by kind: what a table plays and what the
  * simulation plays out. A mapped type, so a new card game
  * does not compile until its rules are here.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_RULES } from "@johnmorrisdotca/toranpu";
+ * console.log(Object.keys(CARD_GAME_RULES));
+ * ```
  */
 export const CARD_GAME_RULES: { [K in CardGameKind]: CardGameRules<CardGamePlays[K]["game"], CardGamePlays[K]["move"]> } = {
   hearts: HEARTS_RULES,

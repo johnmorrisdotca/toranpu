@@ -24,10 +24,32 @@ import {
  * way of moving a card goes through the same few lines.
  */
 
-/** A card on the table, as a person points at it: the pile, and its place from the bottom (-1 for the pile's empty place). */
+/** A card on the table, as a person points at it: the pile, and its place from the bottom (-1 for the pile's empty place).
+ *
+ * @example
+ * ```ts
+ * import type { FreeCellSpot } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const value: FreeCellSpot = { pile: "1", index: 0 };
+ * console.log(value.pile);
+ * ```
+ */
 export type FreeCellSpot = { pile: FreeCellPile; index: number };
 
-/** The cards of a pile, bottom first, as the table holds them. */
+/** The cards of a pile, bottom first, as the table holds them.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param pile - The pile to inspect or arrange.
+ * @returns The cards of a pile, bottom first, as the table holds them.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell, dealOfSeed, deckOf, freeCellPileCards } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(freeCellPileCards(table, "1"));
+ * ```
+ */
 export function freeCellPileCards(table: FreeCellTable, pile: FreeCellPile): readonly number[] {
   if (isColumnPile(pile)) return table.tableau[columnAt(pile)];
   if (isCellPile(pile)) {
@@ -42,6 +64,18 @@ export function freeCellPileCards(table: FreeCellTable, pile: FreeCellPile): rea
  * The cards a person can take hold of from a spot, the one held and every one
  * on it, or none: a free cell's card, or a column's card with the run in order
  * on top of it. A foundation's cards stay home.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param spot - The source or destination card location.
+ * @returns The cards a person can take hold of from a spot, the one held and every one on it, or none: a free cell's card, or a column's card with the run in order on top of it. A foundation's cards stay home.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell, dealOfSeed, deckOf, freeCellLiftable } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(freeCellLiftable(table, { pile: "1", index: table.tableau[0]!.length - 1 }));
+ * ```
  */
 export function freeCellLiftable(table: FreeCellTable, spot: FreeCellSpot): readonly number[] {
   if (isFoundationPile(spot.pile)) return [];
@@ -51,7 +85,21 @@ export function freeCellLiftable(table: FreeCellTable, spot: FreeCellSpot): read
   return cards.length - spot.index <= runLength(cards) ? cards.slice(spot.index) : [];
 }
 
-/** The move that carries the cards held at `from` to `to`, if the rules allow exactly those cards there. */
+/** The move that carries the cards held at `from` to `to`, if the rules allow exactly those cards there.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param from - The source position or source state specified by this API.
+ * @param to - The destination position or state specified by this API.
+ * @returns The matching legal carry, or null when the selected cards cannot move there.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell, dealOfSeed, deckOf, freeCellMoveFor } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(freeCellMoveFor(table, { pile: "1", index: table.tableau[0]!.length - 1 }, "a"));
+ * ```
+ */
 export function freeCellMoveFor(table: FreeCellTable, from: FreeCellSpot, to: FreeCellPile): FreeCellMove | null {
   const held = freeCellLiftable(table, from);
   if (from.pile === to || held.length === 0) return null;
@@ -62,7 +110,20 @@ export function freeCellMoveFor(table: FreeCellTable, from: FreeCellSpot, to: Fr
   return playFreeCell(table, move) === null ? null : move;
 }
 
-/** The move that sends a top card home, if it can go: what a double tap does. */
+/** The move that sends a top card home, if it can go: what a double tap does.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param spot - The source or destination card location.
+ * @returns The legal foundation move, or null when the selected card cannot go home.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell, dealOfSeed, deckOf, freeCellHomeMove } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(freeCellHomeMove(table, { pile: "1", index: table.tableau[0]!.length - 1 }));
+ * ```
+ */
 export function freeCellHomeMove(table: FreeCellTable, spot: FreeCellSpot): FreeCellMove | null {
   const held = freeCellLiftable(table, spot);
   if (held.length !== 1) return null;
@@ -73,6 +134,17 @@ export function freeCellHomeMove(table: FreeCellTable, spot: FreeCellSpot): Free
  * THE GAME PLAYS ITSELF OUT once nothing is left to decide: when every card
  * still out can go home in turn, the lowest first, the moves that take them
  * there — or null while one cannot, and the player goes on.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns THE GAME PLAYS ITSELF OUT once nothing is left to decide: when every card still out can go home in turn, the lowest first, the moves that take them there — or null while one cannot, and the player goes on.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell, dealOfSeed, deckOf, freeCellFinishingMoves } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(freeCellFinishingMoves(table));
+ * ```
  */
 export function freeCellFinishingMoves(table: FreeCellTable): FreeCellMove[] | null {
   if (freeCellWon(table)) return null;
@@ -93,7 +165,19 @@ export function freeCellFinishingMoves(table: FreeCellTable): FreeCellMove[] | n
   return freeCellWon(now) ? moves : null;
 }
 
-/** Whether nothing can be done but give up: no card can move anywhere. */
+/** Whether nothing can be done but give up: no card can move anywhere.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns Whether nothing can be done but give up: no card can move anywhere.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell, dealOfSeed, deckOf, freeCellStuck } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(freeCellStuck(table));
+ * ```
+ */
 export function freeCellStuck(table: FreeCellTable): boolean {
   return !freeCellWon(table) && movesFrom(table).length === 0;
 }

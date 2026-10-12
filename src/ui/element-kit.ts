@@ -79,7 +79,14 @@ export function cardLabel(card: string, faceDown: boolean, language: Language, d
   return faceDown ? STRINGS[language].cardFaceDown : faceName(card, language, typeof design === "object" && design !== null ? design : undefined);
 }
 
-/** The sizes every element takes, as a card's width in pixels. */
+/** The sizes every element takes, as a card's width in pixels.
+ *
+ * @example
+ * ```ts
+ * import { ELEMENT_SIZES } from "@johnmorrisdotca/toranpu/element";
+ * console.log(ELEMENT_SIZES);
+ * ```
+ */
 export const ELEMENT_SIZES = { small: 46, medium: 70, large: 104 } as const;
 
 /** An element's card width in CSS: its `width` in pixels, or its `size`, or the page's `--toranpu-card-width`, or medium. */
@@ -148,7 +155,16 @@ export function markerHtml(marked: boolean): string {
 /** The mark's look, for every element that draws one. */
 export const MARKER_STYLE = `.marker { position: absolute; left: -6%; top: -4%; width: 22%; aspect-ratio: 1; border-radius: 50%; background: var(--toranpu-marker, #f2b134); box-shadow: 0 0 0 2px #fff, 0 1px 3px rgba(0,0,0,.45); pointer-events: none; }`;
 
-/** How a card is spun. */
+/** How a card is spun.
+ *
+ * @example
+ * ```ts
+ * import type { SpinOptions } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: SpinOptions = { direction: "clockwise", turns: 1, ms: 300 };
+ * console.log(value.turns);
+ * ```
+ */
 export type SpinOptions = {
   /** Which way it spins. Unless said, clockwise. */
   direction?: "clockwise" | "anticlockwise";

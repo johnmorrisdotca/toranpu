@@ -155,6 +155,18 @@ type Frame = { table: KlondikeTable; tries: KlondikeMove[]; next: number; via: K
  * A winning line from this table — every move, the safe ones home included,
  * that a replay of it makes — or null when none was found within `budget`
  * tables. `budget` is a count, never a time, so every browser agrees.
+ *
+ * @param start - The initial game or state before the recorded moves.
+ * @param budget - Limits on the solver’s search work.
+ * @returns A winning line from this table — every move, the safe ones home included, that a replay of it makes — or null when none was found within `budget` tables. `budget` is a count, never a time, so every browser agrees.
+ *
+ * @example
+ * ```ts no-run
+ * import { dealKlondike, dealOfSeed, deckOf, solveKlondike } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(solveKlondike(table, 100));
+ * ```
  */
 export function solveKlondike(start: KlondikeTable, budget = 60_000): { moves: KlondikeMove[] | null; tables: number } {
   const seen = new Set<string>();
@@ -186,5 +198,17 @@ export function solveKlondike(start: KlondikeTable, budget = 60_000): { moves: K
   return { moves: null, tables };
 }
 
-/** Whether a card is one the solver treats as home safely: exported for its test. */
+/** Whether a card is one the solver treats as home safely: exported for its test.
+ *
+ * @param card - The packed card number from 0 to 51.
+ * @param foundation - The foundation index or state being checked.
+ * @returns Whether a card is one the solver treats as home safely: exported for its test.
+ *
+ * @example
+ * ```ts
+ * import { isSafeHome } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * console.log(isSafeHome(0, [0, 0, 0, 0]));
+ * ```
+ */
 export const isSafeHome = safeHome;

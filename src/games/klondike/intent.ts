@@ -21,10 +21,32 @@ import type { KlondikeMove, KlondikePile, KlondikeTable } from "./klondike.types
  * goes through the same few lines, and a test can drive them without a browser.
  */
 
-/** A card on the table, as a person points at it: the pile, and its place from the bottom (-1 for the pile's empty place). */
+/** A card on the table, as a person points at it: the pile, and its place from the bottom (-1 for the pile's empty place).
+ *
+ * @example
+ * ```ts
+ * import type { TableSpot } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const value: TableSpot = { pile: "1", index: 0 };
+ * console.log(value.pile);
+ * ```
+ */
 export type TableSpot = { pile: KlondikePile; index: number };
 
-/** The cards of a pile, bottom first, as the table holds them. */
+/** The cards of a pile, bottom first, as the table holds them.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param pile - The pile to inspect or arrange.
+ * @returns The cards of a pile, bottom first, as the table holds them.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf, pileCards } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(pileCards(table, "1"));
+ * ```
+ */
 export function pileCards(table: KlondikeTable, pile: KlondikePile): readonly number[] {
   if (pile === "s") return table.stock;
   if (pile === "w") return table.waste;
@@ -39,6 +61,18 @@ export function pileCards(table: KlondikeTable, pile: KlondikePile): readonly nu
  * The cards a person can take hold of from a spot, the one held and every one
  * on it, or none: the waste's top card, a foundation's top card, or any
  * face-up card of a column with the run on top of it.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param spot - The source or destination card location.
+ * @returns The cards a person can take hold of from a spot, the one held and every one on it, or none: the waste's top card, a foundation's top card, or any face-up card of a column with the run on top of it.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf, liftable } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(liftable(table, { pile: "1", index: table.tableau[0]!.cards.length - 1 }));
+ * ```
  */
 export function liftable(table: KlondikeTable, spot: TableSpot): readonly number[] {
   const cards = pileCards(table, spot.pile);
@@ -53,6 +87,19 @@ export function liftable(table: KlondikeTable, spot: TableSpot): readonly number
  * exactly those cards there. A column gives up the one run that fits, so the
  * card held must be that run's foot: holding the 7 of a 9-8-7 and letting it
  * go on an 8 carries the 7, never the 9 that happens to fit somewhere.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param from - The source position or source state specified by this API.
+ * @param to - The destination position or state specified by this API.
+ * @returns The matching legal carry, or null when exactly the held cards cannot move to that destination.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf, moveFor } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(moveFor(table, { pile: "1", index: table.tableau[0]!.cards.length - 1 }, "2"));
+ * ```
  */
 export function moveFor(table: KlondikeTable, from: TableSpot, to: KlondikePile): KlondikeMove | null {
   if (from.pile === to || liftable(table, from).length === 0) return null;
@@ -61,14 +108,39 @@ export function moveFor(table: KlondikeTable, from: TableSpot, to: KlondikePile)
   return playKlondike(table, move) === null ? null : move;
 }
 
-/** The move that sends a top card home, if it can go: what a double tap does. */
+/** The move that sends a top card home, if it can go: what a double tap does.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @param spot - The source or destination card location.
+ * @returns The legal move to a foundation, or null when the selected top card cannot go home.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf, homeMove } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(homeMove(table, { pile: "1", index: table.tableau[0]!.cards.length - 1 }));
+ * ```
+ */
 export function homeMove(table: KlondikeTable, spot: TableSpot): KlondikeMove | null {
   const held = liftable(table, spot);
   if (held.length !== 1) return null;
   return moveFor(table, spot, foundationPileOf(held[0]));
 }
 
-/** What a press on the stock does: turn it, or turn the waste back over, or nothing once the passes are spent. */
+/** What a press on the stock does: turn it, or turn the waste back over, or nothing once the passes are spent.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns The legal stock or recycle move, or null when no stock action is available.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf, stockMove } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(stockMove(table));
+ * ```
+ */
 export function stockMove(table: KlondikeTable): KlondikeMove | null {
   const move: KlondikeMove = table.stock.length > 0 ? { kind: "draw" } : { kind: "recycle" };
   return playKlondike(table, move) === null ? null : move;
@@ -79,6 +151,17 @@ export function stockMove(table: KlondikeTable): KlondikeMove | null {
  * moves that bring the rest home, found by the solver on a small budget (a
  * table with nothing hidden is solved in a handful of tables), or null while a
  * card is still face down or no way home is found — then the player goes on.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns THE GAME PLAYS ITSELF OUT once every card on the columns is face up: the moves that bring the rest home, found by the solver on a small budget (a table with nothing hidden is solved in a handful of tables), or null while a card is still face down or no way home is found — then the player goes on.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf, finishingMoves } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(finishingMoves(table));
+ * ```
  */
 export function finishingMoves(table: KlondikeTable): KlondikeMove[] | null {
   if (!allFaceUp(table) || klondikeWon(table)) return null;
@@ -90,6 +173,17 @@ export function finishingMoves(table: KlondikeTable): KlondikeMove[] | null {
  * stock can be neither turned nor turned back. With passes left a person may
  * still turn the stock for a card they need, so this is only ever said of the
  * one table where it is certainly true.
+ *
+ * @param table - The native solitaire table; move helpers leave the input unchanged.
+ * @returns Whether nothing can be done but give up: no card can move anywhere, and the stock can be neither turned nor turned back. With passes left a person may still turn the stock for a card they need, so this is only ever said of the one table where it is certainly true.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf, stuck } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * console.log(stuck(table));
+ * ```
  */
 export function stuck(table: KlondikeTable): boolean {
   return !klondikeWon(table) && movesFrom(table).length === 0;

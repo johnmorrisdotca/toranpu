@@ -14,18 +14,51 @@ import { dealFreeCell, FREECELL_PILES, isColumnPile, playFreeCell } from "./rule
 
 export { dealOfSeed, deckOf } from "../klondike/code.ts";
 
-/** One move written as text: one or two letters. */
+/** One move written as text: one or two letters.
+ *
+ * @param move - The native move to validate or apply.
+ * @returns One move written as text: one or two letters.
+ *
+ * @example
+ * ```ts
+ * import { encodeMove } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * console.log(encodeMove({ from: "1", to: "a", count: 1 }));
+ * ```
+ */
 export function encodeMove(move: FreeCellMove): string {
   if (isColumnPile(move.from) && isColumnPile(move.to)) return `${move.from}${move.to}${move.count.toString(36)}`;
   return `${move.from}${move.to}`;
 }
 
-/** A list of moves written as text, one after another with nothing between. */
+/** A list of moves written as text, one after another with nothing between.
+ *
+ * @param moves - The ordered native moves to replay.
+ * @returns A list of moves written as text, one after another with nothing between.
+ *
+ * @example
+ * ```ts
+ * import { encodeMoves } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * console.log(encodeMoves([{ from: "1", to: "a", count: 1 }]));
+ * ```
+ */
 export function encodeMoves(moves: readonly FreeCellMove[]): string {
   return moves.map(encodeMove).join("");
 }
 
-/** A move list read back, or null for one with a character that is no move. */
+/** A move list read back, or null for one with a character that is no move.
+ *
+ * @param code - The encoded card or game state.
+ * @returns A move list read back, or null for one with a character that is no move.
+ *
+ * @example
+ * ```ts
+ * import { decodeMoves, encodeMoves } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * console.log(decodeMoves(encodeMoves([{ from: "1", to: "a", count: 1 }])));
+ * ```
+ */
 export function decodeMoves(code: string): FreeCellMove[] | null {
   const moves: FreeCellMove[] = [];
   for (let at = 0; at < code.length; ) {
@@ -50,6 +83,19 @@ export function decodeMoves(code: string): FreeCellMove[] | null {
  * the deal, or null where the deal is not a deck or a move is one the rules
  * refuse. The one reader of a move list, for the table, a kept run, the check
  * and a finished game's page alike.
+ *
+ * @param deal - The deal number or dealing specification.
+ * @param cells - The number of available free cells.
+ * @param moves - The ordered native moves to replay.
+ * @returns A game played out from its deal: every table it passed through, the first the deal, or null where the deal is not a deck or a move is one the rules refuse. The one reader of a move list, for the table, a kept run, the check and a finished game's page alike.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell, dealOfSeed, deckOf, encodeMoves, movesFrom, replayFreeCell } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * console.log(replayFreeCell(dealOfSeed(42), 4, encodeMoves(movesFrom(table).slice(0, 1)))?.length);
+ * ```
  */
 export function replayFreeCell(deal: string, cells: number, moves: string): FreeCellTable[] | null {
   const deck = deckOf(deal);

@@ -7,10 +7,29 @@ import { cardFromCode, cardId } from "../cards/deck.ts";
 import { seededRandom } from "../random.ts";
 import { customCardKnown } from "./registry.ts";
 
-/** One card's place: across and down in card widths from where the first lies, and its turn in degrees. */
+/** One card's place: across and down in card widths from where the first lies, and its turn in degrees.
+ *
+ * @example
+ * ```ts
+ * import type { CardPlace } from "@johnmorrisdotca/toranpu/element";
+ * import { handLayout } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: CardPlace = handLayout(1)[0]!;
+ * console.log(value);
+ * ```
+ */
 export type CardPlace = { x: number; y: number; rotate: number };
 
-/** How a hand is laid out. */
+/** How a hand is laid out.
+ *
+ * @example
+ * ```ts
+ * import type { HandLayoutOptions } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: HandLayoutOptions = { open: 1, step: 30 };
+ * console.log(value.open);
+ * ```
+ */
 export type HandLayoutOptions = {
   /** How far open, from 0 (squared up: only the top card shows) to 1 (a clear fan). Unless said, 1. */
   open?: number;
@@ -26,6 +45,17 @@ export type HandLayoutOptions = {
  * Where each card of a hand of `count` lies: a fan when open, a squared-up
  * stack with a sliver of each card showing when closed, and every shape in
  * between. The middle card turns least; the first lies at x 0.
+ *
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns Where each card of a hand of `count` lies: a fan when open, a squared-up stack with a sliver of each card showing when closed, and every shape in between. The middle card turns least; the first lies at x 0.
+ *
+ * @example
+ * ```ts
+ * import { handLayout } from "@johnmorrisdotca/toranpu/element";
+ *
+ * console.log(handLayout(3, { open: 1 }));
+ * ```
  */
 export function handLayout(count: number, options: HandLayoutOptions = {}): CardPlace[] {
   const whole = Math.max(0, Math.floor(Number.isFinite(count) ? count : 0));
@@ -44,7 +74,16 @@ export function handLayout(count: number, options: HandLayoutOptions = {}): Card
   });
 }
 
-/** How a pile is laid out. */
+/** How a pile is laid out.
+ *
+ * @example
+ * ```ts
+ * import type { PileLayoutOptions } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: PileLayoutOptions = { seed: 42, depth: 10, messiness: 0.5 };
+ * console.log(value.seed);
+ * ```
+ */
 export type PileLayoutOptions = {
   /** From 0 (squared up neatly) to 1 (very messy). Unless said, 0.3. */
   messiness?: number;
@@ -61,6 +100,17 @@ export type PileLayoutOptions = {
  * little more. Seeded, so the same pile always looks the same, and adding a
  * card on top moves none of those under it. Only the top `depth` cards under
  * the top one are given places; a pile is never drawn deeper than that.
+ *
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns Where each card of a pile of `count` lies, bottom first, the top card last: at 0 messiness a neat stack whose edge shows a card's thickness for each card under the top, and towards 1 a heap, each card nudged and turned a little more. Seeded, so the same pile always looks the same, and adding a card on top moves none of those under it. Only the top `depth` cards under the top one are given places; a pile is never drawn deeper than that.
+ *
+ * @example
+ * ```ts
+ * import { pileLayout } from "@johnmorrisdotca/toranpu/element";
+ *
+ * console.log(pileLayout(3, { seed: 42, messiness: 0.5 }));
+ * ```
  */
 export function pileLayout(count: number, options: PileLayoutOptions = {}): CardPlace[] {
   const whole = Math.max(0, Math.floor(Number.isFinite(count) ? count : 0));
@@ -100,6 +150,16 @@ function withinLimits(ids: readonly string[]): boolean {
  * deck's one-letter codes run together (`"pvOZ"`). The extras by their ids or
  * their words: `JOKER` (each the next of red and black), `RULES`, `BLANK`.
  * `null` for anything else, or for more extras than one pack holds.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns A hand written as text, as its cards: the two-letter ids separated by spaces or commas (`"AS KH 10D TC RJ"`, with `10` for ten as well as `T`), or the deck's one-letter codes run together (`"pvOZ"`). The extras by their ids or their words: `JOKER` (each the next of red and black), `RULES`, `BLANK`. `null` for anything else, or for more extras than one pack holds.
+ *
+ * @example
+ * ```ts
+ * import { readHand } from "@johnmorrisdotca/toranpu/element";
+ *
+ * console.log(readHand("AS KH 10D"));
+ * ```
  */
 export function readHand(text: string | null | undefined): string[] | null {
   const originals = String(text ?? "").trim().split(/[\s,;+]+/).filter(Boolean);
@@ -141,7 +201,16 @@ function round(value: number): number {
   return Object.is(kept, -0) ? 0 : kept;
 }
 
-/** How a hand's cards are laid out: as they were dealt, by rank, grouped by suit, or the number cards apart from the face cards. */
+/** How a hand's cards are laid out: as they were dealt, by rank, grouped by suit, or the number cards apart from the face cards.
+ *
+ * @example
+ * ```ts
+ * import type { CardOrder } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: CardOrder = "rank";
+ * console.log(value);
+ * ```
+ */
 export type CardOrder = "dealt" | "rank" | "suit" | "face";
 
 /** The ranks low to high, the ace high, as a sorted hand reads left to right. */
@@ -163,6 +232,17 @@ const SUITS = "SHCD";
  * arrangeCards(["QH", "2S", "AH", "2H"], "rank"); // ["2S", "2H", "QH", "AH"]
  * arrangeCards(["QH", "2S", "AH", "2H", "KS"], "suit"); // ["2S", "KS", "2H", "QH", "AH"]
  * arrangeCards(["QH", "2S", "AH", "KS", "9D"], "face"); // ["AH", "2S", "9D", "QH", "KS"]
+ * ```
+ *
+ * @param cards - The cards in their current order.
+ * @param by - The card order to apply.
+ * @returns A hand laid out another way, as a new list (the one given is left alone): `"rank"` sorts it low to high, the ace high, a rank's cards in suit order; `"suit"` groups it by suit, spades, hearts, clubs, diamonds, each in rank order; `"face"` groups it into the number cards, ace to ten, and then the face cards, jack, queen, king, each group in rank order and a rank's cards in suit order; `"dealt"` keeps the order given. The extras (jokers, rules cards, the blank) come last, in the order dealt. Cards of the same id keep their order, so a sort is stable. ```ts arrangeCards(["QH", "2S", "AH", "2H"], "rank"); // ["2S", "2H", "QH", "AH"] arrangeCards(["QH", "2S", "AH", "2H", "KS"], "suit"); // ["2S", "KS", "2H", "QH", "AH"] arrangeCards(["QH", "2S", "AH", "KS", "9D"], "face"); // ["AH", "2S", "9D", "QH", "KS"] ```
+ *
+ * @example
+ * ```ts
+ * import { arrangeCards } from "@johnmorrisdotca/toranpu/element";
+ *
+ * console.log(arrangeCards(["KH", "AS", "2D"], "rank"));
  * ```
  */
 export function arrangeCards(cards: readonly string[], by: CardOrder): string[] {
@@ -188,6 +268,18 @@ export function arrangeCards(cards: readonly string[], by: CardOrder): string[] 
  * A hand mixed up, as a new list: the same cards in another order, never the order given (where a hand
  * has two cards or more that differ), so a mix is always seen to change something. `random` is any
  * source of numbers in [0, 1); unless given, `Math.random`.
+ *
+ * @param cards - The cards in their current order.
+ * @param random - A source of numbers in [0, 1), such as seededRandom(seed).
+ * @returns A hand mixed up, as a new list: the same cards in another order, never the order given (where a hand has two cards or more that differ), so a mix is always seen to change something. `random` is any source of numbers in [0, 1); unless given, `Math.random`.
+ *
+ * @example
+ * ```ts
+ * import { mixCards } from "@johnmorrisdotca/toranpu/element";
+ * import { seededRandom } from "@johnmorrisdotca/toranpu/deck";
+ *
+ * console.log(mixCards(["AS", "KH", "TD"], seededRandom(42)));
+ * ```
  */
 export function mixCards(cards: readonly string[], random: () => number = Math.random): string[] {
   const mixed = [...cards];
@@ -201,23 +293,67 @@ export function mixCards(cards: readonly string[], random: () => number = Math.r
   return mixed;
 }
 
-/** A hand without one card, as a new list: the first of that card taken out, or the hand unchanged where it holds none. */
+/** A hand without one card, as a new list: the first of that card taken out, or the hand unchanged where it holds none.
+ *
+ * @param cards - The cards in their current order.
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A hand without one card, as a new list: the first of that card taken out, or the hand unchanged where it holds none.
+ *
+ * @example
+ * ```ts
+ * import { tossCard } from "@johnmorrisdotca/toranpu/element";
+ *
+ * console.log(tossCard(["AS", "KH"], "AS"));
+ * ```
+ */
 export function tossCard(cards: readonly string[], card: string): string[] {
   const at = cards.indexOf(card);
   return at === -1 ? [...cards] : [...cards.slice(0, at), ...cards.slice(at + 1)];
 }
 
-/** Where a card a hand is given goes: to the front, or the end. */
+/** Where a card a hand is given goes: to the front, or the end.
+ *
+ * @example
+ * ```ts
+ * import type { CardLands } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: CardLands = "end";
+ * console.log(value);
+ * ```
+ */
 export type CardLands = "front" | "end";
 
-/** A hand with one card tossed out and another given in its stead, at the front or the end: as a new list. Unchanged where it holds no such card. */
+/** A hand with one card tossed out and another given in its stead, at the front or the end: as a new list. Unchanged where it holds no such card.
+ *
+ * @param cards - The cards in their current order.
+ * @param card - The physical card or card id to read, draw or play.
+ * @param next - The replacement card or next state.
+ * @param lands - Where a replacement card is placed in the hand.
+ * @returns A hand with one card tossed out and another given in its stead, at the front or the end: as a new list. Unchanged where it holds no such card.
+ *
+ * @example
+ * ```ts
+ * import { replaceCard } from "@johnmorrisdotca/toranpu/element";
+ *
+ * console.log(replaceCard(["AS", "KH"], "AS", "2D"));
+ * ```
+ */
 export function replaceCard(cards: readonly string[], card: string, next: string, lands: CardLands = "end"): string[] {
   if (!cards.includes(card)) return [...cards];
   const rest = tossCard(cards, card);
   return lands === "front" ? [next, ...rest] : [...rest, next];
 }
 
-/** How a parted hand is laid out. */
+/** How a parted hand is laid out.
+ *
+ * @example
+ * ```ts
+ * import type { PartOptions } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: PartOptions = { gap: 30, lift: 10 };
+ * console.log(value.gap);
+ * ```
+ */
 export type PartOptions = {
   /** The room left on each side of the parted card, in card widths. Unless said, 0.12. */
   gap?: number;
@@ -237,6 +373,18 @@ export type PartOptions = {
  *
  * ```ts
  * partedHandLayout(7, 3); // three cards squared up on the left, the fourth lifted clear, three on the right
+ * ```
+ *
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @param at - The zero-based split or card position.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A HAND PARTED AT ONE CARD: that card lifted a little, upright and wholly in view, and the cards to its left and right drawn apart from it into a group on each side (one group where it is the first or the last). The groups close up to make room, down to a sliver of each card, so the hand keeps the room its fan takes wherever it can; a hand too short to close up that far takes a little more. Built on the open fan of `handLayout`, its dip and turn kept for every card but the one parted. Where `at` is no card of the hand, the fan itself. ```ts partedHandLayout(7, 3); // three cards squared up on the left, the fourth lifted clear, three on the right ```
+ *
+ * @example
+ * ```ts
+ * import { partedHandLayout } from "@johnmorrisdotca/toranpu/element";
+ *
+ * console.log(partedHandLayout(3, 1, { gap: 30 }));
  * ```
  */
 export function partedHandLayout(count: number, at: number, options: HandLayoutOptions & PartOptions = {}): CardPlace[] {

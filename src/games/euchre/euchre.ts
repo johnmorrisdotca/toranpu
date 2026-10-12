@@ -25,42 +25,124 @@ import type { EuchreGame, EuchreHandScore, EuchreMove, EuchrePlay } from "./euch
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-/** How many play Euchre: four, in two partnerships. */
+/** How many play Euchre: four, in two partnerships.
+ *
+ * @example
+ * ```ts
+ * import { EUCHRE_SEATS } from "@johnmorrisdotca/toranpu/euchre";
+ * console.log(EUCHRE_SEATS);
+ * ```
+ */
 export const EUCHRE_SEATS = 4;
 const DEALT = 5;
 const SUITS: readonly CardSuit[] = ["C", "D", "H", "S"];
-/** The cards Euchre is played with: nine to ace of each suit. */
+/** The cards Euchre is played with: nine to ace of each suit.
+ *
+ * @example
+ * ```ts
+ * import { EUCHRE_DECK } from "@johnmorrisdotca/toranpu/euchre";
+ * console.log(EUCHRE_DECK);
+ * ```
+ */
 export const EUCHRE_DECK: readonly CardId[] = FULL_DECK.filter((card) => rankOf(card) === 1 || rankOf(card) >= 9);
 const LEFT_OUT: readonly CardId[] = FULL_DECK.filter((card) => !EUCHRE_DECK.includes(card));
 const JACK = 11;
 
-/** A seat's partnership: 0 for seats 0 and 2, 1 for seats 1 and 3. */
+/** A seat's partnership: 0 for seats 0 and 2, 1 for seats 1 and 3.
+ *
+ * @param seat - The zero-based player seat.
+ * @returns A seat's partnership: 0 for seats 0 and 2, 1 for seats 1 and 3.
+ *
+ * @example
+ * ```ts
+ * import { teamOf } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(teamOf(3));
+ * ```
+ */
 export function teamOf(seat: number): 0 | 1 {
   return (seat % 2) as 0 | 1;
 }
 
-/** The seat across the table. */
+/** The seat across the table.
+ *
+ * @param seat - The zero-based player seat.
+ * @returns The seat across the table.
+ *
+ * @example
+ * ```ts
+ * import { partnerOf } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(partnerOf(1));
+ * ```
+ */
 export function partnerOf(seat: number): number {
   return (seat + 2) % EUCHRE_SEATS;
 }
 
-/** The seat that deals this hand: the first seat, then round to the left. */
+/** The seat that deals this hand: the first seat, then round to the left.
+ *
+ * @param deal - The deal number or dealing specification.
+ * @returns The seat that deals this hand: the first seat, then round to the left.
+ *
+ * @example
+ * ```ts
+ * import { dealerOf } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(dealerOf(0));
+ * ```
+ */
 export function dealerOf(deal: number): number {
   return deal % EUCHRE_SEATS;
 }
 
-/** The suit of the same colour: clubs and spades, diamonds and hearts. */
+/** The suit of the same colour: clubs and spades, diamonds and hearts.
+ *
+ * @param suit - The card suit to compare or name.
+ * @returns The suit of the same colour: clubs and spades, diamonds and hearts.
+ *
+ * @example
+ * ```ts
+ * import { sameColour } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(sameColour("H"));
+ * ```
+ */
 export function sameColour(suit: CardSuit): CardSuit {
   return ({ C: "S", S: "C", D: "H", H: "D" } as const)[suit];
 }
 
-/** The suit a card belongs to once trumps are made: the left bower is a trump. */
+/** The suit a card belongs to once trumps are made: the left bower is a trump.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @param trump - The current trump suit.
+ * @returns The suit a card belongs to once trumps are made: the left bower is a trump.
+ *
+ * @example
+ * ```ts
+ * import { suitIn } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(suitIn("JD", "H"));
+ * ```
+ */
 export function suitIn(card: CardId, trump: CardSuit | null): CardSuit {
   if (trump !== null && rankOf(card) === JACK && suitOf(card) === sameColour(trump)) return trump;
   return suitOf(card);
 }
 
-/** A card's height within its suit as the hand is played: ace high; in trumps the right bower, then the left, above everything. */
+/** A card's height within its suit as the hand is played: ace high; in trumps the right bower, then the left, above everything.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @param trump - The current trump suit.
+ * @returns A card's height within its suit as the hand is played: ace high; in trumps the right bower, then the left, above everything.
+ *
+ * @example
+ * ```ts
+ * import { euchreHeight } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(euchreHeight("JD", "H"));
+ * ```
+ */
 export function euchreHeight(card: CardId, trump: CardSuit | null): number {
   if (trump !== null && rankOf(card) === JACK) {
     if (suitOf(card) === trump) return 20;
@@ -70,7 +152,19 @@ export function euchreHeight(card: CardId, trump: CardSuit | null): number {
   return rank === 1 ? 14 : rank;
 }
 
-/** A hand sorted as a player holds it: by suit (trumps last once made), high cards to the right. */
+/** A hand sorted as a player holds it: by suit (trumps last once made), high cards to the right.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param trump - The current trump suit.
+ * @returns A hand sorted as a player holds it: by suit (trumps last once made), high cards to the right.
+ *
+ * @example
+ * ```ts
+ * import { sortEuchre } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(sortEuchre(["JD", "AH", "9C"], "H"));
+ * ```
+ */
 export function sortEuchre(hand: readonly CardId[], trump: CardSuit | null = null): CardId[] {
   const order = (card: CardId) => {
     const suit = suitIn(card, trump);
@@ -96,14 +190,52 @@ function dealEuchre(game: Omit<EuchreGame, "hands" | "upcard" | "trump" | "maker
   };
 }
 
-/** A new game of Euchre for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Euchre is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Euchre for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Euchre is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Euchre for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Euchre is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startEuchre } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startEuchre(CARD_GAME_TABLES.euchre.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startEuchre(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): EuchreGame | null {
   if (!(EUCHRE_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== EUCHRE_SEATS) return null;
   return dealEuchre({ size, players: [...players], computers: computerSeats(players.length, computers), seed: dealt ?? 1, moves: [], deal: 0, lastTrick: null, scores: [0, 0], results: [] });
 }
 
-/** The cards the seat to play may lay on the trick: the suit led (the left bower counting as a trump) if it holds any. */
+/** The cards the seat to play may lay on the trick: the suit led (the left bower counting as a trump) if it holds any.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The cards the seat to play may lay on the trick: the suit led (the left bower counting as a trump) if it holds any.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { euchrePlayable } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * const rules = rulesFor("euchre");
+ * for (let setup = 0; setup < 100 && game.phase !== "playing" && game.phase !== "over"; setup += 1) {
+ *   const next = rules.play(game, rules.computer(game));
+ *   if (next === null) throw new Error("Unexpected illegal setup move");
+ *   game = next;
+ * }
+ * if (game.phase !== "playing") throw new Error("Setup did not reach playing");
+ * console.log(euchrePlayable(game));
+ * ```
+ */
 export function euchrePlayable(game: EuchreGame): CardId[] {
   if (game.phase !== "playing" || game.toPlay === null) return [];
   const hand = game.hands[game.toPlay];
@@ -113,7 +245,19 @@ export function euchrePlayable(game: EuchreGame): CardId[] {
   return following.length > 0 ? following : hand;
 }
 
-/** Who is taking a trick: the highest trump, or else the highest card of the suit led. */
+/** Who is taking a trick: the highest trump, or else the highest card of the suit led.
+ *
+ * @param trick - The cards and seats in the current trick.
+ * @param trump - The current trump suit.
+ * @returns Who is taking a trick: the highest trump, or else the highest card of the suit led.
+ *
+ * @example
+ * ```ts
+ * import { euchreTrickWinner } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(euchreTrickWinner([{ seat: 0, card: "KH" }, { seat: 1, card: "JD" }, { seat: 2, card: "AH" }, { seat: 3, card: "QC" }], "H"));
+ * ```
+ */
 export function euchreTrickWinner(trick: readonly EuchrePlay[], trump: CardSuit): number {
   const led = suitIn(trick[0].card, trump);
   const power = (card: CardId) => {
@@ -124,7 +268,21 @@ export function euchreTrickWinner(trick: readonly EuchrePlay[], trump: CardSuit)
   return trick.reduce((best, play) => (power(play.card) > power(best.card) ? play : best)).seat;
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { euchreMoves } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * console.log(euchreMoves(game));
+ * ```
+ */
 export function euchreMoves(game: EuchreGame): EuchreMove[] {
   if (game.toPlay === null) return [];
   if (game.phase === "order") return [{ order: true }, { pass: true }];
@@ -182,7 +340,19 @@ function playCard(game: EuchreGame, seat: number, card: CardId): EuchreGame | nu
   return hands[0].length === 0 ? endHand(after) : after;
 }
 
-/** What a hand scores: one to the makers for three or four tricks, two for all five, and two to the other side when the makers take two or fewer. */
+/** What a hand scores: one to the makers for three or four tricks, two for all five, and two to the other side when the makers take two or fewer.
+ *
+ * @param makers - Factories for the host’s custom card designs.
+ * @param tricks - The number of tricks won.
+ * @returns What a hand scores: one to the makers for three or four tricks, two for all five, and two to the other side when the makers take two or fewer.
+ *
+ * @example
+ * ```ts
+ * import { handPoints } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * console.log(handPoints(0, 3));
+ * ```
+ */
 export function handPoints(makers: 0 | 1, tricks: number): [number, number] {
   const points: [number, number] = [0, 0];
   if (tricks === DEALT) points[makers] = 2;
@@ -202,7 +372,22 @@ function endHand(game: EuchreGame): EuchreGame {
   return dealEuchre({ ...finished, deal: game.deal + 1 });
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playEuchre } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * console.log(playEuchre(game, rulesFor("euchre").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playEuchre(game: EuchreGame, move: EuchreMove): EuchreGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
@@ -213,7 +398,21 @@ export function playEuchre(game: EuchreGame, move: EuchreMove): EuchreGame | nul
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 
-/** The partnership with the higher score wins, both its seats. */
+/** The partnership with the higher score wins, both its seats.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The partnership with the higher score wins, both its seats.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { euchreWinners } from "@johnmorrisdotca/toranpu/euchre";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.euchre.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("euchre", { players: names, seed: 42 })!;
+ * console.log(euchreWinners(game));
+ * ```
+ */
 export function euchreWinners(game: EuchreGame): number[] {
   if (game.phase !== "over") return [];
   const team = game.scores[0] > game.scores[1] ? 0 : 1;

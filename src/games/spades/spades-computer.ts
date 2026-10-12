@@ -18,7 +18,20 @@ import type { SpadesGame, SpadesMove, SpadesPlay } from "./spades.types.ts";
  * hand it is not holding.
  */
 
-/** What the seat to move can see: its own hand, every bid, the tricks taken and the cards played. */
+/** What the seat to move can see: its own hand, every bid, the tricks taken and the cards played.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { SpadesView } from "@johnmorrisdotca/toranpu/spades";
+ * import { spadesView } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("spades", { players: names, seed: 42 })!;
+ * const value: SpadesView = spadesView(game);
+ * console.log(value.hand.length);
+ * ```
+ */
 export type SpadesView = {
   seat: number;
   hand: readonly CardId[];
@@ -31,7 +44,21 @@ export type SpadesView = {
   playable: readonly CardId[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { spadesView } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("spades", { players: names, seed: 42 })!;
+ * console.log(spadesView(game));
+ * ```
+ */
 export function spadesView(game: SpadesGame): SpadesView {
   const seat = game.toPlay ?? 0;
   return {
@@ -46,7 +73,21 @@ export function spadesView(game: SpadesGame): SpadesView {
   };
 }
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { spadesComputer } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("spades", { players: names, seed: 42 })!;
+ * console.log(spadesComputer(game));
+ * ```
+ */
 export function spadesComputer(game: SpadesGame): SpadesMove {
   const view = spadesView(game);
   if (view.phase === "bidding") return { bid: chooseBid(view.hand, view.bids[partnerOf(view.seat)]) };
@@ -57,7 +98,21 @@ export function spadesComputer(game: SpadesGame): SpadesMove {
 
 const ofSuit = (hand: readonly CardId[], suit: CardSuit) => hand.filter((card) => suitOf(card) === suit);
 
-/** The tricks a hand is worth, counted as a card player counts them before bidding. */
+/** The tricks a hand is worth, counted as a card player counts them before bidding.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns The tricks a hand is worth, counted as a card player counts them before bidding.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { handWorth } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("spades", { players: names, seed: 42 })!;
+ * console.log(handWorth(game.hands[0]!));
+ * ```
+ */
 export function handWorth(hand: readonly CardId[]): number {
   let worth = 0;
   const spades = ofSuit(hand, "S");
@@ -81,7 +136,22 @@ export function handWorth(hand: readonly CardId[]): number {
   return worth;
 }
 
-/** Nil for a hand of nothing (and never beside a partner's nil); otherwise what the hand is worth, at least one. */
+/** Nil for a hand of nothing (and never beside a partner's nil); otherwise what the hand is worth, at least one.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param partnerBid - The partner’s bid.
+ * @returns Nil for a hand of nothing (and never beside a partner's nil); otherwise what the hand is worth, at least one.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { chooseBid } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("spades", { players: names, seed: 42 })!;
+ * console.log(chooseBid(game.hands[0]!, 3));
+ * ```
+ */
 export function chooseBid(hand: readonly CardId[], partnerBid: number | null): number {
   const worth = handWorth(hand);
   const spades = ofSuit(hand, "S").map(spadesHeight);

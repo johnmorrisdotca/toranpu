@@ -19,6 +19,16 @@ const ADDRESSES = /(\s(?:xlink:)?href\s*=\s*)(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g
  * avif or svg), an `https:` or `http:` address, an address on the same site (`/logo.svg`, `./logo.svg`, `../logo.svg`)
  * or a plain file name. A `javascript:` address, any other `data:` address, and anything with a quote or an angle
  * bracket in it, is not one.
+ *
+ * @param url - An untrusted image URL.
+ * @returns A picture's address, or null when it is anything else. A picture is a `data:image/` address (png, jpeg, gif, webp, avif or svg), an `https:` or `http:` address, an address on the same site (`/logo.svg`, `./logo.svg`, `../logo.svg`) or a plain file name. A `javascript:` address, any other `data:` address, and anything with a quote or an angle bracket in it, is not one.
+ *
+ * @example
+ * ```ts
+ * import { safeImageUrl } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(safeImageUrl("javascript:alert(1)"));
+ * ```
  */
 export function safeImageUrl(url: unknown): string | null {
   if (typeof url !== "string") return null;
@@ -37,6 +47,16 @@ export function safeImageUrl(url: unknown): string | null {
  * styles, every `on…` handler, and any `href` that is not a picture or a `#fragment` of the drawing itself. Anything
  * else is kept as it was written. This is a guard for markup that came from a page's own code, not a sanitiser for
  * strangers' files: never hand it what a visitor typed.
+ *
+ * @param markup - Untrusted drawing markup to sanitize.
+ * @returns SVG markup with what could run or fetch taken out: scripts, `foreignObject`, frames, animation elements and styles, every `on…` handler, and any `href` that is not a picture or a `#fragment` of the drawing itself. Anything else is kept as it was written. This is a guard for markup that came from a page's own code, not a sanitiser for strangers' files: never hand it what a visitor typed.
+ *
+ * @example
+ * ```ts
+ * import { cleanMarkup } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(cleanMarkup(`<svg><script>alert(1)</script><circle cx="5" cy="5" r="2"/></svg>`));
+ * ```
  */
 export function cleanMarkup(markup: unknown): string {
   if (typeof markup !== "string") return "";

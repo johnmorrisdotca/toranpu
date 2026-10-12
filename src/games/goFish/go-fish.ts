@@ -23,12 +23,34 @@ import type { GoFishEvent, GoFishGame, GoFishMove } from "./go-fish.types.ts";
 
 const ALL_BOOKS = 13;
 
-/** Seven cards each for two or three players, five for more. */
+/** Seven cards each for two or three players, five for more.
+ *
+ * @param seats - The seat count or seat state supplied by this API.
+ * @returns Seven cards each for two or three players, five for more.
+ *
+ * @example
+ * ```ts
+ * import { goFishHandSize } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * console.log(goFishHandSize(3));
+ * ```
+ */
 export function goFishHandSize(seats: number): number {
   return seats <= 3 ? 7 : 5;
 }
 
-/** A hand as a player holds it: grouped by rank, ace to king. */
+/** A hand as a player holds it: grouped by rank, ace to king.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns A hand as a player holds it: grouped by rank, ace to king.
+ *
+ * @example
+ * ```ts
+ * import { sortGoFish } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * console.log(sortGoFish(["AS", "AH", "2C"]));
+ * ```
+ */
 export function sortGoFish(hand: readonly CardId[]): CardId[] {
   return [...hand].sort((a, b) => rankOf(a) - rankOf(b) || suitOf(a).localeCompare(suitOf(b)));
 }
@@ -82,7 +104,24 @@ function turnTo(game: GoFishGame, seat: number): GoFishGame {
   return { ...game, phase: "over", toPlay: null };
 }
 
-/** A new game of Go Fish for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Go Fish is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Go Fish for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Go Fish is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Go Fish for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Go Fish is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startGoFish } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startGoFish(CARD_GAME_TABLES.goFish.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startGoFish(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): GoFishGame | null {
   if (!(GO_FISH_SIZES as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 6) return null;
@@ -106,7 +145,21 @@ export function startGoFish(size: number, players: readonly string[], _language?
   return turnTo(game, 0);
 }
 
-/** The players the seat to move may ask: everybody else holding cards, or, when nobody else does, anybody else. */
+/** The players the seat to move may ask: everybody else holding cards, or, when nobody else does, anybody else.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The players the seat to move may ask: everybody else holding cards, or, when nobody else does, anybody else.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { goFishTargets } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("goFish", { players: names, seed: 42 })!;
+ * console.log(goFishTargets(game));
+ * ```
+ */
 export function goFishTargets(game: GoFishGame): number[] {
   if (game.toPlay === null) return [];
   const others = game.players.map((_, seat) => seat).filter((seat) => seat !== game.toPlay);
@@ -114,20 +167,63 @@ export function goFishTargets(game: GoFishGame): number[] {
   return holding.length > 0 ? holding : others;
 }
 
-/** The ranks the seat to move may ask for: those it holds. */
+/** The ranks the seat to move may ask for: those it holds.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The ranks the seat to move may ask for: those it holds.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { goFishRanks } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("goFish", { players: names, seed: 42 })!;
+ * console.log(goFishRanks(game));
+ * ```
+ */
 export function goFishRanks(game: GoFishGame): CardRank[] {
   if (game.toPlay === null) return [];
   return [...new Set(game.hands[game.toPlay].map(rankOf))].sort((a, b) => a - b);
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { goFishMoves } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("goFish", { players: names, seed: 42 })!;
+ * console.log(goFishMoves(game));
+ * ```
+ */
 export function goFishMoves(game: GoFishGame): GoFishMove[] {
   if (game.phase === "over") return [];
   const ranks = goFishRanks(game);
   return goFishTargets(game).flatMap((ask) => ranks.map((rank) => ({ ask, rank })));
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playGoFish } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("goFish", { players: names, seed: 42 })!;
+ * console.log(playGoFish(game, rulesFor("goFish").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playGoFish(game: GoFishGame, move: GoFishMove): GoFishGame | null {
   const seat = game.toPlay;
   if (game.phase === "over" || seat === null) return null;
@@ -152,7 +248,21 @@ export function playGoFish(game: GoFishGame, move: GoFishMove): GoFishGame | nul
   return turnTo(after, caught ? seat : nextSeat(seat, game.players.length));
 }
 
-/** The most books wins; level on the most shares it. */
+/** The most books wins; level on the most shares it.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The most books wins; level on the most shares it.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { goFishWinners } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("goFish", { players: names, seed: 42 })!;
+ * console.log(goFishWinners(game));
+ * ```
+ */
 export function goFishWinners(game: GoFishGame): number[] {
   if (game.phase !== "over") return [];
   const top = Math.max(...game.books.map((books) => books.length));

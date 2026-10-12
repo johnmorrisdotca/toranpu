@@ -1,22 +1,87 @@
 import type { KeptCardGame } from "../card-game-codec.ts";
 import type { CardId } from "../card-games.types.ts";
 
-/** Two cards laid away to the crib, or one card played in the pegging. */
+/** Two cards laid away to the crib, or one card played in the pegging.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import type { CribbageMove } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("cribbage", { players: names, seed: 42 })!;
+ * const value: CribbageMove = rulesFor("cribbage").moves(game)[0]!;
+ * console.log(value);
+ * ```
+ */
 export type CribbageMove = { crib: [CardId, CardId] } | { play: CardId };
 
-/** Both players laying two cards to the crib, the pegging, or the game over. */
+/** Both players laying two cards to the crib, the pegging, or the game over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { CribbagePhase } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("cribbage", { players: names, seed: 42 })!;
+ * const value: CribbagePhase = game.phase;
+ * console.log(value);
+ * ```
+ */
 export type CribbagePhase = "crib" | "pegging" | "over";
 
-/** One card laid, and whose it was. */
+/** One card laid, and whose it was.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { CribbagePlay } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("cribbage", { players: names, seed: 42 })!;
+ * const value: CribbagePlay = { seat: 0, card: game.hands[0]![0]! };
+ * console.log(value.card);
+ * ```
+ */
 export type CribbagePlay = { seat: number; card: CardId };
 
-/** What one card played in the pegging scored, and why: "fifteen", "a pair", "a run of three", "go", "last card", "thirty-one". */
+/** What one card played in the pegging scored, and why: "fifteen", "a pair", "a run of three", "go", "last card", "thirty-one".
+ *
+ * @example
+ * ```ts
+ * import type { CribbagePeg } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const value: CribbagePeg = { seat: 0, points: 2, why: ["fifteen"] };
+ * console.log(value.points);
+ * ```
+ */
 export type CribbagePeg = { seat: number; points: number; why: string[] };
 
-/** What a hand's show is worth, by kind. */
+/** What a hand's show is worth, by kind.
+ *
+ * @example
+ * ```ts
+ * import type { CribbageCount } from "@johnmorrisdotca/toranpu/cribbage";
+ * import { showCount } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const value: CribbageCount = showCount(["5H", "5D", "5C", "JS"], "5S");
+ * console.log(value.total);
+ * ```
+ */
 export type CribbageCount = { fifteens: number; pairs: number; runs: number; flush: number; nobs: number; total: number };
 
-/** One hand as it was shown: the dealer, the starter, both four-card hands and the crib, and what each counted. */
+/** One hand as it was shown: the dealer, the starter, both four-card hands and the crib, and what each counted.
+ *
+ * @example
+ * ```ts
+ * import type { CribbageHandScore } from "@johnmorrisdotca/toranpu/cribbage";
+ * import { showCount } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const value: CribbageHandScore = { dealer: 0, starter: "5S", hands: [["5H", "5D", "5C", "JS"], ["AH", "2D", "3C", "4S"]], crib: ["6H", "7D", "8C", "9S"], counts: [showCount(["5H", "5D", "5C", "JS"], "5S"), showCount(["AH", "2D", "3C", "4S"], "5S")], cribCount: showCount(["6H", "7D", "8C", "9S"], "5S", true) };
+ * console.log(value.cribCount.total);
+ * ```
+ */
 export type CribbageHandScore = {
   dealer: number;
   starter: CardId;
@@ -30,6 +95,17 @@ export type CribbageHandScore = {
  * A GAME OF CRIBBAGE: its table and moves (what is kept, `KeptCardGame`), and
  * everything the moves make, read again from them whenever the game is. Two
  * seats; `size` is the score that wins, 61 or 121.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { CribbageGame } from "@johnmorrisdotca/toranpu/cribbage";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.cribbage.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("cribbage", { players: names, seed: 42 })!;
+ * const value: CribbageGame = game;
+ * console.log(value.phase);
+ * ```
  */
 export type CribbageGame = KeptCardGame<CribbageMove> & {
   /** Which hand this is, from 0: the deal goes to the other player each time. */

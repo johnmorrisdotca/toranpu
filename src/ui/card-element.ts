@@ -4,12 +4,31 @@ import { cardFaceFromArt, isCardFace } from "./card-faces.ts";
 import type { CardDesign } from "./card-faces.types.ts";
 import { designDraws } from "./registry.ts";
 
-/** What a card's `face` function is told: the language the card speaks, and the design it names. */
+/** What a card's `face` function is told: the language the card speaks, and the design it names.
+ *
+ * @example
+ * ```ts
+ * import type { CardFaceContext } from "@johnmorrisdotca/toranpu/element";
+ *
+ * const value: CardFaceContext = { language: "en", design: "plain" };
+ * console.log(value.language);
+ * ```
+ */
 export type CardFaceContext = { language: Language; design: "plain" | "four-colour" | CardDesign | null };
 
 /**
  * A function that draws a card's face: given the card's id and its context, SVG markup (drawn on the card's paper in a box
  * 100 by 140, or a whole `<svg>` document), or an element, or null to draw the card as its design does.
+ *
+ * @example
+ * ```ts
+ * import type { CardFaceRenderer } from "@johnmorrisdotca/toranpu/element";
+ * import { cardFaceSvg } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * const card = { suit: "spades", rank: 1 } as const;
+ * const value: CardFaceRenderer = (card) => cardFaceSvg(card);
+ * console.log(typeof value);
+ * ```
  */
 export type CardFaceRenderer = (card: string, context: CardFaceContext) => string | Node | null;
 

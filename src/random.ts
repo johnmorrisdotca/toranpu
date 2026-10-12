@@ -10,10 +10,31 @@
  * Nothing here is a credential: it is for fair-looking deals, not secrets.
  */
 
-/** A number in [0, 1), like `Math.random`, from a stream a seed fixes. */
+/** A number in [0, 1), like `Math.random`, from a stream a seed fixes.
+ *
+ * @example
+ * ```ts
+ * import type { Random } from "@johnmorrisdotca/toranpu/deck";
+ * import { seededRandom } from "@johnmorrisdotca/toranpu/deck";
+ *
+ * const value: Random = seededRandom(42);
+ * console.log(value());
+ * ```
+ */
 export type Random = () => number;
 
-/** A stream of numbers in [0, 1) fixed by a seed. */
+/** A stream of numbers in [0, 1) fixed by a seed.
+ *
+ * @param seed - The numeric seed that reproduces the same shuffle or deal.
+ * @returns A stream of numbers in [0, 1) fixed by a seed.
+ *
+ * @example
+ * ```ts
+ * import { seededRandom } from "@johnmorrisdotca/toranpu/deck";
+ *
+ * console.log(seededRandom(42)());
+ * ```
+ */
 export function seededRandom(seed: number): Random {
   let state = seed >>> 0;
   return () => {
@@ -25,7 +46,19 @@ export function seededRandom(seed: number): Random {
   };
 }
 
-/** A copy of the list in a random order (Fisher–Yates); the list given is left alone. */
+/** A copy of the list in a random order (Fisher–Yates); the list given is left alone.
+ *
+ * @param items - The items to shuffle without changing the input.
+ * @param random - A source of numbers in [0, 1), such as seededRandom(seed).
+ * @returns A copy of the list in a random order (Fisher–Yates); the list given is left alone.
+ *
+ * @example
+ * ```ts
+ * import { seededRandom, shuffled } from "@johnmorrisdotca/toranpu/deck";
+ *
+ * console.log(shuffled(["A", "B", "C"], seededRandom(42)));
+ * ```
+ */
 export function shuffled<T>(items: readonly T[], random: Random): T[] {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i -= 1) {

@@ -14,20 +14,60 @@ import { COLUMNS, dealSpider, playSpider, spiderDeck } from "./rules.ts";
  * into an empty column any number up to the run would do.
  */
 
-/** The letter dealing a card to every column is written as, in a move list. */
+/** The letter dealing a card to every column is written as, in a move list.
+ *
+ * @example
+ * ```ts
+ * import { DEAL_CODE } from "@johnmorrisdotca/toranpu/spider";
+ * console.log(DEAL_CODE);
+ * ```
+ */
 export const DEAL_CODE = "d";
 
-/** One move written as text: one or two letters. */
+/** One move written as text: one or two letters.
+ *
+ * @param move - The native move to validate or apply.
+ * @returns One move written as text: one or two letters.
+ *
+ * @example
+ * ```ts
+ * import { encodeMove } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(encodeMove({ kind: "deal" }));
+ * ```
+ */
 export function encodeMove(move: SpiderMove): string {
   return move.kind === "deal" ? DEAL_CODE : `${move.from}${move.to}${move.count.toString(36)}`;
 }
 
-/** A list of moves written as text, one after another with nothing between. */
+/** A list of moves written as text, one after another with nothing between.
+ *
+ * @param moves - The ordered native moves to replay.
+ * @returns A list of moves written as text, one after another with nothing between.
+ *
+ * @example
+ * ```ts
+ * import { encodeMoves } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(encodeMoves([{ kind: "deal" }]));
+ * ```
+ */
 export function encodeMoves(moves: readonly SpiderMove[]): string {
   return moves.map(encodeMove).join("");
 }
 
-/** A move list read back, or null for one with a character that is no move. */
+/** A move list read back, or null for one with a character that is no move.
+ *
+ * @param code - The encoded card or game state.
+ * @returns A move list read back, or null for one with a character that is no move.
+ *
+ * @example
+ * ```ts
+ * import { decodeMoves, encodeMoves } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(decodeMoves(encodeMoves([{ kind: "deal" }])));
+ * ```
+ */
 export function decodeMoves(code: string): SpiderMove[] | null {
   const moves: SpiderMove[] = [];
   const column = (char: string | undefined) => (char !== undefined && char >= "0" && char <= "9" ? Number(char) : null);
@@ -47,12 +87,36 @@ export function decodeMoves(code: string): SpiderMove[] | null {
   return moves;
 }
 
-/** The deal of a seed at so many suits: the site's one shuffle (`shuffled`) of both decks, written down. */
+/** The deal of a seed at so many suits: the site's one shuffle (`shuffled`) of both decks, written down.
+ *
+ * @param seed - The numeric seed that reproduces the same shuffle or deal.
+ * @param suits - The allowed suits.
+ * @returns The deal of a seed at so many suits: the site's one shuffle (`shuffled`) of both decks, written down.
+ *
+ * @example
+ * ```ts
+ * import { spiderDealOfSeed } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(spiderDealOfSeed(42, 1));
+ * ```
+ */
 export function spiderDealOfSeed(seed: number, suits: number): string {
   return writeCards(shuffled(spiderDeck(suits), seededRandom(seed)).map(cardAt));
 }
 
-/** The cards a deal string names, or null for one that is not both decks of a game of so many suits. */
+/** The cards a deal string names, or null for one that is not both decks of a game of so many suits.
+ *
+ * @param deal - The deal number or dealing specification.
+ * @param suits - The allowed suits.
+ * @returns The cards a deal string names, or null for one that is not both decks of a game of so many suits.
+ *
+ * @example
+ * ```ts
+ * import { spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(spiderDeckOf(spiderDealOfSeed(42, 1), 1)?.length);
+ * ```
+ */
 export function spiderDeckOf(deal: string, suits: number): number[] | null {
   const cards = readCards(deal);
   if (cards === null) return null;
@@ -67,6 +131,18 @@ export function spiderDeckOf(deal: string, suits: number): number[] | null {
  * the deal, or null where the deal is not two decks or a move is one the rules
  * refuse. The one reader of a move list, for the table, a kept run, the check
  * and a finished game's page alike.
+ *
+ * @param deal - The deal number or dealing specification.
+ * @param suits - The allowed suits.
+ * @param moves - The ordered native moves to replay.
+ * @returns A game played out from its deal: every table it passed through, the first the deal, or null where the deal is not two decks or a move is one the rules refuse. The one reader of a move list, for the table, a kept run, the check and a finished game's page alike.
+ *
+ * @example
+ * ```ts
+ * import { encodeMoves, replaySpider, spiderDealOfSeed } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * console.log(replaySpider(spiderDealOfSeed(42, 1), 1, encodeMoves([{ kind: "deal" }]))?.length);
+ * ```
  */
 export function replaySpider(deal: string, suits: number, moves: string): SpiderTable[] | null {
   const deck = spiderDeckOf(deal, suits);

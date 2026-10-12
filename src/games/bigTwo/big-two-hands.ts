@@ -13,33 +13,96 @@ import { choices, rankOf, suitOf } from "../cards.ts";
  * from 3-4-5-6-7 up to 10-J-Q-K-A; a two never sits in one.
  */
 
-/** The kinds of play in Big Two, a single to a straight flush. */
+/** The kinds of play in Big Two, a single to a straight flush.
+ *
+ * @example
+ * ```ts
+ * import type { BigTwoKind } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const value: BigTwoKind = "pair";
+ * console.log(value);
+ * ```
+ */
 export type BigTwoKind = "single" | "pair" | "triple" | "straight" | "flush" | "fullHouse" | "fourKind" | "straightFlush";
 
-/** A play's kind and how strong it is among plays of the same number of cards. */
+/** A play's kind and how strong it is among plays of the same number of cards.
+ *
+ * @example
+ * ```ts
+ * import type { BigTwoValue } from "@johnmorrisdotca/toranpu/big-two";
+ * import { bigTwoValue } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * const value: BigTwoValue = bigTwoValue(["3D"])!;
+ * console.log(value.kind);
+ * ```
+ */
 export type BigTwoValue = { kind: BigTwoKind; size: number; strength: number };
 
 const SUIT_ORDER: Record<CardSuit, number> = { D: 0, C: 1, H: 2, S: 3 };
 const FIVE_TIERS: BigTwoKind[] = ["straight", "flush", "fullHouse", "fourKind", "straightFlush"];
 
-/** A rank's height, the three lowest (0) and the two highest (12). */
+/** A rank's height, the three lowest (0) and the two highest (12).
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A rank's height, the three lowest (0) and the two highest (12).
+ *
+ * @example
+ * ```ts
+ * import { bigTwoRank } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * console.log(bigTwoRank("2D"));
+ * ```
+ */
 export function bigTwoRank(card: CardId): number {
   return (rankOf(card) + 10) % 13;
 }
 
-/** A card's height in the whole pack, 0 (three of diamonds) to 51 (two of spades). */
+/** A card's height in the whole pack, 0 (three of diamonds) to 51 (two of spades).
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A card's height in the whole pack, 0 (three of diamonds) to 51 (two of spades).
+ *
+ * @example
+ * ```ts
+ * import { bigTwoCard } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * console.log(bigTwoCard("3D"));
+ * ```
+ */
 export function bigTwoCard(card: CardId): number {
   return bigTwoRank(card) * 4 + SUIT_ORDER[suitOf(card)];
 }
 
-/** Cards in Big Two's order, lowest first: how a hand is held. */
+/** Cards in Big Two's order, lowest first: how a hand is held.
+ *
+ * @param cards - The cards in their current order.
+ * @returns Cards in Big Two's order, lowest first: how a hand is held.
+ *
+ * @example
+ * ```ts
+ * import { sortBigTwo } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * console.log(sortBigTwo(["2S", "3D", "AC"]));
+ * ```
+ */
 export function sortBigTwo(cards: readonly CardId[]): CardId[] {
   return [...cards].sort((a, b) => bigTwoCard(a) - bigTwoCard(b));
 }
 
 const topOf = (cards: readonly CardId[]) => Math.max(...cards.map(bigTwoCard));
 
-/** What these cards are worth played together, or null for cards that make no play. */
+/** What these cards are worth played together, or null for cards that make no play.
+ *
+ * @param cards - The cards in their current order.
+ * @returns What these cards are worth played together, or null for cards that make no play.
+ *
+ * @example
+ * ```ts
+ * import { bigTwoValue } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * console.log(bigTwoValue(["3D", "3C"]));
+ * ```
+ */
 export function bigTwoValue(cards: readonly CardId[]): BigTwoValue | null {
   if (new Set(cards).size !== cards.length) return null;
   const ranks = cards.map(bigTwoRank);
@@ -61,7 +124,19 @@ export function bigTwoValue(cards: readonly CardId[]): BigTwoValue | null {
   return null;
 }
 
-/** Whether a play beats the one on the table: the same number of cards, and stronger. */
+/** Whether a play beats the one on the table: the same number of cards, and stronger.
+ *
+ * @param play - The player’s move or cards for this step.
+ * @param table - The shared table or laid cards.
+ * @returns Whether a play beats the one on the table: the same number of cards, and stronger.
+ *
+ * @example
+ * ```ts
+ * import { bigTwoBeats, bigTwoValue } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * console.log(bigTwoBeats(bigTwoValue(["4D"])!, bigTwoValue(["3D"])!));
+ * ```
+ */
 export function bigTwoBeats(play: BigTwoValue, table: BigTwoValue): boolean {
   return play.size === table.size && play.strength > table.strength;
 }
@@ -69,7 +144,18 @@ export function bigTwoBeats(play: BigTwoValue, table: BigTwoValue): boolean {
 /** A play's key, the same for the same cards in any order. */
 const keyOf = (cards: readonly CardId[]) => sortBigTwo(cards).join(" ");
 
-/** Every play this hand could make, each once, lowest cards first within a kind. */
+/** Every play this hand could make, each once, lowest cards first within a kind.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns Every play this hand could make, each once, lowest cards first within a kind.
+ *
+ * @example
+ * ```ts
+ * import { bigTwoPlays } from "@johnmorrisdotca/toranpu/big-two";
+ *
+ * console.log(bigTwoPlays(["3D", "3C", "4H"]));
+ * ```
+ */
 export function bigTwoPlays(hand: readonly CardId[]): CardId[][] {
   const sorted = sortBigTwo(hand);
   const byRank = new Map<number, CardId[]>();

@@ -15,7 +15,20 @@ import type { CrazyEightsGame, CrazyEightsMove } from "./crazy-eights.types.ts";
  * follow and how many cards each player holds, and nothing else.
  */
 
-/** What one seat can see of a game of Crazy Eights: its own hand, the table, and what has been said and shown. */
+/** What one seat can see of a game of Crazy Eights: its own hand, the table, and what has been said and shown.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { CrazyEightsView } from "@johnmorrisdotca/toranpu/crazy-eights";
+ * import { crazyEightsView } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * const value: CrazyEightsView = crazyEightsView(game);
+ * console.log(value.hand.length);
+ * ```
+ */
 export type CrazyEightsView = {
   seat: number;
   hand: readonly CardId[];
@@ -24,20 +37,59 @@ export type CrazyEightsView = {
   legal: readonly CrazyEightsMove[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { crazyEightsView } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(crazyEightsView(game));
+ * ```
+ */
 export function crazyEightsView(game: CrazyEightsGame): CrazyEightsView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], counts: game.hands.map((hand) => hand.length), drawn: game.drawn, legal: crazyEightsMoves(game) };
 }
 
-/** The suit this hand holds most of, eights aside; clubs first among equals so the choice is always the same. */
+/** The suit this hand holds most of, eights aside; clubs first among equals so the choice is always the same.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns The suit this hand holds most of, eights aside; clubs first among equals so the choice is always the same.
+ *
+ * @example
+ * ```ts
+ * import { longestSuit } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * console.log(longestSuit(["AS", "2S", "KH"]));
+ * ```
+ */
 export function longestSuit(hand: readonly CardId[]): CardSuit {
   const suits: CardSuit[] = ["C", "D", "H", "S"];
   const count = (suit: CardSuit) => hand.filter((card) => suitOf(card) === suit && rankOf(card) !== EIGHT).length;
   return suits.reduce((best, suit) => (count(suit) > count(best) ? suit : best));
 }
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { crazyEightsComputer } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(crazyEightsComputer(game));
+ * ```
+ */
 export function crazyEightsComputer(game: CrazyEightsGame): CrazyEightsMove {
   const view = crazyEightsView(game);
   const plays = view.legal.flatMap((move) => ("play" in move ? [move] : []));

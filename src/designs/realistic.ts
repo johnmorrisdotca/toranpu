@@ -13,7 +13,14 @@
 import type { CardDesign } from "../ui/card-faces.types.ts";
 import { ENGLISH_PATTERN } from "./english.ts";
 
-/** The realistic design: Knoll's 39 cards in a box 167.0869141 by 242.6669922, and Fomin's English pattern for every other card. */
+/** The realistic design: Knoll's 39 cards in a box 167.0869141 by 242.6669922, and Fomin's English pattern for every other card.
+ *
+ * @example
+ * ```ts
+ * import { REALISTIC } from "@johnmorrisdotca/toranpu/card-faces/realistic";
+ * console.log(REALISTIC.name);
+ * ```
+ */
 export const REALISTIC: CardDesign = {
   name: "realistic",
   box: [167.0869141, 242.6669922],

@@ -15,12 +15,47 @@ function isCrazyEightsMove(value: unknown): value is CrazyEightsMove {
 }
 
 const codec = cardGameCodec<CrazyEightsGame, CrazyEightsMove>("crazyEights", startCrazyEights, playCrazyEights, isCrazyEightsMove);
-/** A game of Crazy Eights as text: its table, its seed and its moves, never a hand. */
+/** A game of Crazy Eights as text: its table, its seed and its moves, never a hand.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game of Crazy Eights as text: its table, its seed and its moves, never a hand.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { encodeCrazyEights } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(encodeCrazyEights(game));
+ * ```
+ */
 export const encodeCrazyEights = codec.encode;
-/** Text read back into the game of Crazy Eights it records, by playing every move again through the rules; null for anything they cannot play out. */
+/** Text read back into the game of Crazy Eights it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns Text read back into the game of Crazy Eights it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { decodeCrazyEights, encodeCrazyEights } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * console.log(decodeCrazyEights(encodeCrazyEights(game))?.phase);
+ * ```
+ */
 export const decodeCrazyEights = codec.decode;
 
-/** Crazy Eights as one `CardGameRules`: everything a table asks of the game. */
+/** Crazy Eights as one `CardGameRules`: everything a table asks of the game.
+ *
+ * @example
+ * ```ts
+ * import { CRAZY_EIGHTS_RULES } from "@johnmorrisdotca/toranpu/crazy-eights";
+ * console.log(Object.keys(CRAZY_EIGHTS_RULES));
+ * ```
+ */
 export const CRAZY_EIGHTS_RULES: CardGameRules<CrazyEightsGame, CrazyEightsMove> = {
   start: startCrazyEights,
   moves: crazyEightsMoves,

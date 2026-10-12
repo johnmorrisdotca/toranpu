@@ -17,7 +17,20 @@ import type { GoFishEvent, GoFishGame, GoFishMove } from "./go-fish.types.ts";
  * is not known to be without it. It never looks at a hand it is not holding.
  */
 
-/** What one seat can see of a game of Go Fish: its own hand, the table, and what has been said and shown. */
+/** What one seat can see of a game of Go Fish: its own hand, the table, and what has been said and shown.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { GoFishView } from "@johnmorrisdotca/toranpu/go-fish";
+ * import { goFishView } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("goFish", { players: names, seed: 42 })!;
+ * const value: GoFishView = goFishView(game);
+ * console.log(value.hand.length);
+ * ```
+ */
 export type GoFishView = {
   seat: number;
   hand: readonly CardId[];
@@ -27,16 +40,52 @@ export type GoFishView = {
   log: readonly GoFishEvent[];
 };
 
-/** The part of the game the seat to play can see, which is all its computer is given. */
+/** The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The part of the game the seat to play can see, which is all its computer is given.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { goFishView } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("goFish", { players: names, seed: 42 })!;
+ * console.log(goFishView(game));
+ * ```
+ */
 export function goFishView(game: GoFishGame): GoFishView {
   const seat = game.toPlay ?? 0;
   return { seat, hand: game.hands[seat], targets: goFishTargets(game), ranks: goFishRanks(game), counts: game.hands.map((hand) => hand.length), log: game.log };
 }
 
-/** What the table has said about each seat's hand: for each seat, the ranks it is known to hold and known to be without. */
+/** What the table has said about each seat's hand: for each seat, the ranks it is known to hold and known to be without.
+ *
+ * @example
+ * ```ts
+ * import type { GoFishMemory } from "@johnmorrisdotca/toranpu/go-fish";
+ * import { goFishMemory } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const value: GoFishMemory = goFishMemory([], 4);
+ * console.log(value.holds.length);
+ * ```
+ */
 export type GoFishMemory = { holds: Set<CardRank>[]; lacks: Set<CardRank>[] };
 
-/** What the table's log says about every seat's hand, worked out from the asks, the answers and the books. */
+/** What the table's log says about every seat's hand, worked out from the asks, the answers and the books.
+ *
+ * @param log - The recorded moves to replay or format.
+ * @param seats - The seat count or seat state supplied by this API.
+ * @returns What the table's log says about every seat's hand, worked out from the asks, the answers and the books.
+ *
+ * @example
+ * ```ts
+ * import { goFishMemory } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * console.log(goFishMemory([], 4));
+ * ```
+ */
 export function goFishMemory(log: readonly GoFishEvent[], seats: number): GoFishMemory {
   const holds = Array.from({ length: seats }, () => new Set<CardRank>());
   const lacks = Array.from({ length: seats }, () => new Set<CardRank>());
@@ -63,7 +112,21 @@ export function goFishMemory(log: readonly GoFishEvent[], seats: number): GoFish
   return { holds, lacks };
 }
 
-/** The move a computer in the seat to play makes: always one the rules allow. */
+/** The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The move a computer in the seat to play makes: always one the rules allow.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { goFishComputer } from "@johnmorrisdotca/toranpu/go-fish";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.goFish.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("goFish", { players: names, seed: 42 })!;
+ * console.log(goFishComputer(game));
+ * ```
+ */
 export function goFishComputer(game: GoFishGame): GoFishMove {
   const view = goFishView(game);
   const memory = goFishMemory(view.log, view.counts.length);

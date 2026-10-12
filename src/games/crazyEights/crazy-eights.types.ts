@@ -1,15 +1,47 @@
 import type { KeptCardGame } from "../card-game-codec.ts";
 import type { CardId, CardSuit } from "../card-games.types.ts";
 
-/** A card played (an eight names the suit to follow), a card drawn from the stock, or a turn passed. */
+/** A card played (an eight names the suit to follow), a card drawn from the stock, or a turn passed.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import type { CrazyEightsMove } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * const value: CrazyEightsMove = rulesFor("crazyEights").moves(game)[0]!;
+ * console.log(value);
+ * ```
+ */
 export type CrazyEightsMove = { play: CardId; suit?: CardSuit } | { draw: true } | { pass: true };
 
-/** How a hand ended: who won it, and the points each winner took. */
+/** How a hand ended: who won it, and the points each winner took.
+ *
+ * @example
+ * ```ts
+ * import type { CrazyEightsResult } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const value: CrazyEightsResult = { winners: [0], points: 40, blocked: false };
+ * console.log(value.winners);
+ * ```
+ */
 export type CrazyEightsResult = { winners: number[]; points: number; blocked: boolean };
 
 /**
  * A GAME OF CRAZY EIGHTS: its table and moves (what is kept), and the hand
  * they have reached. `size` is the score that wins: 50, 100 or 200.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { CrazyEightsGame } from "@johnmorrisdotca/toranpu/crazy-eights";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.crazyEights.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("crazyEights", { players: names, seed: 42 })!;
+ * const value: CrazyEightsGame = game;
+ * console.log(value.phase);
+ * ```
  */
 export type CrazyEightsGame = KeptCardGame<CrazyEightsMove> & {
   /** Which hand this is, from 0: it decides who plays first, round the table. */

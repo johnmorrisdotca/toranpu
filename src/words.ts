@@ -42,55 +42,169 @@ const SAYS_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
 const SUIT_KEYS: Record<CardSuit, keyof ToranpuStrings> = { S: "suitS", H: "suitH", D: "suitD", C: "suitC" };
 const SUIT_SYMBOLS: Record<CardSuit, string> = { S: SUIT_DISPLAY.spades.symbol, H: SUIT_DISPLAY.hearts.symbol, D: SUIT_DISPLAY.diamonds.symbol, C: SUIT_DISPLAY.clubs.symbol };
 
-/** A game's name: "Hearts", or "ハーツ" in Japanese. */
+/** A game's name: "Hearts", or "ハーツ" in Japanese.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param language - English or Japanese for the displayed words.
+ * @returns A game's name: "Hearts", or "ハーツ" in Japanese.
+ *
+ * @example
+ * ```ts
+ * import { gameName } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(gameName("hearts", "ja"));
+ * ```
+ */
 export function gameName(kind: CardGameKind, language: Language = "en"): string {
   return STRINGS[language][NAME_KEYS[kind]];
 }
 
-/** A game in a line: what it is about, for a list of games. */
+/** A game in a line: what it is about, for a list of games.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param language - English or Japanese for the displayed words.
+ * @returns A game in a line: what it is about, for a list of games.
+ *
+ * @example
+ * ```ts
+ * import { gameSays } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(gameSays("hearts", "en"));
+ * ```
+ */
 export function gameSays(kind: CardGameKind, language: Language = "en"): string {
   return STRINGS[language][SAYS_KEYS[kind]];
 }
 
-/** A suit's name: "spades", or "スペード" in Japanese. */
+/** A suit's name: "spades", or "スペード" in Japanese.
+ *
+ * @param suit - The card suit to compare or name.
+ * @param language - English or Japanese for the displayed words.
+ * @returns A suit's name: "spades", or "スペード" in Japanese.
+ *
+ * @example
+ * ```ts
+ * import { suitName } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(suitName("S", "en"));
+ * ```
+ */
 export function suitName(suit: CardSuit, language: Language = "en"): string {
   return STRINGS[language][SUIT_KEYS[suit]];
 }
 
-/** A suit's symbol: ♠ ♥ ♦ ♣. */
+/** A suit's symbol: ♠ ♥ ♦ ♣.
+ *
+ * @param suit - The card suit to compare or name.
+ * @returns A suit's symbol: ♠ ♥ ♦ ♣.
+ *
+ * @example
+ * ```ts
+ * import { suitSymbol } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(suitSymbol("S"));
+ * ```
+ */
 export function suitSymbol(suit: CardSuit): string {
   return SUIT_SYMBOLS[suit];
 }
 
-/** A rank as a sentence names one card of it: "queen", "seven"; in Japanese "クイーン", "7". */
+/** A rank as a sentence names one card of it: "queen", "seven"; in Japanese "クイーン", "7".
+ *
+ * @param rank - The card rank to inspect or name.
+ * @param language - English or Japanese for the displayed words.
+ * @returns A rank as a sentence names one card of it: "queen", "seven"; in Japanese "クイーン", "7".
+ *
+ * @example
+ * ```ts
+ * import { rankName } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(rankName(1, "en"));
+ * ```
+ */
 export function rankName(rank: CardRank, language: Language = "en"): string {
   if (language === "en") return RANK_DISPLAY[rank].name;
   if (rank === 1 || rank >= 11) return STRINGS.ja[`rank${rank}` as "rank1" | "rank11" | "rank12" | "rank13"];
   return String(rank);
 }
 
-/** A card's name in full: "queen of spades", or "スペードのクイーン" in Japanese. What a screen reader should say. */
+/** A card's name in full: "queen of spades", or "スペードのクイーン" in Japanese. What a screen reader should say.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @param language - English or Japanese for the displayed words.
+ * @returns A card's name in full: "queen of spades", or "スペードのクイーン" in Japanese. What a screen reader should say.
+ *
+ * @example
+ * ```ts
+ * import { cardText } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(cardText("AS", "ja"));
+ * ```
+ */
 export function cardText(card: CardId, language: Language = "en"): string {
   return fillIn(STRINGS[language].cardName, { rank: rankName(rankOf(card), language), suit: suitName(suitOf(card), language) });
 }
 
-/** A card as a corner shows it: "Q♠", "10♦". The same in every language. */
+/** A card as a corner shows it: "Q♠", "10♦". The same in every language.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A card as a corner shows it: "Q♠", "10♦". The same in every language.
+ *
+ * @example
+ * ```ts
+ * import { cardShort } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(cardShort("AS"));
+ * ```
+ */
 export function cardShort(card: CardId): string {
   const { rank, suit } = cardOfId(card);
   return `${RANK_DISPLAY[rank].short}${SUIT_DISPLAY[suit].symbol}`;
 }
 
-/** Cards as corners show them, with a space between: "Q♠ 10♦ A♥". */
+/** Cards as corners show them, with a space between: "Q♠ 10♦ A♥".
+ *
+ * @param cards - The cards in their current order.
+ * @returns Cards as corners show them, with a space between: "Q♠ 10♦ A♥".
+ *
+ * @example
+ * ```ts
+ * import { cardsShort } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(cardsShort(["AS", "KH", "TD"]));
+ * ```
+ */
 export function cardsShort(cards: readonly CardId[]): string {
   return cards.map(cardShort).join(" ");
 }
 
-/** Names in a list: "Ann, Ben", or "Ann、Ben" in Japanese. */
+/** Names in a list: "Ann, Ben", or "Ann、Ben" in Japanese.
+ *
+ * @param names - The player names in seat order.
+ * @param language - English or Japanese for the displayed words.
+ * @returns Names in a list: "Ann, Ben", or "Ann、Ben" in Japanese.
+ *
+ * @example
+ * ```ts
+ * import { namesList } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(namesList(["Aki", "Ben", "Cy"], "en"));
+ * ```
+ */
 export function namesList(names: readonly string[], language: Language = "en"): string {
   return names.join(STRINGS[language].listJoin);
 }
 
-/** How a move is put into words. */
+/** How a move is put into words.
+ *
+ * @example
+ * ```ts
+ * import type { MoveTextOptions } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: MoveTextOptions = { language: "ja", form: "offer" };
+ * console.log(value.language);
+ * ```
+ */
 export type MoveTextOptions = {
   /** English unless said. */
   language?: Language;
@@ -109,6 +223,19 @@ export type MoveTextOptions = {
  * A move in words, for any of the eleven games: `moveText("hearts", { play: "QS" })`
  * is "Play Q♠", and with `{ form: "did" }` it is "plays Q♠". `kind` is needed
  * because a bid of nought is "nil" in Spades and "0" in Oh Hell.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param move - The native move to validate or apply.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A move in words, for any of the eleven games: `moveText("hearts", { play: "QS" })` is "Play Q♠", and with `{ form: "did" }` it is "plays Q♠". `kind` is needed because a bid of nought is "nil" in Spades and "0" in Oh Hell.
+ *
+ * @example
+ * ```ts
+ * import { moveText, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(moveText("hearts", rulesFor("hearts").moves(game)[0]!, { language: "en" }));
+ * ```
  */
 export function moveText<K extends CardGameKind>(kind: K, move: MoveOf<K>, options: MoveTextOptions = {}): string {
   const language = options.language ?? "en";

@@ -1,16 +1,61 @@
 import type { KeptCardGame } from "../card-game-codec.ts";
 import type { CardId } from "../card-games.types.ts";
 
-/** Bidding how many tricks each seat will take, playing the deal out trick by trick, or the game over. */
+/** Bidding how many tricks each seat will take, playing the deal out trick by trick, or the game over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { SpadesPhase } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("spades", { players: names, seed: 42 })!;
+ * const value: SpadesPhase = game.phase;
+ * console.log(value);
+ * ```
+ */
 export type SpadesPhase = "bidding" | "playing" | "over";
 
-/** One card laid on a trick, and whose it was. */
+/** One card laid on a trick, and whose it was.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { SpadesPlay } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("spades", { players: names, seed: 42 })!;
+ * const value: SpadesPlay = { seat: 0, card: game.hands[0]![0]! };
+ * console.log(value.card);
+ * ```
+ */
 export type SpadesPlay = { seat: number; card: CardId };
 
-/** A bid of tricks, 0 (nil) to 13, or one card played to the trick. */
+/** A bid of tricks, 0 (nil) to 13, or one card played to the trick.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import type { SpadesMove } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("spades", { players: names, seed: 42 })!;
+ * const value: SpadesMove = rulesFor("spades").moves(game)[0]!;
+ * console.log(value);
+ * ```
+ */
 export type SpadesMove = { bid: number } | { play: CardId };
 
-/** What one finished deal did to a partnership's score, as the scores table explains it. */
+/** What one finished deal did to a partnership's score, as the scores table explains it.
+ *
+ * @example
+ * ```ts
+ * import type { SpadesDealScore } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const value: SpadesDealScore = { points: [30, 40], bags: [0, 0] };
+ * console.log(value.points);
+ * ```
+ */
 export type SpadesDealScore = {
   /** The points the deal made or cost each partnership: seats 0 and 2 first, then 1 and 3. */
   points: [number, number];
@@ -23,6 +68,17 @@ export type SpadesDealScore = {
  * everything the moves make, read again from them whenever the game is.
  * Four seats in two partnerships, sitting across from each other: seats 0 and
  * 2 against 1 and 3. `size` is the score that ends the game: 200, 300 or 500.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import type { SpadesGame } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * const game = newGame("spades", { players: names, seed: 42 })!;
+ * const value: SpadesGame = game;
+ * console.log(value.phase);
+ * ```
  */
 export type SpadesGame = KeptCardGame<SpadesMove> & {
   /** Which deal this is, from 0: the deal moves one seat round each time. */

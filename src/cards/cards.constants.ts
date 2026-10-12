@@ -4,16 +4,43 @@ import type { Rank, RankDisplay, Suit, SuitDisplay } from "./cards.types.ts";
  * The suits in the order a fresh deck is sorted and a foundation row is laid
  * out: spades, hearts, diamonds, clubs — black, red, red, black, so no two
  * neighbours on a row of four look alike.
+ *
+ * @example
+ * ```ts
+ * import { SUITS } from "@johnmorrisdotca/toranpu/deck";
+ * console.log(SUITS);
+ * ```
  */
 export const SUITS: readonly Suit[] = ["spades", "hearts", "diamonds", "clubs"];
 
-/** The ranks in order, ace low: 1 (the ace) to 13 (the king). */
+/** The ranks in order, ace low: 1 (the ace) to 13 (the king).
+ *
+ * @example
+ * ```ts
+ * import { RANKS } from "@johnmorrisdotca/toranpu/deck";
+ * console.log(RANKS);
+ * ```
+ */
 export const RANKS: readonly Rank[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
-/** How many cards a deck holds: fifty-two. */
+/** How many cards a deck holds: fifty-two.
+ *
+ * @example
+ * ```ts
+ * import { DECK_SIZE } from "@johnmorrisdotca/toranpu/deck";
+ * console.log(DECK_SIZE);
+ * ```
+ */
 export const DECK_SIZE = SUITS.length * RANKS.length;
 
-/** How each suit is written and drawn: its symbol, its name and its colour. */
+/** How each suit is written and drawn: its symbol, its name and its colour.
+ *
+ * @example
+ * ```ts
+ * import { SUIT_DISPLAY } from "@johnmorrisdotca/toranpu/deck";
+ * console.log(SUIT_DISPLAY);
+ * ```
+ */
 export const SUIT_DISPLAY: Record<Suit, SuitDisplay> = {
   spades: { symbol: "♠", name: "spades", colour: "black" },
   hearts: { symbol: "♥", name: "hearts", colour: "red" },
@@ -21,7 +48,14 @@ export const SUIT_DISPLAY: Record<Suit, SuitDisplay> = {
   clubs: { symbol: "♣", name: "clubs", colour: "black" },
 };
 
-/** How each rank is written: short (`A`, `10`, `K`) and as a word (`ace`, `ten`, `king`). */
+/** How each rank is written: short (`A`, `10`, `K`) and as a word (`ace`, `ten`, `king`).
+ *
+ * @example
+ * ```ts
+ * import { RANK_DISPLAY } from "@johnmorrisdotca/toranpu/deck";
+ * console.log(RANK_DISPLAY);
+ * ```
+ */
 export const RANK_DISPLAY: Record<Rank, RankDisplay> = {
   1: { short: "A", name: "ace" },
   2: { short: "2", name: "two" },
@@ -42,5 +76,11 @@ export const RANK_DISPLAY: Record<Rank, RankDisplay> = {
  * The fifty-two characters a card is written as, in deck order: spades A–K are
  * `A`–`M`, hearts `N`–`Z`, diamonds `a`–`m`, clubs `n`–`z`. Letters only, so a
  * deal is safe in an address, a JSON body and a file name alike.
+ *
+ * @example
+ * ```ts
+ * import { CARD_ALPHABET } from "@johnmorrisdotca/toranpu/deck";
+ * console.log(CARD_ALPHABET);
+ * ```
  */
 export const CARD_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

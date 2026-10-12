@@ -82,7 +82,20 @@ function distance(table: SpiderTable): number {
   return (8 - table.done.length) * 80 + down * 6 + breaks * 4 + table.stock.length * 2 - empty * 12;
 }
 
-/** A winning line from this table, or null when none was found within `budget` tables. */
+/** A winning line from this table, or null when none was found within `budget` tables.
+ *
+ * @param start - The initial game or state before the recorded moves.
+ * @param budget - Limits on the solver’s search work.
+ * @returns A winning line from this table, or null when none was found within `budget` tables.
+ *
+ * @example
+ * ```ts no-run
+ * import { dealSpider, solveSpider, spiderDealOfSeed, spiderDeckOf } from "@johnmorrisdotca/toranpu/spider";
+ *
+ * const table = dealSpider(spiderDeckOf(spiderDealOfSeed(42, 1), 1)!);
+ * console.log(solveSpider(table, 100));
+ * ```
+ */
 export function solveSpider(start: SpiderTable, budget = 10_000): { moves: SpiderMove[] | null; tables: number } {
   return bestFirst({ candidates, play: playSpider, won: spiderWon, key: keyOf, distance }, start, budget);
 }

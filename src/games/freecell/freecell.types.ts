@@ -6,7 +6,19 @@
  * objects because the solver makes and compares a great many tables.
  */
 
-/** A game of FreeCell as it stands: the columns, the free cells and the foundations. */
+/** A game of FreeCell as it stands: the columns, the free cells and the foundations.
+ *
+ * @example
+ * ```ts
+ * import { dealFreeCell } from "@johnmorrisdotca/toranpu/freecell";
+ * import { dealOfSeed, deckOf } from "@johnmorrisdotca/toranpu/klondike";
+ * import type { FreeCellTable } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const table = dealFreeCell(deckOf(dealOfSeed(42))!, 4);
+ * const value: FreeCellTable = table;
+ * console.log(value.cells.length);
+ * ```
+ */
 export type FreeCellTable = {
   /** Eight columns, each its cards from the bottom up. Every card is face up. */
   tableau: readonly (readonly number[])[];
@@ -19,6 +31,14 @@ export type FreeCellTable = {
 /**
  * A place on the table a move names: a column `1`–`8`, a free cell `a`–`d`,
  * or a suit's foundation by its letter (`S` `H` `D` `C`, as a card id writes a suit).
+ *
+ * @example
+ * ```ts
+ * import type { FreeCellPile } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const value: FreeCellPile = "a";
+ * console.log(value);
+ * ```
  */
 export type FreeCellPile = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "a" | "b" | "c" | "d" | "S" | "H" | "D" | "C";
 
@@ -27,5 +47,13 @@ export type FreeCellPile = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "a" |
  * a column ever carries more than one, and then the cards are the top of the
  * column, in order, and as many as the free cells and empty columns could
  * carry one at a time (`mostCarried`).
+ *
+ * @example
+ * ```ts
+ * import type { FreeCellMove } from "@johnmorrisdotca/toranpu/freecell";
+ *
+ * const value: FreeCellMove = { from: "1", to: "a", count: 1 };
+ * console.log(value.to);
+ * ```
  */
 export type FreeCellMove = { from: FreeCellPile; to: FreeCellPile; count: number };

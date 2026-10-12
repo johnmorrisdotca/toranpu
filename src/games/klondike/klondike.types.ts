@@ -7,13 +7,44 @@
  * is a handful of short arrays of them.
  */
 
-/** One of the seven columns: its cards from the bottom up, of which the first `down` lie face down. */
+/** One of the seven columns: its cards from the bottom up, of which the first `down` lie face down.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf } from "@johnmorrisdotca/toranpu/klondike";
+ * import type { KlondikeColumn } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * const value: KlondikeColumn = table.tableau[0]!;
+ * console.log(value.down);
+ * ```
+ */
 export type KlondikeColumn = { down: number; cards: readonly number[] };
 
-/** How the game was set up: cards turned from the stock at a time, and how many times through the stock (Infinity for no limit). */
+/** How the game was set up: cards turned from the stock at a time, and how many times through the stock (Infinity for no limit).
+ *
+ * @example
+ * ```ts
+ * import type { KlondikeRules } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const value: KlondikeRules = { draw: 3, passes: 3 };
+ * console.log(value.draw);
+ * ```
+ */
 export type KlondikeRules = { draw: 1 | 3; passes: number };
 
-/** A game of Klondike as it stands: every pile, and the rules it is played under. */
+/** A game of Klondike as it stands: every pile, and the rules it is played under.
+ *
+ * @example
+ * ```ts
+ * import { dealKlondike, dealOfSeed, deckOf } from "@johnmorrisdotca/toranpu/klondike";
+ * import type { KlondikeTable } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const table = dealKlondike(deckOf(dealOfSeed(42))!, { draw: 3, passes: 3 });
+ * const value: KlondikeTable = table;
+ * console.log(value.stock.length);
+ * ```
+ */
 export type KlondikeTable = {
   rules: KlondikeRules;
   /** Seven columns. */
@@ -32,6 +63,14 @@ export type KlondikeTable = {
  * A place on the table a move names: the stock `s`, the waste `w`, a suit's
  * foundation by its letter (`S` `H` `D` `C`, as a card id writes a suit), or
  * a column `1`–`7`.
+ *
+ * @example
+ * ```ts
+ * import type { KlondikePile } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const value: KlondikePile = "w";
+ * console.log(value);
+ * ```
  */
 export type KlondikePile = "s" | "w" | "S" | "H" | "D" | "C" | "1" | "2" | "3" | "4" | "5" | "6" | "7";
 
@@ -42,5 +81,13 @@ export type KlondikePile = "s" | "w" | "S" | "H" | "D" | "C" | "1" | "2" | "3" |
  * or a foundation or to a foundation, and from column to column the one run
  * whose foot fits where it lands — a column's face-up cards are always a
  * single run, so there is only ever one.
+ *
+ * @example
+ * ```ts
+ * import type { KlondikeMove } from "@johnmorrisdotca/toranpu/klondike";
+ *
+ * const value: KlondikeMove = { kind: "draw" };
+ * console.log(value.kind);
+ * ```
  */
 export type KlondikeMove = { kind: "draw" } | { kind: "recycle" } | { kind: "carry"; from: KlondikePile; to: KlondikePile };

@@ -14,7 +14,14 @@
  */
 import type { CardDesign } from "../ui/card-faces.types.ts";
 
-/** The English pattern, every card and two jokers, drawn in a box 360 by 540. About 700 kB, so it is its own entry point and is loaded only by a page that uses it. */
+/** The English pattern, every card and two jokers, drawn in a box 360 by 540. About 700 kB, so it is its own entry point and is loaded only by a page that uses it.
+ *
+ * @example
+ * ```ts
+ * import { ENGLISH_PATTERN } from "@johnmorrisdotca/toranpu/card-faces/english";
+ * console.log(ENGLISH_PATTERN.name);
+ * ```
+ */
 export const ENGLISH_PATTERN: CardDesign = {
   name: "english",
   box: [360, 540],

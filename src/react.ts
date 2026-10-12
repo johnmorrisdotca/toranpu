@@ -14,6 +14,19 @@ import type { GameOf, MoveOf, NewGameOptions } from "./play.ts";
  * const table = useCardGame("crazyEights", { players: ["You", "Ann"], computers: [false, true] });
  * table.moves.map((move) => <button onClick={() => table.play(move)}>…</button>);
  * ```
+ *
+ * @example
+ * ```ts no-run
+ * import type { CardGameState } from "@johnmorrisdotca/toranpu/react";
+ * import { useCardGame } from "@johnmorrisdotca/toranpu/react";
+ *
+ * function Table() {
+ *   const value: CardGameState<"hearts"> = useCardGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 });
+ *   console.log(value.moves.length);
+ *   return null;
+ * }
+ * console.log(Table.name);
+ * ```
  */
 export type CardGameState<K extends CardGameKind> = {
   /** The game now, or null when the table was one the game is not offered for. */
@@ -33,7 +46,25 @@ export type CardGameState<K extends CardGameKind> = {
   restart: (options?: Partial<NewGameOptions>) => void;
 };
 
-/** A card game held in React state. See `CardGameState` for what it hands back; `computerDelay` is the milliseconds a computer waits before each move. */
+/** A card game held in React state. See `CardGameState` for what it hands back; `computerDelay` is the milliseconds a computer waits before each move.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @param computerDelay - Milliseconds between computer turns in the React view.
+ * @returns A card game held in React state. See `CardGameState` for what it hands back; `computerDelay` is the milliseconds a computer waits before each move.
+ *
+ * @example
+ * ```ts no-run
+ * import { useCardGame } from "@johnmorrisdotca/toranpu/react";
+ *
+ * import { createElement } from "react";
+ * function Table() {
+ *   const table = useCardGame("hearts", { players: ["You", "Aki", "Ben", "Cy"], seed: 42 });
+ *   return createElement("p", null, `${table.moves.length} legal moves`);
+ * }
+ * console.log(createElement(Table));
+ * ```
+ */
 export function useCardGame<K extends CardGameKind>(kind: K, options: NewGameOptions, computerDelay = 700): CardGameState<K> {
   const rules = useMemo(() => rulesFor(kind), [kind]);
   const [game, setGame] = useState<GameOf<K> | null>(() => newGame(kind, options));

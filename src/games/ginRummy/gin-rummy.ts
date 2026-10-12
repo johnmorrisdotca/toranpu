@@ -24,35 +24,107 @@ import type { GinGame, GinLayout, GinMeld, GinMove, GinResult } from "./gin-rumm
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-/** How many play Gin Rummy: two. */
+/** How many play Gin Rummy: two.
+ *
+ * @example
+ * ```ts
+ * import { GIN_SEATS } from "@johnmorrisdotca/toranpu/gin-rummy";
+ * console.log(GIN_SEATS);
+ * ```
+ */
 export const GIN_SEATS = 2;
 const DEALT = 10;
-/** The most deadwood a player may knock with. */
+/** The most deadwood a player may knock with.
+ *
+ * @example
+ * ```ts
+ * import { KNOCK_MOST } from "@johnmorrisdotca/toranpu/gin-rummy";
+ * console.log(KNOCK_MOST);
+ * ```
+ */
 export const KNOCK_MOST = 10;
-/** The bonus for gin, and for an undercut. */
+/** The bonus for gin, and for an undercut.
+ *
+ * @example
+ * ```ts
+ * import { GIN_BONUS } from "@johnmorrisdotca/toranpu/gin-rummy";
+ * console.log(GIN_BONUS);
+ * ```
+ */
 export const GIN_BONUS = 25;
-/** The bonus for an undercut: the defender has no more deadwood than the knocker. */
+/** The bonus for an undercut: the defender has no more deadwood than the knocker.
+ *
+ * @example
+ * ```ts
+ * import { UNDERCUT_BONUS } from "@johnmorrisdotca/toranpu/gin-rummy";
+ * console.log(UNDERCUT_BONUS);
+ * ```
+ */
 export const UNDERCUT_BONUS = 25;
 /** The stock is played down to this many, and then the hand is drawn. */
 const STOCK_LEFT = 2;
 
-/** A card's deadwood: an ace one, the numbers their number, a jack, queen or king ten. */
+/** A card's deadwood: an ace one, the numbers their number, a jack, queen or king ten.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns A card's deadwood: an ace one, the numbers their number, a jack, queen or king ten.
+ *
+ * @example
+ * ```ts
+ * import { deadwoodValue } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(deadwoodValue("KS"));
+ * ```
+ */
 export function deadwoodValue(card: CardId): number {
   return Math.min(10, rankOf(card));
 }
 
-/** What a list of cards counts as deadwood, added up. */
+/** What a list of cards counts as deadwood, added up.
+ *
+ * @param cards - The cards in their current order.
+ * @returns What a list of cards counts as deadwood, added up.
+ *
+ * @example
+ * ```ts
+ * import { deadwoodOf } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(deadwoodOf(["AS", "KS"]));
+ * ```
+ */
 export function deadwoodOf(cards: readonly CardId[]): number {
   return cards.reduce((sum, card) => sum + deadwoodValue(card), 0);
 }
 
-/** A hand sorted as a player holds it: by suit (spades, hearts, clubs, diamonds, as the colours alternate), ace low. */
+/** A hand sorted as a player holds it: by suit (spades, hearts, clubs, diamonds, as the colours alternate), ace low.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns A hand sorted as a player holds it: by suit (spades, hearts, clubs, diamonds, as the colours alternate), ace low.
+ *
+ * @example
+ * ```ts
+ * import { sortGin } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(sortGin(["KH", "3H", "AS"]));
+ * ```
+ */
 export function sortGin(hand: readonly CardId[]): CardId[] {
   const order = "SHCD";
   return [...hand].sort((a, b) => order.indexOf(suitOf(a)) - order.indexOf(suitOf(b)) || rankOf(a) - rankOf(b));
 }
 
-/** Whether these cards are a meld: three or four of a rank, or three or more in a row in one suit. */
+/** Whether these cards are a meld: three or four of a rank, or three or more in a row in one suit.
+ *
+ * @param cards - The cards in their current order.
+ * @returns Whether these cards are a meld: three or four of a rank, or three or more in a row in one suit.
+ *
+ * @example
+ * ```ts
+ * import { isMeld } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(isMeld(["3H", "4H", "5H"]));
+ * ```
+ */
 export function isMeld(cards: readonly CardId[]): boolean {
   if (cards.length < 3) return false;
   if (cards.every((card) => rankOf(card) === rankOf(cards[0]))) return cards.length <= 4;
@@ -61,7 +133,18 @@ export function isMeld(cards: readonly CardId[]): boolean {
   return ranks.every((rank, at) => at === 0 || rank === ranks[at - 1] + 1);
 }
 
-/** Every meld that can be made from these cards: each set of three or four, and each run of three or more. */
+/** Every meld that can be made from these cards: each set of three or four, and each run of three or more.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns Every meld that can be made from these cards: each set of three or four, and each run of three or more.
+ *
+ * @example
+ * ```ts
+ * import { meldsIn } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(meldsIn(["3H", "4H", "5H", "AS"]));
+ * ```
+ */
 export function meldsIn(hand: readonly CardId[]): GinMeld[] {
   const melds: GinMeld[] = [];
   for (let rank = 1; rank <= 13; rank += 1) {
@@ -86,6 +169,16 @@ export function meldsIn(hand: readonly CardId[]): GinMeld[] {
  * The hand laid out to leave the least deadwood: the melds chosen, none
  * sharing a card, and what is left. Searched exhaustively over the cards as
  * a bitmask, which for eleven cards at most is quick.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns The hand laid out to leave the least deadwood: the melds chosen, none sharing a card, and what is left. Searched exhaustively over the cards as a bitmask, which for eleven cards at most is quick.
+ *
+ * @example
+ * ```ts
+ * import { bestLayout } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(bestLayout(["3H", "4H", "5H", "AS"]));
+ * ```
  */
 export function bestLayout(hand: readonly CardId[]): GinLayout {
   const cards = [...hand];
@@ -116,7 +209,18 @@ export function bestLayout(hand: readonly CardId[]): GinLayout {
   };
 }
 
-/** The deadwood left in a hand at its best. */
+/** The deadwood left in a hand at its best.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @returns The deadwood left in a hand at its best.
+ *
+ * @example
+ * ```ts
+ * import { deadwoodIn } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(deadwoodIn(["3H", "4H", "5H", "AS"]));
+ * ```
+ */
 export function deadwoodIn(hand: readonly CardId[]): number {
   return deadwoodOf(bestLayout(hand).deadwood);
 }
@@ -127,20 +231,63 @@ function dealGin(game: Omit<GinGame, "hands" | "stock" | "discard" | "taken" | "
   return { ...game, phase: "draw", hands: hands.map(sortGin), stock: stock.slice(1), discard: [stock[0]], taken: null, picked: [[], []], throws: 0, toPlay: game.hand % GIN_SEATS };
 }
 
-/** A new game of Gin Rummy for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Gin Rummy is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused. */
+/** A new game of Gin Rummy for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Gin Rummy is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @param size - The game’s length or size, as defined by its table specification.
+ * @param players - The player names in seat order.
+ * @param _language - An unused legacy language argument retained for compatibility.
+ * @param dealt - The numeric seed used to deal the game.
+ * @param computers - Flags by seat: true where a computer controls that seat.
+ * @returns A new game of Gin Rummy for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Gin Rummy is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES } from "@johnmorrisdotca/toranpu";
+ * import { startGin } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ginRummy.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * console.log(startGin(CARD_GAME_TABLES.ginRummy.defaultSize, names, undefined, 42)?.phase);
+ * ```
+ */
 export function startGin(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): GinGame | null {
   if (!(GIN_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== GIN_SEATS) return null;
   return dealGin({ size, players: [...players], computers: computerSeats(players.length, computers), seed: dealt ?? 1, moves: [], hand: 0, scores: [0, 0], results: [] });
 }
 
-/** Whether throwing this card, from a hand of eleven, leaves little enough deadwood to knock with. */
+/** Whether throwing this card, from a hand of eleven, leaves little enough deadwood to knock with.
+ *
+ * @param hand - The player’s held cards, or the hand number for a deal.
+ * @param card - The physical card or card id to read, draw or play.
+ * @returns Whether throwing this card, from a hand of eleven, leaves little enough deadwood to knock with.
+ *
+ * @example
+ * ```ts
+ * import { canKnockWith } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(canKnockWith(["3H", "4H", "5H", "7S", "8S", "9S", "8C", "8D", "8H", "AS", "KD"], "KD"));
+ * ```
+ */
 export function canKnockWith(hand: readonly CardId[], card: CardId): boolean {
   const left = without(hand, [card]);
   return left !== null && deadwoodIn(left) <= KNOCK_MOST;
 }
 
-/** Every move the seat to play may make now; none once the game is over. */
+/** Every move the seat to play may make now; none once the game is over.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every move the seat to play may make now; none once the game is over.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ginMoves } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ginRummy.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ginRummy", { players: names, seed: 42 })!;
+ * console.log(ginMoves(game));
+ * ```
+ */
 export function ginMoves(game: GinGame): GinMove[] {
   if (game.toPlay === null) return [];
   if (game.phase === "draw") return game.discard.length > 0 ? [{ draw: "stock" }, { draw: "discard" }] : [{ draw: "stock" }];
@@ -159,6 +306,17 @@ function fits(meld: readonly CardId[], card: CardId): boolean {
  * The defender's side of a knock: their own melds first, then every card left
  * that fits one of the knocker's melds laid off onto it — a run grown one card
  * at a time, so a six can follow the five just laid.
+ *
+ * @param defender - The defending player’s hand or melds.
+ * @param knockerMelds - The knocking player’s declared melds.
+ * @returns The defender's side of a knock: their own melds first, then every card left that fits one of the knocker's melds laid off onto it — a run grown one card at a time, so a six can follow the five just laid.
+ *
+ * @example
+ * ```ts
+ * import { layOff } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * console.log(layOff(["6H", "AS"], [["3H", "4H", "5H"]]));
+ * ```
  */
 export function layOff(defender: readonly CardId[], knockerMelds: readonly GinMeld[]): { layout: GinLayout; laidOff: CardId[]; melds: GinMeld[] } {
   const layout = bestLayout(defender);
@@ -235,7 +393,22 @@ function throwCard(game: GinGame, seat: number, card: CardId, knocking: boolean)
   return { ...thrown, phase: "draw", toPlay: 1 - seat };
 }
 
-/** The game after that move, with the move added to its record, or null for a move the rules refuse. */
+/** The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @param move - The native move to validate or apply.
+ * @returns The game after that move, with the move added to its record, or null for a move the rules refuse.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import { playGin } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ginRummy.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ginRummy", { players: names, seed: 42 })!;
+ * console.log(playGin(game, rulesFor("ginRummy").moves(game)[0]!)?.moves.length);
+ * ```
+ */
 export function playGin(game: GinGame, move: GinMove): GinGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
@@ -246,7 +419,21 @@ export function playGin(game: GinGame, move: GinMove): GinGame | null {
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 
-/** The first to the game's total wins. */
+/** The first to the game's total wins.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns The first to the game's total wins.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { ginWinners } from "@johnmorrisdotca/toranpu/gin-rummy";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.ginRummy.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("ginRummy", { players: names, seed: 42 })!;
+ * console.log(ginWinners(game));
+ * ```
+ */
 export function ginWinners(game: GinGame): number[] {
   if (game.phase !== "over") return [];
   const best = Math.max(...game.scores);

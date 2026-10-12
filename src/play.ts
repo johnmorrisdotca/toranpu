@@ -10,12 +10,43 @@ import type { CardGameRules } from "./games/card-games.types.ts";
  * game's `CardGameRules`, which a caller can always reach for directly.
  */
 
-/** A game of that kind, in progress. */
+/** A game of that kind, in progress.
+ *
+ * @example
+ * ```ts
+ * import { newGame } from "@johnmorrisdotca/toranpu";
+ * import type { GameOf } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * const value: GameOf<"hearts"> = game;
+ * console.log(value.phase);
+ * ```
+ */
 export type GameOf<K extends CardGameKind> = CardGamePlays[K]["game"];
-/** A move in a game of that kind. */
+/** A move in a game of that kind.
+ *
+ * @example
+ * ```ts
+ * import { newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ * import type { MoveOf } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * const value: MoveOf<"hearts"> = rulesFor("hearts").moves(game)[0]!;
+ * console.log(value);
+ * ```
+ */
 export type MoveOf<K extends CardGameKind> = CardGamePlays[K]["move"];
 
-/** How to seat a new game. Everything but `players` has a sensible default. */
+/** How to seat a new game. Everything but `players` has a sensible default.
+ *
+ * @example
+ * ```ts
+ * import type { NewGameOptions } from "@johnmorrisdotca/toranpu";
+ *
+ * const value: NewGameOptions = { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 };
+ * console.log(value.seed);
+ * ```
+ */
 export type NewGameOptions = {
   /** One name a seat. The number of names is the number of players. */
   players: readonly string[];
@@ -27,12 +58,34 @@ export type NewGameOptions = {
   computers?: readonly boolean[];
 };
 
-/** A game's rules by its kind, with its own game and move types. */
+/** A game's rules by its kind, with its own game and move types.
+ *
+ * @param kind - The named card game or sound kind.
+ * @returns A game's rules by its kind, with its own game and move types.
+ *
+ * @example
+ * ```ts
+ * import { newGame, rulesFor } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(rulesFor("hearts").moves(game).length);
+ * ```
+ */
 export function rulesFor<K extends CardGameKind>(kind: K): CardGameRules<GameOf<K>, MoveOf<K>> {
   return CARD_GAME_RULES[kind] as unknown as CardGameRules<GameOf<K>, MoveOf<K>>;
 }
 
-/** A seed for a game nobody asked for by number: a whole number from 1 to 2³¹ − 1. */
+/** A seed for a game nobody asked for by number: a whole number from 1 to 2³¹ − 1.
+ *
+ * @returns A seed for a game nobody asked for by number: a whole number from 1 to 2³¹ − 1.
+ *
+ * @example
+ * ```ts
+ * import { randomSeed } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(Number.isInteger(randomSeed()));
+ * ```
+ */
 export function randomSeed(): number {
   return 1 + Math.floor(Math.random() * 0x7ffffffe);
 }
@@ -43,6 +96,17 @@ export function randomSeed(): number {
  *
  * ```ts
  * const game = newGame("hearts", { players: ["You", "Ann", "Ben", "Cy"], computers: [false, true, true, true] });
+ * ```
+ *
+ * @param kind - The named card game or sound kind.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A new game of that kind, or null when the game is not offered for that table (too many players, or a size it does not play to). ```ts const game = newGame("hearts", { players: ["You", "Ann", "Ben", "Cy"], computers: [false, true, true, true] }); ```
+ *
+ * @example
+ * ```ts
+ * import { newGame } from "@johnmorrisdotca/toranpu";
+ *
+ * console.log(newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })?.hands.map((hand) => hand.length));
  * ```
  */
 export function newGame<K extends CardGameKind>(kind: K, options: NewGameOptions): GameOf<K> | null {
@@ -55,6 +119,18 @@ export function newGame<K extends CardGameKind>(kind: K, options: NewGameOptions
  * Every computer move due, played in turn until a person is to move or the
  * game is over. Returns the game and the moves the computers made, in order,
  * so a table can show them one at a time.
+ *
+ * @param kind - The named card game or sound kind.
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns Every computer move due, played in turn until a person is to move or the game is over. Returns the game and the moves the computers made, in order, so a table can show them one at a time.
+ *
+ * @example
+ * ```ts
+ * import { newGame, playComputers } from "@johnmorrisdotca/toranpu";
+ *
+ * const game = newGame("hearts", { players: ["Aki", "Ben", "Cy", "Dev"], seed: 42 })!;
+ * console.log(playComputers("hearts", game).moves.length);
+ * ```
  */
 export function playComputers<K extends CardGameKind>(kind: K, game: GameOf<K>): { game: GameOf<K>; moves: MoveOf<K>[] } {
   const rules = rulesFor(kind);

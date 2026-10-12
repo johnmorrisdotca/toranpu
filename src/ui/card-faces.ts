@@ -15,16 +15,48 @@ import { designDraws, registeredDesign } from "./registry.ts";
 import { CARD_BOX, escapeXml, paint, round, suitPath, svgDataUrl, UNSELECTABLE } from "./svg.ts";
 import type { CardSuitLetter } from "./svg.types.ts";
 
-/** The designs drawn here, by name. The English pattern is `ENGLISH_PATTERN` from `@johnmorrisdotca/toranpu/card-faces/english`, or `loadCardDesign("english")`. */
+/** The designs drawn here, by name. The English pattern is `ENGLISH_PATTERN` from `@johnmorrisdotca/toranpu/card-faces/english`, or `loadCardDesign("english")`.
+ *
+ * @example
+ * ```ts
+ * import { CARD_DESIGNS } from "@johnmorrisdotca/toranpu/card-faces";
+ * console.log(CARD_DESIGNS);
+ * ```
+ */
 export const CARD_DESIGNS = ["plain", "four-colour", "english", "realistic"] as const;
 
-/** A design's name. */
+/** A design's name.
+ *
+ * @example
+ * ```ts
+ * import type { CardDesignName } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * const value: CardDesignName = "english";
+ * console.log(value);
+ * ```
+ */
 export type CardDesignName = (typeof CARD_DESIGNS)[number];
 
-/** The two jokers' ids: the red joker and the black. No game here plays with them; a table of your own may. */
+/** The two jokers' ids: the red joker and the black. No game here plays with them; a table of your own may.
+ *
+ * @example
+ * ```ts
+ * import { JOKERS } from "@johnmorrisdotca/toranpu/card-faces";
+ * console.log(JOKERS);
+ * ```
+ */
 export const JOKERS = ["RJ", "BJ"] as const;
 
-/** How a face is drawn. Every field may be left out. */
+/** How a face is drawn. Every field may be left out.
+ *
+ * @example
+ * ```ts
+ * import type { CardFaceOptions } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * const value: CardFaceOptions = { design: "four-colour", width: 80, language: "ja" };
+ * console.log(value.design);
+ * ```
+ */
 export type CardFaceOptions = {
   /** `"plain"` (unless said), `"four-colour"`, a design handed in, such as `ENGLISH_PATTERN`, or the name of a design the page has registered (`registerCardDesign`). */
   design?: "plain" | "four-colour" | CardDesign | (string & {});
@@ -36,10 +68,24 @@ export type CardFaceOptions = {
   language?: Language;
 };
 
-/** The CSS custom properties a plain or four-colour face drawn into a page takes its colours from. */
+/** The CSS custom properties a plain or four-colour face drawn into a page takes its colours from.
+ *
+ * @example
+ * ```ts
+ * import { CARD_FACE_PROPERTIES } from "@johnmorrisdotca/toranpu/card-faces";
+ * console.log(CARD_FACE_PROPERTIES);
+ * ```
+ */
 export const CARD_FACE_PROPERTIES = { paper: "--toranpu-card", black: "--toranpu-card-ink", red: "--toranpu-card-red", blue: "--toranpu-card-blue", green: "--toranpu-card-green" } as const;
 
-/** The faces' own colours. */
+/** The faces' own colours.
+ *
+ * @example
+ * ```ts
+ * import { CARD_FACE_COLOURS } from "@johnmorrisdotca/toranpu/card-faces";
+ * console.log(CARD_FACE_COLOURS);
+ * ```
+ */
 export const CARD_FACE_COLOURS = { paper: "#fffdf8", black: "#1b1b1b", red: "#c2272d", blue: "#1f5fbf", green: "#1f7a3a", edge: "#000" } as const;
 
 const RANK_SHOWN: Record<string, string> = { A: "A", T: "10", J: "J", Q: "Q", K: "K" };
@@ -50,18 +96,53 @@ const RED = new Set(["H", "D"]);
  * card or for the look of it: the two jokers, the two rules cards a pack is sold with (`R1`,
  * the rules of Hearts; `R2`, of Spades), and a blank (`BL`). A hand holds at most
  * `EXTRA_LIMITS` of each kind (`readHand`).
+ *
+ * @example
+ * ```ts
+ * import { EXTRA_CARDS } from "@johnmorrisdotca/toranpu/card-faces";
+ * console.log(EXTRA_CARDS);
+ * ```
  */
 export const EXTRA_CARDS = ["RJ", "BJ", "R1", "R2", "BL"] as const;
 
-/** The most of each kind of extra one hand holds: four jokers, as some packs have; two rules cards; two blanks. */
+/** The most of each kind of extra one hand holds: four jokers, as some packs have; two rules cards; two blanks.
+ *
+ * @example
+ * ```ts
+ * import { EXTRA_LIMITS } from "@johnmorrisdotca/toranpu/card-faces";
+ * console.log(EXTRA_LIMITS);
+ * ```
+ */
 export const EXTRA_LIMITS = { jokers: 4, rules: 2, blanks: 2 } as const;
 
-/** Whether a text is a card a face can be drawn for: `QS`, `TD`, a joker (`RJ`, `BJ`), a rules card (`R1`, `R2`) or the blank (`BL`). */
+/** Whether a text is a card a face can be drawn for: `QS`, `TD`, a joker (`RJ`, `BJ`), a rules card (`R1`, `R2`) or the blank (`BL`).
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns Whether a text is a card a face can be drawn for: `QS`, `TD`, a joker (`RJ`, `BJ`), a rules card (`R1`, `R2`) or the blank (`BL`).
+ *
+ * @example
+ * ```ts
+ * import { isCardFace } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(isCardFace("AS"));
+ * ```
+ */
 export function isCardFace(text: unknown): text is string {
   return typeof text === "string" && (/^[A2-9TJQK][SHDC]$/.test(text) || (EXTRA_CARDS as readonly string[]).includes(text));
 }
 
-/** The middles of a number card's pips, in the 100 by 140 box, and whether each is drawn upside down. */
+/** The middles of a number card's pips, in the 100 by 140 box, and whether each is drawn upside down.
+ *
+ * @param count - The requested number of cards, sounds or layout positions.
+ * @returns The middles of a number card's pips, in the 100 by 140 box, and whether each is drawn upside down.
+ *
+ * @example
+ * ```ts
+ * import { pipPlaces } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(pipPlaces(7));
+ * ```
+ */
 export function pipPlaces(count: number): { x: number; y: number; down: boolean }[] {
   const L = 31;
   const M = 50;
@@ -195,6 +276,17 @@ function designed(design: CardDesign, card: string, language: Language): string 
  * `--toranpu-card`, `--toranpu-card-ink`, `--toranpu-card-red`,
  * `--toranpu-card-blue` and `--toranpu-card-green` where they are set; as an
  * image they keep their own.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A card's face as a whole SVG document, 100 by 140: `QS`, `TD`, a joker (`RJ`, `BJ`), a rules card (`R1`, `R2`) or the blank (`BL`). `null` for anything that is not a card. The plain design unless another is asked for; a design handed in that has no drawing for the card draws it plain. Drawn into a page, the plain and four-colour faces take their colours from `--toranpu-card`, `--toranpu-card-ink`, `--toranpu-card-red`, `--toranpu-card-blue` and `--toranpu-card-green` where they are set; as an image they keep their own.
+ *
+ * @example
+ * ```ts
+ * import { cardFaceSvg } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(cardFaceSvg("AS", { width: 80 })?.slice(0, 160));
+ * ```
  */
 export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string | null {
   const design = designOf(options.design);
@@ -235,6 +327,17 @@ export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string
  * a box 100 by 140, or in `box`, fitted to the card's height and centred; a whole `<svg>` is used as it is. It is how a
  * page draws a card no deck has, for one card, with no design registered. `frame: "none"` leaves the paper out for art that
  * fills the card. Scripts, handlers and foreign objects are taken out of the markup.
+ *
+ * @param art - SVG markup for the face artwork.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A card's face from artwork of your own: `art` is SVG markup (or a whole `<svg>` document) drawn on the card's paper in a box 100 by 140, or in `box`, fitted to the card's height and centred; a whole `<svg>` is used as it is. It is how a page draws a card no deck has, for one card, with no design registered. `frame: "none"` leaves the paper out for art that fills the card. Scripts, handlers and foreign objects are taken out of the markup.
+ *
+ * @example
+ * ```ts
+ * import { cardFaceFromArt } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(cardFaceFromArt(`<circle cx="50" cy="70" r="20" fill="#2f5d4a"/>`).slice(0, 160));
+ * ```
  */
 export function cardFaceFromArt(art: string, options: Omit<CardFaceOptions, "design"> & { box?: readonly [number, number]; frame?: "paper" | "none" } = {}): string {
   const clean = cleanMarkup(art);
@@ -243,7 +346,19 @@ export function cardFaceFromArt(art: string, options: Omit<CardFaceOptions, "des
   return cardFaceSvg("art", { ...options, design, title: options.title ?? "" }) ?? "";
 }
 
-/** A card's face as a data URL, for an <img src>, a CSS background or a canvas. `null` for anything that is not a card. */
+/** A card's face as a data URL, for an <img src>, a CSS background or a canvas. `null` for anything that is not a card.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @param options - Options for this call; omitted fields retain their documented defaults.
+ * @returns A card's face as a data URL, for an <img src>, a CSS background or a canvas. `null` for anything that is not a card.
+ *
+ * @example
+ * ```ts
+ * import { cardFaceUrl } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(cardFaceUrl("KH")?.slice(0, 40));
+ * ```
+ */
 export function cardFaceUrl(card: string, options: CardFaceOptions = {}): string | null {
   const svg = cardFaceSvg(card, options);
   return svg === null ? null : svgDataUrl(svg);
@@ -252,6 +367,18 @@ export function cardFaceUrl(card: string, options: CardFaceOptions = {}): string
 /**
  * A face's name in words: "queen of spades", "red joker"; in Japanese "スペードのクイーン", "赤のジョーカー". A card
  * of a design of the page's own, given as `design`, is named by that design's `label`, or by its id.
+ *
+ * @param card - The physical card or card id to read, draw or play.
+ * @param language - English or Japanese for the displayed words.
+ * @param design - The card-face design or registered design name.
+ * @returns A face's name in words: "queen of spades", "red joker"; in Japanese "スペードのクイーン", "赤のジョーカー". A card of a design of the page's own, given as `design`, is named by that design's `label`, or by its id.
+ *
+ * @example
+ * ```ts
+ * import { faceName } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log(faceName("AS", "en"));
+ * ```
  */
 export function faceName(card: string, language: Language = "en", design?: CardDesign): string {
   const named = design?.label !== undefined && designDraws(design, card) ? design.label(card, language) : null;
@@ -270,6 +397,16 @@ export function faceName(card: string, language: Language = "en", design?: CardD
  * the English pattern (about 700 kB, 200 kB compressed) only then. `"plain"`
  * and `"four-colour"` are drawn here and need no loading; they give `null`. A
  * design the page registered under the name is given as it is.
+ *
+ * @param name - The registered card design or card-back name.
+ * @returns A design by its name, loaded when it is first asked for: `"english"` fetches the English pattern (about 700 kB, 200 kB compressed) only then. `"plain"` and `"four-colour"` are drawn here and need no loading; they give `null`. A design the page registered under the name is given as it is.
+ *
+ * @example
+ * ```ts
+ * import { loadCardDesign } from "@johnmorrisdotca/toranpu/card-faces";
+ *
+ * console.log((await loadCardDesign("english"))?.name);
+ * ```
  */
 export async function loadCardDesign(name: CardDesignName | string): Promise<CardDesign | null> {
   const own = registeredDesign(name);

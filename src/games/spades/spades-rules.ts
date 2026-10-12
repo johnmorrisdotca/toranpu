@@ -14,12 +14,47 @@ function isSpadesMove(value: unknown): value is SpadesMove {
 }
 
 const codec = cardGameCodec<SpadesGame, SpadesMove>("spades", startSpades, playSpades, isSpadesMove);
-/** A game of Spades as text: its table, its seed and its moves, never a hand. */
+/** A game of Spades as text: its table, its seed and its moves, never a hand.
+ *
+ * @param game - The current native game; applying a move returns a new state.
+ * @returns A game of Spades as text: its table, its seed and its moves, never a hand.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { encodeSpades } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("spades", { players: names, seed: 42 })!;
+ * console.log(encodeSpades(game));
+ * ```
+ */
 export const encodeSpades = codec.encode;
-/** Text read back into the game of Spades it records, by playing every move again through the rules; null for anything they cannot play out. */
+/** Text read back into the game of Spades it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @param text - The notation, encoded state or saved text to read.
+ * @returns Text read back into the game of Spades it records, by playing every move again through the rules; null for anything they cannot play out.
+ *
+ * @example
+ * ```ts
+ * import { CARD_GAME_TABLES, newGame } from "@johnmorrisdotca/toranpu";
+ * import { decodeSpades, encodeSpades } from "@johnmorrisdotca/toranpu/spades";
+ *
+ * const names = Array.from({ length: CARD_GAME_TABLES.spades.defaultPlayers }, (_, seat) => `Seat ${seat + 1}`);
+ * let game = newGame("spades", { players: names, seed: 42 })!;
+ * console.log(decodeSpades(encodeSpades(game))?.phase);
+ * ```
+ */
 export const decodeSpades = codec.decode;
 
-/** Spades as one `CardGameRules`: everything a table asks of the game. */
+/** Spades as one `CardGameRules`: everything a table asks of the game.
+ *
+ * @example
+ * ```ts
+ * import { SPADES_RULES } from "@johnmorrisdotca/toranpu/spades";
+ * console.log(Object.keys(SPADES_RULES));
+ * ```
+ */
 export const SPADES_RULES: CardGameRules<SpadesGame, SpadesMove> = {
   start: startSpades,
   moves: spadesMoves,
