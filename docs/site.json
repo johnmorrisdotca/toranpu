@@ -1,0 +1,122 @@
+{
+  "job": "Playing cards, card games and solitaire",
+  "pitch": {
+    "en": "Use a deck, play eleven games with computers, solve a solitaire, or display cards in your own design.",
+    "ja": "デッキを使い、11種類のゲームでコンピューターと対戦し、ソリティアを解いたり、独自の絵柄でカードを表示したりできます。"
+  },
+  "name": {
+    "en": "Toranpu is Japanese for playing cards.",
+    "ja": "「トランプ」は、日本語で playing cards を指す言葉です。"
+  },
+  "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='14' y='6' width='72' height='88' rx='12' fill='%23fffdf8' stroke='%232f5d4a' stroke-width='8'/%3E%3Cpath d='M50 26 C 66 44, 74 52, 74 62 C 74 74, 58 76, 54 66 L 58 80 L 42 80 L 46 66 C 42 76, 26 74, 26 62 C 26 52, 34 44, 50 26 Z' fill='%231f2320'/%3E%3C/svg%3E",
+  "entries": {
+    ".": {
+      "en": "Games and state",
+      "ja": "ゲームと状態"
+    },
+    "./deck": {
+      "en": "Deck tools",
+      "ja": "デッキの道具"
+    },
+    "./react": {
+      "en": "React components",
+      "ja": "Reactコンポーネント"
+    },
+    "./card-sounds": {
+      "en": "Sound controls",
+      "ja": "音の操作"
+    },
+    "./sounds": {
+      "en": "Recorded sounds",
+      "ja": "録音された音"
+    },
+    "./card-backs": {
+      "en": "Card backs",
+      "ja": "カードの裏面"
+    },
+    "./card-faces": {
+      "en": "Card designs",
+      "ja": "カードの絵柄"
+    },
+    "./card-faces/english": {
+      "en": "English faces",
+      "ja": "英国式の絵柄"
+    },
+    "./card-faces/realistic": {
+      "en": "Realistic faces",
+      "ja": "写実的な絵柄"
+    },
+    "./element": {
+      "en": "Cards, hands and piles",
+      "ja": "カード・手札・山札"
+    },
+    "./element/define": {
+      "en": "Register card tags",
+      "ja": "カードのタグを登録"
+    },
+    "./table": {
+      "en": "Playable table",
+      "ja": "遊べるテーブル"
+    },
+    "./table/define": {
+      "en": "Register table tag",
+      "ja": "テーブルのタグを登録"
+    },
+    "./hearts": {
+      "en": "Hearts",
+      "ja": "ハーツ"
+    },
+    "./spades": {
+      "en": "Spades",
+      "ja": "スペード"
+    },
+    "./euchre": {
+      "en": "Euchre",
+      "ja": "ユーカー"
+    },
+    "./cribbage": {
+      "en": "Cribbage",
+      "ja": "クリベッジ"
+    },
+    "./oh-hell": {
+      "en": "Oh Hell",
+      "ja": "オーヘル"
+    },
+    "./crazy-eights": {
+      "en": "Crazy Eights",
+      "ja": "クレイジーエイツ"
+    },
+    "./go-fish": {
+      "en": "Go Fish",
+      "ja": "ゴーフィッシュ"
+    },
+    "./big-two": {
+      "en": "Big Two",
+      "ja": "ビッグツー"
+    },
+    "./president": {
+      "en": "President",
+      "ja": "大富豪"
+    },
+    "./gin-rummy": {
+      "en": "Gin Rummy",
+      "ja": "ジンラミー"
+    },
+    "./war": {
+      "en": "War",
+      "ja": "ウォー"
+    },
+    "./klondike": {
+      "en": "Klondike",
+      "ja": "クロンダイク"
+    },
+    "./freecell": {
+      "en": "FreeCell",
+      "ja": "フリーセル"
+    },
+    "./spider": {
+      "en": "Spider",
+      "ja": "スパイダー"
+    }
+  }
+}

@@ -11,7 +11,7 @@ const icon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewB
 const frame = ({ title, description, links, body, scripts }) => `<!doctype html>
 <html lang="en">
   <head>
-    ${familyHead({ id, title, description, ogTitle: "Toranpu トランプ: eleven card games with computer players", ogDescription: "A deck of playing cards and eleven card games, each with a computer player." })}
+    ${familyHead({ id, title, description, ogTitle: "Toranpu トランプ — Playing cards, card games and solitaire", ogDescription: "A deck of playing cards and eleven card games, each with a computer player." })}
     <link rel="icon" href="${icon}" />
     <link rel="stylesheet" href="family.css" />
     <link rel="stylesheet" href="toranpu.css" />
@@ -39,9 +39,9 @@ cpSync("dist", "site/dist", { recursive: true });
 writeFileSync(
   "site/index.html",
   frame({
-    title: "Toranpu · eleven card games with computer players",
+    title: "Toranpu トランプ — Playing cards, card games and solitaire",
     description: "Play a hand of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy or War against computer players, all run by the Toranpu TypeScript package. Free and open source.",
-    links: [{ href: "api.html", say: "pageApi" }],
+    links: [{ href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }],
     body: readFileSync("demo/body.html", "utf8").replace("__UNREVIEWED__", familyUnreviewed({ id })).trimEnd(),
     scripts: `<script type="module" src="page.js"></script>`,
   }),
@@ -51,7 +51,7 @@ const api = apiBody();
 writeFileSync(
   "site/api.html",
   frame({
-    title: "Toranpu API reference: every export, with its signature",
+    title: "Toranpu トランプ — Playing cards, card games and solitaire",
     description: "The API reference of the Toranpu card game package: every export of every entry point, with its signature and its documentation, made from the source.",
     links: [{ href: "./", say: "pageBack" }],
     body: `      ${api.html}\n      ${familyUnreviewed({ id })}`,
@@ -87,8 +87,8 @@ cpSync("demo/embed", "site/embed", { recursive: true });
 for (const file of ["builder.js", "builder.css"]) cpSync(`demo/${file}`, `site/${file}`);
 writeFileSync("site/family-embed-builder.js", `export const FAMILY_EMBED_BUILDER_WORDS = ${JSON.stringify(FAMILY_EMBED_BUILDER_WORDS)};\nexport ${familyEmbedBuilder.toString()};\n`);
 const builderParts = {
-  builderHead: familyHead({ id, title: "Toranpu · build a hand of cards", description: "Arrange cards, preview them and copy the embed code." }),
-  builderHeader: familyHeader({ id, links: [{ href: "./", say: "toGallery" }] }),
+  builderHead: familyHead({ id, title: "Toranpu トランプ — Playing cards, card games and solitaire", description: "Arrange cards, preview them and copy the embed code." }),
+  builderHeader: familyHeader({ id, links: [{ href: "./", say: "toGallery" }, { href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }] }),
   unreviewed: familyUnreviewed({ id }), footer: familyFooter({ id }), script: `<script>${FAMILY_SCRIPT}</script>`,
 };
 writeFileSync("site/builder.html", readFileSync("demo/builder.html", "utf8").replace(/<!-- family:([A-Za-z]+) -->/g, (_match, key) => builderParts[key]));

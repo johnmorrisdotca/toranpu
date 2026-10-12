@@ -8,6 +8,7 @@ import { familyEmbedBuilder, FAMILY_EMBED_BUILDER_WORDS } from "./family-embed-b
 const words = {
   en: {
     ...FAMILY_EMBED_BUILDER_WORDS.en,
+    pageDocs: "Docs", pageApi: "API reference",
     pitch: "Arrange a hand, card or pile, preview it, and copy the code for your page.",
     name: "Toranpu is the Japanese word for playing cards.",
     nameLink: "About the name",
@@ -24,6 +25,7 @@ const words = {
   },
   ja: {
     ...FAMILY_EMBED_BUILDER_WORDS.ja,
+    pageDocs: "ドキュメント", pageApi: "API リファレンス",
     pitch: "手札、カード、山札を選んで表示を確認し、ページに埋め込むコードをコピーできます。",
     name: "「トランプ」は、日本語で playing cards を指す言葉です。",
     nameLink: "名前について",
@@ -75,7 +77,7 @@ leftOut["hand.receive"] = "Receive controls programmatic replacement, not the in
 leftOut["hand.deal-after"] = "Deal delay is for a table dealing hands over time.";
 const formats = ["element", "iframe", "module", "react", "vue", "svelte", "angular", "html", "url"];
 let mounted;
-const page = globalThis.familyLanguage({ id: "toranpu", words, onChange: () => mounted?.draw() });
+const page = globalThis.familyLanguage({ id: "toranpu", words, onChange: () => { docsLink(); mounted?.draw(); } });
 const builder = familyEmbedBuilder({ id: "toranpu", packageName: "@johnmorrisdotca/toranpu", major: VERSION.split(".")[0], site: "https://johnmorrisdotca.github.io/toranpu/", title: "Toranpu · cards", titleJa: "カードの埋め込み", options, leftOut, groups: { cards: { en: "The cards", ja: "カードの設定" } },
   makers: {
     hand: { names: "hand", element: "hand", tag: "toranpu-hand", embed: "embed/", required: ["cards"], description: "makerHandSays", formats, width: 480, height: (settings) => ({ small: 160, medium: 200, large: 360 }[settings.size] ?? 200) },
@@ -103,3 +105,8 @@ mounted = builder.mount({ words, language: () => page, colourDefault: () => "#b5
     return { destroy() { element.remove(); } };
   },
 });
+
+function docsLink() {
+  document.querySelector('[data-say="pageDocs"]')?.setAttribute("href", page.lang === "ja" ? "docs/ja/index.html" : "docs/index.html");
+}
+docsLink();

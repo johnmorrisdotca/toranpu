@@ -157,20 +157,27 @@ test("changing language moves nothing below the header", async ({ page }) => {
   await sound(page, errors);
 });
 
-test("the API reference lists every entry point and every export, in the family's look", async ({ page }) => {
+test("the existing API index keeps every entry and export anchor and leads back to the demo", async ({ page }) => {
   const errors = await open(page, "", "api.html");
   const pkg = JSON.parse((await import("node:fs")).readFileSync(new URL("../package.json", import.meta.url), "utf8"));
   await expect(page.locator(".api-entry")).toHaveCount(Object.keys(pkg.exports).length);
-  await expect(page.locator("#main-newGame pre").first()).toHaveText("newGame<K extends CardGameKind>(kind: K, options: NewGameOptions): GameOf<K> | null");
+  await expect(page.locator("#main-newGame h3 a")).toHaveAttribute("href", "docs/api/main/newGame.html");
   await expect(page.locator("#main-newGame p").first()).toContainText("A new game of that kind");
   await expect(page.locator("#hearts-heartsPoints")).toContainText("a heart one, the queen of spades thirteen");
   await expect(page.locator("#deck-shuffledDeck")).toBeVisible();
-  const undocumented = await page.evaluate(() => [...document.querySelectorAll(".api-entry article")].filter((one) => one.querySelector("p") === null).map((one) => one.id));
+  // Namespace pages are member indexes under the unchanged pilot; other exports have summaries.
+  const undocumented = await page.evaluate(() => [...document.querySelectorAll(".api-entry article")]
+    .filter((one) => one.querySelector("p") === null && one.querySelector(".docs-kind")?.textContent !== "namespace")
+    .map((one) => one.id));
   expect(undocumented).toEqual([]);
   await sound(page, errors);
-  await tap(page, '[data-lang="ja"]');
-  await expect(page.locator('[data-say="pitch"]')).toHaveText(STRINGS.ja.pageApiIntro);
-  await tap(page, 'nav a[data-say="pageBack"]');
+  await page.locator("#main-newGame h3 a").click();
+  await expect(page.locator("pre").filter({ hasText: "function newGame" }).first()).toContainText("options: NewGameOptions");
+  await page.locator('header .lang a[data-lang="ja"]').click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  await expect(page.locator("h1")).toContainText("newGame");
+  await page.getByRole("link", { name: "デモ", exact: true }).click();
+  await settled(page);
   await expect(page.locator(at("status"))).not.toBeEmpty();
   await sound(page, errors);
 });

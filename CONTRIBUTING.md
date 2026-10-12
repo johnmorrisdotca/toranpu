@@ -149,3 +149,7 @@ holds each file to that page. Nothing GPL or LGPL.
   they check that nothing is wider than the screen, nothing to tap is under
   44px, and the page complained of nothing. The first time,
   `pnpm exec playwright install chromium webkit` fetches the browsers.
+
+## Documentation site
+
+`pnpm docs:check` checks public examples and guide links. `pnpm docs:site` builds the bilingual reference and local Pagefind search. Keep summaries, parameters, return/refusal meanings and standalone examples with public exports; browser and solver examples use `ts no-run` when appropriate. Update paired guides in `docs/guides/` and `docs/guides/ja/`, and mark new Japanese for review before release. The generator and shared tests are unchanged pilot copies. Namespace pages list their named-entry members under the pilot’s namespace exemption.

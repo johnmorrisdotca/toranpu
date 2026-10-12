@@ -7,6 +7,8 @@ All notable changes to this project are written here. The format follows
 ## [Unreleased]
 ### Added
 
+- Add the bilingual documentation site, checked public examples, paired guides, local search and machine-readable pages.
+
 - Add the shared hand/card/pile builder, validated iframe pages and reflected display attributes, preserving card methods and structured getters.
 
 - Share a package-independent embed builder for option controls, preview adapters, code tabs and shareable links.

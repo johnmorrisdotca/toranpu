@@ -1,0 +1,113 @@
+{
+  "measured": "esbuild 0.28.2, bundled, minified, ES2020, gzip level 9",
+  "entries": {
+    ".": {
+      "minified": 117197,
+      "gzip": 36039
+    },
+    "./deck": {
+      "minified": 3121,
+      "gzip": 1446
+    },
+    "./react": {
+      "minified": 85896,
+      "gzip": 27279
+    },
+    "./card-sounds": {
+      "minified": 71208,
+      "gzip": 43112
+    },
+    "./sounds": {
+      "minified": 67860,
+      "gzip": 41247
+    },
+    "./card-backs": {
+      "minified": 8333,
+      "gzip": 3455
+    },
+    "./card-faces": {
+      "minified": 835770,
+      "gzip": 188282
+    },
+    "./card-faces/english": {
+      "minified": 694426,
+      "gzip": 165300
+    },
+    "./card-faces/realistic": {
+      "minified": 779521,
+      "gzip": 171101
+    },
+    "./element": {
+      "minified": 945023,
+      "gzip": 243219
+    },
+    "./element/define": {
+      "minified": 945028,
+      "gzip": 243219
+    },
+    "./table": {
+      "minified": 1010122,
+      "gzip": 263754
+    },
+    "./table/define": {
+      "minified": 1010127,
+      "gzip": 263761
+    },
+    "./hearts": {
+      "minified": 8862,
+      "gzip": 3549
+    },
+    "./spades": {
+      "minified": 9588,
+      "gzip": 3814
+    },
+    "./euchre": {
+      "minified": 9514,
+      "gzip": 3793
+    },
+    "./cribbage": {
+      "minified": 8722,
+      "gzip": 3727
+    },
+    "./oh-hell": {
+      "minified": 7687,
+      "gzip": 3135
+    },
+    "./crazy-eights": {
+      "minified": 7449,
+      "gzip": 3073
+    },
+    "./go-fish": {
+      "minified": 7184,
+      "gzip": 2876
+    },
+    "./big-two": {
+      "minified": 9400,
+      "gzip": 3845
+    },
+    "./president": {
+      "minified": 8643,
+      "gzip": 3499
+    },
+    "./gin-rummy": {
+      "minified": 9324,
+      "gzip": 3816
+    },
+    "./war": {
+      "minified": 5270,
+      "gzip": 2308
+    },
+    "./klondike": {
+      "minified": 9923,
+      "gzip": 3890
+    },
+    "./freecell": {
+      "minified": 9372,
+      "gzip": 3725
+    },
+    "./spider": {
+      "minified": 8300,
+      "gzip": 3435
+    }
+  }
+}

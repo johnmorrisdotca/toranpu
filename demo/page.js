@@ -21,7 +21,7 @@ const ANCHORS = { hearts: "hearts", spades: "spades", euchre: "euchre", cribbage
 const SEED_MOST = 2147483647;
 
 // The page's words are the package's own table, under the names the shared header and footer ask for.
-const words = (lang) => ({ ...STRINGS[lang], pitch: STRINGS[lang].pagePitch, name: STRINGS[lang].pageName, nameLink: STRINGS[lang].pageNameLink, foot: STRINGS[lang].pageFoot });
+const words = (lang) => ({ ...STRINGS[lang], pageDocs: lang === "ja" ? "ドキュメント" : "Docs", pitch: STRINGS[lang].pagePitch, name: STRINGS[lang].pageName, nameLink: STRINGS[lang].pageNameLink, foot: STRINGS[lang].pageFoot });
 /** What else redraws when the language changes: the panels whose drawings carry words. */
 const afterLanguage = [];
 const language = familyLanguage({ id: "toranpu", words: { en: words("en"), ja: words("ja") }, onChange: () => { drawAll(); for (const redraw of afterLanguage) redraw(); } });
@@ -309,6 +309,7 @@ function drawDeck() {
 }
 
 function drawAll() {
+  document.querySelector('[data-say="pageDocs"]')?.setAttribute("href", language.lang === "ja" ? "docs/ja/index.html" : "docs/index.html");
   drawChooser();
   drawTable();
   drawLog();

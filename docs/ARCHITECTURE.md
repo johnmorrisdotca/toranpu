@@ -154,6 +154,6 @@ src/
 
 Tests sit beside the code they test (`*.test.ts`). `bin/` is the few lines
 that hand the command line the real process, `scripts/` builds the demo, the
-sounds and the card designs and checks the package as npm packs it, `sounds/`
+sounds, card designs and bilingual documentation, and checks the package as npm packs it, `sounds/`
 holds the recorded sources, `demo/` is the page published on GitHub Pages and
 `e2e/` taps it in real browsers.

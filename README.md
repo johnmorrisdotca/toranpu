@@ -1,4 +1,4 @@
-<h1 align="center">Toranpu <sub>トランプ</sub></h1>
+<h1 align="center">Toranpu <sub>トランプ</sub> — Playing cards, card games and solitaire</h1>
 
 <p align="center"><strong>A deck of playing cards and eleven card games, each with a computer player.</strong><br>
 Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War: the rules as pure functions, seeded deals, saved games, and a table that runs anywhere, in your own card backs and faces if you like.</p>
@@ -9,16 +9,18 @@ Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, Presi
   <a href="./LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-2f5d4a"></a>
   <img alt="No dependencies" src="https://img.shields.io/badge/dependencies-0-2f5d4a">
   <img alt="TypeScript" src="https://img.shields.io/badge/types-TypeScript-3178c6">
+  <a href="https://johnmorrisdotca.github.io/toranpu/docs/api/main/index.html"><img alt="36.0 kB minified and gzipped" src="https://img.shields.io/badge/min%2Bgzip-36.0%20kB-2f5d4a"></a>
+  <a href="https://www.npmjs.com/package/@johnmorrisdotca/toranpu#provenance"><img alt="Published with npm provenance" src="https://img.shields.io/badge/npm-provenance-2f5d4a"></a>
 </p>
 
-<p align="center"><a href="https://johnmorrisdotca.github.io/toranpu/"><strong>Play a hand against the computer →</strong></a></p>
+<p align="center"><a href="https://johnmorrisdotca.github.io/toranpu/"><strong>Play a hand against the computer →</strong></a> · <a href="https://johnmorrisdotca.github.io/toranpu/docs/">Documentation</a> · <a href="https://johnmorrisdotca.github.io/toranpu/docs/guides/getting-started.html">Getting started</a> · <a href="https://johnmorrisdotca.github.io/toranpu/api.html">API reference</a></p>
 
 <table align="center">
 <tr>
 <td align="center" valign="top">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/hero-desk-dark.webp">
-<img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/hero-desk-light.webp" alt="The demo on a desk, with a game of Hearts a few tricks in, under the page's header with its language chooser and cloth swatches: the choice of game, players and seed, and a green table with the four seats, the cards played to the trick, the player's hand of cards in a fan and the buttons for the moves allowed." width="720">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/hero-desk-light.webp" alt="The demo on a desk, with a game of Hearts a few tricks in, under the page's header with its language chooser, Docs and API reference links, and cloth swatches: the choice of game, players and seed, and a green table with the four seats, the cards played to the trick, the player's hand of cards in a fan and the buttons for the moves allowed." width="720">
 </picture>
 <br><em>A game of Hearts, a few tricks in, on a desk.</em>
 </td>
@@ -232,6 +234,17 @@ Each picture is a part of [the demo](https://johnmorrisdotca.github.io/toranpu/)
 ## Use it in your project
 
 The [shared card builder](https://johnmorrisdotca.github.io/toranpu/builder.html) previews hands, cards and piles and writes code for your page. [The element guide](./docs/ELEMENTS.md#the-shared-builder-and-standard-iframe-pages) explains the validated iframe pages and event messages.
+
+### Install under another name
+
+```sh
+npm install playing-cards@npm:@johnmorrisdotca/toranpu
+```
+
+```ts no-check
+import { newGame } from "playing-cards";
+console.log(newGame);
+```
 
 ### Install
 
@@ -837,7 +850,7 @@ runCli(["deal", "--hands", "2", "--each", "2", "--seed", "42"]).out.split("\n")[
 Everything is typed, and your editor shows each function's documentation. The
 [API reference](https://johnmorrisdotca.github.io/toranpu/api.html) lists
 every export of every entry point with its signature and its doc comment; it
-is made from the source by `pnpm site`. What follows is the map.
+is kept as an index of the existing anchors. The [documentation](https://johnmorrisdotca.github.io/toranpu/docs/) includes bilingual guides, local search and checked public examples, built from the source by `pnpm docs:site`. What follows is the map.
 
 ### Entry points
 

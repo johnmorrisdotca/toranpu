@@ -2,6 +2,9 @@
 :root { --intro-room: 9.5rem; --intro-room-wide: 5.5rem; --card: #fffdf8; --card-ink: #1b1b1b; --card-red: #c2272d; --card-edge: rgba(0,0,0,.18); --turn: var(--gold); --card-w: 58px; --card-h: 84px; }
 @media (max-width: 600px) { :root { --card-w: 46px; --card-h: 68px; } }
 
+/* Keep the Docs pill the same width in either language so the header wraps the same way. */
+header nav a[data-say="pageDocs"] { inline-size: 8rem; justify-content: center; flex: none; }
+
 /* Choosing a game. */
 .choose { display: grid; gap: 12px; margin-bottom: 16px; }
 .games { display: flex; flex-wrap: wrap; gap: 6px; }
