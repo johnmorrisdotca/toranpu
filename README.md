@@ -18,7 +18,7 @@ Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, Presi
 <td align="center" valign="top">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/hero-desk-dark.webp">
-<img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/hero-desk-light.webp" alt="The demo on a desk, with a game of Hearts a few tricks in, under the page's header with its language chooser and cloth swatches: the choice of game, players and seed, and a green table with the four seats, the cards played to the trick, the player's hand of cards in a fan and the buttons for the moves allowed." width="720">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/hero-desk-light.webp" alt="The demo on a desk, with a game of Hearts a few tricks in, under the page's header with its language chooser and cloth swatches: the choice of game, players and seed, and a green table with the four seats, the cards played to the trick, the player's hand of cards in a fan." width="720">
 </picture>
 <br><em>A game of Hearts, a few tricks in, on a desk.</em>
 </td>
@@ -1115,7 +1115,7 @@ issue and we will add you.
 ### The family
 
 <!-- family:start (made by scripts/family-readme.mjs from scripts/family-template.mjs; change those, not this) -->
-Toranpu is one of twenty-four packages, each made for the same site, each at
+Toranpu is one of twenty-six packages, each made for the same site, each at
 [github.com/johnmorrisdotca](https://github.com/johnmorrisdotca). The code of every one is MIT.
 
 - [Korokoro](https://github.com/johnmorrisdotca/korokoro) (コロコロ): dice, with notation, exact odds, real sounds and the dice of many games. [Demo](https://johnmorrisdotca.github.io/korokoro/).
@@ -1142,8 +1142,10 @@ Toranpu is one of twenty-four packages, each made for the same site, each at
 - [Gunjin](https://github.com/johnmorrisdotca/gunjin) (軍人): five hidden-rank strategy games with pass-the-device play. [Demo](https://johnmorrisdotca.github.io/gunjin/).
 - [Karakuri](https://github.com/johnmorrisdotca/karakuri) (からくり): eight hyper-casual puzzle games, some of them physics: draw a shield, pull pins, cut ropes, slide blocks, pour tubes. [Demo](https://johnmorrisdotca.github.io/karakuri/).
 - [Houseki](https://github.com/johnmorrisdotca/houseki) (宝石): gem and stone matching puzzles: falling triplets, stone collapse, colour chains and gem swap. [Demo](https://johnmorrisdotca.github.io/houseki/).
+- [Kyogijo Stadiums](https://github.com/johnmorrisdotca/kyogijo-stadiums) (競技場): sports fields, rinks, courts and ballparks drawn to scale as SVG, with each team and the score on them. [Demo](https://johnmorrisdotca.github.io/kyogijo-stadiums/).
+- [Taisen](https://github.com/johnmorrisdotca/taisen-brackets) (対戦): a sport-agnostic tournament bracket, drawn as SVG, from a list of ties. [Demo](https://johnmorrisdotca.github.io/taisen-brackets/). Not on npm yet.
 
-**This package is Toranpu.** The demos of all twenty-four share one header and footer, so each links the rest.
+**This package is Toranpu.** The demos of all twenty-six share one header and footer, so each links the rest.
 <!-- family:end -->
 
 ## Development
