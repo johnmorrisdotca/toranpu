@@ -663,7 +663,7 @@ describe("docs/strings-ja.md", () => {
 describe("the family's look", () => {
   const css = readFileSync("demo/family.css", "utf8");
   const FAMILY_CSS = "c1e392564a7fd94d0bb5cfaefb6d4fedfd147fc3e27f3a7afd8d8dac8c94a227";
-  const FAMILY_TEMPLATE = "34016d065f9e2231d3372dc35a39cd8f342f7749ab423ebe1d5c162c43637e4a";
+  const FAMILY_TEMPLATE = "6fd8dcbdf819abcaeec890f75ee77e553ffab4ea9b0e2df40674d9b99da4a906";
 
   it("demo/family.css and scripts/family-template.mjs are the family's files, byte for byte: never edit them here", () => {
     const [first, ...rest] = css.split("\n");
@@ -735,7 +735,7 @@ describe("the README's promises", () => {
     expect(family.length).toBeGreaterThanOrEqual(16);
     const block = readme.slice(readme.indexOf("### The family"), readme.indexOf("\n## ", readme.indexOf("### The family")));
     for (const { id, name, kana } of family) expect(block, id).toContain(`- [${name}](https://github.com/johnmorrisdotca/${id}) (${kana}`);
-    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six"];
+    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven", "twenty-eight"];
     expect(block).toContain(`one of ${words[family.length]} packages`);
     expect([...block.matchAll(/^- \[/gm)]).toHaveLength(family.length);
   });
