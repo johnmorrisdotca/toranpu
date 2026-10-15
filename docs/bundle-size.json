@@ -3,111 +3,111 @@
   "entries": {
     ".": {
       "minified": 117197,
-      "gzip": 36039
+      "gzip": 36134
     },
     "./deck": {
       "minified": 3121,
-      "gzip": 1446
+      "gzip": 1455
     },
     "./react": {
       "minified": 85896,
-      "gzip": 27279
+      "gzip": 27342
     },
     "./card-sounds": {
       "minified": 71208,
-      "gzip": 43112
+      "gzip": 42939
     },
     "./sounds": {
       "minified": 67860,
-      "gzip": 41247
+      "gzip": 40974
     },
     "./card-backs": {
       "minified": 8333,
-      "gzip": 3455
+      "gzip": 3492
     },
     "./card-faces": {
       "minified": 835770,
-      "gzip": 188282
+      "gzip": 187433
     },
     "./card-faces/english": {
       "minified": 694426,
-      "gzip": 165300
+      "gzip": 164164
     },
     "./card-faces/realistic": {
       "minified": 779521,
-      "gzip": 171101
+      "gzip": 169740
     },
     "./element": {
       "minified": 945023,
-      "gzip": 243219
+      "gzip": 242781
     },
     "./element/define": {
       "minified": 945028,
-      "gzip": 243219
+      "gzip": 242785
     },
     "./table": {
       "minified": 1010122,
-      "gzip": 263754
+      "gzip": 263435
     },
     "./table/define": {
       "minified": 1010127,
-      "gzip": 263761
+      "gzip": 263441
     },
     "./hearts": {
       "minified": 8862,
-      "gzip": 3549
+      "gzip": 3570
     },
     "./spades": {
       "minified": 9588,
-      "gzip": 3814
+      "gzip": 3839
     },
     "./euchre": {
       "minified": 9514,
-      "gzip": 3793
+      "gzip": 3819
     },
     "./cribbage": {
       "minified": 8722,
-      "gzip": 3727
+      "gzip": 3746
     },
     "./oh-hell": {
       "minified": 7687,
-      "gzip": 3135
+      "gzip": 3158
     },
     "./crazy-eights": {
       "minified": 7449,
-      "gzip": 3073
+      "gzip": 3093
     },
     "./go-fish": {
       "minified": 7184,
-      "gzip": 2876
+      "gzip": 2886
     },
     "./big-two": {
       "minified": 9400,
-      "gzip": 3845
+      "gzip": 3854
     },
     "./president": {
       "minified": 8643,
-      "gzip": 3499
+      "gzip": 3521
     },
     "./gin-rummy": {
       "minified": 9324,
-      "gzip": 3816
+      "gzip": 3833
     },
     "./war": {
       "minified": 5270,
-      "gzip": 2308
+      "gzip": 2320
     },
     "./klondike": {
       "minified": 9923,
-      "gzip": 3890
+      "gzip": 3892
     },
     "./freecell": {
       "minified": 9372,
-      "gzip": 3725
+      "gzip": 3731
     },
     "./spider": {
       "minified": 8300,
-      "gzip": 3435
+      "gzip": 3447
     }
   }
 }
