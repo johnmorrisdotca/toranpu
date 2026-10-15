@@ -25,7 +25,7 @@ const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText,
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
 
 // The README and the pages its long sections moved to: what the package says about itself is held to the code across all of them.
-const moved = ["docs/RULES-API.md", "docs/CARDS.md", "docs/ELEMENTS.md", "docs/API.md", "docs/export-and-import.md"].map((file) => readFileSync(file, "utf8")).join("\n");
+const moved = ["docs/RULES-API.md", "docs/CARDS.md", "docs/ELEMENTS.md", "docs/API.md", "docs/export-and-import.md", "docs/theming.md"].map((file) => readFileSync(file, "utf8")).join("\n");
 const readme = `${readFileSync("README.md", "utf8")}\n${moved}`;
 const games = readFileSync("docs/games.md", "utf8");
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
@@ -664,7 +664,7 @@ describe("docs/strings-ja.md", () => {
 describe("the family's look", () => {
   const css = readFileSync("demo/family.css", "utf8");
   const FAMILY_CSS = "c1e392564a7fd94d0bb5cfaefb6d4fedfd147fc3e27f3a7afd8d8dac8c94a227";
-  const FAMILY_TEMPLATE = "08e9d500321ad4b7c3b86935362459c847a67fc62a448bef98d2dda4ec6aa495";
+  const FAMILY_TEMPLATE = "fcc192026cf284303344e108b20e6181126607c670a881a6b3bf8479da26ab03";
 
   it("demo/family.css and scripts/family-template.mjs are the family's files, byte for byte: never edit them here", () => {
     const [first, ...rest] = css.split("\n");
@@ -735,7 +735,7 @@ describe("the README's promises", () => {
     expect(family.length).toBeGreaterThanOrEqual(16);
     const block = readme.slice(readme.indexOf("### The family"), readme.indexOf("\n## ", readme.indexOf("### The family")));
     for (const { id, name, kana } of family) expect(block, id).toContain(`- [${name}](${familyRepo(id)}) (${kana}`);
-    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven", "twenty-eight"];
+    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven", "twenty-eight", "twenty-nine", "thirty", "thirty-one", "thirty-two"];
     expect(block).toContain(`one of ${words[family.length]} packages`);
     expect([...block.matchAll(/^- \[/gm)]).toHaveLength(family.length);
   });

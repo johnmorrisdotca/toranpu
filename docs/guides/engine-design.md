@@ -2,7 +2,7 @@
 title: Engine, views and replay
 section: explanation
 order: 7
-description: Learn engine, views and replay.
+description: See how the rules engines share one shape, how state and deals are reproduced, and how the entry points divide.
 ---
 
 ## Each game owns its rules

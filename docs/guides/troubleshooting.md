@@ -2,7 +2,7 @@
 title: Troubleshooting & FAQ
 section: troubleshooting
 order: 9
-description: Learn troubleshooting & faq.
+description: Find out why a game or move is null, a card or design will not read, a save fails, or a tag or hook does not work.
 ---
 
 ## A game or move returns null

@@ -2,7 +2,7 @@
 title: Deal, play and solve solitaires
 section: how-to
 order: 5
-description: Learn deal, play and solve solitaires.
+description: Deal, play and solve Klondike, FreeCell and Spider with their own engines.
 ---
 
 ## Use the named engine

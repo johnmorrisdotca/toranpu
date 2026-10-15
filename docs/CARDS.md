@@ -155,7 +155,7 @@ cardFaceSvg("R1");                                    // a rules card: the rules
   names the English pattern), and otherwise plain. It can draw cards no deck
   has too, and be registered by name: see [Your own branding](#your-own-branding).
 - Plain and four colour take the CSS custom properties under
-  [The drawings](#the-drawings) when put into a page. The English pattern
+  [The drawings](theming.md) when put into a page. The English pattern
   keeps its own colours, as a printed deck does.
 
 The English pattern's 54 files, their licence and what was done to them are

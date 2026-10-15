@@ -2,7 +2,7 @@
 title: Embed cards or use React
 section: how-to
 order: 6
-description: Learn embed cards or use react.
+description: Register the card tags, use the builder, and drive a table from React hooks.
 ---
 
 ## Register the native tags

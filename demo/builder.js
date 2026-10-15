@@ -25,9 +25,9 @@ const words = {
   },
   ja: {
     ...FAMILY_EMBED_BUILDER_WORDS.ja,
-    pageDocs: "ドキュメント", pageApi: "API リファレンス",
+    pageDocs: "ドキュメント", pageApi: "APIリファレンス",
     pitch: "手札、カード、山札を選んで表示を確認し、ページに埋め込むコードをコピーできます。",
-    name: "「トランプ」は、日本語で playing cards を指す言葉です。",
+    name: "「トランプ」は、日本語でplaying cardsを指す言葉です。",
     nameLink: "名前について",
     foot: "設定はリンクに入ります。ゲームや個人情報は保存しません。",
     toGallery: "カードテーブル",
@@ -38,14 +38,14 @@ const words = {
     makerCardSays: "選んだデザインのカード1枚です。",
     makerPileSays: "山札や捨て札の山です。",
     copyLink: "このカードへのリンクをコピー",
-    badCards: "AS KH 10D のような、有効なカードIDを使ってください。"
+    badCards: "AS KH 10Dのような、有効なカードIDを使ってください。"
   },
 };
 const both = (name) => ({ hand: name, card: name, pile: name });
 const row = (id, kind, names, en, ja, extra = {}) => ({ id, group: "cards", kind, names, say: { en: { label: en[0], help: en[1] }, ja: { label: ja[0], help: ja[1] } }, ...extra });
 const options = [
-  row("cards", "text", { hand: "cards", pile: "cards" }, ["Cards", "Card ids separated by spaces, such as AS KH 10D."], ["カード", "AS KH 10D のように、記号を空白で区切ります。"], { default: "AS KH 10D" }),
-  row("card", "text", { card: "card" }, ["Card", "One card id, such as AS."], ["カード", "AS のようなカードIDです。"], { default: "AS" }),
+  row("cards", "text", { hand: "cards", pile: "cards" }, ["Cards", "Card ids separated by spaces, such as AS KH 10D."], ["カード", "AS KH 10Dのように、カードIDを空白で区切ります。"], { default: "AS KH 10D" }),
+  row("card", "text", { card: "card" }, ["Card", "One card id, such as AS."], ["カード", "ASのようなカードIDです。"], { default: "AS" }),
   row("size", "choice", both("size"), ["Display size", "Small, medium or large cards."], ["表示の大きさ", "小・中・大のカードを選びます。"], { default: "medium", choices: ["small", "medium", "large"] }),
   row("width", "number", both("width"), ["Card width", "Each card's width in pixels."], ["カードの幅", "カード1枚の幅をピクセルで指定します。"], { range: { min: 20, max: 300, step: 2 } }),
   row("design", "choice", both("design"), ["Design", "The artwork used for the card faces."], ["デザイン", "カードの表に使う絵柄です。"], { default: "plain", choices: CARD_DESIGNS }),
@@ -60,7 +60,7 @@ const options = [
   row("reveal", "boolean", { hand: "reveal" }, ["Open on tap", "Allow the closed hand to open and close."], ["開く操作", "閉じた手札を開いたり、閉じたりします。"], { default: false }),
   row("closed", "number", { hand: "closed" }, ["Closed amount", "Zero is an open fan; one is closed."], ["閉じる度合い", "0では開いた扇形、1では閉じた手札です。"], { default: 0, range: { min: 0, max: 1, step: 0.1 } }),
   row("scrunched", "boolean", { hand: "scrunched" }, ["Bundle", "Square the hand into a bundle."], ["束", "手札を1つの束にまとめます。"], { default: false }),
-  row("order", "choice", { hand: "order" }, ["Order", "Sort by rank, suit or face."], ["並べ方", "数字・スート・絵札で並べます。"], { choices: ["rank", "suit", "face"] }),
+  row("order", "choice", { hand: "order" }, ["Order", "Sort by rank, suit or face."], ["並べ方", "数の順、スートごと、数札を先にする順から選びます。"], { choices: ["rank", "suit", "face"] }),
   row("turned", "text", { hand: "turned" }, ["Turned cards", "Cards showing the opposite side."], ["反対向きのカード", "ほかのカードと反対の面を表示するカードです。"]),
   row("parted", "text", { hand: "parted" }, ["Part at card", "Lift one card out of the fan."], ["取り出すカード", "扇形の手札からカード1枚を取り出します。"]),
   row("marked", "text", { hand: "marked" }, ["Marked cards", "Card ids that carry the mark."], ["印を付けるカード", "印を付けるカードIDです。"]),

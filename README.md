@@ -79,8 +79,7 @@ Or with nothing to install, [play a hand in the demo](https://johnmorrisdotca.gi
 - **Games sites and apps.** Eleven games behind one interface, playable by
   people, computers or any mix, with saves that cannot be tampered with.
 - **Bots and research.** Pure functions over plain data: play a million games
-  in a loop, pit your own player against the ones here, replay any game from
-  its seed.
+  in a loop, or replay any game from its seed.
 - **A game of your own.** The deck by itself: fifty-two cards, a seeded
   shuffle, dealing, and codes short enough for a link.
 - **Teaching.** Each game's rules are a few hundred lines you can read, with
@@ -113,25 +112,22 @@ with or endorsed by any publisher of an edition of them.
 - **The deck on its own.** Fifty-two card objects, a seeded shuffle, dealing,
   one-character codes (a whole deck is a 52-letter string) and card names.
 - **A command line.** `toranpu deal`, `toranpu play hearts`, `toranpu check`.
-  See [The command line](#the-command-line).
 - **Card sounds**, recorded from real cards: shuffle, deal, turn over, play,
-  gather and fan, off until a table asks. See [Card sounds](#card-sounds).
+  gather and fan, off until a table asks.
 - **A hand on any page**: `<toranpu-hand>`, turned face down all at once or
   one by one, or scrunched into a bundle that shows nothing, or held closed
   to open into a fan on a tap. See [Hand controls](#hand-controls) and
   [A closed hand](#a-closed-hand-that-opens-with-a-tap).
 - **Embedding**: any hand on any page, as an iframe or one tag, at three
-  sizes. See [Embed a hand](#embed-a-hand).
+  sizes.
 - **Messy piles**: `<toranpu-pile>`, a stock or a discard pile from neatly
-  squared to very messy, the same every time for the same seed. See
-  [Messy piles](#messy-piles).
+  squared to very messy, the same every time for the same seed.
 - **One card on any page**: `<toranpu-card>`, turned over by a tap, or any
-  card as a picture. See [One card on any page](#one-card-on-any-page).
+  card as a picture.
 - **Card designs**: plain, four colour and the traditional English pattern
-  with drawn kings, queens and jacks, jokers included. See
-  [Card designs](#card-designs).
+  with drawn kings, queens and jacks, jokers included.
 - **Card backs**, drawn as SVG: a classic red, a classic blue and ink with
-  dots, recoloured or marked with a site's name. See [Card backs](#card-backs).
+  dots, recoloured or marked with a site's name.
 - **Your own branding.** Card backs from your own colours, art, picture or
   logo; faces for the standard cards in your own art; and wholly new cards,
   such as a territory card with a place and a soldier, a horse or a cannon,
@@ -614,7 +610,7 @@ registerCardDesign({
 
 ### A look of your own
 
-Every colour of the demo is a CSS variable, and the table under [Theming](#theming) lists the ones the card backs take:
+Every colour of the demo is a CSS variable, and the table in [docs/theming.md](docs/theming.md) lists the ones the card backs take:
 
 ```css
 toranpu-table { --toranpu-focus: #d4a017; }
@@ -923,32 +919,7 @@ the properties after the two stylesheets:
 
 ### The drawings
 
-What Toranpu draws, the backs and the plain and four-colour faces, takes
-these custom properties when it is put into a page as SVG, and keeps its own
-colours as an image:
-
-| Custom property | Colours | Unless set |
-| --- | --- | --- |
-| `--toranpu-back` | a back's field | the back's own: `#b3262d`, `#1f4e8c` or `#24231f` |
-| `--toranpu-back-ink` | the lines and dots on it | `#fffaf0` |
-| `--toranpu-back-paper` | the border round it | `#fffdf8` |
-| `--toranpu-card` | a face's paper | `#fffdf8` |
-| `--toranpu-card-ink` | spades and clubs, and a black joker | `#1b1b1b` |
-| `--toranpu-card-red` | hearts and diamonds, and a red joker | `#c2272d` |
-| `--toranpu-card-blue` | diamonds, in four colour | `#1f5fbf` |
-| `--toranpu-card-green` | clubs, in four colour | `#1f7a3a` |
-
-```css
-.my-table { --toranpu-back: #3d4d38; }   /* every back on this table, moss green */
-```
-
-The elements take three more:
-
-| Custom property | Sizes or times | Unless set |
-| --- | --- | --- |
-| `--toranpu-card-width` | a card's width, where the element has no `size` or `width` | `70px` |
-| `--toranpu-flip-ms` | how long a card takes to turn over | `450ms` |
-| `--toranpu-focus` | the ring round a card that has the keyboard's focus | `#b5452c` |
+The backs and the plain and four-colour faces take custom properties when they are put into a page as SVG, and the elements take three more: a card's width, how long a card takes to turn, and the focus ring. [docs/theming.md](docs/theming.md) lists each property, what it colours and its default.
 
 ## Limits
 
@@ -1010,9 +981,8 @@ only so far.
 - The rules page in Japanese.
 - A whole card table as an element, built from the hand and pile elements,
   to go with the React hook.
-- More designed decks: one is here (the English pattern); others will come
-  only where a set's licence is public domain or CC0 and verified at its
-  source.
+- More designed decks: one is here (the English pattern); others only where
+  a set's licence is public domain or CC0, verified at its source.
 
 Left out on purpose: anything played for stakes (no betting, no chips, no
 payouts: children use the site this was built for), and play over a network,
@@ -1031,11 +1001,7 @@ the words. Drawing sits apart under `ui/`, so the rules run with no DOM, and
 every game and every browser part is an entry point of its own, so a page
 loads only what it uses.
 
-The file-by-file tree, with a line on each source file, is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): the deck and the games (one file for each game), the saving and the words, the card sounds, backs and designs, and the elements and the table (`element`, `table`, `ui/`). Tests sit beside the code they test (`*.test.ts`). `bin/` is the few lines
-that hand the command line the real process, `scripts/` builds the demo, the
-sounds and the card designs and checks the package as npm packs it, `sounds/`
-holds the recorded sources, `demo/` is the page published on GitHub Pages and
-`e2e/` taps it in real browsers.
+The file-by-file tree, with a line on each source file, is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Tests sit beside the code they test (`*.test.ts`). `bin/` hands the command line the real process, `scripts/` builds the demo, the sounds and the card designs and checks the package as npm packs it, `sounds/` holds the recorded sources, `demo/` is the page on GitHub Pages and `e2e/` taps it in real browsers.
 
 ## The name
 
@@ -1062,7 +1028,7 @@ issue and we will add you.
 ### The family
 
 <!-- family:start (made by scripts/family-readme.mjs from scripts/family-template.mjs; change those, not this) -->
-Toranpu is one of twenty-eight packages, each made for the same site, each at
+Toranpu is one of thirty-two packages, each made for the same site, each at
 [github.com/johnmorrisdotca](https://github.com/johnmorrisdotca) or [github.com/spxis](https://github.com/spxis). The code of every one is MIT.
 
 **Games — board**
@@ -1110,12 +1076,19 @@ Toranpu is one of twenty-eight packages, each made for the same site, each at
 - [Hata](https://github.com/johnmorrisdotca/hata) (旗): country and regional flags as SVG, at their true proportions and keyed by ISO code. [Demo](https://johnmorrisdotca.github.io/hata/).
 - [Kuni](https://github.com/johnmorrisdotca/kuni) (国): countries and their regions, with ISO codes and names in English and Japanese. [Demo](https://johnmorrisdotca.github.io/kuni/).
 
+**Sports**
+
+- [Dougu Sports](https://github.com/johnmorrisdotca/dougu-sports) (道具): sports emblems as SVG: trophies, medals, crests, and the ball and gear of every sport, with optional 3D turning. [Demo](https://johnmorrisdotca.github.io/dougu-sports/).
+- [Kyogijo Stadiums](https://github.com/johnmorrisdotca/kyogijo-stadiums) (競技場): sports fields, rinks, courts and ballparks drawn to scale as SVG, with each team and the score on them. [Demo](https://johnmorrisdotca.github.io/kyogijo-stadiums/).
+- [Senshu Jerseys](https://github.com/johnmorrisdotca/senshu-jerseys) (選手): sports jerseys, sweaters, kits, caps, helmets and retired-number banners as SVG, front and back, with optional 2.5D turning. [Demo](https://johnmorrisdotca.github.io/senshu-jerseys/).
+- [Taisen Brackets](https://github.com/johnmorrisdotca/taisen-brackets) (対戦): a sport-agnostic tournament bracket, drawn as SVG, from a list of ties. [Demo](https://johnmorrisdotca.github.io/taisen-brackets/).
+
 **Developer tools**
 
 - [REST in Pieces](https://github.com/spxis/rest-in-pieces) (レスト・イン・ピーシーズ): seeded test data and REST APIs for frontend development, with latency and error drills. [Demo](https://spxis.github.io/rest-in-pieces/).
 
 
-**This package is Toranpu.** The demos of all twenty-eight share one header and footer, so each links the rest.
+**This package is Toranpu.** The demos of all thirty-two share one header and footer, so each links the rest.
 <!-- family:end -->
 
 ## Development
@@ -1143,7 +1116,7 @@ Please follow the [code of conduct](./CODE_OF_CONDUCT.md).
 
 See [CHANGELOG.md](./CHANGELOG.md).
 
-The latest release is 2.14.2: the README takes the family's full layout, with pictures of the table and examples that are run.
+The latest release is 2.15.0: the shared embed builder and the standard attributes of the card, hand and pile elements, and the documentation site with a checked example for every export.
 
 ## Licence
 

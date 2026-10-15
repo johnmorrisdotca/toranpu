@@ -6,23 +6,23 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
-- Synchronize documentation tooling for repository layouts, generated type references, Node entry points and repository-specific README links.
+## [2.15.0] - 2026-10-14
 
-- Keep large documentation resource catalogues on the entry index and the active resource beside core navigation, preserving every reference page; render valid default imports in HTML and Markdown.
+The hand, card and pile elements take the family's standard embed attributes and have a shared builder, and the package has an English and Japanese documentation site with a checked example for every export. The rules, deals, saved games and the 2.x entry points are unchanged.
+
 ### Added
 
 - Add the bilingual documentation site, checked public examples, paired guides, local search and machine-readable pages.
-
 - Add the shared hand/card/pile builder, validated iframe pages and reflected display attributes, preserving card methods and structured getters.
-
 - Share a package-independent embed builder for option controls, preview adapters, code tabs and shareable links.
 
 ### Changed
 
+- Synchronize documentation tooling for repository layouts, generated type references, Node entry points and repository-specific README links.
+- Keep large documentation resource catalogues on the entry index and the active resource beside core navigation, preserving every reference page; render valid default imports in HTML and Markdown.
+- The tables of the drawings' custom properties moved from the README to `docs/theming.md`, so that the README, which now lists the sports packages too, stays under npm's 65,536 characters; the README keeps a summary and a link.
 - Group the package family by kind, alphabetize each group, and include the geography packages and REST in Pieces in the shared footer and README.
-
 - Repository only: `e2e/shots.mjs` no longer takes the README's pictures (`pnpm screenshots:readme` does, since the last release) and keeps its general pictures.
-
 - Update the shared family description for addresses in all seven supported countries, including France and Germany.
 
 ## [2.14.2] - 2026-10-06
@@ -555,7 +555,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.1...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.15.0...HEAD
+[2.15.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.2...v2.15.0
 [2.14.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.0...v2.14.1
 [2.12.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.0...v2.12.1
 [2.12.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.11.0...v2.12.0

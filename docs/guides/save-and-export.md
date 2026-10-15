@@ -2,7 +2,7 @@
 title: Save, restore and export
 section: how-to
 order: 3
-description: Learn save, restore and export.
+description: Save a game as its setup and moves, read it back by replaying them, and export JSON, a code, text or CSV.
 ---
 
 ## Keep setup and moves

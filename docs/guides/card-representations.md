@@ -2,7 +2,7 @@
 title: Card representations and layouts
 section: explanation
 order: 8
-description: Learn card representations and layouts.
+description: Know the three ways a card is written, and keep layout and spoken names apart from game state.
 ---
 
 ## Three representations

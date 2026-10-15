@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/toranpu",
-  "version": "2.14.2",
+  "version": "2.15.0",
   "description": "Toranpu \u30c8\u30e9\u30f3\u30d7 \u2014 Playing cards, card games and solitaire: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War; solitaires, seeded deals and computers. Zero dependencies.",
   "keywords": [
     "52-cards",

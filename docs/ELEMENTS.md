@@ -51,7 +51,7 @@ document.addEventListener("toranpu-flip", (event) => console.log(event.detail));
 - A screen reader hears the card's name ("king of spades", "スペードのキング"),
   or "a card, face down".
 - It is drawn in its own shadow DOM, so the page's styles cannot upset it,
-  and it takes the custom properties under [The drawings](#the-drawings), so
+  and it takes the custom properties under [The drawings](theming.md), so
   the page's theme still colours it. Imported on a server, the elements are
   defined and do nothing.
 

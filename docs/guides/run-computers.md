@@ -2,7 +2,7 @@
 title: Run computer turns
 section: how-to
 order: 2
-description: Learn run computer turns.
+description: Choose which seats are computers, step them through a game, and show their moves in order.
 ---
 
 ## Give each seat a controller

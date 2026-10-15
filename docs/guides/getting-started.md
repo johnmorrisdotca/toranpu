@@ -2,7 +2,7 @@
 title: Getting started
 section: tutorial
 order: 1
-description: Learn getting started.
+description: Install Toranpu, start a seeded game and play one legal move.
 ---
 
 Install the package, start a seeded game and make one legal move. The engines are plain functions and work in Node 22 or later without a page.

@@ -2,7 +2,7 @@
 title: Display and brand cards
 section: how-to
 order: 4
-description: Learn display and brand cards.
+description: Draw cards and backs as SVG, register your own designs, and show them with elements.
 ---
 
 ## Use the native SVG
