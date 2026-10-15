@@ -514,7 +514,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pagePasteHint: "Paste a game's code or its JSON",
     pageRead: "Read",
     pageReadBad: "That is not a saved game: the rules cannot play it out.",
-    pageApi: "API reference",
+    pageApi: "API",
     pageApiIntro: "Every export of every entry point, with its signature and its doc comment. Made from the source when the site is built.",
     pageBack: "Back to the table",
     pageDeckSeed: "Deck seed",

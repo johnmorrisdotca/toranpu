@@ -18,6 +18,7 @@ The hand, card and pile elements take the family's standard embed attributes and
 
 ### Changed
 
+- The API link in the demo's header reads "API" in English (`pageApi` in `STRINGS`), so that the header takes the same number of rows in English and in Japanese on a phone, as the demo's test of a language change asks.
 - Synchronize documentation tooling for repository layouts, generated type references, Node entry points and repository-specific README links.
 - Keep large documentation resource catalogues on the entry index and the active resource beside core navigation, preserving every reference page; render valid default imports in HTML and Markdown.
 - The tables of the drawings' custom properties moved from the README to `docs/theming.md`, so that the README, which now lists the sports packages too, stays under npm's 65,536 characters; the README keeps a summary and a link.

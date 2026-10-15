@@ -8,7 +8,7 @@ import { familyEmbedBuilder, FAMILY_EMBED_BUILDER_WORDS } from "./family-embed-b
 const words = {
   en: {
     ...FAMILY_EMBED_BUILDER_WORDS.en,
-    pageDocs: "Docs", pageApi: "API reference",
+    pageDocs: "Docs", pageApi: "API",
     pitch: "Arrange a hand, card or pile, preview it, and copy the code for your page.",
     name: "Toranpu is the Japanese word for playing cards.",
     nameLink: "About the name",
