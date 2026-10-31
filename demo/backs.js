@@ -4,12 +4,21 @@ import { CARD_BACKS, CARD_BACK_LOOK, cardBackSvg, cardBackUrl } from "./dist/car
 import { backOptions, look, onLook, setLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
-const NAMES = { "classic-red": "pageBackClassicRed", "classic-blue": "pageBackClassicBlue", "ink-dots": "pageBackInkDots" };
+const NAMES = {
+  "classic-red": "pageBackClassicRed",
+  "classic-blue": "pageBackClassicBlue",
+  "ink-dots": "pageBackInkDots",
+};
 
 /** The code that draws the back as chosen. */
 function code() {
   const options = backOptions();
-  const shown = Object.keys(options).length === 0 ? "" : `, { ${Object.entries(options).map(([name, value]) => `${name}: ${JSON.stringify(value)}`).join(", ")} }`;
+  const shown =
+    Object.keys(options).length === 0
+      ? ""
+      : `, { ${Object.entries(options)
+          .map(([name, value]) => `${name}: ${JSON.stringify(value)}`)
+          .join(", ")} }`;
   return `import { cardBackSvg, cardBackUrl } from "@johnmorrisdotca/toranpu/card-backs";
 
 element.innerHTML = cardBackSvg(${JSON.stringify(look.back)}${shown});

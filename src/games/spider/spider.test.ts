@@ -1,6 +1,18 @@
 import { describe, expect, it } from "vitest";
 
-import { canDeal, dealSpider, playSpider, runLength, spiderBestMove, spiderDealOfSeed, spiderDeck, spiderDeckOf, spiderLiftable, spiderMoveFor, spiderWon } from "../../spider.ts";
+import {
+  canDeal,
+  dealSpider,
+  playSpider,
+  runLength,
+  spiderBestMove,
+  spiderDealOfSeed,
+  spiderDeck,
+  spiderDeckOf,
+  spiderLiftable,
+  spiderMoveFor,
+  spiderWon,
+} from "../../spider.ts";
 import type { SpiderColumn, SpiderTable } from "../../spider.ts";
 
 /** A card by rank and suit letter, as the rules number it: suit × 13 + rank − 1, spades hearts diamonds clubs. */
@@ -50,13 +62,23 @@ describe("spider's rules", () => {
     const mixed = up(card(9, "S"), card(8, "H"), card(7, "H"));
     expect(runLength(mixed)).toBe(2);
     const table = tableOf([mixed, up(card(10, "D")), up(card(9, "C"))]);
-    expect(playSpider(table, { kind: "carry", from: 0, to: 1, count: 3 }), "the 9 of spades is not the hearts' suit").toBeNull();
-    expect(playSpider(table, { kind: "carry", from: 0, to: 2, count: 2 })!.tableau[2].cards).toEqual([card(9, "C"), card(8, "H"), card(7, "H")]);
+    expect(
+      playSpider(table, { kind: "carry", from: 0, to: 1, count: 3 }),
+      "the 9 of spades is not the hearts' suit",
+    ).toBeNull();
+    expect(playSpider(table, { kind: "carry", from: 0, to: 2, count: 2 })!.tableau[2].cards).toEqual([
+      card(9, "C"),
+      card(8, "H"),
+      card(7, "H"),
+    ]);
   });
 
   it("turns over the card left on top, and takes a full run of one suit off by itself", () => {
     const run = Array.from({ length: 12 }, (_, at) => card(13 - at, "S"));
-    const table = tableOf([{ down: 1, cards: [card(4, "D"), card(1, "S")] }, { down: 1, cards: [card(6, "C"), ...run] }]);
+    const table = tableOf([
+      { down: 1, cards: [card(4, "D"), card(1, "S")] },
+      { down: 1, cards: [card(6, "C"), ...run] },
+    ]);
     const made = playSpider(table, { kind: "carry", from: 0, to: 1, count: 1 })!;
     expect(made.done).toEqual([0]);
     expect(made.tableau[1]).toEqual({ down: 0, cards: [card(6, "C")] });

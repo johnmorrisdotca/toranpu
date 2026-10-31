@@ -5,7 +5,17 @@ import { cardFaceFromArt, cardFaceSvg, faceName, isCardFace, loadCardDesign } fr
 import type { CardDesign } from "./card-faces.types.ts";
 import { cleanMarkup, safeImageUrl } from "./markup.ts";
 import { readHand } from "./layout.ts";
-import { customCardKnown, registerBack, registerDesign, registeredBack, registeredBackNames, registeredDesign, registeredDesignNames, unregisterBack, unregisterDesign } from "./registry.ts";
+import {
+  customCardKnown,
+  registerBack,
+  registerDesign,
+  registeredBack,
+  registeredBackNames,
+  registeredDesign,
+  registeredDesignNames,
+  unregisterBack,
+  unregisterDesign,
+} from "./registry.ts";
 
 /** A territory card of an invented game: the place's name on the card, and a soldier, horse or cannon (drawn here, ours). */
 const territories: CardDesign = {
@@ -17,7 +27,8 @@ const territories: CardDesign = {
     if (found === null) return null;
     return `<text x="50" y="40" text-anchor="middle" font-size="12">${language === "ja" ? "地" : found[1]}</text><circle cx="50" cy="90" r="20" data-kind="${found[2]}"/>`;
   },
-  label: (card, language) => (card === "wild" ? (language === "ja" ? "ワイルド" : "Wild card") : card === "QS" ? null : `Territory ${card}`),
+  label: (card, language) =>
+    card === "wild" ? (language === "ja" ? "ワイルド" : "Wild card") : card === "QS" ? null : `Territory ${card}`,
 };
 
 afterEach(() => {
@@ -27,15 +38,37 @@ afterEach(() => {
 
 describe("a page's own picture addresses and markup", () => {
   it("accepts a picture's address and refuses anything that could run", () => {
-    for (const good of ["data:image/png;base64,AAAA", "data:image/svg+xml,%3Csvg width='9'/%3E", "https://example.test/a.png", "/logo.svg", "./logo.svg", "../a/b.webp", "logo.png"]) expect(safeImageUrl(good), good).toBe(good);
-    for (const bad of ["javascript:alert(1)", "data:text/html,<b>", 'x" onload="y', "vbscript:x", "file:///etc/passwd", "a b.png", "", 7, null]) expect(safeImageUrl(bad), String(bad)).toBeNull();
+    for (const good of [
+      "data:image/png;base64,AAAA",
+      "data:image/svg+xml,%3Csvg width='9'/%3E",
+      "https://example.test/a.png",
+      "/logo.svg",
+      "./logo.svg",
+      "../a/b.webp",
+      "logo.png",
+    ])
+      expect(safeImageUrl(good), good).toBe(good);
+    for (const bad of [
+      "javascript:alert(1)",
+      "data:text/html,<b>",
+      'x" onload="y',
+      "vbscript:x",
+      "file:///etc/passwd",
+      "a b.png",
+      "",
+      7,
+      null,
+    ])
+      expect(safeImageUrl(bad), String(bad)).toBeNull();
   });
 
   it("takes scripts, handlers, frames and unsafe addresses out of markup, and leaves the drawing", () => {
     const dirty = `<g><script>alert(1)</script><circle onload="x()" r="5" onclick='y()'/><foreignObject><div>hi</div></foreignObject><a href="javascript:alert(1)"><rect width="3"/></a><use href="#part"/><image href="data:image/png;base64,AAAA"/><iframe src="x"></iframe><style>@import 'x'</style></g>`;
     const clean = cleanMarkup(dirty);
-    for (const gone of ["script", "onload", "onclick", "foreignObject", "javascript:", "iframe", "<style"]) expect(clean, gone).not.toContain(gone);
-    for (const kept of ['<circle r="5"', '<rect width="3"', 'href="#part"', 'href="data:image/png;base64,AAAA"']) expect(clean, kept).toContain(kept);
+    for (const gone of ["script", "onload", "onclick", "foreignObject", "javascript:", "iframe", "<style"])
+      expect(clean, gone).not.toContain(gone);
+    for (const kept of ['<circle r="5"', '<rect width="3"', 'href="#part"', 'href="data:image/png;base64,AAAA"'])
+      expect(clean, kept).toContain(kept);
     expect(cleanMarkup(7)).toBe("");
   });
 });
@@ -45,8 +78,10 @@ describe("a design the page registers", () => {
     registerDesign(territories);
     expect(registeredDesign("frontier-lands")).toBe(territories);
     expect(registeredDesignNames()).toEqual(["frontier-lands"]);
-    for (const own of ["plain", "four-colour", "english", "realistic"]) expect(() => registerDesign({ ...territories, name: own })).toThrow(RangeError);
-    for (const bad of ["Frontier", "two words", "", "a--b", "-a"]) expect(() => registerDesign({ ...territories, name: bad }), bad).toThrow(RangeError);
+    for (const own of ["plain", "four-colour", "english", "realistic"])
+      expect(() => registerDesign({ ...territories, name: own })).toThrow(RangeError);
+    for (const bad of ["Frontier", "two words", "", "a--b", "-a"])
+      expect(() => registerDesign({ ...territories, name: bad }), bad).toThrow(RangeError);
     expect(() => registerDesign({ ...territories, box: [0, 10] })).toThrow(TypeError);
     unregisterDesign("frontier-lands");
     expect(registeredDesign("frontier-lands")).toBeUndefined();
@@ -82,14 +117,23 @@ describe("a design the page registers", () => {
   });
 
   it("can fill the card, leaving the paper out, and can draw its own faces over the standard ids", () => {
-    registerDesign({ name: "full-bleed", box: [100, 140], art: { QS: '<rect width="100" height="140" fill="navy"/>' }, frame: "none" });
+    registerDesign({
+      name: "full-bleed",
+      box: [100, 140],
+      art: { QS: '<rect width="100" height="140" fill="navy"/>' },
+      frame: "none",
+    });
     const queen = cardFaceSvg("QS", { design: "full-bleed" }) as string;
     expect(queen).toContain('fill="navy"');
     expect(queen).not.toContain("--toranpu-card,");
   });
 
   it("cleans a registered design's art, but draws the package's own as it is", async () => {
-    registerDesign({ name: "dirty", box: [100, 140], art: { x1: '<circle r="5" onload="steal()"/><script>steal()</script>' } });
+    registerDesign({
+      name: "dirty",
+      box: [100, 140],
+      art: { x1: '<circle r="5" onload="steal()"/><script>steal()</script>' },
+    });
     const face = cardFaceSvg("x1", { design: "dirty" }) as string;
     expect(face).toContain('<circle r="5"');
     expect(face).not.toContain("steal");
@@ -112,7 +156,9 @@ describe("a design the page registers", () => {
     expect(small).toContain('<circle cx="50" cy="70" r="30"');
     expect(small).not.toContain("onclick");
     expect(small).toContain("var(--toranpu-card,#fffdf8)");
-    expect(cardFaceFromArt('<svg viewBox="0 0 10 10"><path d="M0 0"/></svg>')).toBe('<svg viewBox="0 0 10 10"><path d="M0 0"/></svg>');
+    expect(cardFaceFromArt('<svg viewBox="0 0 10 10"><path d="M0 0"/></svg>')).toBe(
+      '<svg viewBox="0 0 10 10"><path d="M0 0"/></svg>',
+    );
   });
 });
 
@@ -132,7 +178,10 @@ describe("a back the page registers", () => {
   });
 
   it("takes artwork of its own for the whole back, and a logo on it with no plate", () => {
-    const svg = cardBackSvg("classic-red", { art: '<rect x="4" y="4" width="92" height="132" fill="#123456" onclick="x()"/>', logo: '<circle cx="50" cy="50" r="40" fill="gold"/>' });
+    const svg = cardBackSvg("classic-red", {
+      art: '<rect x="4" y="4" width="92" height="132" fill="#123456" onclick="x()"/>',
+      logo: '<circle cx="50" cy="50" r="40" fill="gold"/>',
+    });
     expect(svg).toContain('fill="#123456"');
     expect(svg).not.toContain("onclick");
     expect(svg).toContain('fill="gold"');
@@ -161,7 +210,9 @@ describe("a back the page registers", () => {
     expect(cardBackSvg("ink-dots", { logo: '<path d="M0 0L9 9"/>' })).toContain('<path d="M0 0L9 9"/>');
     expect(cardBackSvg("classic-red", { logo: "javascript:alert(1)" })).toContain("<pattern");
     expect(cardBackSvg("classic-red", { logo: "javascript:alert(1)" })).not.toContain("<image");
-    expect(cardBackUrl("classic-red", { logo: '<path d="M0 0L9 9"/>' }).startsWith("data:image/svg+xml;charset=utf-8,")).toBe(true);
+    expect(
+      cardBackUrl("classic-red", { logo: '<path d="M0 0L9 9"/>' }).startsWith("data:image/svg+xml;charset=utf-8,"),
+    ).toBe(true);
   });
 
   it("changes nothing about the backs that ask for none of this", () => {

@@ -92,7 +92,13 @@ export type CardGameRules<S, M> = {
    * reserved: it keeps the signature of a table of games that are played in a
    * language (a word game), so these rules sit in such a table unchanged.
    */
-  start: (size: number, players: readonly string[], _reserved?: unknown, seed?: number, computers?: readonly boolean[]) => S | null;
+  start: (
+    size: number,
+    players: readonly string[],
+    _reserved?: unknown,
+    seed?: number,
+    computers?: readonly boolean[],
+  ) => S | null;
   /** Every move the player to move may make now; none once the game is over. */
   moves: (game: S) => readonly M[];
   /** The game after that move, or null for a move that may not be made. */

@@ -19,19 +19,60 @@ import * as toranpu from "./index.ts";
 import * as soundData from "./sounds.ts";
 
 /** The entry points that are not a game: the front door, the deck, the hook, and what a table looks and sounds like. */
-const TABLE_ENTRIES = { "./deck": deck, "./card-sounds": cardSounds, "./sounds": soundData, "./card-backs": cardBacks, "./card-faces": cardFaces, "./card-faces/english": english, "./card-faces/realistic": realistic, "./element": element, "./element/define": element, "./table": tableEntry, "./table/define": tableEntry };
+const TABLE_ENTRIES = {
+  "./deck": deck,
+  "./card-sounds": cardSounds,
+  "./sounds": soundData,
+  "./card-backs": cardBacks,
+  "./card-faces": cardFaces,
+  "./card-faces/english": english,
+  "./card-faces/realistic": realistic,
+  "./element": element,
+  "./element/define": element,
+  "./table": tableEntry,
+  "./table/define": tableEntry,
+};
 
-const { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, VERSION, cardShort, cardText, fromCode, fromJSON, gameName, moveText, newGame, playComputers, rulesFor, runCli, toCSV, toCode, toJSON, toText } = toranpu;
+const {
+  CARD_GAME_LIST,
+  CARD_GAME_TABLES,
+  STRINGS,
+  VERSION,
+  cardShort,
+  cardText,
+  fromCode,
+  fromJSON,
+  gameName,
+  moveText,
+  newGame,
+  playComputers,
+  rulesFor,
+  runCli,
+  toCSV,
+  toCode,
+  toJSON,
+  toText,
+} = toranpu;
 const { bigTwo, crazyEights, cribbage, euchre, ginRummy, goFish, hearts, ohHell, president, spades } = toranpu;
 
 // The README and the pages its long sections moved to: what the package says about itself is held to the code across all of them.
-const moved = ["docs/RULES-API.md", "docs/CARDS.md", "docs/ELEMENTS.md", "docs/API.md", "docs/export-and-import.md", "docs/theming.md"].map((file) => readFileSync(file, "utf8")).join("\n");
+const moved = [
+  "docs/RULES-API.md",
+  "docs/CARDS.md",
+  "docs/ELEMENTS.md",
+  "docs/API.md",
+  "docs/export-and-import.md",
+  "docs/theming.md",
+]
+  .map((file) => readFileSync(file, "utf8"))
+  .join("\n");
 const readme = `${readFileSync("README.md", "utf8")}\n${moved}`;
 const games = readFileSync("docs/games.md", "utf8");
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 const says = (code) => expect(readme, code).toContain(code);
 // A fence may carry a flag after its language (`ts no-run`, `ts no-check`): the block is the same block.
-const blocks = (language, doc = readme) => [...doc.matchAll(new RegExp(`\`\`\`${language}(?: no-[a-z]+)?\\n([\\s\\S]*?)\`\`\``, "g"))].map((m) => m[1]);
+const blocks = (language, doc = readme) =>
+  [...doc.matchAll(new RegExp(`\`\`\`${language}(?: no-[a-z]+)?\\n([\\s\\S]*?)\`\`\``, "g"))].map((m) => m[1]);
 /**
  * Run a README block as it is written: the block that starts with `first`, its imports taken out and
  * the names they brought handed in as `names`. What the block's last line says is returned.
@@ -39,7 +80,10 @@ const blocks = (language, doc = readme) => [...doc.matchAll(new RegExp(`\`\`\`${
 async function run(first, names) {
   const block = blocks("ts").find((one) => one.startsWith(first));
   if (block === undefined) throw new Error(`no block starting “${first}”`);
-  const body = block.split("\n").filter((line) => !line.startsWith("import ")).join("\n");
+  const body = block
+    .split("\n")
+    .filter((line) => !line.startsWith("import "))
+    .join("\n");
   const AsyncFunction = (async () => {}).constructor;
   return new AsyncFunction(...Object.keys(names), body)(...Object.values(names));
 }
@@ -48,8 +92,17 @@ function table(heading, doc = readme) {
   const from = doc.indexOf(heading);
   if (from < 0) throw new Error(`no “${heading}”`);
   const rows = [];
-  for (const line of doc.slice(from).split("\n").slice(heading.startsWith("|") ? 0 : 1)) {
-    if (line.startsWith("|")) rows.push(line.split(/(?<!\\)\|/).slice(1, -1).map((cell) => cell.trim()));
+  for (const line of doc
+    .slice(from)
+    .split("\n")
+    .slice(heading.startsWith("|") ? 0 : 1)) {
+    if (line.startsWith("|"))
+      rows.push(
+        line
+          .split(/(?<!\\)\|/)
+          .slice(1, -1)
+          .map((cell) => cell.trim()),
+      );
     else if (rows.length > 0) break;
   }
   return rows.slice(2);
@@ -74,15 +127,29 @@ describe("the README in 30 seconds", () => {
 
   it("the terminal line deals what it says", () => {
     says("npx @johnmorrisdotca/toranpu deal --hands 2 --each 5 --seed 42   # Seat 1: 3♣ 2♥ K♣ 7♠ 10♦ …");
-    expect(runCli(["deal", "--hands", "2", "--each", "5", "--seed", "42"]).out.split("\n")[0]).toBe("Seat 1: 3♣ 2♥ K♣ 7♠ 10♦");
+    expect(runCli(["deal", "--hands", "2", "--each", "5", "--seed", "42"]).out.split("\n")[0]).toBe(
+      "Seat 1: 3♣ 2♥ K♣ 7♠ 10♦",
+    );
   });
 });
 
 describe("the README on the API alone", () => {
   it("a game of Euchre, played out, saved and read back", () => {
-    says("CARD_GAME_TABLES.euchre;      // { fewestPlayers: 4, mostPlayers: 4, defaultPlayers: 4, sizes: [5, 10], defaultSize: 10 }");
-    expect(CARD_GAME_TABLES.euchre).toEqual({ fewestPlayers: 4, mostPlayers: 4, defaultPlayers: 4, sizes: [5, 10], defaultSize: 10 });
-    const start = newGame("euchre", { players: ["North", "East", "South", "West"], seed: 42, computers: [true, true, true, true] });
+    says(
+      "CARD_GAME_TABLES.euchre;      // { fewestPlayers: 4, mostPlayers: 4, defaultPlayers: 4, sizes: [5, 10], defaultSize: 10 }",
+    );
+    expect(CARD_GAME_TABLES.euchre).toEqual({
+      fewestPlayers: 4,
+      mostPlayers: 4,
+      defaultPlayers: 4,
+      sizes: [5, 10],
+      defaultSize: 10,
+    });
+    const start = newGame("euchre", {
+      players: ["North", "East", "South", "West"],
+      seed: 42,
+      computers: [true, true, true, true],
+    });
     const { game, moves } = playComputers("euchre", start);
     const rules = rulesFor("euchre");
     expect(rules.over(game)).toBe(true);
@@ -104,7 +171,13 @@ describe("the README's framework examples", () => {
   it("the Vue, Svelte and Angular components are the ones the framework check builds, to the letter", () => {
     expect(proof).toContain(blocks("vue")[0]);
     expect(proof).toContain(blocks("svelte")[0]);
-    expect(proof).toContain(blocks("ts").find((block) => block.startsWith("// Angular")).split("\n").slice(1).join("\n"));
+    expect(proof).toContain(
+      blocks("ts")
+        .find((block) => block.startsWith("// Angular"))
+        .split("\n")
+        .slice(1)
+        .join("\n"),
+    );
   });
 
   it("the React component is the one built, but for its types", () => {
@@ -112,14 +185,20 @@ describe("the README's framework examples", () => {
   });
 
   it("the plain page is the one opened, but for where it finds the package", () => {
-    expect(proof).toContain(blocks("html").find((block) => block.includes("./node_modules/@johnmorrisdotca/toranpu/dist/index.js")).trimEnd());
+    expect(proof).toContain(
+      blocks("html")
+        .find((block) => block.includes("./node_modules/@johnmorrisdotca/toranpu/dist/index.js"))
+        .trimEnd(),
+    );
   });
 });
 
 describe("the README on the deck, on words and on export", () => {
   it("the deck", () => {
     const cards = deck.shuffledDeck(42);
-    says('const deck = shuffledDeck(42);                  // [{ suit: "clubs", rank: 3 }, …]: the same order for seed 42, always');
+    says(
+      'const deck = shuffledDeck(42);                  // [{ suit: "clubs", rank: 3 }, …]: the same order for seed 42, always',
+    );
     expect(cards[0]).toEqual({ suit: "clubs", rank: 3 });
     const { hands, rest } = deck.dealRound(cards, 4, 5);
     says('cardName(hands[0][0]);                          // "three of clubs"');
@@ -128,7 +207,9 @@ describe("the README on the deck, on words and on export", () => {
     expect(hands[0].map(deck.cardShortName).join(" ")).toBe("3♣ K♣ 10♦ A♥ 2♦");
     says("rest.length;                                    // 32");
     expect(rest).toHaveLength(32);
-    says('writeCards(deck);                               // "pvOZziGxjrXCNQoybFwJnDstTEelhRBaPAVuSHLdkKUmcMYIgqWf": a letter a card');
+    says(
+      'writeCards(deck);                               // "pvOZziGxjrXCNQoybFwJnDstTEelhRBaPAVuSHLdkKUmcMYIgqWf": a letter a card',
+    );
     expect(deck.writeCards(cards)).toBe("pvOZziGxjrXCNQoybFwJnDstTEelhRBaPAVuSHLdkKUmcMYIgqWf");
     expect(deck.isWholeDeck(deck.writeCards(cards))).toBe(true);
     expect(deck.writeCards(deck.freshDeck())).toBe(deck.CARD_ALPHABET);
@@ -138,19 +219,27 @@ describe("the README on the deck, on words and on export", () => {
     says('gameName("president", "ja");                 // "大富豪"');
     expect([gameName("president"), gameName("president", "ja")]).toEqual(["President", "大富豪"]);
     says('cardText("QS", "ja");                        // "スペードのクイーン"');
-    expect([cardText("QS"), cardText("QS", "ja"), cardShort("TD")]).toEqual(["queen of spades", "スペードのクイーン", "10♦"]);
+    expect([cardText("QS"), cardText("QS", "ja"), cardShort("TD")]).toEqual([
+      "queen of spades",
+      "スペードのクイーン",
+      "10♦",
+    ]);
     says('moveText("hearts", { play: "QS" });                                       // "Play Q♠": a button\'s words');
     expect(moveText("hearts", { play: "QS" })).toBe("Play Q♠");
     says('moveText("hearts", { play: "QS" }, { form: "did" });                      // "plays Q♠": a record\'s');
     expect(moveText("hearts", { play: "QS" }, { form: "did" })).toBe("plays Q♠");
-    says('moveText("hearts", { pass: ["QS", "AH", "KH"] }, { form: "hidden" });     // "passes cards: 3": what the table saw');
+    says(
+      'moveText("hearts", { pass: ["QS", "AH", "KH"] }, { form: "hidden" });     // "passes cards: 3": what the table saw',
+    );
     expect(moveText("hearts", { pass: ["QS", "AH", "KH"] }, { form: "hidden" })).toBe("passes cards: 3");
     says('moveText("spades", { bid: 0 });                                           // "Bid nil"');
     expect(moveText("spades", { bid: 0 })).toBe("Bid nil");
     says('moveText("crazyEights", { play: "8S", suit: "D" }, { language: "ja" });   // "8♠を出してダイヤを指定する"');
     expect(moveText("crazyEights", { play: "8S", suit: "D" }, { language: "ja" })).toBe("8♠を出してダイヤを指定する");
     expect(readme).toContain('"愛子にクイーンを聞く"');
-    expect(moveText("goFish", { ask: 1, rank: 12 }, { language: "ja", players: ["あなた", "愛子"] })).toBe("愛子にクイーンを聞く");
+    expect(moveText("goFish", { ask: 1, rank: 12 }, { language: "ja", players: ["あなた", "愛子"] })).toBe(
+      "愛子にクイーンを聞く",
+    );
   });
 
   it("export and import: the code and the JSON shown are the ones written", () => {
@@ -166,7 +255,10 @@ describe("the README on the deck, on words and on export", () => {
     expect(fields).toEqual(Object.keys(JSON.parse(toJSON("goFish", game))));
     expect(readme).toContain("`move`, `seat`, `player`, `action`, `cards`, `detail` (the move as JSON)\nand `text`");
     expect(toCSV("goFish", game).split("\r\n")[0]).toBe(toranpu.CSV_COLUMNS.join(","));
-    const hearts100 = playComputers("hearts", newGame("hearts", { players: ["a", "b", "c", "d"], seed: 3, computers: [true, true, true, true] })).game;
+    const hearts100 = playComputers(
+      "hearts",
+      newGame("hearts", { players: ["a", "b", "c", "d"], seed: 3, computers: [true, true, true, true] }),
+    ).game;
     expect(hearts100.moves.length).toBeGreaterThan(400);
     expect(toCode("hearts", hearts100).length).toBeGreaterThan(6000);
   });
@@ -183,7 +275,12 @@ describe("the README on card sounds", () => {
         sampleRate = 44100;
         destination = {};
         createGain = () => ({ gain: { value: 1 }, connect() {} });
-        createBufferSource = () => ({ buffer: null, playbackRate: { value: 1 }, connect() {}, start: (at) => started.push(at) });
+        createBufferSource = () => ({
+          buffer: null,
+          playbackRate: { value: 1 },
+          connect() {},
+          start: (at) => started.push(at),
+        });
         decodeAudioData = () => Promise.resolve({ duration: 0.3 });
         resume = () => Promise.resolve();
         close = () => Promise.resolve();
@@ -196,7 +293,10 @@ describe("the README on card sounds", () => {
       made.push(sounds);
       return sounds;
     };
-    await run('import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";', { createCardSounds, muteButton });
+    await run('import { createCardSounds } from "@johnmorrisdotca/toranpu/card-sounds";', {
+      createCardSounds,
+      muteButton,
+    });
     await new Promise((done) => setTimeout(done, 20));
     // A shuffle, eight slides for thirteen cards, and a card played.
     expect(started).toHaveLength(1 + cardSounds.MOST_SOUNDS_AT_ONCE + 1);
@@ -209,14 +309,22 @@ describe("the README on card sounds", () => {
   });
 
   it("the kinds table names every kind, in order", () => {
-    expect(table("| Kind | What it is |").map((row) => row[0].replaceAll("`", ""))).toEqual([...cardSounds.CARD_SOUND_KINDS]);
+    expect(table("| Kind | What it is |").map((row) => row[0].replaceAll("`", ""))).toEqual([
+      ...cardSounds.CARD_SOUND_KINDS,
+    ]);
   });
 });
 
 describe("the README on card backs", () => {
   it("each line says what it gives", () => {
-    says('cardBackSvg("classic-blue", { width: 70 });                    // \'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="70" height="98" …\'');
-    expect(cardBacks.cardBackSvg("classic-blue", { width: 70 }).startsWith('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="70" height="98" ')).toBe(true);
+    says(
+      'cardBackSvg("classic-blue", { width: 70 });                    // \'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="70" height="98" …\'',
+    );
+    expect(
+      cardBacks
+        .cardBackSvg("classic-blue", { width: 70 })
+        .startsWith('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="70" height="98" '),
+    ).toBe(true);
     says('cardBackUrl("ink-dots", { colour: "#8f2826", mark: "五つ" });  // "data:image/svg+xml;charset=utf-8,…"');
     const url = cardBacks.cardBackUrl("ink-dots", { colour: "#8f2826", mark: "五つ" });
     expect(url.startsWith("data:image/svg+xml;charset=utf-8,")).toBe(true);
@@ -225,20 +333,41 @@ describe("the README on card backs", () => {
 
   it("the tables name every back and every option, and the drawings' custom properties are the ones used", () => {
     expect(table("| Back | Looks like |").map((row) => row[0].replaceAll("`", ""))).toEqual([...cardBacks.CARD_BACKS]);
-    expect(table("| Option of `cardBackSvg`").map((row) => row[0].replaceAll("`", ""))).toEqual(["colour", "ink", "paper", "mark", "width", "title", "art", "image", "logo", "logoSize"]);
+    expect(table("| Option of `cardBackSvg`").map((row) => row[0].replaceAll("`", ""))).toEqual([
+      "colour",
+      "ink",
+      "paper",
+      "mark",
+      "width",
+      "title",
+      "art",
+      "image",
+      "logo",
+      "logoSize",
+    ]);
     const properties = table("| Custom property | Colours |").map((row) => row[0].replaceAll("`", ""));
-    expect(properties).toEqual([...Object.values(cardBacks.CARD_BACK_PROPERTIES), ...Object.values(cardFaces.CARD_FACE_PROPERTIES)]);
+    expect(properties).toEqual([
+      ...Object.values(cardBacks.CARD_BACK_PROPERTIES),
+      ...Object.values(cardFaces.CARD_FACE_PROPERTIES),
+    ]);
     const faces = table("| Custom property | Colours |").slice(3);
-    expect(faces.map((row) => row[2].replaceAll("`", ""))).toEqual(["paper", "black", "red", "blue", "green"].map((key) => cardFaces.CARD_FACE_COLOURS[key]));
-    for (const name of cardBacks.CARD_BACKS) expect(table("| Custom property | Colours |")[0][2]).toContain(cardBacks.CARD_BACK_LOOK[name].field);
+    expect(faces.map((row) => row[2].replaceAll("`", ""))).toEqual(
+      ["paper", "black", "red", "blue", "green"].map((key) => cardFaces.CARD_FACE_COLOURS[key]),
+    );
+    for (const name of cardBacks.CARD_BACKS)
+      expect(table("| Custom property | Colours |")[0][2]).toContain(cardBacks.CARD_BACK_LOOK[name].field);
   });
 });
 
 describe("the README on card designs", () => {
   it("each line draws what it says", async () => {
-    says('cardFaceSvg("QS");                                    // \'<svg … role="img" aria-label="queen of spades" …>…\': the plain queen of spades');
+    says(
+      'cardFaceSvg("QS");                                    // \'<svg … role="img" aria-label="queen of spades" …>…\': the plain queen of spades',
+    );
     expect(cardFaces.cardFaceSvg("QS")).toMatch(/^<svg [^>]*role="img" aria-label="queen of spades"[ >]/);
-    says('cardFaceUrl("TD", { design: "four-colour" });         // "data:image/svg+xml;charset=utf-8,…": a blue ten of diamonds');
+    says(
+      'cardFaceUrl("TD", { design: "four-colour" });         // "data:image/svg+xml;charset=utf-8,…": a blue ten of diamonds',
+    );
     expect(decodeURIComponent(cardFaces.cardFaceUrl("TD", { design: "four-colour" }))).toContain("#1f5fbf");
     says('const english = await loadCardDesign("english");      // the English pattern, fetched now and not before');
     const loaded = await cardFaces.loadCardDesign("english");
@@ -250,8 +379,15 @@ describe("the README on card designs", () => {
   });
 
   it("the designs table names the three, and says their sizes about right", () => {
-    expect(table("| Design | What it is | Size |").map((row) => row[0].replaceAll("`", ""))).toEqual([...cardFaces.CARD_DESIGNS]);
-    expect(table("| Option of `cardFaceSvg`").map((row) => row[0].replaceAll("`", ""))).toEqual(["design", "width", "title", "language"]);
+    expect(table("| Design | What it is | Size |").map((row) => row[0].replaceAll("`", ""))).toEqual([
+      ...cardFaces.CARD_DESIGNS,
+    ]);
+    expect(table("| Option of `cardFaceSvg`").map((row) => row[0].replaceAll("`", ""))).toEqual([
+      "design",
+      "width",
+      "title",
+      "language",
+    ]);
     const englishBytes = readFileSync("src/designs/english.ts").length;
     expect(englishBytes / 1000).toBeGreaterThan(650);
     expect(englishBytes / 1000).toBeLessThan(760);
@@ -278,7 +414,9 @@ describe("the README on card designs", () => {
 
 describe("the README on one card", () => {
   it("names every attribute the element watches, and sound", () => {
-    const named = table("| Attribute of `<toranpu-card>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
+    const named = table("| Attribute of `<toranpu-card>`").flatMap((row) =>
+      [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]),
+    );
     expect(new Set(named)).toEqual(new Set([...element.ToranpuCard.observedAttributes, "sound"]));
   });
 
@@ -289,16 +427,24 @@ describe("the README on one card", () => {
     for (const [property, , fallback] of table("| Custom property | Sizes or times |")) {
       const name = property.replaceAll("`", "");
       const value = fallback.replaceAll("`", "");
-      expect(style.includes(`var(${name}, ${value})`) || readFileSync("src/ui/element-kit.ts", "utf8").includes(`var(${name}, \${ELEMENT_SIZES.medium}px)`), name).toBe(true);
+      expect(
+        style.includes(`var(${name}, ${value})`) ||
+          readFileSync("src/ui/element-kit.ts", "utf8").includes(`var(${name}, \${ELEMENT_SIZES.medium}px)`),
+        name,
+      ).toBe(true);
     }
   });
 });
 
 describe("the README on a hand", () => {
   it("names every attribute and every method the hand has", () => {
-    const named = table("| Attribute of `<toranpu-hand>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
+    const named = table("| Attribute of `<toranpu-hand>`").flatMap((row) =>
+      [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]),
+    );
     expect(new Set(named)).toEqual(new Set([...element.ToranpuHand.observedAttributes, "sound"]));
-    const methods = table("| Method | What it does |").flatMap((row) => [...row[0].matchAll(/`(\w+)\(/g)].map((m) => m[1]));
+    const methods = table("| Method | What it does |").flatMap((row) =>
+      [...row[0].matchAll(/`(\w+)\(/g)].map((m) => m[1]),
+    );
     // A method that is also an attribute (`mark`) is an accessor that gives the method back, so a framework can set the attribute.
     const isMethod = (name) => {
       const given = Object.getOwnPropertyDescriptor(element.ToranpuHand.prototype, name);
@@ -309,7 +455,11 @@ describe("the README on a hand", () => {
         return false;
       }
     };
-    const own = Object.getOwnPropertyNames(element.ToranpuHand.prototype).filter((name) => isMethod(name) && !["constructor", "connectedCallback", "disconnectedCallback", "attributeChangedCallback"].includes(name));
+    const own = Object.getOwnPropertyNames(element.ToranpuHand.prototype).filter(
+      (name) =>
+        isMethod(name) &&
+        !["constructor", "connectedCallback", "disconnectedCallback", "attributeChangedCallback"].includes(name),
+    );
     expect(methods.sort()).toEqual(own.sort());
   });
 
@@ -323,7 +473,9 @@ describe("the README on a hand", () => {
 
 describe("the README on piles", () => {
   it("names every attribute the pile watches, and the defaults it takes", () => {
-    const named = table("| Attribute of `<toranpu-pile>`").flatMap((row) => [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]));
+    const named = table("| Attribute of `<toranpu-pile>`").flatMap((row) =>
+      [...row[0].matchAll(/`([\w-]+)`/g)].map((m) => m[1]),
+    );
     expect(new Set(named)).toEqual(new Set(element.ToranpuPile.observedAttributes));
     const source = readFileSync("src/ui/pile-element.ts", "utf8");
     expect(source).toContain('this.#number("messiness", 0.3)');
@@ -334,7 +486,9 @@ describe("the README on piles", () => {
 
   it("the words a screen reader hears are the package's own", () => {
     expect(readme).toContain(`"${toranpu.fillIn(STRINGS.en.pileFaceDown, { n: 24 })}"`);
-    expect(readme.replace(/\n\s*/g, " ")).toContain(`"${toranpu.fillIn(STRINGS.en.pileFaceUp, { n: 4, card: "queen of spades" })}"`);
+    expect(readme.replace(/\n\s*/g, " ")).toContain(
+      `"${toranpu.fillIn(STRINGS.en.pileFaceUp, { n: 4, card: "queen of spades" })}"`,
+    );
     expect(readme.replace(/\n\s*/g, " ")).toContain(`"${toranpu.fillIn(STRINGS.en.handFaceDown, { n: 5 })}"`);
   });
 });
@@ -355,8 +509,13 @@ describe("the README on embedding", () => {
 
   it("names every part of the address the embed page reads", () => {
     const page = readFileSync("demo/embed.html", "utf8");
-    const read = new Set([...page.matchAll(/q\.(?:get|has)\("([\w-]+)"\)|(?:on|hex)\("([\w-]+)"\)/g)].map((m) => m[1] ?? m[2]));
-    const said = readme.slice(readme.indexOf("The iframe's address takes"), readme.indexOf("Anything that is not a hand"));
+    const read = new Set(
+      [...page.matchAll(/q\.(?:get|has)\("([\w-]+)"\)|(?:on|hex)\("([\w-]+)"\)/g)].map((m) => m[1] ?? m[2]),
+    );
+    const said = readme.slice(
+      readme.indexOf("The iframe's address takes"),
+      readme.indexOf("Anything that is not a hand"),
+    );
     for (const name of read) if (name !== "cards" && name !== "roll") expect(said, name).toContain(`\`${name}\``);
   });
 });
@@ -370,11 +529,16 @@ describe("the README on the command line", () => {
     const shown = blocks("sh").find((block) => block.startsWith("$ toranpu deal euchre"));
     const dealt = runCli(["deal", "euchre", "--seed", "42"]).out;
     const played = runCli(["play", "euchre", "--seed", "42"]).out;
-    const checked = runCli(["check", "--stdin"], { stdin: runCli(["play", "euchre", "--seed", "42", "--json"]).out }).out;
-    expect(shown).toBe(`$ toranpu deal euchre --seed 42\n${dealt}$ toranpu play euchre --seed 42\n${played}$ toranpu play euchre --seed 42 --json | toranpu check --stdin\n${checked}`);
+    const checked = runCli(["check", "--stdin"], {
+      stdin: runCli(["play", "euchre", "--seed", "42", "--json"]).out,
+    }).out;
+    expect(shown).toBe(
+      `$ toranpu deal euchre --seed 42\n${dealt}$ toranpu play euchre --seed 42\n${played}$ toranpu play euchre --seed 42 --json | toranpu check --stdin\n${checked}`,
+    );
     says('runCli(["deal", "--hands", "2", "--each", "2", "--seed", "42"]).out.split("\\n")[0];   // "Seat 1: 3♣ 2♥"');
     expect(runCli(["deal", "--hands", "2", "--each", "2", "--seed", "42"]).out.split("\n")[0]).toBe("Seat 1: 3♣ 2♥");
-    for (const name of ["crazyEights", "crazy-eights", "大富豪"]) expect(runCli(["deal", name, "--seed", "1"]).code, name).toBe(0);
+    for (const name of ["crazyEights", "crazy-eights", "大富豪"])
+      expect(runCli(["deal", name, "--seed", "1"]).code, name).toBe(0);
   });
 });
 
@@ -384,23 +548,55 @@ describe("the README's tables", () => {
     expect(rows.map((row) => row[0].replaceAll("*", ""))).toEqual(CARD_GAME_LIST.map((kind) => gameName(kind)));
     rows.forEach((row, at) => {
       const offered = CARD_GAME_TABLES[CARD_GAME_LIST[at]];
-      const players = offered.fewestPlayers === offered.mostPlayers ? String(offered.fewestPlayers) : `${offered.fewestPlayers}–${offered.mostPlayers}`;
+      const players =
+        offered.fewestPlayers === offered.mostPlayers
+          ? String(offered.fewestPlayers)
+          : `${offered.fewestPlayers}–${offered.mostPlayers}`;
       expect(row[1].startsWith(players), row[0]).toBe(true);
-      for (const size of offered.sizes) expect(row[2], `${row[0]} ${size}`).toMatch(new RegExp(`(^|\\D)${size}(\\D|$)`));
+      for (const size of offered.sizes)
+        expect(row[2], `${row[0]} ${size}`).toMatch(new RegExp(`(^|\\D)${size}(\\D|$)`));
     });
   });
 
   it("the moves table names every shape of move a game makes, and no other", () => {
     const rows = table("| Game | Moves |");
-    expect(rows.map((row) => row[0])).toEqual(["Hearts", "Spades", "Euchre", "Cribbage", "Oh Hell", "Crazy Eights", "Go Fish", "Big Two", "President", "Gin Rummy", "War"]);
-    const kinds = ["hearts", "spades", "euchre", "cribbage", "ohHell", "crazyEights", "goFish", "bigTwo", "president", "ginRummy", "war"];
+    expect(rows.map((row) => row[0])).toEqual([
+      "Hearts",
+      "Spades",
+      "Euchre",
+      "Cribbage",
+      "Oh Hell",
+      "Crazy Eights",
+      "Go Fish",
+      "Big Two",
+      "President",
+      "Gin Rummy",
+      "War",
+    ]);
+    const kinds = [
+      "hearts",
+      "spades",
+      "euchre",
+      "cribbage",
+      "ohHell",
+      "crazyEights",
+      "goFish",
+      "bigTwo",
+      "president",
+      "ginRummy",
+      "war",
+    ];
     rows.forEach((row, at) => {
       const named = new Set([...row[1].matchAll(/\{ (\w+):/g)].map((m) => m[1]));
       const made = new Set();
       for (const seed of [1, 2, 3, 4, 5, 6]) {
         const count = CARD_GAME_TABLES[kinds[at]].defaultPlayers;
         const players = Array.from({ length: count }, (_, seat) => `P${seat}`);
-        for (const move of playComputers(kinds[at], newGame(kinds[at], { players, seed, computers: players.map(() => true) })).moves) made.add(Object.keys(move)[0]);
+        for (const move of playComputers(
+          kinds[at],
+          newGame(kinds[at], { players, seed, computers: players.map(() => true) }),
+        ).moves)
+          made.add(Object.keys(move)[0]);
       }
       for (const key of made) expect(named.has(key), `${row[0]} makes { ${key} }`).toBe(true);
       expect(named.size, row[0]).toBeGreaterThanOrEqual(made.size);
@@ -409,19 +605,95 @@ describe("the README's tables", () => {
 
   it("the API tables name only what is exported, and every export of the front door and the deck is named", () => {
     // The API section keeps the entry points and the calls to learn first; the tables of every export are in docs/API.md, which it links.
-    const api = readme.slice(readme.indexOf("## API"), readme.indexOf("## Theming")) + readFileSync("docs/API.md", "utf8");
-    const source = (dir) => readdirSync(dir, { recursive: true }).filter((name) => String(name).endsWith(".ts") && !String(name).includes(".test.")).map((name) => readFileSync(`${dir}/${name}`, "utf8")).join("\n");
+    const api =
+      readme.slice(readme.indexOf("## API"), readme.indexOf("## Theming")) + readFileSync("docs/API.md", "utf8");
+    const source = (dir) =>
+      readdirSync(dir, { recursive: true })
+        .filter((name) => String(name).endsWith(".ts") && !String(name).includes(".test."))
+        .map((name) => readFileSync(`${dir}/${name}`, "utf8"))
+        .join("\n");
     const types = [...source("src").matchAll(/^export type (\w+)/gm)].map((m) => m[1]);
-    for (const name of Object.keys(toranpu)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
-    for (const [entry, module] of Object.entries(TABLE_ENTRIES)) for (const name of Object.keys(module)) expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `${entry}'s ${name}`).toBe(true);
-    const everything = new Set([...Object.keys(toranpu), ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)), ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])), ...types, "useCardGame"]);
-    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)].map((m) => m[1]).filter((name) => !["game", "toPlay", "computerToPlay", "moves", "over", "winners", "play", "restart", "null", "default", "computerDelay", "load", "muted", "setMuted", "volume", "close", "shuffle", "deal", "flip", "gather", "fan", "name", "options", "plain", "english", "art", "box", "KS", "RJ", "BJ", "faceDown", "flip", "card", "size", "width", "design", "back", "mark", "lang", "sound", "sideEffects", "cards", "hide", "show", "scrunch", "spread", "open", "close", "closed", "reveal", "count", "messiness", "seed", "depth"].includes(name));
+    for (const name of Object.keys(toranpu))
+      expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `the front door's ${name}`).toBe(true);
+    for (const [entry, module] of Object.entries(TABLE_ENTRIES))
+      for (const name of Object.keys(module))
+        expect(api.includes(`\`${name}\``) || api.includes(`\`${name}(`), `${entry}'s ${name}`).toBe(true);
+    const everything = new Set([
+      ...Object.keys(toranpu),
+      ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)),
+      ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])),
+      ...types,
+      "useCardGame",
+    ]);
+    const named = [...api.matchAll(/`([A-Za-z_]\w*)[`(]/g)]
+      .map((m) => m[1])
+      .filter(
+        (name) =>
+          ![
+            "game",
+            "toPlay",
+            "computerToPlay",
+            "moves",
+            "over",
+            "winners",
+            "play",
+            "restart",
+            "null",
+            "default",
+            "computerDelay",
+            "load",
+            "muted",
+            "setMuted",
+            "volume",
+            "close",
+            "shuffle",
+            "deal",
+            "flip",
+            "gather",
+            "fan",
+            "name",
+            "options",
+            "plain",
+            "english",
+            "art",
+            "box",
+            "KS",
+            "RJ",
+            "BJ",
+            "faceDown",
+            "flip",
+            "card",
+            "size",
+            "width",
+            "design",
+            "back",
+            "mark",
+            "lang",
+            "sound",
+            "sideEffects",
+            "cards",
+            "hide",
+            "show",
+            "scrunch",
+            "spread",
+            "open",
+            "close",
+            "closed",
+            "reveal",
+            "count",
+            "messiness",
+            "seed",
+            "depth",
+          ].includes(name),
+      );
     expect(named.length).toBeGreaterThan(120);
     for (const name of named) expect(everything.has(name), `the README names ${name}`).toBe(true);
   });
 
   it("every export has a doc comment", () => {
-    for (const name of readdirSync("src", { recursive: true }).map(String).filter((file) => file.endsWith(".ts") && !file.includes(".test."))) {
+    for (const name of readdirSync("src", { recursive: true })
+      .map(String)
+      .filter((file) => file.endsWith(".ts") && !file.includes(".test."))) {
       const lines = readFileSync(`src/${name}`, "utf8").split("\n");
       lines.forEach((line, i) => {
         if (!/^export (function|const|type) \w/.test(line)) return;
@@ -431,7 +703,9 @@ describe("the README's tables", () => {
   });
 
   it("the sizes it quotes are about right", () => {
-    expect(readme).toContain("a game of Hearts to 100 is about six hundred\nmoves and nine thousand characters of code");
+    expect(readme).toContain(
+      "a game of Hearts to 100 is about six hundred\nmoves and nine thousand characters of code",
+    );
   });
 });
 
@@ -440,7 +714,10 @@ describe("docs/games.md", () => {
     const headings = [...games.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
     expect(headings.slice(0, 11)).toEqual(CARD_GAME_LIST.map((kind) => gameName(kind)));
     for (const name of headings.slice(0, 11)) {
-      const section = games.slice(games.indexOf(`## ${name}\n`), games.indexOf("\n## ", games.indexOf(`## ${name}\n`) + 4));
+      const section = games.slice(
+        games.indexOf(`## ${name}\n`),
+        games.indexOf("\n## ", games.indexOf(`## ${name}\n`) + 4),
+      );
       expect(section, name).toMatch(/Sources?: \[pagat\.com\//);
       expect(section, name).toContain("**Tables differ**");
     }
@@ -452,8 +729,13 @@ describe("docs/games.md", () => {
       const offered = CARD_GAME_TABLES[kind];
       const from = games.indexOf(`## ${gameName(kind)}\n`);
       const lead = games.slice(from, games.indexOf("\n- ", from)).replace(/\s+/g, " ");
-      expect(lead, kind).toContain(offered.fewestPlayers === offered.mostPlayers ? `${words[offered.fewestPlayers]} players` : `${words[offered.fewestPlayers]} `);
-      if (offered.sizes.length > 1) for (const size of offered.sizes) expect(lead, `${kind} ${size}`).toMatch(new RegExp(`\\D${size}\\D`));
+      expect(lead, kind).toContain(
+        offered.fewestPlayers === offered.mostPlayers
+          ? `${words[offered.fewestPlayers]} players`
+          : `${words[offered.fewestPlayers]} `,
+      );
+      if (offered.sizes.length > 1)
+        for (const size of offered.sizes) expect(lead, `${kind} ${size}`).toMatch(new RegExp(`\\D${size}\\D`));
     }
   });
 
@@ -485,7 +767,17 @@ describe("docs/games.md", () => {
     expect(euchre.euchreHeight("JH", "H")).toBeGreaterThan(euchre.euchreHeight("JD", "H"));
     expect(euchre.euchreHeight("JD", "H")).toBeGreaterThan(euchre.euchreHeight("AH", "H"));
     expect(euchre.suitIn("JD", "H")).toBe("H");
-    expect([euchre.handPoints(0, 3), euchre.handPoints(0, 4), euchre.handPoints(0, 5), euchre.handPoints(0, 2)]).toEqual([[1, 0], [1, 0], [2, 0], [0, 2]]);
+    expect([
+      euchre.handPoints(0, 3),
+      euchre.handPoints(0, 4),
+      euchre.handPoints(0, 5),
+      euchre.handPoints(0, 2),
+    ]).toEqual([
+      [1, 0],
+      [1, 0],
+      [2, 0],
+      [0, 2],
+    ]);
     // Stick the dealer: in the second round the dealer is offered no pass.
     const rules = rulesFor("euchre");
     let game = newGame("euchre", { players: ["a", "b", "c", "d"], seed: 1 });
@@ -514,7 +806,12 @@ describe("docs/games.md", () => {
   it("Oh Hell: the deals, and ten and your bid", () => {
     expect(ohHell.dealSizes(7)).toEqual([1, 2, 3, 4, 5, 6, 7]);
     expect(ohHell.dealSizes(13)).toEqual([1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1]);
-    expect([ohHell.dealPoints(0, 0), ohHell.dealPoints(3, 3), ohHell.dealPoints(3, 2), ohHell.dealPoints(3, 4)]).toEqual([10, 13, 0, 0]);
+    expect([
+      ohHell.dealPoints(0, 0),
+      ohHell.dealPoints(3, 3),
+      ohHell.dealPoints(3, 2),
+      ohHell.dealPoints(3, 4),
+    ]).toEqual([10, 13, 0, 0]);
     // The hook: on a deal of one card for four, three bids of nought leave the dealer unable to bid one.
     const rules = rulesFor("ohHell");
     let game = newGame("ohHell", { players: ["a", "b", "c", "d"], seed: 1 });
@@ -535,7 +832,10 @@ describe("docs/games.md", () => {
 
   it("Go Fish: the deal, and thirteen books", () => {
     expect([2, 3, 4, 6].map(goFish.goFishHandSize)).toEqual([7, 7, 5, 5]);
-    const played = playComputers("goFish", newGame("goFish", { players: ["a", "b", "c"], seed: 4, computers: [true, true, true] })).game;
+    const played = playComputers(
+      "goFish",
+      newGame("goFish", { players: ["a", "b", "c"], seed: 4, computers: [true, true, true] }),
+    ).game;
     expect(played.books.flat()).toHaveLength(13);
   });
 
@@ -545,10 +845,17 @@ describe("docs/games.md", () => {
     expect(bigTwo.bigTwoCard("3C")).toBeLessThan(bigTwo.bigTwoCard("3H"));
     expect(bigTwo.bigTwoCard("3H")).toBeLessThan(bigTwo.bigTwoCard("3S"));
     expect(bigTwo.bigTwoCard("AS")).toBeLessThan(bigTwo.bigTwoCard("2D"));
-    const five = { straight: ["3D", "4C", "5H", "6S", "7D"], flush: ["3D", "5D", "8D", "JD", "KD"], fullHouse: ["3D", "3C", "3H", "4S", "4D"], fourKind: ["3D", "3C", "3H", "3S", "4D"], straightFlush: ["3D", "4D", "5D", "6D", "7D"] };
+    const five = {
+      straight: ["3D", "4C", "5H", "6S", "7D"],
+      flush: ["3D", "5D", "8D", "JD", "KD"],
+      fullHouse: ["3D", "3C", "3H", "4S", "4D"],
+      fourKind: ["3D", "3C", "3H", "3S", "4D"],
+      straightFlush: ["3D", "4D", "5D", "6D", "7D"],
+    };
     const order = ["straight", "flush", "fullHouse", "fourKind", "straightFlush"];
     for (const kind of order) expect(value(five[kind]).kind).toBe(kind);
-    for (let at = 1; at < order.length; at += 1) expect(bigTwo.bigTwoBeats(value(five[order[at]]), value(five[order[at - 1]]))).toBe(true);
+    for (let at = 1; at < order.length; at += 1)
+      expect(bigTwo.bigTwoBeats(value(five[order[at]]), value(five[order[at - 1]]))).toBe(true);
     expect(value(["TD", "JC", "QH", "KS", "AD"]).kind).toBe("straight");
     expect(value(["JC", "QH", "KS", "AD", "2D"])).toBeNull();
     expect(value(["AD", "2C", "3H", "4S", "5D"])).toBeNull();
@@ -565,10 +872,19 @@ describe("docs/games.md", () => {
     expect(president.presidentRank("3S")).toBeLessThan(president.presidentRank("4D"));
     expect(president.presidentRank("9S")).toBe(president.presidentRank("9D"));
     expect([3, 4, 8].map(president.presidentSwapCount)).toEqual([1, 2, 2]);
-    expect([0, 1, 2, 3, 4].map((seat) => president.presidentTitle([0, 1, 2, 3, 4], seat))).toEqual(["president", "vicePresident", "citizen", "viceBeggar", "beggar"]);
+    expect([0, 1, 2, 3, 4].map((seat) => president.presidentTitle([0, 1, 2, 3, 4], seat))).toEqual([
+      "president",
+      "vicePresident",
+      "citizen",
+      "viceBeggar",
+      "beggar",
+    ]);
     const first = newGame("president", { players: ["a", "b", "c", "d"], seed: 1 });
     expect(first.hands[first.toPlay]).toContain("3C");
-    const played = playComputers("president", newGame("president", { players: ["a", "b", "c", "d"], seed: 1, computers: [true, true, true, true] })).game;
+    const played = playComputers(
+      "president",
+      newGame("president", { players: ["a", "b", "c", "d"], seed: 1, computers: [true, true, true, true] }),
+    ).game;
     expect(played.rounds).toHaveLength(3);
     const points = [0, 0, 0, 0];
     for (const order of played.rounds) order.forEach((seat, place) => (points[seat] += 3 - place));
@@ -604,11 +920,21 @@ describe("package.json", () => {
   const entryOf = (kind) => kind.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
   it("names built files directly, and has no dependencies", () => {
-    const pointed = [pkg.main, pkg.module, pkg.types, ...Object.values(pkg.bin), ...Object.values(pkg.exports).flatMap((entry) => Object.values(entry))];
+    const pointed = [
+      pkg.main,
+      pkg.module,
+      pkg.types,
+      ...Object.values(pkg.bin),
+      ...Object.values(pkg.exports).flatMap((entry) => Object.values(entry)),
+    ];
     for (const file of pointed) expect(/^\.?\/?(dist|bin)\//.test(file), file).toBe(true);
     expect(pkg.publishConfig.exports).toBeUndefined();
     expect(pkg.dependencies).toBeUndefined();
-    expect(Object.keys(pkg.exports).filter((key) => ![".", "./react", ...Object.keys(TABLE_ENTRIES)].includes(key)).map((key) => key.slice(2))).toEqual([...CARD_GAME_LIST.map(entryOf), ...SOLITAIRES]);
+    expect(
+      Object.keys(pkg.exports)
+        .filter((key) => ![".", "./react", ...Object.keys(TABLE_ENTRIES)].includes(key))
+        .map((key) => key.slice(2)),
+    ).toEqual([...CARD_GAME_LIST.map(entryOf), ...SOLITAIRES]);
   });
 
   it("has keywords that are many, lower case and not repeated, and a description that fits", () => {
@@ -637,7 +963,9 @@ describe("docs/strings-ja.md", () => {
     "",
     "| Name | English | Japanese |",
     "| --- | --- | --- |",
-    ...Object.keys(STRINGS.en).filter((key) => key !== "cliUsage").map((key) => `| \`${key}\` | ${escape(STRINGS.en[key])} | ${escape(STRINGS.ja[key])} |`),
+    ...Object.keys(STRINGS.en)
+      .filter((key) => key !== "cliUsage")
+      .map((key) => `| \`${key}\` | ${escape(STRINGS.en[key])} | ${escape(STRINGS.ja[key])} |`),
     "",
     "## The command line's help",
     "",
@@ -671,12 +999,15 @@ describe("the family's look", () => {
     const hash = createHash("sha256").update(rest.join("\n")).digest("hex");
     expect(first).toBe(`/* sha256 of every line after this one: ${hash} */`);
     expect(hash).toBe(FAMILY_CSS);
-    expect(createHash("sha256").update(readFileSync("scripts/family-template.mjs")).digest("hex")).toBe(FAMILY_TEMPLATE);
+    expect(createHash("sha256").update(readFileSync("scripts/family-template.mjs")).digest("hex")).toBe(
+      FAMILY_TEMPLATE,
+    );
   });
 
   it("the site script uses the family's header and footer, and its own stylesheet after the family's", () => {
     const site = readFileSync("scripts/site.mjs", "utf8");
-    for (const part of ["familyHead(", "familyHeader(", "familyUnreviewed(", "familyFooter(", "FAMILY_SCRIPT"]) expect(site).toContain(part);
+    for (const part of ["familyHead(", "familyHeader(", "familyUnreviewed(", "familyFooter(", "FAMILY_SCRIPT"])
+      expect(site).toContain(part);
     expect(site.indexOf('href="family.css"')).toBeLessThan(site.indexOf('href="toranpu.css"'));
   });
 
@@ -688,7 +1019,10 @@ describe("the family's look", () => {
     let seen = 0;
     for (const line of readme.slice(readme.indexOf("| Property | What it colours")).split("\n").slice(2)) {
       if (!line.startsWith("|")) break;
-      const [names, , lightCell, darkCell] = line.split("|").slice(1, -1).map((text) => text.trim());
+      const [names, , lightCell, darkCell] = line
+        .split("|")
+        .slice(1, -1)
+        .map((text) => text.trim());
       const properties = [...names.matchAll(/`(--[\w-]+)`/g)].map((m) => m[1]);
       const lights = [...lightCell.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
       const darks = [...darkCell.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
@@ -713,19 +1047,41 @@ describe("the README's promises", () => {
   };
 
   it("has the sections a package of this family has, each with something in it", () => {
-    for (const heading of ["In 30 seconds", "Who it is for", "Use it in your project", "Architecture", "Features", "The games", "Your own branding", "The command line", "API", "Theming", "Limits", "Browser and runtime support", "Accessibility", "Languages", "Roadmap", "Contributing"]) {
+    for (const heading of [
+      "In 30 seconds",
+      "Who it is for",
+      "Use it in your project",
+      "Architecture",
+      "Features",
+      "The games",
+      "Your own branding",
+      "The command line",
+      "API",
+      "Theming",
+      "Limits",
+      "Browser and runtime support",
+      "Accessibility",
+      "Languages",
+      "Roadmap",
+      "Contributing",
+    ]) {
       expect(section(heading).length, heading).toBeGreaterThan(heading.length + 40);
     }
     for (const heading of ["Changes", "Licence"]) expect(readme, heading).toContain(`\n## ${heading}\n`);
   });
 
   it("links only to files that exist, and to anchors a heading makes", () => {
-    const front = readFileSync("README.md", "utf8");   // the links of the README itself: the pages it moved to link back from their own folder
+    const front = readFileSync("README.md", "utf8"); // the links of the README itself: the pages it moved to link back from their own folder
     const targets = [...front.matchAll(/\]\((?!https?:|#|mailto:)([^)\s#]+)/g)].map((match) => match[1]);
     expect(targets.length).toBeGreaterThan(5);
     for (const target of targets) expect(existsSync(target), target).toBe(true);
     for (const picture of front.matchAll(/src="(docs\/[^"]+)"/g)) expect(existsSync(picture[1]), picture[1]).toBe(true);
-    const slug = (heading) => heading.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, "").trim().replace(/\s/g, "-");
+    const slug = (heading) =>
+      heading
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s-]/gu, "")
+        .trim()
+        .replace(/\s/g, "-");
     const made = new Set([...front.matchAll(/^#{1,6} (.+)$/gm)].map((match) => slug(match[1])));
     for (const link of front.matchAll(/\]\(#([^)]+)\)/g)) expect(made.has(link[1]), link[1]).toBe(true);
   });
@@ -733,9 +1089,46 @@ describe("the README's promises", () => {
   it("lists every package of the family, with its kana, as the demo's footer does", () => {
     const family = FAMILY;
     expect(family.length).toBeGreaterThanOrEqual(16);
-    const block = readme.slice(readme.indexOf("### The family"), readme.indexOf("\n## ", readme.indexOf("### The family")));
+    const block = readme.slice(
+      readme.indexOf("### The family"),
+      readme.indexOf("\n## ", readme.indexOf("### The family")),
+    );
     for (const { id, name, kana } of family) expect(block, id).toContain(`- [${name}](${familyRepo(id)}) (${kana}`);
-    const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven", "twenty-eight", "twenty-nine", "thirty", "thirty-one", "thirty-two"];
+    const words = [
+      "zero",
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
+      "eight",
+      "nine",
+      "ten",
+      "eleven",
+      "twelve",
+      "thirteen",
+      "fourteen",
+      "fifteen",
+      "sixteen",
+      "seventeen",
+      "eighteen",
+      "nineteen",
+      "twenty",
+      "twenty-one",
+      "twenty-two",
+      "twenty-three",
+      "twenty-four",
+      "twenty-five",
+      "twenty-six",
+      "twenty-seven",
+      "twenty-eight",
+      "twenty-nine",
+      "thirty",
+      "thirty-one",
+      "thirty-two",
+    ];
     expect(block).toContain(`one of ${words[family.length]} packages`);
     expect([...block.matchAll(/^- \[/gm)]).toHaveLength(family.length);
   });
@@ -748,19 +1141,49 @@ describe("the README's promises", () => {
   });
 
   it("keeps SECURITY.md and CODE_OF_CONDUCT.md equal to the family's master text, a copy of which is kept in scripts/community", () => {
-    for (const file of ["SECURITY.md", "CODE_OF_CONDUCT.md"]) expect(readFileSync(file, "utf8"), file).toBe(readFileSync(`scripts/community/${file}`, "utf8"));
+    for (const file of ["SECURITY.md", "CODE_OF_CONDUCT.md"])
+      expect(readFileSync(file, "utf8"), file).toBe(readFileSync(`scripts/community/${file}`, "utf8"));
   });
 
   it("tells a contributor the family's house rules", () => {
     const contributing = readFileSync("CONTRIBUTING.md", "utf8");
     expect(contributing).toContain("## House rules, shared by every package of the family");
-    for (const script of ["test:package", "test:cli", "test:demo", "test:frameworks", "docs:make"]) expect(contributing, script).toContain(`pnpm ${script}`);
+    for (const script of ["test:package", "test:cli", "test:demo", "test:frameworks", "docs:make"])
+      expect(contributing, script).toContain(`pnpm ${script}`);
   });
 
   it("documents the branding it has: every option of a back, every field of a design, every export", () => {
     const branding = section("Your own branding", moved);
-    for (const name of ["registerCardBack", "registerCardDesign", "cardFaceFromArt", "cleanMarkup", "safeImageUrl", "registeredCardDesigns", "registeredCardBacks", "unregisterCardDesign", "unregisterCardBack", "back-image", "back-logo", 'slot="face"', 'slot="back"', "label"]) expect(branding, name).toContain(name);
-    for (const name of ["registerCardBack", "registerCardDesign", "cardFaceFromArt", "cleanMarkup", "safeImageUrl", "registeredCardDesigns", "registeredCardBacks", "unregisterCardDesign", "unregisterCardBack", "CUSTOM_CARD_ID", "cardBackNames"]) {
+    for (const name of [
+      "registerCardBack",
+      "registerCardDesign",
+      "cardFaceFromArt",
+      "cleanMarkup",
+      "safeImageUrl",
+      "registeredCardDesigns",
+      "registeredCardBacks",
+      "unregisterCardDesign",
+      "unregisterCardBack",
+      "back-image",
+      "back-logo",
+      'slot="face"',
+      'slot="back"',
+      "label",
+    ])
+      expect(branding, name).toContain(name);
+    for (const name of [
+      "registerCardBack",
+      "registerCardDesign",
+      "cardFaceFromArt",
+      "cleanMarkup",
+      "safeImageUrl",
+      "registeredCardDesigns",
+      "registeredCardBacks",
+      "unregisterCardDesign",
+      "unregisterCardBack",
+      "CUSTOM_CARD_ID",
+      "cardBackNames",
+    ]) {
       expect(typeof (cardFaces[name] ?? cardBacks[name]), name).not.toBe("undefined");
     }
     expect(typeof element.registerCardDesign).toBe("function");

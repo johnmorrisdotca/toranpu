@@ -45,7 +45,14 @@ describe("cribbage", () => {
 
   it("counts the famous hands: twenty-nine, and a double double run for twenty-four", () => {
     expect(showCount(["5H", "5D", "5C", "JS"], "5S").total).toBe(29);
-    expect(showCount(["4H", "5S", "6D", "6C"], "5H")).toEqual({ fifteens: 8, pairs: 4, runs: 12, flush: 0, nobs: 0, total: 24 });
+    expect(showCount(["4H", "5S", "6D", "6C"], "5H")).toEqual({
+      fifteens: 8,
+      pairs: 4,
+      runs: 12,
+      flush: 0,
+      nobs: 0,
+      total: 24,
+    });
     expect(showCount(["2H", "4H", "6H", "8H"], "KS").flush).toBe(4);
     expect(showCount(["2H", "4H", "6H", "8H"], "KS", true).flush).toBe(0);
     expect(showCount(["2H", "4H", "6H", "8H"], "KH", true).flush).toBe(5);
@@ -60,8 +67,20 @@ describe("cribbage", () => {
   });
 
   it("will not let the count pass thirty-one, and gives the go to whoever played last", () => {
-    const base = playCribbage(playCribbage(started(), { crib: [started().hands[1][0], started().hands[1][1]] })!, { crib: [started().hands[0][0], started().hands[0][1]] })!;
-    const game: CribbageGame = { ...base, toPlay: 1, count: 25, run: [], hands: [["KH", "QS"], ["5D", "9C"]], peg: null };
+    const base = playCribbage(playCribbage(started(), { crib: [started().hands[1][0], started().hands[1][1]] })!, {
+      crib: [started().hands[0][0], started().hands[0][1]],
+    })!;
+    const game: CribbageGame = {
+      ...base,
+      toPlay: 1,
+      count: 25,
+      run: [],
+      hands: [
+        ["KH", "QS"],
+        ["5D", "9C"],
+      ],
+      peg: null,
+    };
     expect(cribbageMoves(game)).toEqual([{ play: "5D" }]);
     const after = playCribbage(game, { play: "5D" })!;
     expect(after.peg).toEqual({ seat: 1, points: 1, why: ["go"] });

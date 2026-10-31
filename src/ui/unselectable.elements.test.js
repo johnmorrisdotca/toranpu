@@ -6,6 +6,8 @@ import { expect, it } from "vitest";
 
 it("keeps every element's letters from being selected: a card, a hand and a pile", () => {
   for (const file of ["card-element.ts", "hand-element.ts", "pile-element.ts"]) {
-    expect(readFileSync(`src/ui/${file}`, "utf8"), file).toMatch(/:host \{[^}]*user-select: none; -webkit-user-select: none;/);
+    expect(readFileSync(`src/ui/${file}`, "utf8"), file).toMatch(
+      /:host \{[^}]*user-select: none; -webkit-user-select: none;/,
+    );
   }
 });

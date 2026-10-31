@@ -23,7 +23,15 @@ import { choices, rankOf, suitOf } from "../cards.ts";
  * console.log(value);
  * ```
  */
-export type BigTwoKind = "single" | "pair" | "triple" | "straight" | "flush" | "fullHouse" | "fourKind" | "straightFlush";
+export type BigTwoKind =
+  | "single"
+  | "pair"
+  | "triple"
+  | "straight"
+  | "flush"
+  | "fullHouse"
+  | "fourKind"
+  | "straightFlush";
 
 /** A play's kind and how strong it is among plays of the same number of cards.
  *
@@ -114,8 +122,14 @@ export function bigTwoValue(cards: readonly CardId[]): BigTwoValue | null {
   const sorted = [...ranks].sort((a, b) => a - b);
   const flush = cards.every((card) => suitOf(card) === suitOf(cards[0]));
   const straight = sorted.every((rank, at) => at === 0 || rank === sorted[at - 1] + 1) && sorted[4] <= 11;
-  const counts = [...new Set(sorted)].map((rank) => ({ rank, count: sorted.filter((held) => held === rank).length })).sort((a, b) => b.count - a.count);
-  const tier = (kind: BigTwoKind, strength: number): BigTwoValue => ({ kind, size: 5, strength: FIVE_TIERS.indexOf(kind) * 100 + strength });
+  const counts = [...new Set(sorted)]
+    .map((rank) => ({ rank, count: sorted.filter((held) => held === rank).length }))
+    .sort((a, b) => b.count - a.count);
+  const tier = (kind: BigTwoKind, strength: number): BigTwoValue => ({
+    kind,
+    size: 5,
+    strength: FIVE_TIERS.indexOf(kind) * 100 + strength,
+  });
   if (straight && flush) return tier("straightFlush", topOf(cards));
   if (counts[0].count === 4) return tier("fourKind", counts[0].rank);
   if (counts[0].count === 3 && counts[1].count === 2) return tier("fullHouse", counts[0].rank);
@@ -179,13 +193,18 @@ export function bigTwoPlays(hand: readonly CardId[]): CardId[][] {
       built.forEach(add);
     }
     // Flushes: five of one suit.
-    for (const suit of ["D", "C", "H", "S"]) choices(sorted.filter((card) => suitOf(card) === suit), 5).forEach(add);
+    for (const suit of ["D", "C", "H", "S"])
+      choices(
+        sorted.filter((card) => suitOf(card) === suit),
+        5,
+      ).forEach(add);
     // Full houses and four of a kind.
     const groups = [...byRank.entries()];
     for (const [rank, same] of groups) {
       if (same.length === 4) for (const card of sorted) if (bigTwoRank(card) !== rank) add([...same, card]);
       for (const triple of choices(same, 3)) {
-        for (const [other, pairFrom] of groups) if (other !== rank) for (const pair of choices(pairFrom, 2)) add([...triple, ...pair]);
+        for (const [other, pairFrom] of groups)
+          if (other !== rank) for (const pair of choices(pairFrom, 2)) add([...triple, ...pair]);
       }
     }
   }

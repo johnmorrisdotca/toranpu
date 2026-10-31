@@ -49,4 +49,17 @@ export const CARD_SOUND_DATA: Readonly<Record<CardSoundFile, string>> = {
  * console.log(file);
  * ```
  */
-export type CardSoundFile = "deal-1" | "deal-2" | "deal-3" | "deal-4" | "fan-1" | "flip-1" | "flip-2" | "gather-1" | "gather-2" | "play-1" | "play-2" | "play-3" | "shuffle-1";
+export type CardSoundFile =
+  | "deal-1"
+  | "deal-2"
+  | "deal-3"
+  | "deal-4"
+  | "fan-1"
+  | "flip-1"
+  | "flip-2"
+  | "gather-1"
+  | "gather-2"
+  | "play-1"
+  | "play-2"
+  | "play-3"
+  | "shuffle-1";

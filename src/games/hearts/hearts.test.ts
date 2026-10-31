@@ -1,7 +1,17 @@
 import { describe, expect, it } from "vitest";
 
 import { choosePass, heartsComputer, heartsView } from "./hearts-computer.ts";
-import { HEARTS_ALL_POINTS, QUEEN_OF_SPADES, TWO_OF_CLUBS, heartsMoves, heartsPlayable, passOffset, playHearts, startHearts, trickWinner } from "./hearts.ts";
+import {
+  HEARTS_ALL_POINTS,
+  QUEEN_OF_SPADES,
+  TWO_OF_CLUBS,
+  heartsMoves,
+  heartsPlayable,
+  passOffset,
+  playHearts,
+  startHearts,
+  trickWinner,
+} from "./hearts.ts";
 import { HEARTS_RULES, decodeHearts, encodeHearts } from "./hearts-rules.ts";
 import type { HeartsGame } from "./hearts.types.ts";
 
@@ -71,7 +81,12 @@ describe("hearts", () => {
   });
 
   it("makes a player follow suit, and keeps hearts from being led until one is thrown", () => {
-    const game = withHands([["3H", "4D", "KS"], ["5D", "6H", "2S"], ["7D", "8H", "3S"], ["9D", "TH", "4S"]]);
+    const game = withHands([
+      ["3H", "4D", "KS"],
+      ["5D", "6H", "2S"],
+      ["7D", "8H", "3S"],
+      ["9D", "TH", "4S"],
+    ]);
     expect(heartsPlayable(game)).toEqual(["4D", "KS"]);
     const led = playHearts(game, { play: "4D" })!;
     expect(heartsPlayable(led)).toEqual(["5D"]);
@@ -92,21 +107,36 @@ describe("hearts", () => {
   });
 
   it("gives the trick to the highest card of the suit led, ace high", () => {
-    expect(trickWinner([{ seat: 2, card: "5D" }, { seat: 3, card: "AD" }, { seat: 0, card: "KS" }, { seat: 1, card: "QD" }])).toBe(3);
+    expect(
+      trickWinner([
+        { seat: 2, card: "5D" },
+        { seat: 3, card: "AD" },
+        { seat: 0, card: "KS" },
+        { seat: 1, card: "QD" },
+      ]),
+    ).toBe(3);
   });
 
   it("scores a heart one and the queen thirteen, and shooting the moon gives everybody else twenty-six", () => {
     const last = withHands([["AH"], ["2H"], ["3H"], ["QS"]], { heartsBroken: true, played: ["x"] });
     const end = ["AH", "2H", "3H", "QS"].reduce<HeartsGame>((at, card) => playHearts(at, { play: card })!, last);
     expect(end.dealScores[0]).toEqual([16, 0, 0, 0]);
-    const moon = withHands([["AH"], ["2H"], ["3H"], ["4H"]], { heartsBroken: true, points: [HEARTS_ALL_POINTS - 4, 0, 0, 0], played: ["x"] });
+    const moon = withHands([["AH"], ["2H"], ["3H"], ["4H"]], {
+      heartsBroken: true,
+      points: [HEARTS_ALL_POINTS - 4, 0, 0, 0],
+      played: ["x"],
+    });
     const shot = ["AH", "2H", "3H", "4H"].reduce<HeartsGame>((at, card) => playHearts(at, { play: card })!, moon);
     expect(shot.dealScores[0]).toEqual([0, 26, 26, 26]);
     expect(shot.moon).toBe(0);
   });
 
   it("ends when somebody reaches the game's size, and the lowest score wins", () => {
-    const near = withHands([["AH"], ["2H"], ["3H"], ["4H"]], { heartsBroken: true, scores: [96, 50, 40, 60], played: ["x"] });
+    const near = withHands([["AH"], ["2H"], ["3H"], ["4H"]], {
+      heartsBroken: true,
+      scores: [96, 50, 40, 60],
+      played: ["x"],
+    });
     const end = ["AH", "2H", "3H", "4H"].reduce<HeartsGame>((at, card) => playHearts(at, { play: card })!, near);
     expect(end.phase).toBe("over");
     expect(HEARTS_RULES.over(end)).toBe(true);
@@ -123,22 +153,33 @@ describe("hearts", () => {
 
   it("the computer passes the queen of spades when it cannot guard her, and keeps her behind five spades", () => {
     expect(choosePass(["QS", "AS", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "TC", "JC", "2D"])).toContain("QS");
-    expect(choosePass(["QS", "2S", "3S", "4S", "5S", "6C", "7C", "8C", "9C", "TC", "JC", "QC", "2D"])).not.toContain("QS");
+    expect(choosePass(["QS", "2S", "3S", "4S", "5S", "6C", "7C", "8C", "9C", "TC", "JC", "QC", "2D"])).not.toContain(
+      "QS",
+    );
   });
 
   it("the computer dumps the queen on a trick the king of spades is winning", () => {
-    const game = withHands([["KS", "2D"], ["QS", "3S", "4D"], ["5S"], ["6S"]], { toPlay: 1, trick: [{ seat: 0, card: "KS" }] });
+    const game = withHands([["KS", "2D"], ["QS", "3S", "4D"], ["5S"], ["6S"]], {
+      toPlay: 1,
+      trick: [{ seat: 0, card: "KS" }],
+    });
     expect(heartsComputer(game)).toEqual({ play: QUEEN_OF_SPADES });
   });
 
   it("the computer ducks under the trick when it can", () => {
-    const game = withHands([["TD"], ["3D", "9D", "KD"], ["5S"], ["6S"]], { toPlay: 1, trick: [{ seat: 0, card: "TD" }] });
+    const game = withHands([["TD"], ["3D", "9D", "KD"], ["5S"], ["6S"]], {
+      toPlay: 1,
+      trick: [{ seat: 0, card: "TD" }],
+    });
     expect(heartsComputer(game)).toEqual({ play: "9D" });
   });
 
   it("the computer sees only its own hand", () => {
     const game = passed(started(3));
-    const shuffledOthers = { ...game, hands: game.hands.map((hand, seat) => (seat === game.toPlay ? hand : [...hand].reverse())) };
+    const shuffledOthers = {
+      ...game,
+      hands: game.hands.map((hand, seat) => (seat === game.toPlay ? hand : [...hand].reverse())),
+    };
     expect(heartsView(shuffledOthers)).toEqual(heartsView(game));
   });
 });

@@ -22,7 +22,8 @@ const seeds = Object.keys(fixture.klondike).map(Number);
 
 describe("a seed deals what it dealt on itsutsu.com", () => {
   it("Klondike and FreeCell, one deck", () => {
-    for (const seed of seeds) expect(dealOfSeed(seed), String(seed)).toBe(fixture.klondike[String(seed) as keyof typeof fixture.klondike]);
+    for (const seed of seeds)
+      expect(dealOfSeed(seed), String(seed)).toBe(fixture.klondike[String(seed) as keyof typeof fixture.klondike]);
   });
   it("Spider, at one, two and four suits", () => {
     for (const suits of [1, 2, 4] as const) {
@@ -33,15 +34,19 @@ describe("a seed deals what it dealt on itsutsu.com", () => {
 });
 
 describe("a solver finds the line it found on itsutsu.com, and the line wins", () => {
-  const cases = (game: keyof typeof fixture.solve) => Object.entries(fixture.solve[game]) as [string, { moves: string | null; tables: number }][];
+  const cases = (game: keyof typeof fixture.solve) =>
+    Object.entries(fixture.solve[game]) as [string, { moves: string | null; tables: number }][];
 
   it("Klondike, drawing one and three", () => {
     for (const [key, want] of cases("klondike")) {
       const [seed, draw] = key.split("/").map(Number);
       const rules = { draw: draw as 1 | 3, passes: Infinity };
       const found = solveKlondike(dealKlondike(deckOf(dealOfSeed(seed))!, rules), 20_000);
-      expect({ moves: found.moves === null ? null : klondikeCode(found.moves), tables: found.tables }, key).toEqual(want);
-      if (want.moves !== null) expect(klondikeWon(replay(dealOfSeed(seed), rules, want.moves)!.at(-1)!), key).toBe(true);
+      expect({ moves: found.moves === null ? null : klondikeCode(found.moves), tables: found.tables }, key).toEqual(
+        want,
+      );
+      if (want.moves !== null)
+        expect(klondikeWon(replay(dealOfSeed(seed), rules, want.moves)!.at(-1)!), key).toBe(true);
     }
   });
 
@@ -49,8 +54,11 @@ describe("a solver finds the line it found on itsutsu.com, and the line wins", (
     for (const [key, want] of cases("freecell")) {
       const [seed, cells] = key.split("/").map(Number);
       const found = solveFreeCell(dealFreeCell(deckOf(dealOfSeed(seed))!, cells), 5_000);
-      expect({ moves: found.moves === null ? null : freeCellCode(found.moves), tables: found.tables }, key).toEqual(want);
-      if (want.moves !== null) expect(freeCellWon(replayFreeCell(dealOfSeed(seed), cells, want.moves)!.at(-1)!), key).toBe(true);
+      expect({ moves: found.moves === null ? null : freeCellCode(found.moves), tables: found.tables }, key).toEqual(
+        want,
+      );
+      if (want.moves !== null)
+        expect(freeCellWon(replayFreeCell(dealOfSeed(seed), cells, want.moves)!.at(-1)!), key).toBe(true);
     }
   });
 
@@ -59,7 +67,8 @@ describe("a solver finds the line it found on itsutsu.com, and the line wins", (
       const [seed, suits] = key.split("/").map(Number);
       const found = solveSpider(dealSpider(spiderDeckOf(spiderDealOfSeed(seed, suits), suits)!), 5_000);
       expect({ moves: found.moves === null ? null : spiderCode(found.moves), tables: found.tables }, key).toEqual(want);
-      if (want.moves !== null) expect(spiderWon(replaySpider(spiderDealOfSeed(seed, suits), suits, want.moves)!.at(-1)!), key).toBe(true);
+      if (want.moves !== null)
+        expect(spiderWon(replaySpider(spiderDealOfSeed(seed, suits), suits, want.moves)!.at(-1)!), key).toBe(true);
     }
   });
 });

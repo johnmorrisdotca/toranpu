@@ -110,7 +110,9 @@ export function spiderBestMove(table: SpiderTable, spot: SpiderSpot): SpiderMove
     .map((column, to) => ({ to, top: column.cards.at(-1) }))
     .filter(({ to }) => spiderMoveFor(table, spot, String(to)) !== null);
   const best =
-    fits.find(({ top }) => top !== undefined && Math.floor(top / 13) === Math.floor(foot / 13)) ?? fits.find(({ top }) => top !== undefined) ?? fits[0];
+    fits.find(({ top }) => top !== undefined && Math.floor(top / 13) === Math.floor(foot / 13)) ??
+    fits.find(({ top }) => top !== undefined) ??
+    fits[0];
   return best === undefined ? null : spiderMoveFor(table, spot, String(best.to));
 }
 

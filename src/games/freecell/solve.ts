@@ -163,6 +163,9 @@ function distance(table: FreeCellTable): number {
  * ```
  */
 export function solveFreeCell(start: FreeCellTable, budget = 10_000): { moves: FreeCellMove[] | null; tables: number } {
-  return bestFirst({ candidates, play: playFreeCell, settle: playSafe, won: freeCellWon, key: keyOf, distance }, start, budget);
+  return bestFirst(
+    { candidates, play: playFreeCell, settle: playSafe, won: freeCellWon, key: keyOf, distance },
+    start,
+    budget,
+  );
 }
-

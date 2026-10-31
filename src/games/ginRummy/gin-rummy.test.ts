@@ -1,7 +1,18 @@
 import { describe, expect, it } from "vitest";
 
 import { chooseThrow, ginComputer, ginSensible, ginView, wanted } from "./gin-computer.ts";
-import { GIN_BONUS, UNDERCUT_BONUS, bestLayout, deadwoodIn, ginMoves, isMeld, layOff, meldsIn, playGin, startGin } from "./gin-rummy.ts";
+import {
+  GIN_BONUS,
+  UNDERCUT_BONUS,
+  bestLayout,
+  deadwoodIn,
+  ginMoves,
+  isMeld,
+  layOff,
+  meldsIn,
+  playGin,
+  startGin,
+} from "./gin-rummy.ts";
 import { decodeGin, encodeGin } from "./gin-rummy-rules.ts";
 import type { GinGame } from "./gin-rummy.types.ts";
 
@@ -59,7 +70,10 @@ describe("gin rummy", () => {
   });
 
   it("refuses a knock with more than ten of deadwood", () => {
-    const game = atThrow(["AS", "2S", "3S", "7C", "7D", "7H", "9C", "9D", "KH", "QD", "JC"], ["2H", "3H", "4C", "5D", "6S", "8S", "TC", "TD", "4S", "5S"]);
+    const game = atThrow(
+      ["AS", "2S", "3S", "7C", "7D", "7H", "9C", "9D", "KH", "QD", "JC"],
+      ["2H", "3H", "4C", "5D", "6S", "8S", "TC", "TD", "4S", "5S"],
+    );
     expect(playGin(game, { knock: "JC" })).toBeNull();
   });
 
@@ -82,11 +96,18 @@ describe("gin rummy", () => {
     const mine = ["AS", "2S", "3S", "7C", "7D", "7H", "9C", "9D", "9H", "TH", "KH"];
     const theirs = ["4S", "KC", "KD", "KS", "QC", "QD", "QH", "2D", "2H", "AD"];
     // Ann's ten melded after throwing the K♥: gin, 25 and Ben's 1+2+2+4 = 9 (the 4♠ may not be laid off).
-    const gin = playGin(atThrow(["AS", "2S", "3S", "7C", "7D", "7H", "9C", "9D", "9H", "9S", "KH"], theirs), { knock: "KH" })!;
+    const gin = playGin(atThrow(["AS", "2S", "3S", "7C", "7D", "7H", "9C", "9D", "9H", "9S", "KH"], theirs), {
+      knock: "KH",
+    })!;
     expect(gin.results[0]).toMatchObject({ kind: "gin", points: GIN_BONUS + 9, winner: 0, laidOff: [] });
     // Knocking with the ten of hearts as deadwood (10): Ben lays the 4♠ off onto Ann's run and keeps 5, an undercut, 5 and 25 to Ben.
     const under = playGin(atThrow(mine, theirs), { knock: "KH" })!;
-    expect(under.results[0]).toMatchObject({ kind: "undercut", winner: 1, points: 5 + UNDERCUT_BONUS, laidOff: ["4S"] });
+    expect(under.results[0]).toMatchObject({
+      kind: "undercut",
+      winner: 1,
+      points: 5 + UNDERCUT_BONUS,
+      laidOff: ["4S"],
+    });
   });
 
   it("draws the hand when the stock is down to two with nobody out", () => {
@@ -117,7 +138,13 @@ describe("the gin rummy computer", () => {
   });
 
   it("throws the card that leaves the least deadwood, the highest of those that tie", () => {
-    const view = { hand: ["7C", "7D", "7H", "2S", "3S", "4S", "KC", "5D", "9H", "AH", "QS"], phase: "discard" as const, top: null, taken: null, theirPicks: [] };
+    const view = {
+      hand: ["7C", "7D", "7H", "2S", "3S", "4S", "KC", "5D", "9H", "AH", "QS"],
+      phase: "discard" as const,
+      top: null,
+      taken: null,
+      theirPicks: [],
+    };
     expect(chooseThrow(view)).toBe("KC");
     // Not the king the other player is collecting kings for, when the queen costs the same.
     expect(chooseThrow({ ...view, theirPicks: ["KD"] })).toBe("QS");
@@ -129,7 +156,10 @@ describe("the gin rummy computer", () => {
   });
 
   it("the gate's player knocks whenever it can", () => {
-    const game = atThrow(["AS", "2S", "3S", "7C", "7D", "7H", "9C", "9D", "9H", "4C", "KH"], ["2H", "3H", "4D", "5D", "6S", "8S", "TC", "TD", "4S", "5S"]);
+    const game = atThrow(
+      ["AS", "2S", "3S", "7C", "7D", "7H", "9C", "9D", "9H", "4C", "KH"],
+      ["2H", "3H", "4D", "5D", "6S", "8S", "TC", "TD", "4S", "5S"],
+    );
     expect("knock" in ginSensible(game, () => 0.5)).toBe(true);
   });
 });

@@ -315,7 +315,8 @@ export function cardName(card: Card): string {
  * ```
  */
 export function dealRound(deck: readonly Card[], hands: number, each: number): { hands: Card[][]; rest: Card[] } {
-  if (hands < 1 || each < 0 || hands * each > deck.length) throw new Error(`cannot deal ${hands} hands of ${each} from ${deck.length}`);
+  if (hands < 1 || each < 0 || hands * each > deck.length)
+    throw new Error(`cannot deal ${hands} hands of ${each} from ${deck.length}`);
   const dealt: Card[][] = Array.from({ length: hands }, () => []);
   for (let at = 0; at < hands * each; at += 1) dealt[at % hands].push(deck[at]);
   return { hands: dealt, rest: deck.slice(hands * each) };
@@ -373,6 +374,12 @@ export function take(deck: readonly Card[], count: number): { taken: Card[]; res
  * console.log(sortedHand(shuffledDeck(42).slice(0, 7)));
  * ```
  */
-export function sortedHand(cards: readonly Card[], rankOrder: (rank: Rank) => number = (rank) => rank, suitOrder: readonly Suit[] = SUITS): Card[] {
-  return [...cards].sort((a, b) => suitOrder.indexOf(a.suit) - suitOrder.indexOf(b.suit) || rankOrder(a.rank) - rankOrder(b.rank));
+export function sortedHand(
+  cards: readonly Card[],
+  rankOrder: (rank: Rank) => number = (rank) => rank,
+  suitOrder: readonly Suit[] = SUITS,
+): Card[] {
+  return [...cards].sort(
+    (a, b) => suitOrder.indexOf(a.suit) - suitOrder.indexOf(b.suit) || rankOrder(a.rank) - rankOrder(b.rank),
+  );
 }

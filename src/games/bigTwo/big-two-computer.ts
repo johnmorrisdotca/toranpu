@@ -57,7 +57,13 @@ export type BigTwoView = {
  */
 export function bigTwoView(game: BigTwoGame): BigTwoView {
   const seat = game.toPlay ?? 0;
-  return { seat, hand: game.hands[seat], pile: game.pile, counts: game.hands.map((hand) => hand.length), legal: bigTwoMoves(game) };
+  return {
+    seat,
+    hand: game.hands[seat],
+    pile: game.pile,
+    counts: game.hands.map((hand) => hand.length),
+    legal: bigTwoMoves(game),
+  };
 }
 
 /** The top rank a play reaches: 0 for a three, 11 an ace, 12 a two. */
@@ -115,7 +121,8 @@ function lead(view: BigTwoView, plays: CardId[][], lastCard: boolean): CardId[] 
 function follow(view: BigTwoView, plays: CardId[][], danger: boolean, lastCard: boolean): CardId[] | null {
   const strength = (cards: CardId[]) => bigTwoValue(cards)?.strength ?? 0;
   // The player on one card must not be let out on a single: beat it with the highest single held.
-  if (lastCard && view.pile !== null && view.pile.cards.length === 1) return plays.reduce((best, cards) => (strength(cards) > strength(best) ? cards : best));
+  if (lastCard && view.pile !== null && view.pile.cards.length === 1)
+    return plays.reduce((best, cards) => (strength(cards) > strength(best) ? cards : best));
   const cost = (cards: CardId[]) => strength(cards) + broken(cards, view.hand) * 60;
   const cheapest = plays.reduce((best, cards) => (cost(cards) < cost(best) ? cards : best));
   const nearlyOut = view.hand.length - cheapest.length <= 3;

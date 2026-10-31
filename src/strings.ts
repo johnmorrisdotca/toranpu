@@ -343,13 +343,15 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     saysSpades: "Partners across the table bid tricks together. Spades are always trumps.",
     saysEuchre: "Five cards, four players in partnerships, and the jacks of trumps' colour on top.",
     saysCribbage: "Lay two to the crib, peg to thirty-one, then count fifteens, pairs and runs.",
-    saysOhHell: "Bid exactly how many tricks you will take. The hands grow from one card to seven, and the dealer may not make the bids add up.",
+    saysOhHell:
+      "Bid exactly how many tricks you will take. The hands grow from one card to seven, and the dealer may not make the bids add up.",
     saysCrazyEights: "Match the suit or the rank. Eights are wild and name the next suit.",
     saysGoFish: "Ask a player for a rank. Collect books of four. Go fish when they have none.",
     saysBigTwo: "Beat the cards on the table with singles, pairs, triples or five-card hands. Twos are high.",
     saysPresident: "Shed your cards first to become President. The last out hands over their best cards.",
     saysGinRummy: "Draw and discard to make sets and runs, then knock when your deadwood is low.",
-    saysWar: "Both turn the top card and the higher takes both. A tie is war: three face down, one up. Win every card, or hold the most when the turns run out.",
+    saysWar:
+      "Both turn the top card and the higher takes both. A tie is war: three face down, one up. Win every card, or hold the most when the turns run out.",
     suitS: "spades",
     suitH: "hearts",
     suitD: "diamonds",
@@ -452,7 +454,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cliSavedGoing: "{game} for {n}, seed {seed}, {moves} moves. Not over: {player} to play.",
     cliPlayed: "{game} for {n}, seed {seed}: {moves} moves. Won by {players}.",
     cliScores: "Scores: {scores}",
-    pagePitch: "A deck of playing cards and eleven card games, each with a computer player. Pick a game and play a hand.",
+    pagePitch:
+      "A deck of playing cards and eleven card games, each with a computer player. Pick a game and play a hand.",
     pageName: "Toranpu is the everyday Japanese word for a deck of playing cards.",
     pageNameLink: "About the name",
     pageFoot: "Every deal here comes from its seed, so a seed can be shared. Nothing leaves this device.",
@@ -493,7 +496,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageLogStart: "{game} for {n}, seed {seed}.",
     pageRules: "The rules",
     pageDeck: "The deck on its own",
-    pageDeckNote: "Fifty-two cards, shuffled from the seed and dealt one at a time round the table. The same seed always gives this order.",
+    pageDeckNote:
+      "Fifty-two cards, shuffled from the seed and dealt one at a time round the table. The same seed always gives this order.",
     pageShuffle: "Shuffle",
     pageHands: "Hands",
     pageEach: "Cards each",
@@ -502,7 +506,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDeckCode: "The whole deck as one line, a letter a card",
     pageLeft: "Left over: {n}",
     pageKeep: "Keep this game, and read one back",
-    pageKeepNote: "A game is its table, its seed and its moves, and nothing else. Read back, every move is played through the rules again, so a changed save is refused.",
+    pageKeepNote:
+      "A game is its table, its seed and its moves, and nothing else. Read back, every move is played through the rules again, so a changed save is refused.",
     pageAsCode: "Code",
     pageAsJson: "JSON",
     pageAsText: "Text",
@@ -515,13 +520,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageRead: "Read",
     pageReadBad: "That is not a saved game: the rules cannot play it out.",
     pageApi: "API",
-    pageApiIntro: "Every export of every entry point, with its signature and its doc comment. Made from the source when the site is built.",
+    pageApiIntro:
+      "Every export of every entry point, with its signature and its doc comment. Made from the source when the site is built.",
     pageBack: "Back to the table",
     pageDeckSeed: "Deck seed",
     pageToPlay: "{player} to play.",
     pageSound: "Sound",
     pageSounds: "Card sounds",
-    pageSoundsNote: "Recordings of real cards, made only when a table asks for one. Tap a sound to hear it. Sound, by the Deal button, plays them at the table as the game goes.",
+    pageSoundsNote:
+      "Recordings of real cards, made only when a table asks for one. Tap a sound to hear it. Sound, by the Deal button, plays them at the table as the game goes.",
     pageSoundShuffle: "Shuffle",
     pageSoundDeal: "Deal",
     pageSoundFlip: "Turn over",
@@ -529,7 +536,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageSoundGather: "Gather",
     pageSoundFan: "Fan",
     pageBacks: "Card backs",
-    pageBacksNote: "Three backs drawn for Toranpu, for any card game: a classic red, a classic blue and ink with dots. Give one your own colour or a word in its middle.",
+    pageBacksNote:
+      "Three backs drawn for Toranpu, for any card game: a classic red, a classic blue and ink with dots. Give one your own colour or a word in its middle.",
     pageBackClassicRed: "Classic red",
     pageBackClassicBlue: "Classic blue",
     pageBackInkDots: "Ink with dots",
@@ -542,18 +550,22 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cardRulesSpades: "rules card, Spades",
     cardBlank: "blank card",
     rulesHeartsTitle: "HEARTS",
-    rulesHearts: "Pass three cards, then play\nFollow suit if you can\nEach heart: 1 point\nQueen of spades: 13\nFewest points wins",
+    rulesHearts:
+      "Pass three cards, then play\nFollow suit if you can\nEach heart: 1 point\nQueen of spades: 13\nFewest points wins",
     rulesSpadesTitle: "SPADES",
-    rulesSpades: "Bid the tricks you will take\nFollow suit if you can\nSpades are always trumps\nMake your bid: 10 a trick\nFall short: lose your bid",
+    rulesSpades:
+      "Bid the tricks you will take\nFollow suit if you can\nSpades are always trumps\nMake your bid: 10 a trick\nFall short: lose your bid",
     pageBranding: "Your own branding",
-    pageBrandingNote: "A site's own card backs, faces for the standard cards, and cards no deck has, all drawn and turned over by Toranpu. These are invented for this demo: a game of territories, each card a place with a soldier, a horse or a cannon. Every picture is ours.",
+    pageBrandingNote:
+      "A site's own card backs, faces for the standard cards, and cards no deck has, all drawn and turned over by Toranpu. These are invented for this demo: a game of territories, each card a place with a soldier, a horse or a cannon. Every picture is ours.",
     pageBrandingTurn: "Turn them over",
     pageBrandingTerritories: "Cards no deck has, from a design the page registered",
     pageBrandingKings: "Faces for the standard cards: only the kings are ours, and the rest are drawn plain",
     pageBrandingBacks: "Backs: colours and a logo, art of your own, a picture, or the page's colours and words",
     pageBrandingSlot: "A face and a back put into the card, and a face drawn by a function",
     pageDesigns: "Card designs",
-    pageDesignsNote: "Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. Realistic is Byron Knoll's public-domain deck, with Fomin's kings, queens and jacks.",
+    pageDesignsNote:
+      "Plain is drawn for Toranpu and is the default. Four colour makes diamonds blue and clubs green. The English pattern is the traditional deck, its kings, queens and jacks drawn by Dmitry Fomin and given to the public domain. Realistic is Byron Knoll's public-domain deck, with Fomin's kings, queens and jacks.",
     pageDesignPlain: "Plain",
     pageDesignFourColour: "Four colour",
     pageDesignEnglish: "English pattern",
@@ -561,7 +573,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cardFaceDown: "a card, face down",
     cardMarked: "{card}, marked",
     pageOneCard: "One card on any page",
-    pageOneCardNote: "A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL.",
+    pageOneCardNote:
+      "A card as an element, in the design and back chosen above: tap it to turn it over. Or as a picture, by its address on this site or as a data URL.",
     pageCardPick: "Card",
     pageAsElement: "As an element",
     pageAsPicture: "As a picture",
@@ -570,7 +583,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     handScrunched: "a hand of cards, squared up face down",
     handSquared: "a hand of cards, squared up, {card} on top",
     pageHide: "Hand controls",
-    pageHideNote: "Everything a hand can do where it lies. Turn it face down, all at once or one card after another, or turn chosen cards over. Gather it into a bundle that never says how many, or part it at one card to bring that card out. Sort it, group it, mix it up, toss a card or swap one, and mark a card to follow it while it is face down.",
+    pageHideNote:
+      "Everything a hand can do where it lies. Turn it face down, all at once or one card after another, or turn chosen cards over. Gather it into a bundle that never says how many, or part it at one card to bring that card out. Sort it, group it, mix it up, toss a card or swap one, and mark a card to follow it while it is face down.",
     pageHideAll: "Face down",
     pageHideOneByOne: "One by one",
     pageShowHand: "Face up",
@@ -604,24 +618,29 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageClockwise: "clockwise",
     pageAnticlockwise: "anticlockwise",
     pageReveal: "A closed hand that opens with a tap",
-    pageRevealNote: "The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it.",
+    pageRevealNote:
+      "The hand lies squared up, only its top card showing and the rest partly hidden. Tap it to open it into a fan, and again to close it.",
     pageClosed: "How closed",
     pileFaceDown: "a pile face down, cards: {n}",
     pileFaceUp: "a pile, {card} on top, cards: {n}",
     pileEmpty: "an empty pile",
     pagePiles: "Messy piles",
-    pagePilesNote: "A stock to draw from and a discard pile, the cards under the top one showing as a stack, from neatly squared to very messy. The seed keeps a pile looking the same; draw a card and watch only the top change.",
+    pagePilesNote:
+      "A stock to draw from and a discard pile, the cards under the top one showing as a stack, from neatly squared to very messy. The seed keeps a pile looking the same; draw a card and watch only the top change.",
     pageMessiness: "Messiness",
     pageTablePanel: "A whole table on your page",
-    pageTablePanelNote: "Any of the games, ready to play, in one tag: the seats, your hand, the moves you may make, the stock and the discard, and computers in the other seats. Its cloth follows the patches above, and its cards and its messiness the choices on this page.",
+    pageTablePanelNote:
+      "Any of the games, ready to play, in one tag: the seats, your hand, the moves you may make, the stock and the discard, and computers in the other seats. Its cloth follows the patches above, and its cards and its messiness the choices on this page.",
     pageTableGame: "Game",
     pagePileSeed: "Pile seed",
     pageDrawCard: "Draw a card",
     pageStockPile: "Stock",
     embedTurn: "Turn over",
-    embedBad: "Those are not cards. Write them as AS KH 10D (and JOKER, RULES or BLANK), or in the deck's one-letter codes. A hand holds at most four jokers, two rules cards and two blanks.",
+    embedBad:
+      "Those are not cards. Write them as AS KH 10D (and JOKER, RULES or BLANK), or in the deck's one-letter codes. A hand holds at most four jokers, two rules cards and two blanks.",
     pageEmbed: "Embed a hand",
-    pageEmbedNote: "Any hand of cards on any web page: write it in the card codes, choose a size, and copy one of the two. The iframe needs no script on your page; the tag needs one script line.",
+    pageEmbedNote:
+      "Any hand of cards on any web page: write it in the card codes, choose a size, and copy one of the two. The iframe needs no script on your page; the tag needs one script line.",
     pageEmbedCards: "Cards",
     pageEmbedSize: "Size",
     pageSizeSmall: "Small",
@@ -642,17 +661,21 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     gamePresident: "大富豪",
     gameGinRummy: "ジン・ラミー",
     gameWar: "戦争",
-    saysHearts: "ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。",
+    saysHearts:
+      "ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。",
     saysSpades: "向かい合ったパートナーと組んで、取るトリック数をビッドします。切り札はいつもスペードです。",
     saysEuchre: "手札は5枚。4人が2組に分かれ、切り札と同じ色のジャック2枚がいちばん強い札になります。",
     saysCribbage: "2枚をクリブに置き、31まで数えながら出し合い、そのあと15・ペア・ランを数えます。",
-    saysOhHell: "取るトリック数をぴったり当てます。手札は1枚から7枚まで増え、ディーラーはビッドの合計をトリック数に合わせられません。",
+    saysOhHell:
+      "取るトリック数をぴったり当てます。手札は1枚から7枚まで増え、ディーラーはビッドの合計をトリック数に合わせられません。",
     saysCrazyEights: "同じスートか同じ数字の札を出します。8はいつでも出せて、次のスートを指定できます。",
-    saysGoFish: "相手に数字を聞いて札をもらい、同じ数字4枚のブックを集めます。相手が持っていなければ山から1枚引きます。",
+    saysGoFish:
+      "相手に数字を聞いて札をもらい、同じ数字4枚のブックを集めます。相手が持っていなければ山から1枚引きます。",
     saysBigTwo: "場の札より強い札を、1枚・ペア・スリーカード・5枚の役で出します。いちばん強いのは2です。",
     saysPresident: "最初に手札をなくした人が大富豪です。最後になった人は、いちばん強い札を渡します。",
     saysGinRummy: "引いて捨てながらセットとランを作り、デッドウッドが少なくなったらノックします。",
-    saysWar: "同時に上の札をめくり、大きいほうが2枚とも取ります。同じ数なら「戦争」で、3枚を伏せて4枚目をめくります。全部の札を取るか、ターン数が尽きたとき枚数が多い人の勝ちです。",
+    saysWar:
+      "同時に上の札をめくり、大きいほうが2枚とも取ります。同じ数なら「戦争」で、3枚を伏せて4枚目をめくります。全部の札を取るか、ターン数が尽きたとき枚数が多い人の勝ちです。",
     suitS: "スペード",
     suitH: "ハート",
     suitD: "ダイヤ",
@@ -758,7 +781,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pagePitch: "トランプ1組と、コンピュータと遊べる11種類のカードゲームです。ゲームを選んで、1回遊んでみてください。",
     pageName: "「トランプ」は、プレイングカードを指すふだんの日本語です。",
     pageNameLink: "名前について（英語）",
-    pageFoot: "配り方はすべてシードで決まるので、シードを伝えれば同じ配り方になります。データはこの端末の外に出ません。",
+    pageFoot:
+      "配り方はすべてシードで決まるので、シードを伝えれば同じ配り方になります。データはこの端末の外に出ません。",
     pageChoose: "ゲームを選ぶ",
     pagePlayers: "人数",
     pageSeed: "シード",
@@ -805,7 +829,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageDeckCode: "52枚を1行で表したもの（1文字が1枚）",
     pageLeft: "残り {n}枚",
     pageKeep: "このゲームを保存する、読み込む",
-    pageKeepNote: "ゲームは、卓とシードと手の記録だけでできています。読み込むときは、すべての手をもう一度ルールどおりに進めるので、書き換えられたデータは受け付けません。",
+    pageKeepNote:
+      "ゲームは、卓とシードと手の記録だけでできています。読み込むときは、すべての手をもう一度ルールどおりに進めるので、書き換えられたデータは受け付けません。",
     pageAsCode: "コード",
     pageAsJson: "JSON",
     pageAsText: "テキスト",
@@ -818,13 +843,15 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageRead: "読み込む",
     pageReadBad: "保存したゲームではありません。ルールどおりに再現できません。",
     pageApi: "API（英語）",
-    pageApiIntro: "すべてのエントリーポイントのすべてのエクスポートを、シグネチャとドキュメントコメント付きで一覧にしています。サイトをビルドするときにソースから作ります。",
+    pageApiIntro:
+      "すべてのエントリーポイントのすべてのエクスポートを、シグネチャとドキュメントコメント付きで一覧にしています。サイトをビルドするときにソースから作ります。",
     pageBack: "卓に戻る",
     pageDeckSeed: "デッキのシード",
     pageToPlay: "{player}の番です。",
     pageSound: "音",
     pageSounds: "カードの音",
-    pageSoundsNote: "本物のカードを録音した音です。卓が求めたときだけ鳴ります。押すと聞けます。「配る」の横の「音」をオンにすると、ゲームの進行に合わせて卓で鳴ります。",
+    pageSoundsNote:
+      "本物のカードを録音した音です。卓が求めたときだけ鳴ります。押すと聞けます。「配る」の横の「音」をオンにすると、ゲームの進行に合わせて卓で鳴ります。",
     pageSoundShuffle: "シャッフル",
     pageSoundDeal: "配る",
     pageSoundFlip: "めくる",
@@ -832,7 +859,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageSoundGather: "集める",
     pageSoundFan: "広げる",
     pageBacks: "カードの裏面",
-    pageBacksNote: "どのカードゲームでも使える、Toranpu のために描いた3種類の裏面です。クラシックの赤、クラシックの青、墨に水玉。色を変えたり、中央に文字を入れたりできます。",
+    pageBacksNote:
+      "どのカードゲームでも使える、Toranpu のために描いた3種類の裏面です。クラシックの赤、クラシックの青、墨に水玉。色を変えたり、中央に文字を入れたりできます。",
     pageBackClassicRed: "クラシック・赤",
     pageBackClassicBlue: "クラシック・青",
     pageBackInkDots: "墨に水玉",
@@ -847,16 +875,19 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     rulesHeartsTitle: "ハーツ",
     rulesHearts: "3枚渡してから始める\n同じスートを出す\nハート1枚：1点\nスペードのQ：13点\n点が少ない人の勝ち",
     rulesSpadesTitle: "スペード",
-    rulesSpades: "取るトリック数を宣言\n同じスートを出す\nスペードは常に切り札\n宣言どおり：1トリック10点\n足りなければ宣言分を失う",
+    rulesSpades:
+      "取るトリック数を宣言\n同じスートを出す\nスペードは常に切り札\n宣言どおり：1トリック10点\n足りなければ宣言分を失う",
     pageBranding: "独自のブランド",
-    pageBrandingNote: "サイト独自の裏面、標準のカードの表面、デッキにないカードを、すべてトランプが描いてめくります。ここにあるのはこのデモのための架空のカードで、兵士・馬・大砲のどれかが描かれた領地のカードです。絵はすべてこのデモ用に描いたものです。",
+    pageBrandingNote:
+      "サイト独自の裏面、標準のカードの表面、デッキにないカードを、すべてトランプが描いてめくります。ここにあるのはこのデモのための架空のカードで、兵士・馬・大砲のどれかが描かれた領地のカードです。絵はすべてこのデモ用に描いたものです。",
     pageBrandingTurn: "裏返す",
     pageBrandingTerritories: "デッキにないカード（ページで登録したデザイン）",
     pageBrandingKings: "標準のカードの表面: キングだけが独自で、ほかは標準のまま描かれます",
     pageBrandingBacks: "裏面: 色とロゴ、自前の絵、画像、ページ指定の色と文字",
     pageBrandingSlot: "カードに差し込んだ表面と裏面、関数で描いた表面",
     pageDesigns: "カードのデザイン",
-    pageDesignsNote: "「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。「リアル」は Byron Knoll がパブリックドメインとして公開したデッキで、キング・クイーン・ジャックは Fomin のものです。",
+    pageDesignsNote:
+      "「シンプル」は Toranpu のために描いた標準のデザインです。「4色」はダイヤを青、クラブを緑にします。「イングリッシュ・パターン」は伝統的なデッキで、キング・クイーン・ジャックは Dmitry Fomin が描き、パブリックドメインとして公開したものです。「リアル」は Byron Knoll がパブリックドメインとして公開したデッキで、キング・クイーン・ジャックは Fomin のものです。",
     pageDesignPlain: "シンプル",
     pageDesignFourColour: "4色",
     pageDesignEnglish: "イングリッシュ・パターン",
@@ -864,7 +895,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cardFaceDown: "伏せたカード",
     cardMarked: "{card}（印つき）",
     pageOneCard: "どのページにもカードを1枚",
-    pageOneCardNote: "上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。",
+    pageOneCardNote:
+      "上で選んだデザインと裏面のカードを、要素として置けます。タップすると裏返ります。このサイト上のアドレスやデータ URL で、画像としても使えます。",
     pageCardPick: "カード",
     pageAsElement: "要素として",
     pageAsPicture: "画像として",
@@ -873,7 +905,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     handScrunched: "伏せてまとめた手札",
     handSquared: "まとめた手札（いちばん上は{card}）",
     pageHide: "手札の操作",
-    pageHideNote: "手札をその場で動かします。全部いっぺんに、または1枚ずつ伏せたり、選んだカードだけ裏返したりできます。枚数のわからない束にまとめたり、1枚を抜き出して見せたりもできます。並べ替え、まとめ方、混ぜる、捨てる、入れ替える、そして伏せたカードを追えるように印をつけることもできます。",
+    pageHideNote:
+      "手札をその場で動かします。全部いっぺんに、または1枚ずつ伏せたり、選んだカードだけ裏返したりできます。枚数のわからない束にまとめたり、1枚を抜き出して見せたりもできます。並べ替え、まとめ方、混ぜる、捨てる、入れ替える、そして伏せたカードを追えるように印をつけることもできます。",
     pageHideAll: "伏せる",
     pageHideOneByOne: "1枚ずつ伏せる",
     pageShowHand: "表にする",
@@ -907,24 +940,29 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageClockwise: "右回り",
     pageAnticlockwise: "左回り",
     pageReveal: "タップで開く手札",
-    pageRevealNote: "手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。",
+    pageRevealNote:
+      "手札はそろえて置かれ、いちばん上のカードだけが見え、ほかは一部が隠れています。タップすると扇形に開き、もう一度タップすると閉じます。",
     pageClosed: "閉じ具合",
     pileFaceDown: "伏せた山（{n}枚）",
     pileFaceUp: "{n}枚の山、いちばん上は{card}",
     pileEmpty: "空の山",
     pagePiles: "乱れた山",
-    pagePilesNote: "引くための山札と捨て札です。いちばん上の下にあるカードが重なって見え、きれいにそろった状態からひどく乱れた状態まで選べます。シードが同じなら山はいつも同じ見た目です。1枚引くと、変わるのはいちばん上だけです。",
+    pagePilesNote:
+      "引くための山札と捨て札です。いちばん上の下にあるカードが重なって見え、きれいにそろった状態からひどく乱れた状態まで選べます。シードが同じなら山はいつも同じ見た目です。1枚引くと、変わるのはいちばん上だけです。",
     pageMessiness: "乱れ具合",
     pageTablePanel: "テーブルごとページに",
-    pageTablePanelNote: "どのゲームも1行で遊べる状態で置けます。席、手札、出せる手、山札と捨て札、残りの席はコンピューター。テーブルの色は上の見本、カードと乱れ具合は上の選択に従います。",
+    pageTablePanelNote:
+      "どのゲームも1行で遊べる状態で置けます。席、手札、出せる手、山札と捨て札、残りの席はコンピューター。テーブルの色は上の見本、カードと乱れ具合は上の選択に従います。",
     pageTableGame: "ゲーム",
     pagePileSeed: "山のシード",
     pageDrawCard: "1枚引く",
     pageStockPile: "山札",
     embedTurn: "裏返す",
-    embedBad: "カードとして読めません。AS KH 10D のように（JOKER、RULES、BLANK も使えます）、またはデッキの1文字のコードで書いてください。1つの手札にはジョーカー4枚、ルールカード2枚、白紙2枚までです。",
+    embedBad:
+      "カードとして読めません。AS KH 10D のように（JOKER、RULES、BLANK も使えます）、またはデッキの1文字のコードで書いてください。1つの手札にはジョーカー4枚、ルールカード2枚、白紙2枚までです。",
     pageEmbed: "手札を埋め込む",
-    pageEmbedNote: "どんな手札でも、どのウェブページにも置けます。カードのコードで書き、大きさを選んで、どちらかをコピーしてください。iframe ならページにスクリプトは要りません。タグならスクリプトを1行加えます。",
+    pageEmbedNote:
+      "どんな手札でも、どのウェブページにも置けます。カードのコードで書き、大きさを選んで、どちらかをコピーしてください。iframe ならページにスクリプトは要りません。タグならスクリプトを1行加えます。",
     pageEmbedCards: "カード",
     pageEmbedSize: "大きさ",
     pageSizeSmall: "小",
@@ -965,5 +1003,9 @@ export function fillIn(template: string, values: Record<string, string | number>
  * ```
  */
 export function languageOf(tag: string | null | undefined): Language {
-  return String(tag ?? "").toLowerCase().startsWith("ja") ? "ja" : "en";
+  return String(tag ?? "")
+    .toLowerCase()
+    .startsWith("ja")
+    ? "ja"
+    : "en";
 }

@@ -95,7 +95,11 @@ function lineTo<Table, Move>(node: Node<Table, Move>): Move[] {
  * console.log(bestFirst({ candidates: (at: number) => at < 3 ? [1] : [], play: (at: number, move: number) => at + move, won: (at: number) => at === 3, key: String, distance: (at: number) => 3 - at }, 0, 20));
  * ```
  */
-export function bestFirst<Table, Move>(game: BestFirstGame<Table, Move>, start: Table, budget: number): { moves: Move[] | null; tables: number } {
+export function bestFirst<Table, Move>(
+  game: BestFirstGame<Table, Move>,
+  start: Table,
+  budget: number,
+): { moves: Move[] | null; tables: number } {
   const settle = game.settle ?? ((table: Table) => ({ table, moves: [] as Move[] }));
   const first = settle(start);
   if (game.won(first.table)) return { moves: first.moves, tables: 1 };
@@ -110,7 +114,13 @@ export function bestFirst<Table, Move>(game: BestFirstGame<Table, Move>, start: 
       const played = game.play(node.table, move);
       if (played === null) continue;
       const settled = settle(played);
-      const child: Node<Table, Move> = { table: settled.table, parent: node, via: [move, ...settled.moves], score: 0, order: order++ };
+      const child: Node<Table, Move> = {
+        table: settled.table,
+        parent: node,
+        via: [move, ...settled.moves],
+        score: 0,
+        order: order++,
+      };
       if (game.won(settled.table)) return { moves: lineTo(child), tables };
       const key = game.key(settled.table);
       if (seen.has(key)) continue;

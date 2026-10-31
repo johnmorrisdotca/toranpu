@@ -59,7 +59,9 @@ export function presidentRank(card: CardId): number {
  * ```
  */
 export function sortPresident(cards: readonly CardId[]): CardId[] {
-  return [...cards].sort((a, b) => presidentRank(a) - presidentRank(b) || SUIT_ORDER[suitOf(a)] - SUIT_ORDER[suitOf(b)]);
+  return [...cards].sort(
+    (a, b) => presidentRank(a) - presidentRank(b) || SUIT_ORDER[suitOf(a)] - SUIT_ORDER[suitOf(b)],
+  );
 }
 
 /** The cards handed up at the start of a round: the giver's best. */
@@ -84,7 +86,9 @@ export function presidentSwapCount(seats: number): number {
 }
 
 /** A new round: every card dealt round, and — from the second round — the best cards handed up, and the hands-back owed. */
-function newRound(game: Omit<PresidentGame, "hands" | "pile" | "passed" | "toPlay" | "played" | "out" | "owed" | "swaps" | "phase">): PresidentGame {
+function newRound(
+  game: Omit<PresidentGame, "hands" | "pile" | "passed" | "toPlay" | "played" | "out" | "owed" | "swaps" | "phase">,
+): PresidentGame {
   const seats = game.players.length;
   // The deal starts at a different seat each round, so the odd cards (some hold one more) go round the table.
   const dealt = dealRound(shuffledDeck(game.seed, game.round), seats).hands;
@@ -100,7 +104,9 @@ function newRound(game: Omit<PresidentGame, "hands" | "pile" | "passed" | "toPla
   let held = hands;
   const swaps = pairs.map(({ high, low, count }) => {
     const cards = best(held[low], count);
-    held = held.map((hand, seat) => (seat === low ? (without(hand, cards) as CardId[]) : seat === high ? [...hand, ...cards] : hand));
+    held = held.map((hand, seat) =>
+      seat === low ? (without(hand, cards) as CardId[]) : seat === high ? [...hand, ...cards] : hand,
+    );
     return { from: low, to: high, cards };
   });
   const owed = pairs.map(({ high, low, count }) => ({ from: high, to: low, count }));
@@ -125,7 +131,13 @@ function newRound(game: Omit<PresidentGame, "hands" | "pile" | "passed" | "toPla
  * console.log(startPresident(CARD_GAME_TABLES.president.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startPresident(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): PresidentGame | null {
+export function startPresident(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): PresidentGame | null {
   if (!(PRESIDENT_ROUNDS as readonly number[]).includes(size)) return null;
   if (players.length < 3 || players.length > 8) return null;
   return newRound({
@@ -188,14 +200,17 @@ export function presidentMoves(game: PresidentGame): PresidentMove[] {
     // What is handed back is the giver's choice; one move a choice of distinct cards.
     const count = game.owed[0].count;
     const sorted = sortPresident(hand);
-    return count === 1 ? sorted.map((card) => ({ give: [card] })) : sorted.flatMap((a, at) => sorted.slice(at + 1).map((b) => ({ give: [a, b] })));
+    return count === 1
+      ? sorted.map((card) => ({ give: [card] }))
+      : sorted.flatMap((a, at) => sorted.slice(at + 1).map((b) => ({ give: [a, b] })));
   }
   if (game.phase !== "playing") return [];
   // One move a rank and a count: which suits go down makes no difference to the game.
   const plays: PresidentMove[] = [];
   for (const rank of new Set(hand.map(presidentRank))) {
     const same = sortPresident(hand.filter((card) => presidentRank(card) === rank));
-    for (let count = 1; count <= same.length; count += 1) if (presidentMayPlay(game, same.slice(0, count))) plays.push({ play: same.slice(0, count) });
+    for (let count = 1; count <= same.length; count += 1)
+      if (presidentMayPlay(game, same.slice(0, count))) plays.push({ play: same.slice(0, count) });
   }
   return game.pile === null ? plays : [...plays, { pass: true }];
 }
@@ -205,7 +220,9 @@ function give(game: PresidentGame, cards: readonly CardId[]): PresidentGame | nu
   if (owing === undefined || cards.length !== owing.count || new Set(cards).size !== cards.length) return null;
   const left = without(game.hands[owing.from], cards);
   if (left === null) return null;
-  const hands = game.hands.map((hand, seat) => (seat === owing.from ? left : seat === owing.to ? sortPresident([...hand, ...cards]) : hand));
+  const hands = game.hands.map((hand, seat) =>
+    seat === owing.from ? left : seat === owing.to ? sortPresident([...hand, ...cards]) : hand,
+  );
   const swaps = [...game.swaps, { from: owing.from, to: owing.to, cards: [...cards] }];
   if (rest.length > 0) return { ...game, hands, swaps, owed: rest, toPlay: rest[0].from };
   // Everything is handed over: the Beggar leads.
@@ -250,7 +267,14 @@ function climb(game: PresidentGame, seat: number, move: ClimbMove): PresidentGam
  */
 export function playPresident(game: PresidentGame, move: PresidentMove): PresidentGame | null {
   if (game.toPlay === null) return null;
-  const next = "give" in move ? (game.phase === "exchange" ? give(game, move.give) : null) : game.phase === "playing" ? climb(game, game.toPlay, move) : null;
+  const next =
+    "give" in move
+      ? game.phase === "exchange"
+        ? give(game, move.give)
+        : null
+      : game.phase === "playing"
+        ? climb(game, game.toPlay, move)
+        : null;
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 

@@ -53,7 +53,13 @@ export type GinView = {
  */
 export function ginView(game: GinGame): GinView {
   const seat = game.toPlay ?? 0;
-  return { hand: game.hands[seat], phase: game.phase, top: game.discard.at(-1) ?? null, taken: game.taken, theirPicks: game.picked[1 - seat] ?? [] };
+  return {
+    hand: game.hands[seat],
+    phase: game.phase,
+    top: game.discard.at(-1) ?? null,
+    taken: game.taken,
+    theirPicks: game.picked[1 - seat] ?? [],
+  };
 }
 
 /** The move a computer in the seat to play makes: always one the rules allow.
@@ -73,7 +79,8 @@ export function ginView(game: GinGame): GinView {
  */
 export function ginComputer(game: GinGame): GinMove {
   const view = ginView(game);
-  if (view.phase === "draw") return view.top !== null && wanted(view.hand, view.top) ? { draw: "discard" } : { draw: "stock" };
+  if (view.phase === "draw")
+    return view.top !== null && wanted(view.hand, view.top) ? { draw: "discard" } : { draw: "stock" };
   const card = chooseThrow(view);
   const move: GinMove = canKnockWith(view.hand, card) ? { knock: card } : { discard: card };
   const offered = ginMoves(game);
@@ -125,7 +132,12 @@ export function wanted(hand: readonly CardId[], card: CardId): boolean {
 export function chooseThrow(view: GinView): CardId {
   const throwable = view.hand.filter((card) => card !== view.taken);
   const helps = (card: CardId) =>
-    view.theirPicks.some((pick) => (rankOf(pick) === rankOf(card)) || (suitOf(pick) === suitOf(card) && Math.abs(rankOf(pick) - rankOf(card)) <= 2)) ? 1 : 0;
+    view.theirPicks.some(
+      (pick) =>
+        rankOf(pick) === rankOf(card) || (suitOf(pick) === suitOf(card) && Math.abs(rankOf(pick) - rankOf(card)) <= 2),
+    )
+      ? 1
+      : 0;
   const cost = (card: CardId) => deadwoodIn(without(view.hand, [card])!);
   return throwable.reduce((best, card) => {
     const a = cost(card);

@@ -65,7 +65,11 @@ export type CardGameState<K extends CardGameKind> = {
  * console.log(createElement(Table));
  * ```
  */
-export function useCardGame<K extends CardGameKind>(kind: K, options: NewGameOptions, computerDelay = 700): CardGameState<K> {
+export function useCardGame<K extends CardGameKind>(
+  kind: K,
+  options: NewGameOptions,
+  computerDelay = 700,
+): CardGameState<K> {
   const rules = useMemo(() => rulesFor(kind), [kind]);
   const [game, setGame] = useState<GameOf<K> | null>(() => newGame(kind, options));
 
@@ -75,7 +79,10 @@ export function useCardGame<K extends CardGameKind>(kind: K, options: NewGameOpt
 
   useEffect(() => {
     if (!computerToPlay || game === null) return;
-    const timer = setTimeout(() => setGame((now) => (now === game ? (rules.play(game, rules.computer(game)) ?? now) : now)), computerDelay);
+    const timer = setTimeout(
+      () => setGame((now) => (now === game ? (rules.play(game, rules.computer(game)) ?? now) : now)),
+      computerDelay,
+    );
     return () => clearTimeout(timer);
   }, [computerToPlay, computerDelay, game, rules]);
 
@@ -90,7 +97,10 @@ export function useCardGame<K extends CardGameKind>(kind: K, options: NewGameOpt
     [computerToPlay, game, rules],
   );
 
-  const restart = useCallback((changes?: Partial<NewGameOptions>) => setGame(newGame(kind, { ...options, seed: undefined, ...changes })), [kind, options]);
+  const restart = useCallback(
+    (changes?: Partial<NewGameOptions>) => setGame(newGame(kind, { ...options, seed: undefined, ...changes })),
+    [kind, options],
+  );
 
   return {
     game,

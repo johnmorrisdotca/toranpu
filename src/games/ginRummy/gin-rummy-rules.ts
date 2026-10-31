@@ -10,7 +10,12 @@ import type { GinGame, GinMove } from "./gin-rummy.types.ts";
 function isGinMove(value: unknown): value is GinMove {
   if (typeof value !== "object" || value === null) return false;
   const move = value as Record<string, unknown>;
-  return move.draw === "stock" || move.draw === "discard" || typeof move.discard === "string" || typeof move.knock === "string";
+  return (
+    move.draw === "stock" ||
+    move.draw === "discard" ||
+    typeof move.discard === "string" ||
+    typeof move.knock === "string"
+  );
 }
 
 const codec = cardGameCodec<GinGame, GinMove>("ginRummy", startGin, playGin, isGinMove);

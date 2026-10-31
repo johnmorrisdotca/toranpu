@@ -21,7 +21,10 @@ async function listen(page) {
       }
       decodeAudioData(data, ...rest) {
         const made = super.decodeAudioData(data, ...rest);
-        made.then(() => (heard.decoded += 1), () => (heard.refused += 1));
+        made.then(
+          () => (heard.decoded += 1),
+          () => (heard.refused += 1),
+        );
         return made;
       }
     };
@@ -39,7 +42,9 @@ test("the panel plays each kind of sound on a tap, and fetches nothing before", 
   const errors = await open(page, "?game=hearts&seed=2026");
   await settled(page);
   expect(await heard(page), "a silent page makes no audio context").toMatchObject({ contexts: 0, started: 0 });
-  await expect(page.locator(`${at("sound-kinds")} button`)).toHaveText(CARD_SOUND_KINDS.map((kind) => STRINGS.en[`pageSound${kind[0].toUpperCase()}${kind.slice(1)}`]));
+  await expect(page.locator(`${at("sound-kinds")} button`)).toHaveText(
+    CARD_SOUND_KINDS.map((kind) => STRINGS.en[`pageSound${kind[0].toUpperCase()}${kind.slice(1)}`]),
+  );
   let before = 0;
   for (const kind of CARD_SOUND_KINDS) {
     await tap(page, at(`sound-${kind}`));
@@ -59,7 +64,10 @@ test("the table's Sound is off until pressed, then heard as the game goes, and r
   await settled(page);
   await expect(page.locator(at("sound"))).toHaveAttribute("aria-pressed", "false");
   const rules = rulesFor("crazyEights");
-  let game = playComputers("crazyEights", newGame("crazyEights", { players: ["You", "Aiko"], seed: 3, computers: [false, true] })).game;
+  let game = playComputers(
+    "crazyEights",
+    newGame("crazyEights", { players: ["You", "Aiko"], seed: 3, computers: [false, true] }),
+  ).game;
   let move = rules.moves(game)[0];
   await make(page, move);
   game = playComputers("crazyEights", rules.play(game, move)).game;

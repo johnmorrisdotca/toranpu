@@ -69,7 +69,12 @@ describe("big two", () => {
   });
 
   it("holds a pass until the trick is over, then the last to play leads anything", () => {
-    let game = at([["5D", "9S"], ["6D", "TD"], ["4S", "7C"], ["3C", "8H"]]);
+    let game = at([
+      ["5D", "9S"],
+      ["6D", "TD"],
+      ["4S", "7C"],
+      ["3C", "8H"],
+    ]);
     game = playBigTwo(game, { play: ["5D"] })!;
     game = playBigTwo(game, { pass: true })!;
     expect(game.toPlay).toBe(2);
@@ -104,9 +109,19 @@ describe("big two", () => {
   });
 
   it("the computer keeps its twos for later, and stops the last card with its highest single", () => {
-    const early = at([["2S", "4D", "5C", "6H", "8C", "9D", "TS", "JH"], ["3C", "4H", "5H", "6C", "7C"], ["3D", "4C", "5D", "6S", "7S"], ["3H", "4S", "5S", "6D", "7D"]], { pile: { seat: 3, cards: ["KS"] } });
+    const early = at(
+      [
+        ["2S", "4D", "5C", "6H", "8C", "9D", "TS", "JH"],
+        ["3C", "4H", "5H", "6C", "7C"],
+        ["3D", "4C", "5D", "6S", "7S"],
+        ["3H", "4S", "5S", "6D", "7D"],
+      ],
+      { pile: { seat: 3, cards: ["KS"] } },
+    );
     expect(bigTwoComputer(early)).toEqual({ pass: true });
-    const danger = at([["2S", "4D", "9D", "AS"], ["3C"], ["3D", "4C", "5D"], ["3H", "3S"]], { pile: { seat: 1, cards: ["8C"] } });
+    const danger = at([["2S", "4D", "9D", "AS"], ["3C"], ["3D", "4C", "5D"], ["3H", "3S"]], {
+      pile: { seat: 1, cards: ["8C"] },
+    });
     expect(bigTwoComputer(danger)).toEqual({ play: ["2S"] });
   });
 });

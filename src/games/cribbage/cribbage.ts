@@ -104,7 +104,12 @@ export function sortCribbage(hand: readonly CardId[]): CardId[] {
   return [...hand].sort((a, b) => rankOf(a) - rankOf(b) || "SHCD".indexOf(suitOf(a)) - "SHCD".indexOf(suitOf(b)));
 }
 
-function dealCribbage(game: Omit<CribbageGame, "phase" | "hands" | "kept" | "crib" | "cut" | "starter" | "count" | "run" | "pegged" | "peg" | "toPlay">): CribbageGame {
+function dealCribbage(
+  game: Omit<
+    CribbageGame,
+    "phase" | "hands" | "kept" | "crib" | "cut" | "starter" | "count" | "run" | "pegged" | "peg" | "toPlay"
+  >,
+): CribbageGame {
   const { hands, stock } = dealRound(shuffledDeck(game.seed, game.deal), CRIBBAGE_SEATS, DEALT);
   return {
     ...game,
@@ -141,10 +146,25 @@ function dealCribbage(game: Omit<CribbageGame, "phase" | "hands" | "kept" | "cri
  * console.log(startCribbage(CARD_GAME_TABLES.cribbage.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startCribbage(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): CribbageGame | null {
+export function startCribbage(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): CribbageGame | null {
   if (!(CRIBBAGE_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== CRIBBAGE_SEATS) return null;
-  return dealCribbage({ size, players: [...players], computers: computerSeats(players.length, computers), seed: dealt ?? 1, moves: [], deal: 0, scores: [0, 0], results: [] });
+  return dealCribbage({
+    size,
+    players: [...players],
+    computers: computerSeats(players.length, computers),
+    seed: dealt ?? 1,
+    moves: [],
+    deal: 0,
+    scores: [0, 0],
+    results: [],
+  });
 }
 
 /** The cards a seat may play on the count now: any that keeps it to thirty-one.
@@ -207,7 +227,10 @@ export function cribbageMoves(game: CribbageGame): CribbageMove[] {
 /** The longest run the last cards played make, three or more, in any order; 0 for none. */
 function runAtEnd(cards: readonly CardId[]): number {
   for (let length = cards.length; length >= 3; length -= 1) {
-    const ranks = cards.slice(-length).map(rankOf).sort((a, b) => a - b);
+    const ranks = cards
+      .slice(-length)
+      .map(rankOf)
+      .sort((a, b) => a - b);
     if (ranks.every((rank, at) => at === 0 || rank === ranks[at - 1] + 1)) return length;
   }
   return 0;
@@ -238,7 +261,8 @@ export function pegPoints(cards: readonly CardId[], count: number): { points: nu
     why.push("thirty-one");
   }
   let alike = 1;
-  while (alike < cards.length && rankOf(cards[cards.length - 1 - alike]) === rankOf(cards[cards.length - 1])) alike += 1;
+  while (alike < cards.length && rankOf(cards[cards.length - 1 - alike]) === rankOf(cards[cards.length - 1]))
+    alike += 1;
   if (alike >= 2) {
     points += [0, 0, 2, 6, 12][alike];
     why.push(["", "", "a pair", "three alike", "four alike"][alike]);
@@ -318,8 +342,18 @@ function layAway(game: CribbageGame, seat: number, cards: readonly CardId[]): Cr
   const dealer = dealerOf(game.deal);
   if (crib.length < 2 * CRIBBAGE_SEATS) return { ...game, hands, kept, crib, toPlay: dealer };
   // Both have laid away: the starter is cut, and a jack scores the dealer two.
-  const cut: CribbageGame = { ...game, hands, kept, crib: sortCribbage(crib), starter: game.cut, phase: "pegging", toPlay: otherOf(dealer) };
-  return rankOf(game.cut) === JACK ? score({ ...cut, peg: { seat: dealer, points: 2, why: ["his heels"] } }, dealer, 2) : cut;
+  const cut: CribbageGame = {
+    ...game,
+    hands,
+    kept,
+    crib: sortCribbage(crib),
+    starter: game.cut,
+    phase: "pegging",
+    toPlay: otherOf(dealer),
+  };
+  return rankOf(game.cut) === JACK
+    ? score({ ...cut, peg: { seat: dealer, points: 2, why: ["his heels"] } }, dealer, 2)
+    : cut;
 }
 
 /** The pegging is played out: the show, the other player's hand first, then the dealer's, then the crib, and the next hand dealt. */
@@ -329,13 +363,33 @@ function show(game: CribbageGame): CribbageGame {
   const starter = game.starter!;
   const counts = game.kept.map((four) => showCount(four, starter)) as [CribbageCount, CribbageCount];
   const cribCount = showCount(game.crib, starter, true);
-  const result: CribbageHandScore = { dealer, starter, hands: [game.kept[0], game.kept[1]], crib: game.crib, counts, cribCount };
+  const result: CribbageHandScore = {
+    dealer,
+    starter,
+    hands: [game.kept[0], game.kept[1]],
+    crib: game.crib,
+    counts,
+    cribCount,
+  };
   let after: CribbageGame = { ...game, results: [...game.results, result] };
-  for (const [seat, points] of [[pone, counts[pone].total], [dealer, counts[dealer].total], [dealer, cribCount.total]] as const) {
+  for (const [seat, points] of [
+    [pone, counts[pone].total],
+    [dealer, counts[dealer].total],
+    [dealer, cribCount.total],
+  ] as const) {
     after = score(after, seat, points);
     if (after.phase === "over") return after;
   }
-  return dealCribbage({ size: after.size, players: after.players, computers: after.computers, seed: after.seed, moves: after.moves, deal: game.deal + 1, scores: after.scores, results: after.results });
+  return dealCribbage({
+    size: after.size,
+    players: after.players,
+    computers: after.computers,
+    seed: after.seed,
+    moves: after.moves,
+    deal: game.deal + 1,
+    scores: after.scores,
+    results: after.results,
+  });
 }
 
 function playCard(game: CribbageGame, seat: number, card: CardId): CribbageGame | null {
@@ -343,7 +397,10 @@ function playCard(game: CribbageGame, seat: number, card: CardId): CribbageGame 
   const hands = game.hands.map((held, at) => (at === seat ? held.filter((one) => one !== card) : held));
   const count = game.count + cardValue(card);
   const run = [...game.run, { seat, card }];
-  const made = pegPoints(run.map((play) => play.card), count);
+  const made = pegPoints(
+    run.map((play) => play.card),
+    count,
+  );
   const other = otherOf(seat);
   const canPlay = (at: number) => cribbagePlayable(hands[at], count).length > 0;
   let next: CribbageGame = { ...game, hands, count, run, pegged: [...game.pegged, { seat, card }] };
@@ -388,7 +445,8 @@ export function playCribbage(game: CribbageGame, move: CribbageMove): CribbageGa
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
   let next: CribbageGame | null = null;
-  if ("crib" in move) next = game.phase === "crib" && Array.isArray(move.crib) ? layAway({ ...game, peg: null }, seat, move.crib) : null;
+  if ("crib" in move)
+    next = game.phase === "crib" && Array.isArray(move.crib) ? layAway({ ...game, peg: null }, seat, move.crib) : null;
   else if ("play" in move) next = game.phase === "pegging" ? playCard(game, seat, move.play) : null;
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }

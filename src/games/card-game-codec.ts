@@ -1,4 +1,3 @@
-
 /**
  * HOW A CARD GAME IS KEPT AS TEXT: its table (the size chosen, the
  * names, which seats a computer plays), the seed its deals are shuffled from,
@@ -70,13 +69,27 @@ export type CardGameCodec<S> = {
  */
 export function cardGameCodec<S extends KeptCardGame<M>, M>(
   game: string,
-  start: (size: number, players: readonly string[], language: undefined, seed: number, computers: readonly boolean[]) => S | null,
+  start: (
+    size: number,
+    players: readonly string[],
+    language: undefined,
+    seed: number,
+    computers: readonly boolean[],
+  ) => S | null,
   play: (state: S, move: M) => S | null,
   isMove: (value: unknown) => value is M,
 ): CardGameCodec<S> {
   return {
     encode: (state) =>
-      JSON.stringify({ v: KEPT_VERSION, g: game, size: state.size, players: state.players, computers: state.computers, seed: state.seed, moves: state.moves }),
+      JSON.stringify({
+        v: KEPT_VERSION,
+        g: game,
+        size: state.size,
+        players: state.players,
+        computers: state.computers,
+        seed: state.seed,
+        moves: state.moves,
+      }),
     decode: (text) => {
       if (text === null) return null;
       let kept: unknown;
@@ -87,9 +100,21 @@ export function cardGameCodec<S extends KeptCardGame<M>, M>(
       }
       if (typeof kept !== "object" || kept === null) return null;
       const { v, g, size, players, computers, seed, moves } = kept as Record<string, unknown>;
-      if (v !== KEPT_VERSION || g !== game || typeof size !== "number" || typeof seed !== "number" || !Number.isInteger(seed)) return null;
+      if (
+        v !== KEPT_VERSION ||
+        g !== game ||
+        typeof size !== "number" ||
+        typeof seed !== "number" ||
+        !Number.isInteger(seed)
+      )
+        return null;
       if (!Array.isArray(players) || !players.every((name) => typeof name === "string")) return null;
-      if (!Array.isArray(computers) || computers.length !== players.length || !computers.every((seat) => typeof seat === "boolean")) return null;
+      if (
+        !Array.isArray(computers) ||
+        computers.length !== players.length ||
+        !computers.every((seat) => typeof seat === "boolean")
+      )
+        return null;
       if (!Array.isArray(moves) || !moves.every(isMove)) return null;
       let state = start(size, players as string[], undefined, seed, computers as boolean[]);
       for (const move of moves as M[]) {

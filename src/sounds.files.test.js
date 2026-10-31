@@ -8,11 +8,14 @@ import { describe, expect, it } from "vitest";
 import { CARD_SOUND_DATA } from "./sounds.ts";
 
 describe("the recordings", () => {
-  const files = readdirSync("sounds").filter((name) => name.endsWith(".m4a")).sort();
+  const files = readdirSync("sounds")
+    .filter((name) => name.endsWith(".m4a"))
+    .sort();
 
   it("are the files in ./sounds, byte for byte: run `pnpm sounds` after changing one", () => {
     expect(Object.keys(CARD_SOUND_DATA).sort()).toEqual(files.map((name) => name.replace(".m4a", "")));
-    for (const name of files) expect(CARD_SOUND_DATA[name.replace(".m4a", "")]).toBe(readFileSync(`sounds/${name}`).toString("base64"));
+    for (const name of files)
+      expect(CARD_SOUND_DATA[name.replace(".m4a", "")]).toBe(readFileSync(`sounds/${name}`).toString("base64"));
   });
 
   it("are AAC in an .m4a, with no empty padding, and small", () => {
@@ -36,7 +39,8 @@ describe("the recordings", () => {
   });
 
   it("are never part of the core: only a sound played imports them", () => {
-    for (const path of ["src/index.ts", "src/deck.ts", "src/react.ts", "src/card-sounds.ts"]) expect(readFileSync(path, "utf8")).not.toMatch(/from "\.\/sounds\.ts"/);
+    for (const path of ["src/index.ts", "src/deck.ts", "src/react.ts", "src/card-sounds.ts"])
+      expect(readFileSync(path, "utf8")).not.toMatch(/from "\.\/sounds\.ts"/);
     const player = readFileSync("src/ui/card-sounds.ts", "utf8");
     expect(player).toContain('import("../sounds.ts")');
     expect(player).not.toMatch(/^import .*sounds\.ts/m);

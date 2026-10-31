@@ -69,7 +69,14 @@ export type CribbagePeg = { seat: number; points: number; why: string[] };
  * console.log(value.total);
  * ```
  */
-export type CribbageCount = { fifteens: number; pairs: number; runs: number; flush: number; nobs: number; total: number };
+export type CribbageCount = {
+  fifteens: number;
+  pairs: number;
+  runs: number;
+  flush: number;
+  nobs: number;
+  total: number;
+};
 
 /** One hand as it was shown: the dealer, the starter, both four-card hands and the crib, and what each counted.
  *

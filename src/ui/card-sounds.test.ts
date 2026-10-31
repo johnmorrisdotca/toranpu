@@ -1,11 +1,24 @@
 import { describe, expect, it } from "vitest";
 
 import { CARD_SOUND_DATA } from "../sounds.ts";
-import { CARD_SOUND_KINDS, MOST_SOUNDS_AT_ONCE, createCardSounds, soundTimes, type CardSoundData } from "./card-sounds.ts";
+import {
+  CARD_SOUND_KINDS,
+  MOST_SOUNDS_AT_ONCE,
+  createCardSounds,
+  soundTimes,
+  type CardSoundData,
+} from "./card-sounds.ts";
 
 /** Enough of the Web Audio API to see what a table asks of it. */
 function fakeAudio(options: { state?: string; decodeFails?: boolean; resumeFails?: boolean } = {}) {
-  const log = { contexts: 0, decoded: 0, started: [] as { at: number; seconds: number }[], filters: 0, closed: 0, gain: [] as number[] };
+  const log = {
+    contexts: 0,
+    decoded: 0,
+    started: [] as { at: number; seconds: number }[],
+    filters: 0,
+    closed: 0,
+    gain: [] as number[],
+  };
   class FakeContext {
     state = options.state ?? "running";
     currentTime = 10;
@@ -39,7 +52,9 @@ function fakeAudio(options: { state?: string; decodeFails?: boolean; resumeFails
     }
     decodeAudioData(data: ArrayBuffer) {
       log.decoded += 1;
-      return options.decodeFails ? Promise.reject(new Error("cannot decode")) : Promise.resolve({ duration: data.byteLength / 10000 });
+      return options.decodeFails
+        ? Promise.reject(new Error("cannot decode"))
+        : Promise.resolve({ duration: data.byteLength / 10000 });
     }
     resume() {
       if (options.resumeFails) return Promise.reject(new Error("not allowed"));
@@ -71,7 +86,9 @@ describe("the card sounds", () => {
         throw new Error("no audio device");
       }
     }
-    expect(() => createCardSounds({ window: { AudioContext: Refuses as unknown as typeof AudioContext } }).play("play")).not.toThrow();
+    expect(() =>
+      createCardSounds({ window: { AudioContext: Refuses as unknown as typeof AudioContext } }).play("play"),
+    ).not.toThrow();
   });
 
   it("play one recording of the kind asked for", async () => {
@@ -152,7 +169,9 @@ describe("the card sounds", () => {
     const { log, window } = fakeAudio();
     expect(await createCardSounds({ window, load: recordings }).load()).toBe(true);
     expect(log.decoded).toBe(Object.keys(CARD_SOUND_DATA).length);
-    expect(await createCardSounds({ window: fakeAudio({ decodeFails: true }).window, load: recordings }).load()).toBe(false);
+    expect(await createCardSounds({ window: fakeAudio({ decodeFails: true }).window, load: recordings }).load()).toBe(
+      false,
+    );
   });
 
   it.each([

@@ -257,7 +257,9 @@ export function carriedFrom(table: KlondikeTable, column: number, to: KlondikePi
   if (isFoundationPile(to)) {
     // Only ever the top card goes home.
     const top = from.cards.at(-1);
-    return top !== undefined && foundationAt(to) === suitOf(top) && fitsFoundation(top, table.foundation) ? from.cards.length - 1 : null;
+    return top !== undefined && foundationAt(to) === suitOf(top) && fitsFoundation(top, table.foundation)
+      ? from.cards.length - 1
+      : null;
   }
   for (let at = from.down; at < from.cards.length; at += 1) {
     if (fitsColumn(from.cards[at], table.tableau[columnAt(to)])) return at;
@@ -344,13 +346,17 @@ export function playKlondike(table: KlondikeTable, move: KlondikeMove): Klondike
 
   const foot = carried[0];
   if (isFoundationPile(to)) {
-    if (carried.length !== 1 || foundationAt(to) !== suitOf(foot) || !fitsFoundation(foot, rest.foundation)) return null;
+    if (carried.length !== 1 || foundationAt(to) !== suitOf(foot) || !fitsFoundation(foot, rest.foundation))
+      return null;
     return { ...rest, foundation: withFoundation(rest.foundation, suitOf(foot), rankOf(foot)) };
   }
   const target = columnAt(to);
   if (!fitsColumn(foot, rest.tableau[target])) return null;
   const onto = rest.tableau[target];
-  return { ...rest, tableau: replaceColumn(rest.tableau, target, { down: onto.down, cards: [...onto.cards, ...carried] }) };
+  return {
+    ...rest,
+    tableau: replaceColumn(rest.tableau, target, { down: onto.down, cards: [...onto.cards, ...carried] }),
+  };
 }
 
 /** Whether every card is home.

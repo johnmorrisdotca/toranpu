@@ -31,7 +31,14 @@ export type GoFishMove = { ask: number; rank: CardRank };
  * ```
  */
 export type GoFishEvent =
-  | { kind: "ask"; seat: number; asked: number; rank: CardRank; got: number; fished: "caught" | "missed" | "dry" | null }
+  | {
+      kind: "ask";
+      seat: number;
+      asked: number;
+      rank: CardRank;
+      got: number;
+      fished: "caught" | "missed" | "dry" | null;
+    }
   | { kind: "draw"; seat: number }
   | { kind: "book"; seat: number; rank: CardRank };
 

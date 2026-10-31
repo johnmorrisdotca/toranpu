@@ -35,8 +35,24 @@ export type { HandTurnOptions } from "./ui/hand-element.ts";
 export { ToranpuPile } from "./ui/pile-element.ts";
 export { ELEMENT_SIZES } from "./ui/element-kit.ts";
 export type { SpinOptions } from "./ui/element-kit.ts";
-export { arrangeCards, handLayout, mixCards, partedHandLayout, pileLayout, readHand, replaceCard, tossCard } from "./ui/layout.ts";
-export type { CardLands, CardOrder, CardPlace, HandLayoutOptions, PartOptions, PileLayoutOptions } from "./ui/layout.ts";
+export {
+  arrangeCards,
+  handLayout,
+  mixCards,
+  partedHandLayout,
+  pileLayout,
+  readHand,
+  replaceCard,
+  tossCard,
+} from "./ui/layout.ts";
+export type {
+  CardLands,
+  CardOrder,
+  CardPlace,
+  HandLayoutOptions,
+  PartOptions,
+  PileLayoutOptions,
+} from "./ui/layout.ts";
 
 /** The elements' tags.
  * @example

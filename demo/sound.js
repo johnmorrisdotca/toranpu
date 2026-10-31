@@ -16,7 +16,10 @@ export const player = createCardSounds();
 export const table = { on: remembered === "on" };
 
 /** Every card a move names, in any field. */
-const cardsIn = (move) => Object.values(move).flatMap((value) => (Array.isArray(value) ? value : [value])).filter((value) => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
+const cardsIn = (move) =>
+  Object.values(move)
+    .flatMap((value) => (Array.isArray(value) ? value : [value]))
+    .filter((value) => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
 const held = (game) => (game?.hands ?? []).reduce((sum, hand) => sum + hand.length, 0);
 
 /** A new deal at the table: the deck shuffled, then every card dealt. */
@@ -35,7 +38,8 @@ export function moved(before, after, move) {
   const trickAfter = after.trick?.length ?? 0;
   const pileBefore = before.pile?.cards?.length ?? 0;
   const pileAfter = after.pile?.cards?.length ?? 0;
-  if ((trickBefore > 0 && trickAfter === 0) || (pileBefore > 0 && pileAfter === 0)) player.play("gather", { delay: 260 });
+  if ((trickBefore > 0 && trickAfter === 0) || (pileBefore > 0 && pileAfter === 0))
+    player.play("gather", { delay: 260 });
   // More cards in the hands than a move could put there is a new deal.
   if (held(after) > held(before) + 2) dealt(after);
 }
@@ -56,7 +60,14 @@ export function wire(say) {
   });
   show();
   const box = $("sound-kinds");
-  const names = { shuffle: "pageSoundShuffle", deal: "pageSoundDeal", flip: "pageSoundFlip", play: "pageSoundPlay", gather: "pageSoundGather", fan: "pageSoundFan" };
+  const names = {
+    shuffle: "pageSoundShuffle",
+    deal: "pageSoundDeal",
+    flip: "pageSoundFlip",
+    play: "pageSoundPlay",
+    gather: "pageSoundGather",
+    fan: "pageSoundFan",
+  };
   box.replaceChildren(
     ...CARD_SOUND_KINDS.map((kind) => {
       const one = document.createElement("button");

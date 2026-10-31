@@ -190,7 +190,11 @@ function takeRun(column: SpiderColumn): { column: SpiderColumn; suit: number | n
 }
 
 /** Every column checked for a full run after cards land on it, in order from the left. */
-function settle(tableau: readonly SpiderColumn[], done: readonly number[], landed: readonly number[]): { tableau: SpiderColumn[]; done: number[] } {
+function settle(
+  tableau: readonly SpiderColumn[],
+  done: readonly number[],
+  landed: readonly number[],
+): { tableau: SpiderColumn[]; done: number[] } {
   const columns = [...tableau];
   const taken = [...done];
   for (const at of landed) {
@@ -237,7 +241,11 @@ export function playSpider(table: SpiderTable, move: SpiderMove): SpiderTable | 
   if (move.kind === "deal") {
     if (!canDeal(table)) return null;
     const dealt = table.tableau.map((column, at) => ({ down: column.down, cards: [...column.cards, table.stock[at]] }));
-    const settled = settle(dealt, table.done, dealt.map((_, at) => at));
+    const settled = settle(
+      dealt,
+      table.done,
+      dealt.map((_, at) => at),
+    );
     return { tableau: settled.tableau, stock: table.stock.slice(COLUMNS), done: settled.done };
   }
   const { from, to, count } = move;
@@ -251,7 +259,8 @@ export function playSpider(table: SpiderTable, move: SpiderMove): SpiderTable | 
   if (top !== undefined && rankOf(top) !== rankOf(foot) + 1) return null;
   const tableau = table.tableau.map((column, at) => {
     if (at === from) return turned({ down: column.down, cards: column.cards.slice(0, column.cards.length - count) });
-    if (at === to) return { down: column.down, cards: [...column.cards, ...source.cards.slice(source.cards.length - count)] };
+    if (at === to)
+      return { down: column.down, cards: [...column.cards, ...source.cards.slice(source.cards.length - count)] };
     return column;
   });
   const settled = settle(tableau, table.done, [to]);

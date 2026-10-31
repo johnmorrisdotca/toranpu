@@ -1,4 +1,3 @@
-
 /** What a game's table offers: how many may sit at it, and how long a game may last.
  *
  * @example
@@ -50,7 +49,18 @@ export type CardGameTable = {
  * console.log(value);
  * ```
  */
-export type CardGameKind = "hearts" | "bigTwo" | "president" | "goFish" | "crazyEights" | "spades" | "ginRummy" | "euchre" | "cribbage" | "ohHell" | "war";
+export type CardGameKind =
+  | "hearts"
+  | "bigTwo"
+  | "president"
+  | "goFish"
+  | "crazyEights"
+  | "spades"
+  | "ginRummy"
+  | "euchre"
+  | "cribbage"
+  | "ohHell"
+  | "war";
 
 /** The eleven kinds by name, for code that would rather not type a string twice.
  *
@@ -205,7 +215,13 @@ export const WAR_ROUNDS = [25, 50, 100, 200, 1000] as const;
  * ```
  */
 export const CARD_GAME_TABLES: Record<CardGameKind, CardGameTable> = {
-  hearts: { fewestPlayers: 3, mostPlayers: 4, defaultPlayers: 4, sizes: [HEARTS_SIZES.short, HEARTS_SIZES.full], defaultSize: HEARTS_SIZES.full },
+  hearts: {
+    fewestPlayers: 3,
+    mostPlayers: 4,
+    defaultPlayers: 4,
+    sizes: [HEARTS_SIZES.short, HEARTS_SIZES.full],
+    defaultSize: HEARTS_SIZES.full,
+  },
   bigTwo: { fewestPlayers: 2, mostPlayers: 4, defaultPlayers: 4, sizes: BIG_TWO_DEALS, defaultSize: 3 },
   president: { fewestPlayers: 3, mostPlayers: 8, defaultPlayers: 4, sizes: PRESIDENT_ROUNDS, defaultSize: 3 },
   goFish: { fewestPlayers: 2, mostPlayers: 6, defaultPlayers: 3, sizes: GO_FISH_SIZES, defaultSize: 1 },

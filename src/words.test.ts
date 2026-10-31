@@ -4,13 +4,49 @@ import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.t
 import { FULL_DECK, cardWords } from "./games/cards.ts";
 import { newGame, playComputers } from "./play.ts";
 import { STRINGS, fillIn, languageOf } from "./strings.ts";
-import { cardShort, cardText, cardsShort, gameName, gameSays, moveText, namesList, rankName, suitName, suitSymbol } from "./words.ts";
+import {
+  cardShort,
+  cardText,
+  cardsShort,
+  gameName,
+  gameSays,
+  moveText,
+  namesList,
+  rankName,
+  suitName,
+  suitSymbol,
+} from "./words.ts";
 
 describe("the games in words", () => {
   it("names every game in both languages", () => {
-    expect(CARD_GAME_LIST.map((kind) => gameName(kind))).toEqual(["Hearts", "Spades", "Euchre", "Cribbage", "Oh Hell", "Crazy Eights", "Go Fish", "Big Two", "President", "Gin Rummy", "War"]);
-    expect(CARD_GAME_LIST.map((kind) => gameName(kind, "ja"))).toEqual(["ハーツ", "スペード", "ユーカー", "クリベッジ", "オー・ヘル", "クレイジーエイト", "ゴーフィッシュ", "ビッグツー", "大富豪", "ジン・ラミー", "戦争"]);
-    for (const kind of CARD_GAME_LIST) for (const language of ["en", "ja"] as const) expect(gameSays(kind, language).length).toBeGreaterThan(20);
+    expect(CARD_GAME_LIST.map((kind) => gameName(kind))).toEqual([
+      "Hearts",
+      "Spades",
+      "Euchre",
+      "Cribbage",
+      "Oh Hell",
+      "Crazy Eights",
+      "Go Fish",
+      "Big Two",
+      "President",
+      "Gin Rummy",
+      "War",
+    ]);
+    expect(CARD_GAME_LIST.map((kind) => gameName(kind, "ja"))).toEqual([
+      "ハーツ",
+      "スペード",
+      "ユーカー",
+      "クリベッジ",
+      "オー・ヘル",
+      "クレイジーエイト",
+      "ゴーフィッシュ",
+      "ビッグツー",
+      "大富豪",
+      "ジン・ラミー",
+      "戦争",
+    ]);
+    for (const kind of CARD_GAME_LIST)
+      for (const language of ["en", "ja"] as const) expect(gameSays(kind, language).length).toBeGreaterThan(20);
   });
 });
 
@@ -31,11 +67,27 @@ describe("the cards in words", () => {
   });
 
   it("suits, ranks and lists", () => {
-    expect((["S", "H", "D", "C"] as const).map((suit) => suitName(suit))).toEqual(["spades", "hearts", "diamonds", "clubs"]);
-    expect((["S", "H", "D", "C"] as const).map((suit) => suitName(suit, "ja"))).toEqual(["スペード", "ハート", "ダイヤ", "クラブ"]);
+    expect((["S", "H", "D", "C"] as const).map((suit) => suitName(suit))).toEqual([
+      "spades",
+      "hearts",
+      "diamonds",
+      "clubs",
+    ]);
+    expect((["S", "H", "D", "C"] as const).map((suit) => suitName(suit, "ja"))).toEqual([
+      "スペード",
+      "ハート",
+      "ダイヤ",
+      "クラブ",
+    ]);
     expect((["S", "H", "D", "C"] as const).map(suitSymbol)).toEqual(["♠", "♥", "♦", "♣"]);
     expect([1, 7, 11, 12, 13].map((rank) => rankName(rank as 1))).toEqual(["ace", "seven", "jack", "queen", "king"]);
-    expect([1, 7, 11, 12, 13].map((rank) => rankName(rank as 1, "ja"))).toEqual(["エース", "7", "ジャック", "クイーン", "キング"]);
+    expect([1, 7, 11, 12, 13].map((rank) => rankName(rank as 1, "ja"))).toEqual([
+      "エース",
+      "7",
+      "ジャック",
+      "クイーン",
+      "キング",
+    ]);
     expect(namesList(["Ann", "Ben"])).toBe("Ann, Ben");
     expect(namesList(["Ann", "Ben"], "ja")).toBe("Ann、Ben");
   });
@@ -77,9 +129,13 @@ describe("a move in words", () => {
   it("in Japanese", () => {
     expect(moveText("hearts", { play: "QS" }, { language: "ja" })).toBe("Q♠を出す");
     expect(moveText("hearts", { play: "QS" }, { language: "ja", form: "did" })).toBe("Q♠を出しました");
-    expect(moveText("hearts", { pass: ["QS", "AH", "KH"] }, { language: "ja", form: "hidden" })).toBe("カードを3枚渡しました");
+    expect(moveText("hearts", { pass: ["QS", "AH", "KH"] }, { language: "ja", form: "hidden" })).toBe(
+      "カードを3枚渡しました",
+    );
     expect(moveText("crazyEights", { play: "8S", suit: "D" }, { language: "ja" })).toBe("8♠を出してダイヤを指定する");
-    expect(moveText("goFish", { ask: 1, rank: 12 }, { language: "ja", players: ["あなた", "愛子"] })).toBe("愛子にクイーンを聞く");
+    expect(moveText("goFish", { ask: 1, rank: 12 }, { language: "ja", players: ["あなた", "愛子"] })).toBe(
+      "愛子にクイーンを聞く",
+    );
     expect(moveText("goFish", { ask: 1, rank: 7 }, { language: "ja" })).toBe("席2に7を聞く");
     expect(moveText("spades", { bid: 0 }, { language: "ja" })).toBe("ニルをビッドする");
   });
@@ -112,6 +168,13 @@ describe("the table of strings", () => {
   it("fills in, and tells Japanese from the rest", () => {
     expect(fillIn("Bid {n}", { n: 3 })).toBe("Bid 3");
     expect(fillIn("{a} and {b}", { a: "x" })).toBe("x and {b}");
-    expect([languageOf("ja-JP"), languageOf("JA"), languageOf("en-US"), languageOf("fr"), languageOf(null), languageOf(undefined)]).toEqual(["ja", "ja", "en", "en", "en", "en"]);
+    expect([
+      languageOf("ja-JP"),
+      languageOf("JA"),
+      languageOf("en-US"),
+      languageOf("fr"),
+      languageOf(null),
+      languageOf(undefined),
+    ]).toEqual(["ja", "ja", "en", "en", "en", "en"]);
   });
 });

@@ -4,7 +4,12 @@ import { CARD_DESIGNS, cardFaceSvg, loadCardDesign } from "./dist/card-faces.js"
 import { look, onLook, setLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);
-const NAMES = { plain: "pageDesignPlain", "four-colour": "pageDesignFourColour", english: "pageDesignEnglish", realistic: "pageDesignRealistic" };
+const NAMES = {
+  plain: "pageDesignPlain",
+  "four-colour": "pageDesignFourColour",
+  english: "pageDesignEnglish",
+  realistic: "pageDesignRealistic",
+};
 const SPREAD = ["AS", "KS", "QH", "JD", "TC", "7D", "2H", "RJ", "BJ", "R1", "R2", "BL"];
 const loaded = {};
 
@@ -29,7 +34,8 @@ element.innerHTML = cardFaceSvg("KS"${look.design === "plain" ? "" : `, { design
 let drawing = 0;
 async function draw(lang) {
   const mine = ++drawing;
-  for (const button of document.querySelectorAll("[data-design]")) button.setAttribute("aria-pressed", String(button.dataset.design === look.design));
+  for (const button of document.querySelectorAll("[data-design]"))
+    button.setAttribute("aria-pressed", String(button.dataset.design === look.design));
   const design = await designNamed(look.design);
   // A choice made while the English pattern was being fetched wins over it.
   if (mine !== drawing) return;

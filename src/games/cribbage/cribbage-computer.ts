@@ -54,7 +54,14 @@ export type CribbageView = {
  */
 export function cribbageView(game: CribbageGame): CribbageView {
   const seat = game.toPlay ?? 0;
-  return { seat, dealer: dealerOf(game.deal), phase: game.phase, hand: game.hands[seat], count: game.count, run: game.run.map((play) => play.card) };
+  return {
+    seat,
+    dealer: dealerOf(game.deal),
+    phase: game.phase,
+    hand: game.hands[seat],
+    count: game.count,
+    run: game.run.map((play) => play.card),
+  };
 }
 
 /** What two cards thrown to a crib are worth to it, roughly: a pair, a fifteen, fives, and cards close enough to run.

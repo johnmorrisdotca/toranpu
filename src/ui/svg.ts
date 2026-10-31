@@ -34,11 +34,20 @@ export const SUIT_PATHS: Readonly<Record<CardSuitLetter, string>> = {
 };
 
 /** Text made safe inside an attribute or between tags. */
-export const escapeXml = (text: string): string => String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+export const escapeXml = (text: string): string =>
+  String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 /** A colour a person may hand in: a hex colour, a name, or rgb()/hsl()/oklch() with plain numbers. Anything else is refused, so nothing can be written into the drawing through it. */
 export function isColour(text: unknown): text is string {
-  return typeof text === "string" && /^(#[0-9a-fA-F]{3,8}|[a-zA-Z]{3,20}|(rgb|rgba|hsl|hsla|oklch|oklab)\([0-9.,%\s/+-]{1,60}\))$/.test(text.trim());
+  return (
+    typeof text === "string" &&
+    /^(#[0-9a-fA-F]{3,8}|[a-zA-Z]{3,20}|(rgb|rgba|hsl|hsla|oklch|oklab)\([0-9.,%\s/+-]{1,60}\))$/.test(text.trim())
+  );
 }
 
 /**

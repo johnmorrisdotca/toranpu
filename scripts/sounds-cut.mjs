@@ -90,10 +90,13 @@ function writeWav(path, samples, rate) {
  */
 function withoutFree(file) {
   const boxes = [];
-  for (let at = 0; at < file.length; at += file.readUInt32BE(at)) boxes.push({ at, size: file.readUInt32BE(at), type: file.toString("latin1", at + 4, at + 8) });
+  for (let at = 0; at < file.length; at += file.readUInt32BE(at))
+    boxes.push({ at, size: file.readUInt32BE(at), type: file.toString("latin1", at + 4, at + 8) });
   const free = boxes.filter((box) => box.type === "free");
   const gone = free.reduce((sum, box) => sum + box.size, 0);
-  const kept = Buffer.concat(boxes.filter((box) => box.type !== "free").map((box) => file.subarray(box.at, box.at + box.size)));
+  const kept = Buffer.concat(
+    boxes.filter((box) => box.type !== "free").map((box) => file.subarray(box.at, box.at + box.size)),
+  );
   const stco = kept.indexOf("stco", 0, "latin1");
   const count = kept.readUInt32BE(stco + 8);
   for (let i = 0; i < count; i++) {
@@ -125,6 +128,8 @@ for (const [name, [source, most]] of Object.entries(CUTS)) {
   const m4a = join(scratch, `${name}.m4a`);
   execFileSync("afconvert", ["-f", "m4af", "-d", "aac", "-b", "48000", "-c", "1", wav, m4a]);
   writeFileSync(join("sounds", `${name}.m4a`), withoutFree(readFileSync(m4a)));
-  console.log(`sounds/${name}.m4a from ${source}: ${(cut.length / rate).toFixed(2)} s, ${readFileSync(join("sounds", `${name}.m4a`)).length} bytes`);
+  console.log(
+    `sounds/${name}.m4a from ${source}: ${(cut.length / rate).toFixed(2)} s, ${readFileSync(join("sounds", `${name}.m4a`)).length} bytes`,
+  );
 }
 rmSync(scratch, { recursive: true, force: true });

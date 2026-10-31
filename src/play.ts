@@ -132,7 +132,10 @@ export function newGame<K extends CardGameKind>(kind: K, options: NewGameOptions
  * console.log(playComputers("hearts", game).moves.length);
  * ```
  */
-export function playComputers<K extends CardGameKind>(kind: K, game: GameOf<K>): { game: GameOf<K>; moves: MoveOf<K>[] } {
+export function playComputers<K extends CardGameKind>(
+  kind: K,
+  game: GameOf<K>,
+): { game: GameOf<K>; moves: MoveOf<K>[] } {
   const rules = rulesFor(kind);
   const moves: MoveOf<K>[] = [];
   let now = game;

@@ -7,16 +7,24 @@ import { expect, test } from "@playwright/test";
 import { serve } from "./demo.mjs";
 
 // The README and the pages its long sections moved to.
-const readme = ["README.md", "docs/ELEMENTS.md", "docs/CARDS.md"].map((file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8")).join("\n");
+const readme = ["README.md", "docs/ELEMENTS.md", "docs/CARDS.md"]
+  .map((file) => readFileSync(new URL(`../${file}`, import.meta.url), "utf8"))
+  .join("\n");
 const CDN = "https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/";
 /** The README's (or its pages') ```html block that holds `holding`. */
-const block = (holding) => [...readme.matchAll(/```html\n([\s\S]*?)```/g)].map((m) => m[1]).find((one) => one.includes(holding));
+const block = (holding) =>
+  [...readme.matchAll(/```html\n([\s\S]*?)```/g)].map((m) => m[1]).find((one) => one.includes(holding));
 
 async function run(page, html) {
   const errors = [];
   page.on("pageerror", (error) => errors.push(String(error)));
   await serve(page);
-  await page.route("http://toranpu.test/readme.html", (route) => route.fulfill({ contentType: "text/html", body: `<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>${html.replaceAll(CDN, "http://toranpu.test/dist/")}</body></html>` }));
+  await page.route("http://toranpu.test/readme.html", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: `<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>${html.replaceAll(CDN, "http://toranpu.test/dist/")}</body></html>`,
+    }),
+  );
   await page.goto("http://toranpu.test/readme.html");
   return errors;
 }
@@ -32,7 +40,9 @@ test("One card: the script tag and the element give a king of spades that turns 
   expect(errors).toEqual([]);
 });
 
-test("Hand controls: hidden one by one, shown, scrunched and spread, two cards turned, parted, marked and spun", async ({ page }) => {
+test("Hand controls: hidden one by one, shown, scrunched and spread, two cards turned, parted, marked and spun", async ({
+  page,
+}) => {
   const html = block('<toranpu-hand id="mine"');
   await page.addInitScript(() => {
     window.seen = [];
@@ -42,10 +52,20 @@ test("Hand controls: hidden one by one, shown, scrunched and spread, two cards t
   const hand = page.locator("#mine");
   // The example ends spread out and face up, after passing through every state.
   // The example ends face up and spread, two cards turned over by themselves, parted at the queen, the king marked.
-  await expect(hand).toHaveAttribute("aria-label", "Hand: ace of spades, a card, face down, marked, a card, face down, jack of clubs, ten of spades");
+  await expect(hand).toHaveAttribute(
+    "aria-label",
+    "Hand: ace of spades, a card, face down, marked, a card, face down, jack of clubs, ten of spades",
+  );
   await expect.poll(() => page.evaluate(() => window.seen.length)).toBe(6);
   const lies = (faceDown, scrunched, turned = [], parted = null) => ({ faceDown, scrunched, open: 1, turned, parted });
-  expect(await page.evaluate(() => window.seen)).toEqual([lies(true, false), lies(false, false), lies(false, true), lies(false, false), lies(false, false, ["KH", "QD"]), lies(false, false, ["KH", "QD"], "QD")]);
+  expect(await page.evaluate(() => window.seen)).toEqual([
+    lies(true, false),
+    lies(false, false),
+    lies(false, true),
+    lies(false, false),
+    lies(false, false, ["KH", "QD"]),
+    lies(false, false, ["KH", "QD"], "QD"),
+  ]);
   await expect.poll(() => hand.evaluate((one) => one.shadowRoot.querySelectorAll(".slot").length)).toBe(5);
   expect(await hand.evaluate((one) => one.hasAttribute("scrunched") || one.hasAttribute("face-down"))).toBe(false);
   expect(errors).toEqual([]);
@@ -71,7 +91,10 @@ test("A closed hand: the example lies closed, opens on a tap and tells the page"
 });
 
 test("Messy piles: the two piles of the example, face down and face up, from one seed", async ({ page }) => {
-  const errors = await run(page, `${block('<toranpu-pile count="24"')}<script type="module" src="${CDN}element-define.js"></script>`);
+  const errors = await run(
+    page,
+    `${block('<toranpu-pile count="24"')}<script type="module" src="${CDN}element-define.js"></script>`,
+  );
   const piles = page.locator("toranpu-pile");
   await expect(piles.nth(0)).toHaveAttribute("aria-label", "a pile face down, cards: 24");
   await expect(piles.nth(1)).toHaveAttribute("aria-label", "a pile, seven of hearts on top, cards: 4");

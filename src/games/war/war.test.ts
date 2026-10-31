@@ -7,7 +7,8 @@ import { warComputer } from "./war-computer.ts";
 import { decodeWar, encodeWar, WAR_RULES } from "./war-rules.ts";
 import type { WarGame } from "./war.types.ts";
 
-const started = (size = 100, seed = 7, computers: boolean[] = [false, true]) => startWar(size, ["Ann", "Ben"], undefined, seed, computers) as WarGame;
+const started = (size = 100, seed = 7, computers: boolean[] = [false, true]) =>
+  startWar(size, ["Ann", "Ben"], undefined, seed, computers) as WarGame;
 
 /** A game with these piles, top card first, as though dealt so. */
 function at(first: string[], second: string[], extra: Partial<WarGame> = {}): WarGame {
@@ -31,7 +32,8 @@ describe("war", () => {
   it("is offered for two players and the turn limits it names, and no other table", () => {
     for (const size of [25, 50, 100, 200, 1000]) expect(startWar(size, ["a", "b"]), String(size)).not.toBeNull();
     for (const size of [0, 10, 99, 52]) expect(startWar(size, ["a", "b"]), String(size)).toBeNull();
-    for (const count of [0, 1, 3, 4]) expect(startWar(100, new Array<string>(count).fill("x")), String(count)).toBeNull();
+    for (const count of [0, 1, 3, 4])
+      expect(startWar(100, new Array<string>(count).fill("x")), String(count)).toBeNull();
   });
 
   it("counts the ace high and the two low", () => {
@@ -46,7 +48,8 @@ describe("war", () => {
     expect(warMoves(game)).toEqual([{ turn: true }]);
     expect(warComputer(game)).toEqual({ turn: true });
     expect(isWarMove({ turn: true })).toBe(true);
-    for (const bad of [{ turn: false }, {}, null, "turn", { turn: true, extra: 1 }.extra]) expect(isWarMove(bad), String(bad)).toBe(false);
+    for (const bad of [{ turn: false }, {}, null, "turn", { turn: true, extra: 1 }.extra])
+      expect(isWarMove(bad), String(bad)).toBe(false);
     expect(playWar(game, { turn: false } as never)).toBeNull();
     expect(warMoves({ ...game, phase: "over" })).toEqual([]);
     expect(playWar({ ...game, phase: "over" }, { turn: true })).toBeNull();
@@ -65,7 +68,14 @@ describe("war", () => {
     expect(after.hands[1]).toEqual(["4C", "5C"]);
     expect(after.hands[0].slice(0, 2)).toEqual(["2C", "3C"]);
     expect(sorted(after.hands[0].slice(2))).toEqual(["9H", "KS"]);
-    expect(after.last).toEqual({ laid: [{ seat: 0, card: "KS", down: false }, { seat: 1, card: "9H", down: false }], wars: 0, winner: 0 });
+    expect(after.last).toEqual({
+      laid: [
+        { seat: 0, card: "KS", down: false },
+        { seat: 1, card: "9H", down: false },
+      ],
+      wars: 0,
+      winner: 0,
+    });
     expect(after.moves).toEqual([{ turn: true }]);
     // The game it was given is left alone.
     expect(game.hands[0]).toEqual(["KS", "2C", "3C"]);
@@ -77,10 +87,23 @@ describe("war", () => {
     const after = playWar(game, { turn: true })!;
     expect(after.last?.wars).toBe(1);
     expect(after.last?.winner).toBe(0);
-    expect(after.last?.laid.map((one) => `${one.seat}${one.card}${one.down ? "v" : "^"}`)).toEqual(["05C^", "15D^", "02Cv", "03Cv", "04Cv", "12Dv", "13Dv", "14Dv", "0KS^", "19S^"]);
+    expect(after.last?.laid.map((one) => `${one.seat}${one.card}${one.down ? "v" : "^"}`)).toEqual([
+      "05C^",
+      "15D^",
+      "02Cv",
+      "03Cv",
+      "04Cv",
+      "12Dv",
+      "13Dv",
+      "14Dv",
+      "0KS^",
+      "19S^",
+    ]);
     expect(after.hands[1]).toEqual(["6D"]);
     expect(after.hands[0]).toHaveLength(1 + 10);
-    expect(sorted(after.hands[0].slice(1))).toEqual(sorted(["5C", "5D", "2C", "3C", "4C", "2D", "3D", "4D", "KS", "9S"]));
+    expect(sorted(after.hands[0].slice(1))).toEqual(
+      sorted(["5C", "5D", "2C", "3C", "4C", "2D", "3D", "4D", "KS", "9S"]),
+    );
     expect(WAR_FACE_DOWN).toBe(3);
   });
 
@@ -151,11 +174,20 @@ describe("war", () => {
   });
 
   it("ends after the turns it was set up for, the player with more cards winning and equal piles shared", () => {
-    const game = at(["KS", "2C", "4C"], ["9H", "3D", "5D"], { size: 25, moves: new Array<{ turn: true }>(24).fill({ turn: true }) });
+    const game = at(["KS", "2C", "4C"], ["9H", "3D", "5D"], {
+      size: 25,
+      moves: new Array<{ turn: true }>(24).fill({ turn: true }),
+    });
     const after = playWar(game, { turn: true })!;
     expect(after.ended).toBe("limit");
     expect(warWinners(after)).toEqual([0]);
-    const level = playWar(at(["KS", "2C"], ["9H", "3D", "5D", "6D"], { size: 25, moves: new Array<{ turn: true }>(24).fill({ turn: true }) }), { turn: true })!;
+    const level = playWar(
+      at(["KS", "2C"], ["9H", "3D", "5D", "6D"], {
+        size: 25,
+        moves: new Array<{ turn: true }>(24).fill({ turn: true }),
+      }),
+      { turn: true },
+    )!;
     expect(level.hands.map((hand) => hand.length)).toEqual([3, 3]);
     expect(level.ended).toBe("limit");
     expect(warWinners(level)).toEqual([0, 1]);
@@ -241,9 +273,15 @@ describe("war, kept as text", () => {
     expect(decodeWar(JSON.stringify({ ...kept, g: "hearts" }))).toBeNull();
     expect(decodeWar(JSON.stringify({ ...kept, moves: [{ turn: false }] }))).toBeNull();
     expect(decodeWar(JSON.stringify({ ...kept, size: 7 }))).toBeNull();
-    expect(decodeWar(JSON.stringify({ ...kept, players: ["a", "b", "c"], computers: [false, false, false] }))).toBeNull();
+    expect(
+      decodeWar(JSON.stringify({ ...kept, players: ["a", "b", "c"], computers: [false, false, false] })),
+    ).toBeNull();
     // A game that is over takes no more moves, so text that turns the cards after the end is not a game.
     const { game: ended } = playOut(25, 5);
-    expect(decodeWar(JSON.stringify({ ...(JSON.parse(encodeWar(ended)) as object), moves: [...ended.moves, { turn: true }] }))).toBeNull();
+    expect(
+      decodeWar(
+        JSON.stringify({ ...(JSON.parse(encodeWar(ended)) as object), moves: [...ended.moves, { turn: true }] }),
+      ),
+    ).toBeNull();
   });
 });

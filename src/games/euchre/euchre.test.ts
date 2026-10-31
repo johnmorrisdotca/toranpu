@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 
-import { EUCHRE_DECK, euchreHeight, euchreMoves, euchrePlayable, euchreTrickWinner, euchreWinners, handPoints, playEuchre, startEuchre, suitIn } from "./euchre.ts";
+import {
+  EUCHRE_DECK,
+  euchreHeight,
+  euchreMoves,
+  euchrePlayable,
+  euchreTrickWinner,
+  euchreWinners,
+  handPoints,
+  playEuchre,
+  startEuchre,
+  suitIn,
+} from "./euchre.ts";
 import { euchreComputer, throwAway, trumpWorth } from "./euchre-computer.ts";
 import { decodeEuchre, encodeEuchre } from "./euchre-rules.ts";
 import type { EuchreGame } from "./euchre.types.ts";
@@ -36,12 +47,40 @@ describe("euchre", () => {
     expect(euchreHeight("JD", "H")).toBe(19);
     expect(suitIn("JD", "H")).toBe("H");
     expect(suitIn("JD", "S")).toBe("D");
-    expect(euchreTrickWinner([{ seat: 0, card: "AH" }, { seat: 1, card: "JD" }, { seat: 2, card: "KH" }, { seat: 3, card: "JH" }], "H")).toBe(3);
-    expect(euchreTrickWinner([{ seat: 0, card: "9C" }, { seat: 1, card: "AD" }, { seat: 2, card: "KC" }, { seat: 3, card: "TC" }], "H")).toBe(2);
+    expect(
+      euchreTrickWinner(
+        [
+          { seat: 0, card: "AH" },
+          { seat: 1, card: "JD" },
+          { seat: 2, card: "KH" },
+          { seat: 3, card: "JH" },
+        ],
+        "H",
+      ),
+    ).toBe(3);
+    expect(
+      euchreTrickWinner(
+        [
+          { seat: 0, card: "9C" },
+          { seat: 1, card: "AD" },
+          { seat: 2, card: "KC" },
+          { seat: 3, card: "TC" },
+        ],
+        "H",
+      ),
+    ).toBe(2);
   });
 
   it("makes the left bower follow trumps, not its own suit", () => {
-    const game: EuchreGame = { ...started(), phase: "playing", trump: "H", maker: 0, toPlay: 1, trick: [{ seat: 0, card: "9D" }], hands: [[], ["JD", "AS", "TH"], [], []] };
+    const game: EuchreGame = {
+      ...started(),
+      phase: "playing",
+      trump: "H",
+      maker: 0,
+      toPlay: 1,
+      trick: [{ seat: 0, card: "9D" }],
+      hands: [[], ["JD", "AS", "TH"], [], []],
+    };
     expect(euchrePlayable(game)).toEqual(["JD", "AS", "TH"]);
     const led: EuchreGame = { ...game, trick: [{ seat: 0, card: "9H" }] };
     expect(euchrePlayable(led)).toEqual(["JD", "TH"]);

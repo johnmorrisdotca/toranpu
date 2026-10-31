@@ -4,7 +4,15 @@
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 
 import { apiBody } from "./api.mjs";
-import { FAMILY_SCRIPT, FAMILY_EMBED_BUILDER_WORDS, familyEmbedBuilder, familyFooter, familyHead, familyHeader, familyUnreviewed } from "./family-template.mjs";
+import {
+  FAMILY_SCRIPT,
+  FAMILY_EMBED_BUILDER_WORDS,
+  familyEmbedBuilder,
+  familyFooter,
+  familyHead,
+  familyHeader,
+  familyUnreviewed,
+} from "./family-template.mjs";
 
 const id = "toranpu";
 const icon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='14' y='6' width='72' height='88' rx='12' fill='%23fffdf8' stroke='%232f5d4a' stroke-width='8'/%3E%3Cpath d='M50 26 C 66 44, 74 52, 74 62 C 74 74, 58 76, 54 66 L 58 80 L 42 80 L 46 66 C 42 76, 26 74, 26 62 C 26 52, 34 44, 50 26 Z' fill='%231f2320'/%3E%3C/svg%3E`;
@@ -30,7 +38,8 @@ ${body}
 
 rmSync("site", { recursive: true, force: true });
 mkdirSync("site", { recursive: true });
-for (const file of readdirSync("demo").filter((name) => /\.(css|js)$/.test(name))) cpSync(`demo/${file}`, `site/${file}`);
+for (const file of readdirSync("demo").filter((name) => /\.(css|js)$/.test(name)))
+  cpSync(`demo/${file}`, `site/${file}`);
 // The page another site frames: a hand of cards and nothing else, at embed/?hand=AS+KH+10D.
 mkdirSync("site/embed", { recursive: true });
 cpSync("demo/embed.html", "site/embed/index.html");
@@ -40,8 +49,12 @@ writeFileSync(
   "site/index.html",
   frame({
     title: "Toranpu トランプ — Playing cards, card games and solitaire",
-    description: "Play a hand of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy or War against computer players, all run by the Toranpu TypeScript package. Free and open source.",
-    links: [{ href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }],
+    description:
+      "Play a hand of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy or War against computer players, all run by the Toranpu TypeScript package. Free and open source.",
+    links: [
+      { href: "docs/index.html", say: "pageDocs" },
+      { href: "api.html", say: "pageApi" },
+    ],
     body: readFileSync("demo/body.html", "utf8").replace("__UNREVIEWED__", familyUnreviewed({ id })).trimEnd(),
     scripts: `<script type="module" src="page.js"></script>`,
   }),
@@ -52,7 +65,8 @@ writeFileSync(
   "site/api.html",
   frame({
     title: "Toranpu トランプ — Playing cards, card games and solitaire",
-    description: "The API reference of the Toranpu card game package: every export of every entry point, with its signature and its documentation, made from the source.",
+    description:
+      "The API reference of the Toranpu card game package: every export of every entry point, with its signature and its documentation, made from the source.",
     links: [{ href: "./", say: "pageBack" }],
     body: `      ${api.html}\n      ${familyUnreviewed({ id })}`,
     scripts: `<script type="module">
@@ -81,14 +95,35 @@ for (const name of backs.CARD_BACKS) {
   writeFileSync(`site/backs/${name}.svg`, backs.cardBackSvg(name));
   pictures += 1;
 }
-console.log(`site/ is ready (${api.total} exports in api.html, ${pictures} pictures of cards and backs): serve it, or let the Pages workflow publish it.`);
+console.log(
+  `site/ is ready (${api.total} exports in api.html, ${pictures} pictures of cards and backs): serve it, or let the Pages workflow publish it.`,
+);
 
 cpSync("demo/embed", "site/embed", { recursive: true });
 for (const file of ["builder.js", "builder.css"]) cpSync(`demo/${file}`, `site/${file}`);
-writeFileSync("site/family-embed-builder.js", `export const FAMILY_EMBED_BUILDER_WORDS = ${JSON.stringify(FAMILY_EMBED_BUILDER_WORDS)};\nexport ${familyEmbedBuilder.toString()};\n`);
+writeFileSync(
+  "site/family-embed-builder.js",
+  `export const FAMILY_EMBED_BUILDER_WORDS = ${JSON.stringify(FAMILY_EMBED_BUILDER_WORDS)};\nexport ${familyEmbedBuilder.toString()};\n`,
+);
 const builderParts = {
-  builderHead: familyHead({ id, title: "Toranpu トランプ — Playing cards, card games and solitaire", description: "Arrange cards, preview them and copy the embed code." }),
-  builderHeader: familyHeader({ id, links: [{ href: "./", say: "toGallery" }, { href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }] }),
-  unreviewed: familyUnreviewed({ id }), footer: familyFooter({ id }), script: `<script>${FAMILY_SCRIPT}</script>`,
+  builderHead: familyHead({
+    id,
+    title: "Toranpu トランプ — Playing cards, card games and solitaire",
+    description: "Arrange cards, preview them and copy the embed code.",
+  }),
+  builderHeader: familyHeader({
+    id,
+    links: [
+      { href: "./", say: "toGallery" },
+      { href: "docs/index.html", say: "pageDocs" },
+      { href: "api.html", say: "pageApi" },
+    ],
+  }),
+  unreviewed: familyUnreviewed({ id }),
+  footer: familyFooter({ id }),
+  script: `<script>${FAMILY_SCRIPT}</script>`,
 };
-writeFileSync("site/builder.html", readFileSync("demo/builder.html", "utf8").replace(/<!-- family:([A-Za-z]+) -->/g, (_match, key) => builderParts[key]));
+writeFileSync(
+  "site/builder.html",
+  readFileSync("demo/builder.html", "utf8").replace(/<!-- family:([A-Za-z]+) -->/g, (_match, key) => builderParts[key]),
+);

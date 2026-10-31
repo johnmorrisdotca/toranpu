@@ -24,7 +24,6 @@ import type { BigTwoGame } from "./big-two.types.ts";
  * Pure: every function returns a new game and leaves the one given alone.
  */
 
-
 /** A new deal from the game's seed: hands dealt and sorted, and the lowest card's holder to lead. */
 function dealBigTwo(game: Omit<BigTwoGame, "hands" | "pile" | "passed" | "toPlay" | "played" | "opening">): BigTwoGame {
   const seats = game.players.length;
@@ -61,7 +60,13 @@ function threeHanded(deck: readonly CardId[]): { hands: CardId[][] } {
  * console.log(startBigTwo(CARD_GAME_TABLES.bigTwo.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startBigTwo(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): BigTwoGame | null {
+export function startBigTwo(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): BigTwoGame | null {
   if (!(BIG_TWO_DEALS as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 4) return null;
   return dealBigTwo({

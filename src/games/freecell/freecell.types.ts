@@ -40,7 +40,23 @@ export type FreeCellTable = {
  * console.log(value);
  * ```
  */
-export type FreeCellPile = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "a" | "b" | "c" | "d" | "S" | "H" | "D" | "C";
+export type FreeCellPile =
+  | "1"
+  | "2"
+  | "3"
+  | "4"
+  | "5"
+  | "6"
+  | "7"
+  | "8"
+  | "a"
+  | "b"
+  | "c"
+  | "d"
+  | "S"
+  | "H"
+  | "D"
+  | "C";
 
 /**
  * One move: `count` cards carried from one pile to another. Only a column to

@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import { chooseBid, handWorth, spadesComputer, spadesView } from "./spades-computer.ts";
-import { NIL, partnershipScore, playSpades, spadesMoves, spadesPlayable, spadesTrickWinner, spadesWinners, startSpades } from "./spades.ts";
+import {
+  NIL,
+  partnershipScore,
+  playSpades,
+  spadesMoves,
+  spadesPlayable,
+  spadesTrickWinner,
+  spadesWinners,
+  startSpades,
+} from "./spades.ts";
 import { decodeSpades, encodeSpades } from "./spades-rules.ts";
 import type { SpadesGame } from "./spades.types.ts";
 
@@ -32,7 +41,9 @@ describe("spades", () => {
     const game = started();
     expect(game.phase).toBe("bidding");
     expect(game.toPlay).toBe(1);
-    expect(spadesMoves(game).map((move) => ("bid" in move ? move.bid : -1))).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+    expect(spadesMoves(game).map((move) => ("bid" in move ? move.bid : -1))).toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    ]);
     let at = game;
     for (const seat of [1, 2, 3, 0]) {
       expect(at.toPlay).toBe(seat);
@@ -52,15 +63,41 @@ describe("spades", () => {
   });
 
   it("makes a player follow suit, and lets one void of it trump", () => {
-    const game = { ...bid(started()), toPlay: 1, trick: [{ seat: 0, card: "4H" }], hands: [[], ["2S", "9H", "KD"], [], []] };
+    const game = {
+      ...bid(started()),
+      toPlay: 1,
+      trick: [{ seat: 0, card: "4H" }],
+      hands: [[], ["2S", "9H", "KD"], [], []],
+    };
     expect(spadesPlayable(game)).toEqual(["9H"]);
     expect(spadesPlayable({ ...game, hands: [[], ["2S", "KD"], [], []] })).toEqual(["2S", "KD"]);
   });
 
   it("gives the trick to the highest spade, or else the highest card of the suit led", () => {
-    expect(spadesTrickWinner([{ seat: 0, card: "4H" }, { seat: 1, card: "AH" }, { seat: 2, card: "KD" }, { seat: 3, card: "9H" }])).toBe(1);
-    expect(spadesTrickWinner([{ seat: 0, card: "4H" }, { seat: 1, card: "AH" }, { seat: 2, card: "2S" }, { seat: 3, card: "9H" }])).toBe(2);
-    expect(spadesTrickWinner([{ seat: 0, card: "4H" }, { seat: 1, card: "3S" }, { seat: 2, card: "2S" }, { seat: 3, card: "AD" }])).toBe(1);
+    expect(
+      spadesTrickWinner([
+        { seat: 0, card: "4H" },
+        { seat: 1, card: "AH" },
+        { seat: 2, card: "KD" },
+        { seat: 3, card: "9H" },
+      ]),
+    ).toBe(1);
+    expect(
+      spadesTrickWinner([
+        { seat: 0, card: "4H" },
+        { seat: 1, card: "AH" },
+        { seat: 2, card: "2S" },
+        { seat: 3, card: "9H" },
+      ]),
+    ).toBe(2);
+    expect(
+      spadesTrickWinner([
+        { seat: 0, card: "4H" },
+        { seat: 1, card: "3S" },
+        { seat: 2, card: "2S" },
+        { seat: 3, card: "AD" },
+      ]),
+    ).toBe(1);
   });
 
   it("scores a contract made, a contract set, the bags over it and a nil", () => {
@@ -120,11 +157,30 @@ describe("the spades computer", () => {
   it("leaves a trick its partner has won alone, and ducks once its partnership has made its contract", () => {
     const base = bid(started());
     // Cy (seat 2) is to play last; partner Ann led the ace of hearts and it is winning.
-    const game: SpadesGame = { ...base, toPlay: 2, bids: [3, 3, 3, 3], tricks: [0, 0, 0, 0], trick: [{ seat: 3, card: "4H" }, { seat: 0, card: "AH" }, { seat: 1, card: "5H" }], hands: [[], [], ["KH", "2H", "AS"], []] };
+    const game: SpadesGame = {
+      ...base,
+      toPlay: 2,
+      bids: [3, 3, 3, 3],
+      tricks: [0, 0, 0, 0],
+      trick: [
+        { seat: 3, card: "4H" },
+        { seat: 0, card: "AH" },
+        { seat: 1, card: "5H" },
+      ],
+      hands: [[], [], ["KH", "2H", "AS"], []],
+    };
     // Tricks still wanted: the lowest heart, keeping the king.
     expect(spadesComputer(game)).toEqual({ play: "2H" });
     // Contract made and an opponent winning with the ace: rid the hand of the king under it, a bag it might otherwise take.
-    const made: SpadesGame = { ...game, trick: [{ seat: 3, card: "AH" }, { seat: 0, card: "3H" }, { seat: 1, card: "5H" }], tricks: [4, 0, 3, 0] };
+    const made: SpadesGame = {
+      ...game,
+      trick: [
+        { seat: 3, card: "AH" },
+        { seat: 0, card: "3H" },
+        { seat: 1, card: "5H" },
+      ],
+      tricks: [4, 0, 3, 0],
+    };
     expect(spadesComputer(made)).toEqual({ play: "KH" });
   });
 });

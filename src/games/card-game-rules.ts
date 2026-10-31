@@ -60,7 +60,9 @@ export type CardGamePlays = {
  * console.log(Object.keys(CARD_GAME_RULES));
  * ```
  */
-export const CARD_GAME_RULES: { [K in CardGameKind]: CardGameRules<CardGamePlays[K]["game"], CardGamePlays[K]["move"]> } = {
+export const CARD_GAME_RULES: {
+  [K in CardGameKind]: CardGameRules<CardGamePlays[K]["game"], CardGamePlays[K]["move"]>;
+} = {
   hearts: HEARTS_RULES,
   bigTwo: BIG_TWO_RULES,
   president: PRESIDENT_RULES,

@@ -32,7 +32,8 @@ describe("every extra is drawn and named", () => {
   it("is a card a face is drawn for, in every design, never selectable, and named in both languages", () => {
     for (const card of EXTRA_CARDS) {
       expect(isCardFace(card)).toBe(true);
-      for (const design of ["plain", "four-colour", ENGLISH_PATTERN] as const) expect(cardFaceSvg(card, { design }), card).toMatch(/^<svg [^>]*user-select:none/);
+      for (const design of ["plain", "four-colour", ENGLISH_PATTERN] as const)
+        expect(cardFaceSvg(card, { design }), card).toMatch(/^<svg [^>]*user-select:none/);
       expect(faceName(card, "en")).not.toBe(card);
       expect(faceName(card, "ja")).not.toBe(faceName(card, "en"));
     }

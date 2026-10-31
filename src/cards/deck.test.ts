@@ -27,7 +27,8 @@ describe("the deck", () => {
     const deck = freshDeck();
     expect(deck).toHaveLength(DECK_SIZE);
     expect(new Set(deck.map(cardCode)).size).toBe(DECK_SIZE);
-    for (const suit of ["spades", "hearts", "diamonds", "clubs"]) expect(deck.filter((card) => card.suit === suit)).toHaveLength(13);
+    for (const suit of ["spades", "hearts", "diamonds", "clubs"])
+      expect(deck.filter((card) => card.suit === suit)).toHaveLength(13);
   });
 
   it("writes every card as one letter and reads it back", () => {

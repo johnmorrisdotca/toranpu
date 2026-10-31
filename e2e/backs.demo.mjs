@@ -10,14 +10,23 @@ const shown = (page) => page.locator(`${at("back-show")} svg`).evaluate((svg) =>
 
 test("every back is SVG a browser reads without complaint", async ({ page }) => {
   await open(page, "?seed=1");
-  const read = await page.evaluate((all) => all.map((svg) => {
-    const parsed = new DOMParser().parseFromString(svg, "image/svg+xml");
-    return parsed.querySelector("parsererror") === null && parsed.documentElement.tagName === "svg";
-  }), CARD_BACKS.flatMap((name) => [cardBackSvg(name), cardBackSvg(name, { mark: "五つ & <co>", colour: "#123456", width: 70 })]));
+  const read = await page.evaluate(
+    (all) =>
+      all.map((svg) => {
+        const parsed = new DOMParser().parseFromString(svg, "image/svg+xml");
+        return parsed.querySelector("parsererror") === null && parsed.documentElement.tagName === "svg";
+      }),
+    CARD_BACKS.flatMap((name) => [
+      cardBackSvg(name),
+      cardBackSvg(name, { mark: "五つ & <co>", colour: "#123456", width: 70 }),
+    ]),
+  );
   expect(read).toEqual(CARD_BACKS.flatMap(() => [true, true]));
 });
 
-test("choose a back, colour it and write in its middle: the drawing, the code and the address follow", async ({ page }) => {
+test("choose a back, colour it and write in its middle: the drawing, the code and the address follow", async ({
+  page,
+}) => {
   const errors = await open(page, "?seed=1");
   await expect(page.locator(`${at("back-picks")} button`)).toHaveCount(3);
   await expect(page.locator(at("back-classic-red"))).toHaveAttribute("aria-pressed", "true");

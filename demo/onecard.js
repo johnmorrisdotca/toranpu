@@ -25,7 +25,8 @@ function draw(lang) {
     const [name, value] = part.split("=");
     shown.setAttribute(name, value.slice(1, -1));
   }
-  $("one-card-code").textContent = `<script type="module" src="https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/element-define.js"></script>
+  $("one-card-code").textContent =
+    `<script type="module" src="https://cdn.jsdelivr.net/npm/@johnmorrisdotca/toranpu@2/dist/element-define.js"></script>
 <toranpu-card ${attributes().join(" ")} flip></toranpu-card>`;
   const picture = `${SITE}cards/${look.design}/${card}.svg`;
   $("one-card-img").src = `cards/${look.design}/${card}.svg`;

@@ -7,16 +7,26 @@ import { fileURLToPath } from "node:url";
 import { expect, test } from "@playwright/test";
 
 const site = join(dirname(fileURLToPath(import.meta.url)), "..", "site");
-const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml" };
+const TYPES = {
+  ".html": "text/html",
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".json": "application/json",
+  ".svg": "image/svg+xml",
+};
 
 /** Serve `site/` to a page at http://toranpu.test/. */
 export async function serve(page) {
-  if (!existsSync(join(site, "index.html"))) throw new Error("site/ is not built: run `pnpm site` first (`pnpm test:demo` does)");
+  if (!existsSync(join(site, "index.html")))
+    throw new Error("site/ is not built: run `pnpm site` first (`pnpm test:demo` does)");
   await page.route("http://toranpu.test/**", (route) => {
     const { pathname } = new URL(route.request().url());
     const file = join(site, pathname.endsWith("/") ? `${pathname}index.html` : pathname);
     if (!existsSync(file)) return route.fulfill({ status: 404, body: "" });
-    return route.fulfill({ body: readFileSync(file), contentType: TYPES[file.slice(file.lastIndexOf("."))] ?? "application/octet-stream" });
+    return route.fulfill({
+      body: readFileSync(file),
+      contentType: TYPES[file.slice(file.lastIndexOf("."))] ?? "application/octet-stream",
+    });
   });
 }
 
@@ -54,7 +64,9 @@ export async function settled(page) {
 
 /** Make a move as a person does: tap the cards it names, then the button that says it. */
 export async function make(page, move) {
-  const cards = Object.values(move).flatMap((value) => (Array.isArray(value) ? value : [value])).filter((value) => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
+  const cards = Object.values(move)
+    .flatMap((value) => (Array.isArray(value) ? value : [value]))
+    .filter((value) => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
   for (const card of cards) await tap(page, `${at("hand")} [data-card="${card}"]`);
   await tap(page, `${at("move")}[data-move='${JSON.stringify(move)}']`);
   await settled(page);
@@ -72,7 +84,11 @@ export function state(page) {
       players: Number(q('[data-testid="players"]').value),
       seed: Number(q('[data-testid="seed"]').value),
       status: text("status"),
-      seats: all('[data-testid="seats"] .seat').map((seat) => ({ who: seat.querySelector(".who").textContent, meta: seat.querySelector(".meta").textContent, turn: seat.dataset.turn === "true" })),
+      seats: all('[data-testid="seats"] .seat').map((seat) => ({
+        who: seat.querySelector(".who").textContent,
+        meta: seat.querySelector(".meta").textContent,
+        turn: seat.dataset.turn === "true",
+      })),
       hand: all('[data-testid="hand"] .card').map((card) => card.dataset.card),
       usable: all('[data-testid="hand"] .card:not(:disabled)').map((card) => card.dataset.card),
       moves: all('[data-testid="move"]').map((button) => button.textContent),
@@ -105,7 +121,9 @@ export async function sound(page, errors) {
         .map((e) => `${e.dataset.testid ?? e.textContent}: ${Math.round(box(e).width)}×${Math.round(box(e).height)}`),
       // Anything that pokes out of the page sideways.
       wide: all("main *")
-        .filter((e) => box(e).width > 0 && box(e).right > window.innerWidth + 0.5 && !e.closest(".fam-table-box, pre, .log"))
+        .filter(
+          (e) => box(e).width > 0 && box(e).right > window.innerWidth + 0.5 && !e.closest(".fam-table-box, pre, .log"),
+        )
         .map((e) => `${e.tagName} ${e.className}`),
     };
   });

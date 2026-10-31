@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { dealPoints, dealSizes, ohHellBids, ohHellMoves, ohHellPlayable, ohHellTrickWinner, ohHellWinners, playOhHell, startOhHell } from "./oh-hell.ts";
+import {
+  dealPoints,
+  dealSizes,
+  ohHellBids,
+  ohHellMoves,
+  ohHellPlayable,
+  ohHellTrickWinner,
+  ohHellWinners,
+  playOhHell,
+  startOhHell,
+} from "./oh-hell.ts";
 import { chooseOhHellBid, ohHellComputer, ohHellWorth } from "./oh-hell-computer.ts";
 import { decodeOhHell, encodeOhHell } from "./oh-hell-rules.ts";
 import type { OhHellGame } from "./oh-hell.types.ts";
@@ -47,11 +57,36 @@ describe("oh hell", () => {
   });
 
   it("makes a player follow suit, and gives the trick to the highest trump", () => {
-    const game: OhHellGame = { ...started(), phase: "playing", trump: "H", toPlay: 1, trick: [{ seat: 0, card: "KS" }], hands: [[], ["2S", "AH", "3D"], [], []] };
+    const game: OhHellGame = {
+      ...started(),
+      phase: "playing",
+      trump: "H",
+      toPlay: 1,
+      trick: [{ seat: 0, card: "KS" }],
+      hands: [[], ["2S", "AH", "3D"], [], []],
+    };
     expect(ohHellPlayable(game)).toEqual(["2S"]);
     expect(ohHellPlayable({ ...game, hands: [[], ["AH", "3D"], [], []] })).toEqual(["AH", "3D"]);
-    expect(ohHellTrickWinner([{ seat: 0, card: "KS" }, { seat: 1, card: "2H" }, { seat: 2, card: "AS" }], "H")).toBe(1);
-    expect(ohHellTrickWinner([{ seat: 0, card: "KS" }, { seat: 1, card: "AD" }, { seat: 2, card: "3S" }], "H")).toBe(0);
+    expect(
+      ohHellTrickWinner(
+        [
+          { seat: 0, card: "KS" },
+          { seat: 1, card: "2H" },
+          { seat: 2, card: "AS" },
+        ],
+        "H",
+      ),
+    ).toBe(1);
+    expect(
+      ohHellTrickWinner(
+        [
+          { seat: 0, card: "KS" },
+          { seat: 1, card: "AD" },
+          { seat: 2, card: "3S" },
+        ],
+        "H",
+      ),
+    ).toBe(0);
   });
 
   it("scores ten and the bid for exactly the bid, and nothing otherwise", () => {

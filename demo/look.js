@@ -26,7 +26,10 @@ export function setLook(change) {
   for (const draw of listeners) draw();
 }
 /** The back's options as `cardBackSvg` takes them. */
-export const backOptions = () => ({ ...(look.colour === null ? {} : { colour: look.colour }), ...(look.mark.trim() === "" ? {} : { mark: look.mark.trim() }) });
+export const backOptions = () => ({
+  ...(look.colour === null ? {} : { colour: look.colour }),
+  ...(look.mark.trim() === "" ? {} : { mark: look.mark.trim() }),
+});
 /** The look's part of the page's address. */
 export function lookQuery(query) {
   if (look.back !== "classic-red") query.set("back", look.back);

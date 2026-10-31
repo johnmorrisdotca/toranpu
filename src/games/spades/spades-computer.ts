@@ -1,7 +1,15 @@
 import type { CardId, CardSuit } from "../card-games.types.ts";
 import { suitOf } from "../cards.ts";
 
-import { NIL, SPADES_SEATS, partnerOf, spadesHeight, spadesMoves, spadesPlayable, spadesTrickWinner } from "./spades.ts";
+import {
+  NIL,
+  SPADES_SEATS,
+  partnerOf,
+  spadesHeight,
+  spadesMoves,
+  spadesPlayable,
+  spadesTrickWinner,
+} from "./spades.ts";
 import type { SpadesGame, SpadesMove, SpadesPlay } from "./spades.types.ts";
 
 /**
@@ -155,13 +163,19 @@ export function handWorth(hand: readonly CardId[]): number {
 export function chooseBid(hand: readonly CardId[], partnerBid: number | null): number {
   const worth = handWorth(hand);
   const spades = ofSuit(hand, "S").map(spadesHeight);
-  const safeForNil = worth < 1 && spades.length <= 3 && spades.every((height) => height <= 10) && hand.every((card) => spadesHeight(card) <= 12);
+  const safeForNil =
+    worth < 1 &&
+    spades.length <= 3 &&
+    spades.every((height) => height <= 10) &&
+    hand.every((card) => spadesHeight(card) <= 12);
   if (safeForNil && partnerBid !== NIL) return NIL;
   return Math.max(1, Math.min(13, Math.round(worth + 0.25)));
 }
 
-const highest = (cards: readonly CardId[]) => cards.reduce((best, card) => (spadesHeight(card) > spadesHeight(best) ? card : best));
-const lowest = (cards: readonly CardId[]) => cards.reduce((best, card) => (spadesHeight(card) < spadesHeight(best) ? card : best));
+const highest = (cards: readonly CardId[]) =>
+  cards.reduce((best, card) => (spadesHeight(card) > spadesHeight(best) ? card : best));
+const lowest = (cards: readonly CardId[]) =>
+  cards.reduce((best, card) => (spadesHeight(card) < spadesHeight(best) ? card : best));
 
 /** Whether this card, laid now, would be taking the trick. */
 function wouldWin(trick: readonly SpadesPlay[], seat: number, card: CardId): boolean {
@@ -239,7 +253,11 @@ function lead(view: SpadesView, wanted: boolean): CardId {
   const side = playable.filter((card) => suitOf(card) !== "S");
   if (side.length === 0) return wanted ? highest(playable) : lowest(playable);
   const length = (card: CardId) => ofSuit(view.hand, suitOf(card)).length;
-  return side.reduce((best, card) => (length(card) < length(best) || (length(card) === length(best) && spadesHeight(card) < spadesHeight(best)) ? card : best));
+  return side.reduce((best, card) =>
+    length(card) < length(best) || (length(card) === length(best) && spadesHeight(card) < spadesHeight(best))
+      ? card
+      : best,
+  );
 }
 
 /** Bid nil and clean so far: lead low, stay under whatever is winning, and throw the high cards when void. */

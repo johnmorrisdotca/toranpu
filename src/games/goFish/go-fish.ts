@@ -78,7 +78,10 @@ function layBooks(game: GoFishGame, seat: number): GoFishGame {
 function drawOne(game: GoFishGame, seat: number): { game: GoFishGame; card: CardId } | null {
   const [card, ...stock] = game.stock;
   if (card === undefined) return null;
-  return { game: { ...game, stock, hands: game.hands.map((hand, at) => (at === seat ? sortGoFish([...hand, card]) : hand)) }, card };
+  return {
+    game: { ...game, stock, hands: game.hands.map((hand, at) => (at === seat ? sortGoFish([...hand, card]) : hand)) },
+    card,
+  };
 }
 
 /** Whether every book is down. */
@@ -99,7 +102,8 @@ function turnTo(game: GoFishGame, seat: number): GoFishGame {
     const at = (seat + step) % seats;
     if (game.hands[at].length > 0) return { ...game, toPlay: at };
     const drawn = drawOne(game, at);
-    if (drawn !== null) return turnTo(layBooks({ ...drawn.game, log: [...drawn.game.log, { kind: "draw", seat: at }] }, at), at);
+    if (drawn !== null)
+      return turnTo(layBooks({ ...drawn.game, log: [...drawn.game.log, { kind: "draw", seat: at }] }, at), at);
   }
   return { ...game, phase: "over", toPlay: null };
 }
@@ -122,7 +126,13 @@ function turnTo(game: GoFishGame, seat: number): GoFishGame {
  * console.log(startGoFish(CARD_GAME_TABLES.goFish.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startGoFish(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): GoFishGame | null {
+export function startGoFish(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): GoFishGame | null {
   if (!(GO_FISH_SIZES as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 6) return null;
   const seed = dealt ?? 1;
@@ -232,7 +242,13 @@ export function playGoFish(game: GoFishGame, move: GoFishMove): GoFishGame | nul
   const handed = game.hands[asked].filter((card) => rankOf(card) === move.rank);
   const moved = { ...game, moves: [...game.moves, move] };
   if (handed.length > 0) {
-    const hands = moved.hands.map((hand, at) => (at === asked ? hand.filter((card) => rankOf(card) !== move.rank) : at === seat ? sortGoFish([...hand, ...handed]) : hand));
+    const hands = moved.hands.map((hand, at) =>
+      at === asked
+        ? hand.filter((card) => rankOf(card) !== move.rank)
+        : at === seat
+          ? sortGoFish([...hand, ...handed])
+          : hand,
+    );
     const event: GoFishEvent = { kind: "ask", seat, asked, rank: move.rank, got: handed.length, fished: null };
     // A catch: ask again (or, with nothing left in hand, draw first).
     return turnTo(layBooks({ ...moved, hands, log: [...moved.log, event] }, seat), seat);
@@ -243,7 +259,14 @@ export function playGoFish(game: GoFishGame, move: GoFishMove): GoFishGame | nul
     return turnTo({ ...moved, log: [...moved.log, dry] }, nextSeat(seat, game.players.length));
   }
   const caught = rankOf(drawn.card) === move.rank;
-  const event: GoFishEvent = { kind: "ask", seat, asked, rank: move.rank, got: 0, fished: caught ? "caught" : "missed" };
+  const event: GoFishEvent = {
+    kind: "ask",
+    seat,
+    asked,
+    rank: move.rank,
+    got: 0,
+    fished: caught ? "caught" : "missed",
+  };
   const after = layBooks({ ...drawn.game, log: [...drawn.game.log, event] }, seat);
   return turnTo(after, caught ? seat : nextSeat(seat, game.players.length));
 }

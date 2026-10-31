@@ -100,7 +100,11 @@ export type CardBackOptions = {
  * console.log(CARD_BACK_PROPERTIES);
  * ```
  */
-export const CARD_BACK_PROPERTIES = { field: "--toranpu-back", ink: "--toranpu-back-ink", paper: "--toranpu-back-paper" } as const;
+export const CARD_BACK_PROPERTIES = {
+  field: "--toranpu-back",
+  ink: "--toranpu-back-ink",
+  paper: "--toranpu-back-paper",
+} as const;
 
 const isBack = (name: unknown): name is CardBackName => (CARD_BACKS as readonly unknown[]).includes(name);
 
@@ -129,7 +133,11 @@ function key(name: CardBackName, options: CardBackOptions): string {
 
 /** A rosette of eight petals round a middle, the classic backs' ornament. */
 function rosette(cx: number, cy: number, field: string, ink: string): string {
-  const petals = Array.from({ length: 8 }, (_, at) => `<ellipse cx="${cx}" cy="${cy - 7.2}" rx="2.6" ry="6.2" transform="rotate(${at * 45} ${cx} ${cy})"${ink}/>`).join("");
+  const petals = Array.from(
+    { length: 8 },
+    (_, at) =>
+      `<ellipse cx="${cx}" cy="${cy - 7.2}" rx="2.6" ry="6.2" transform="rotate(${at * 45} ${cx} ${cy})"${ink}/>`,
+  ).join("");
   return [
     `<circle cx="${cx}" cy="${cy}" r="18"${field}/>`,
     `<circle cx="${cx}" cy="${cy}" r="18" fill="none" stroke-width="1.3"${ink.replace("fill", "stroke")}/>`,
@@ -142,7 +150,8 @@ function rosette(cx: number, cy: number, field: string, ink: string): string {
 }
 
 /** A small diamond, the classic backs' corner mark. */
-const diamond = (x: number, y: number, size: number, ink: string) => `<path d="M${x} ${y - size}L${x + size * 0.7} ${y}L${x} ${y + size}L${x - size * 0.7} ${y}Z"${ink}/>`;
+const diamond = (x: number, y: number, size: number, ink: string) =>
+  `<path d="M${x} ${y - size}L${x + size * 0.7} ${y}L${x} ${y + size}L${x - size * 0.7} ${y}Z"${ink}/>`;
 
 /** The middle of a back with a mark of the caller's: a paper disc with the words on it, in the field's colour. */
 function marked(cx: number, cy: number, words: string, field: string, paper: string, fieldText: string): string {
@@ -173,8 +182,18 @@ function marked(cx: number, cy: number, words: string, field: string, paper: str
 export function cardBackSvg(name: CardBackName | string = "classic-red", given: CardBackOptions = {}): string {
   // A back the page registered by name starts from its own options and the built-in back it names; what is asked for now wins.
   const own = registeredBack(name);
-  const options: CardBackOptions = own === undefined ? given : { ...own, ...Object.fromEntries(Object.entries(given).filter(([, value]) => value !== undefined)) };
-  const back: CardBackName = own !== undefined ? (own.base !== undefined && isBack(own.base) ? own.base : "classic-red") : isBack(name) ? name : "classic-red";
+  const options: CardBackOptions =
+    own === undefined
+      ? given
+      : { ...own, ...Object.fromEntries(Object.entries(given).filter(([, value]) => value !== undefined)) };
+  const back: CardBackName =
+    own !== undefined
+      ? own.base !== undefined && isBack(own.base)
+        ? own.base
+        : "classic-red"
+      : isBack(name)
+        ? name
+        : "classic-red";
   const look = CARD_BACK_LOOK[back];
   const { width, height, radius } = CARD_BOX;
   const id = `toranpu-back-${key(back, options)}`;
@@ -183,10 +202,18 @@ export function cardBackSvg(name: CardBackName | string = "classic-red", given: 
   const inkLine = paint("stroke", CARD_BACK_PROPERTIES.ink, options.ink, look.ink);
   const paper = paint("fill", CARD_BACK_PROPERTIES.paper, options.paper, look.paper);
   const fieldText = field;
-  const size = typeof options.width === "number" && options.width > 0 ? ` width="${round(options.width)}" height="${round(options.width * 1.4)}"` : "";
-  const title = options.title === undefined || options.title === "" ? ` aria-hidden="true"` : ` role="img" aria-label="${escapeXml(options.title)}"`;
+  const size =
+    typeof options.width === "number" && options.width > 0
+      ? ` width="${round(options.width)}" height="${round(options.width * 1.4)}"`
+      : "";
+  const title =
+    options.title === undefined || options.title === ""
+      ? ` aria-hidden="true"`
+      : ` role="img" aria-label="${escapeXml(options.title)}"`;
   const mark = typeof options.mark === "string" && options.mark.trim() !== "" ? options.mark.trim().slice(0, 12) : null;
-  const parts: string[] = [`<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="#000" stroke-opacity=".18" stroke-width=".8"/>`];
+  const parts: string[] = [
+    `<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="#000" stroke-opacity=".18" stroke-width=".8"/>`,
+  ];
   const art = typeof options.art === "string" && options.art.trim() !== "" ? cleanMarkup(options.art) : null;
   const image = art === null ? safeImageUrl(options.image) : null;
   const own_art = art !== null || image !== null;
@@ -208,10 +235,17 @@ export function cardBackSvg(name: CardBackName | string = "classic-red", given: 
     if (logo !== null) parts.push(logoOn(logo, field, paper, options.logoSize, true));
     else if (mark !== null) parts.push(marked(50, 70, mark, field, paper, fieldText));
     else {
-      parts.push(`<rect x="29" y="49" width="42" height="42" rx="7"${field}/><rect x="32" y="52" width="36" height="36" rx="5.5"${paper}/>`);
+      parts.push(
+        `<rect x="29" y="49" width="42" height="42" rx="7"${field}/><rect x="32" y="52" width="36" height="36" rx="5.5"${paper}/>`,
+      );
       const red = ` fill="#c2272d"`;
       const black = ` fill="#1b1b1b"`;
-      parts.push(suitPath("S", 42, 62, 13, black), suitPath("H", 58, 62, 13, red), suitPath("D", 42, 78, 13, red), suitPath("C", 58, 78, 13, black));
+      parts.push(
+        suitPath("S", 42, 62, 13, black),
+        suitPath("H", 58, 62, 13, red),
+        suitPath("D", 42, 78, 13, red),
+        suitPath("C", 58, 78, 13, black),
+      );
     }
   } else {
     parts.push(
@@ -249,7 +283,9 @@ function logoOn(logo: string, field: string, paper: string, wanted: number | und
       : `<image href="${escapeXml(picture)}" x="${x}" y="${y}" width="${round(side)}" height="${round(side)}" preserveAspectRatio="xMidYMid meet"/>`;
   if (drawn === "") return "";
   const radius = side / 2 + 4;
-  return plate ? `<circle cx="50" cy="70" r="${round(radius)}"${field}/><circle cx="50" cy="70" r="${round(radius - 2.5)}"${paper}/>${drawn}` : drawn;
+  return plate
+    ? `<circle cx="50" cy="70" r="${round(radius)}"${field}/><circle cx="50" cy="70" r="${round(radius - 2.5)}"${paper}/>${drawn}`
+    : drawn;
 }
 
 /** A back as a data URL, for an <img src>, a CSS background or a canvas: the same drawing as `cardBackSvg`, with its own colours.

@@ -3,7 +3,17 @@
 // same seed and the same moves must give.
 import { expect, test } from "@playwright/test";
 
-import { CARD_GAME_LIST, CARD_GAME_TABLES, fromJSON, gameSays, moveText, newGame, playComputers, rulesFor, toCode } from "../dist/index.js";
+import {
+  CARD_GAME_LIST,
+  CARD_GAME_TABLES,
+  fromJSON,
+  gameSays,
+  moveText,
+  newGame,
+  playComputers,
+  rulesFor,
+  toCode,
+} from "../dist/index.js";
 import { at, make, open, settled, sound, state, tap } from "./demo.mjs";
 
 const NAMES = ["You", "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
@@ -32,7 +42,15 @@ test("a first visit deals Hearts for four, and says whose turn it is", async ({ 
   await settled(page);
   const s = await state(page);
   const game = start("hearts", 2026);
-  expect(s).toMatchObject({ game: "hearts", players: 4, seed: 2026, status: "Your turn: pick 3 cards to pass.", hand: game.hands[0], blurb: gameSays("hearts"), address: "?game=hearts&players=4&seed=2026" });
+  expect(s).toMatchObject({
+    game: "hearts",
+    players: 4,
+    seed: 2026,
+    status: "Your turn: pick 3 cards to pass.",
+    hand: game.hands[0],
+    blurb: gameSays("hearts"),
+    address: "?game=hearts&players=4&seed=2026",
+  });
   expect(s.seats.map((seat) => seat.who)).toEqual(["You", "Aiko", "Ben", "Chloé"]);
   expect(s.seats[0]).toMatchObject({ turn: true, meta: "cards: 13 · score 0" });
   expect(s.seats[1].meta).toBe("computer · cards: 13 · score 0");
@@ -41,7 +59,9 @@ test("a first visit deals Hearts for four, and says whose turn it is", async ({ 
   await sound(page, errors);
 });
 
-test("Hearts: pass three cards, then follow the two of clubs, and the page holds the game the rules make", async ({ page }) => {
+test("Hearts: pass three cards, then follow the two of clubs, and the page holds the game the rules make", async ({
+  page,
+}) => {
   const errors = await open(page, "?game=hearts&seed=2026");
   await settled(page);
   // Nothing to press until three cards are picked.
@@ -62,20 +82,36 @@ test("Go Fish, played to the end by pressing buttons: the winner is the one the 
   const rules = rulesFor("goFish");
   expect(rules.over(game)).toBe(true);
   const s = await state(page);
-  expect(s.status).toBe(`Game over. Won by ${rules.winners(game).map((seat) => NAMES[seat]).join(", ")}.`);
+  expect(s.status).toBe(
+    `Game over. Won by ${rules
+      .winners(game)
+      .map((seat) => NAMES[seat])
+      .join(", ")}.`,
+  );
   expect(s.kept).toBe(toCode("goFish", game));
   expect(s.moves).toEqual([]);
-  expect(s.seats.map((seat) => seat.meta.match(/books: (\d+)/)[1]).map(Number)).toEqual(game.books.map((books) => books.length));
+  expect(s.seats.map((seat) => seat.meta.match(/books: (\d+)/)[1]).map(Number)).toEqual(
+    game.books.map((books) => books.length),
+  );
   await sound(page, errors);
 });
 
-test("War: nobody chooses a card, the one button turns the cards over, and the game is played to its end", async ({ page }) => {
+test("War: nobody chooses a card, the one button turns the cards over, and the game is played to its end", async ({
+  page,
+}) => {
   // A whole game of War is played move by move on the screen: WebKit on a CI runner takes about half a minute of it.
   test.setTimeout(120_000);
   const errors = await open(page, "?game=war&seed=2026");
   await settled(page);
   let s = await state(page);
-  expect(s).toMatchObject({ game: "war", players: 2, status: "Your turn.", hand: [], moves: ["Turn the cards over"], address: "?game=war&players=2&seed=2026" });
+  expect(s).toMatchObject({
+    game: "war",
+    players: 2,
+    status: "Your turn.",
+    hand: [],
+    moves: ["Turn the cards over"],
+    address: "?game=war&players=2&seed=2026",
+  });
   expect(s.seats.map((seat) => seat.meta)).toEqual(["cards: 26", "computer · cards: 26"]);
   // Before the first turn there is nothing turned up; after it, the cards laid are, and who took them.
   await expect(page.locator(at("piles"))).not.toContainText("takes");
@@ -83,7 +119,9 @@ test("War: nobody chooses a card, the one button turns the cards over, and the g
   s = await state(page);
   expect(s.kept).toBe(toCode("war", game));
   await expect(page.locator(at("piles"))).toContainText(/takes \d+ cards/);
-  expect(s.seats.map((seat) => Number(seat.meta.match(/cards: (\d+)/)[1]))).toEqual(game.hands.map((hand) => hand.length));
+  expect(s.seats.map((seat) => Number(seat.meta.match(/cards: (\d+)/)[1]))).toEqual(
+    game.hands.map((hand) => hand.length),
+  );
   const rules = rulesFor("war");
   let end = game;
   while (!rules.over(end)) {
@@ -93,7 +131,12 @@ test("War: nobody chooses a card, the one button turns the cards over, and the g
   }
   expect(rules.over(end)).toBe(true);
   s = await state(page);
-  expect(s.status).toBe(`Game over. Won by ${rules.winners(end).map((seat) => NAMES[seat]).join(", ")}.`);
+  expect(s.status).toBe(
+    `Game over. Won by ${rules
+      .winners(end)
+      .map((seat) => NAMES[seat])
+      .join(", ")}.`,
+  );
   expect(s.kept).toBe(toCode("war", end));
   expect(s.moves).toEqual([]);
   expect(s.hand).toEqual([]);

@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { playPresident, presidentMayPlay, presidentMoves, presidentRank, presidentTitle, startPresident } from "./president.ts";
+import {
+  playPresident,
+  presidentMayPlay,
+  presidentMoves,
+  presidentRank,
+  presidentTitle,
+  startPresident,
+} from "./president.ts";
 import { presidentComputer } from "./president-computer.ts";
 import type { PresidentGame } from "./president.types.ts";
 
@@ -34,7 +41,9 @@ describe("president", () => {
   });
 
   it("follows a pair only with a higher pair", () => {
-    const game = at([["5C", "5D", "9S"], ["6C", "6D", "4S"], ["7H"], ["8H"]], { pile: { seat: 3, cards: ["4C", "4D"] } });
+    const game = at([["5C", "5D", "9S"], ["6C", "6D", "4S"], ["7H"], ["8H"]], {
+      pile: { seat: 3, cards: ["4C", "4D"] },
+    });
     expect(presidentMayPlay(game, ["5C", "5D"])).toBe(true);
     expect(presidentMayPlay(game, ["9S"])).toBe(false);
     expect(presidentMayPlay({ ...game, pile: { seat: 3, cards: ["5H", "5S"] } }, ["5C", "5D"])).toBe(false);
@@ -95,9 +104,21 @@ describe("president", () => {
   });
 
   it("the computer gives back its lowest cards and keeps its twos while nobody is close to going out", () => {
-    const giving = { ...at([["3C", "9D", "2S", "AH"], ["4C"], ["5C"], ["6C"]]), phase: "exchange" as const, owed: [{ from: 0, to: 3, count: 2 }] };
+    const giving = {
+      ...at([["3C", "9D", "2S", "AH"], ["4C"], ["5C"], ["6C"]]),
+      phase: "exchange" as const,
+      owed: [{ from: 0, to: 3, count: 2 }],
+    };
     expect(presidentComputer(giving)).toEqual({ give: ["3C", "9D"] });
-    const holding = at([["2S", "4D", "5C", "6H", "8C", "9D"], ["3C", "3D", "3H"], ["4C", "4H", "4S"], ["5H", "5S", "6S"]], { pile: { seat: 3, cards: ["KS"] } });
+    const holding = at(
+      [
+        ["2S", "4D", "5C", "6H", "8C", "9D"],
+        ["3C", "3D", "3H"],
+        ["4C", "4H", "4S"],
+        ["5H", "5S", "6S"],
+      ],
+      { pile: { seat: 3, cards: ["KS"] } },
+    );
     expect(presidentComputer(holding)).toEqual({ pass: true });
   });
 });

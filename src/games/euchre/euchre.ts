@@ -173,7 +173,12 @@ export function sortEuchre(hand: readonly CardId[], trump: CardSuit | null = nul
   return [...hand].sort((a, b) => order(a) - order(b) || euchreHeight(a, trump) - euchreHeight(b, trump));
 }
 
-function dealEuchre(game: Omit<EuchreGame, "hands" | "upcard" | "trump" | "maker" | "passes" | "trick" | "played" | "toPlay" | "tricks" | "phase">): EuchreGame {
+function dealEuchre(
+  game: Omit<
+    EuchreGame,
+    "hands" | "upcard" | "trump" | "maker" | "passes" | "trick" | "played" | "toPlay" | "tricks" | "phase"
+  >,
+): EuchreGame {
   const { hands, stock } = dealRound(shuffledDeck(game.seed, game.deal, LEFT_OUT), EUCHRE_SEATS, DEALT);
   return {
     ...game,
@@ -208,10 +213,26 @@ function dealEuchre(game: Omit<EuchreGame, "hands" | "upcard" | "trump" | "maker
  * console.log(startEuchre(CARD_GAME_TABLES.euchre.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startEuchre(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): EuchreGame | null {
+export function startEuchre(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): EuchreGame | null {
   if (!(EUCHRE_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== EUCHRE_SEATS) return null;
-  return dealEuchre({ size, players: [...players], computers: computerSeats(players.length, computers), seed: dealt ?? 1, moves: [], deal: 0, lastTrick: null, scores: [0, 0], results: [] });
+  return dealEuchre({
+    size,
+    players: [...players],
+    computers: computerSeats(players.length, computers),
+    seed: dealt ?? 1,
+    moves: [],
+    deal: 0,
+    lastTrick: null,
+    scores: [0, 0],
+    results: [],
+  });
 }
 
 /** The cards the seat to play may lay on the trick: the suit led (the left bower counting as a trump) if it holds any.
@@ -297,7 +318,14 @@ export function euchreMoves(game: EuchreGame): EuchreMove[] {
 
 /** Trumps are made: the tricks begin, led by the dealer's left. */
 function beginPlay(game: EuchreGame, trump: CardSuit, maker: number): EuchreGame {
-  return { ...game, trump, maker, hands: game.hands.map((hand) => sortEuchre(hand, trump)), phase: "playing", toPlay: nextSeat(dealerOf(game.deal), EUCHRE_SEATS) };
+  return {
+    ...game,
+    trump,
+    maker,
+    hands: game.hands.map((hand) => sortEuchre(hand, trump)),
+    phase: "playing",
+    toPlay: nextSeat(dealerOf(game.deal), EUCHRE_SEATS),
+  };
 }
 
 function speak(game: EuchreGame, seat: number, move: EuchreMove): EuchreGame | null {
@@ -312,7 +340,9 @@ function speak(game: EuchreGame, seat: number, move: EuchreMove): EuchreGame | n
   if ("order" in move && game.phase === "order") {
     const trump = suitOf(game.upcard);
     // The dealer picks the turned card up, and throws one away before play.
-    const hands = game.hands.map((hand, at) => (at === dealer ? sortEuchre([...hand, game.upcard], trump) : sortEuchre(hand, trump)));
+    const hands = game.hands.map((hand, at) =>
+      at === dealer ? sortEuchre([...hand, game.upcard], trump) : sortEuchre(hand, trump),
+    );
     return { ...game, hands, trump, maker: seat, phase: "discard", toPlay: dealer };
   }
   if ("call" in move && game.phase === "call") {
@@ -336,7 +366,15 @@ function playCard(game: EuchreGame, seat: number, card: CardId): EuchreGame | nu
   if (trick.length < EUCHRE_SEATS) return { ...game, hands, trick, toPlay: nextSeat(seat, EUCHRE_SEATS) };
   const winner = euchreTrickWinner(trick, game.trump!);
   const tricks = game.tricks.map((had, at) => (at === winner ? had + 1 : had));
-  const after: EuchreGame = { ...game, hands, trick: [], tricks, played: [...game.played, ...trick.map((play) => play.card)], lastTrick: { plays: trick, winner }, toPlay: winner };
+  const after: EuchreGame = {
+    ...game,
+    hands,
+    trick: [],
+    tricks,
+    played: [...game.played, ...trick.map((play) => play.card)],
+    lastTrick: { plays: trick, winner },
+    toPlay: winner,
+  };
   return hands[0].length === 0 ? endHand(after) : after;
 }
 

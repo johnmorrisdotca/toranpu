@@ -40,7 +40,12 @@ const SAYS_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
 };
 
 const SUIT_KEYS: Record<CardSuit, keyof ToranpuStrings> = { S: "suitS", H: "suitH", D: "suitD", C: "suitC" };
-const SUIT_SYMBOLS: Record<CardSuit, string> = { S: SUIT_DISPLAY.spades.symbol, H: SUIT_DISPLAY.hearts.symbol, D: SUIT_DISPLAY.diamonds.symbol, C: SUIT_DISPLAY.clubs.symbol };
+const SUIT_SYMBOLS: Record<CardSuit, string> = {
+  S: SUIT_DISPLAY.spades.symbol,
+  H: SUIT_DISPLAY.hearts.symbol,
+  D: SUIT_DISPLAY.diamonds.symbol,
+  C: SUIT_DISPLAY.clubs.symbol,
+};
 
 /** A game's name: "Hearts", or "ハーツ" in Japanese.
  *
@@ -142,7 +147,10 @@ export function rankName(rank: CardRank, language: Language = "en"): string {
  * ```
  */
 export function cardText(card: CardId, language: Language = "en"): string {
-  return fillIn(STRINGS[language].cardName, { rank: rankName(rankOf(card), language), suit: suitName(suitOf(card), language) });
+  return fillIn(STRINGS[language].cardName, {
+    rank: rankName(rankOf(card), language),
+    suit: suitName(suitOf(card), language),
+  });
 }
 
 /** A card as a corner shows it: "Q♠", "10♦". The same in every language.
@@ -241,16 +249,21 @@ export function moveText<K extends CardGameKind>(kind: K, move: MoveOf<K>, optio
   const language = options.language ?? "en";
   const form = options.form ?? "offer";
   const t = STRINGS[language];
-  const say = (name: string, values: Record<string, string | number> = {}) => fillIn(t[`${form === "offer" ? "offer" : "did"}${name}` as keyof ToranpuStrings], values);
-  const hid = (name: "PassCards" | "Crib" | "Give", cards: readonly CardId[]) => (form === "hidden" ? fillIn(t[`hid${name}`], { n: cards.length }) : say(name, { cards: cardsShort(cards) }));
+  const say = (name: string, values: Record<string, string | number> = {}) =>
+    fillIn(t[`${form === "offer" ? "offer" : "did"}${name}` as keyof ToranpuStrings], values);
+  const hid = (name: "PassCards" | "Crib" | "Give", cards: readonly CardId[]) =>
+    form === "hidden" ? fillIn(t[`hid${name}`], { n: cards.length }) : say(name, { cards: cardsShort(cards) });
   const given = move as Record<string, unknown>;
-  const cards = (value: unknown): CardId[] => (Array.isArray(value) ? value.filter(isCard) : isCard(value) ? [value] : []);
+  const cards = (value: unknown): CardId[] =>
+    Array.isArray(value) ? value.filter(isCard) : isCard(value) ? [value] : [];
   if (Array.isArray(given.pass)) return hid("PassCards", cards(given.pass));
   if ("crib" in given) return hid("Crib", cards(given.crib));
   if ("give" in given) return hid("Give", cards(given.give));
   if ("play" in given) {
     const suit = given.suit as CardSuit | undefined;
-    return suit === undefined ? say("Play", { cards: cardsShort(cards(given.play)) }) : say("PlaySuit", { cards: cardsShort(cards(given.play)), suit: suitName(suit, language) });
+    return suit === undefined
+      ? say("Play", { cards: cardsShort(cards(given.play)) })
+      : say("PlaySuit", { cards: cardsShort(cards(given.play)), suit: suitName(suit, language) });
   }
   if ("turn" in given) return say("Turn");
   if ("pass" in given) return say("Pass");
@@ -259,11 +272,15 @@ export function moveText<K extends CardGameKind>(kind: K, move: MoveOf<K>, optio
   if ("knock" in given) return say("Knock", { cards: cardsShort(cards(given.knock)) });
   if ("order" in given) return say("Order");
   if ("call" in given) return say("Call", { suit: suitName(given.call as CardSuit, language) });
-  if ("bid" in given) return given.bid === 0 && kind === "spades" ? say("BidNil") : say("Bid", { n: given.bid as number });
+  if ("bid" in given)
+    return given.bid === 0 && kind === "spades" ? say("BidNil") : say("Bid", { n: given.bid as number });
   if ("ask" in given) {
     const seat = given.ask as number;
     const rank = given.rank as CardRank;
-    return say("Ask", { player: options.players?.[seat] ?? fillIn(t.seatName, { n: seat + 1 }), rank: language === "en" ? rankWords(rank) : rankName(rank, language) });
+    return say("Ask", {
+      player: options.players?.[seat] ?? fillIn(t.seatName, { n: seat + 1 }),
+      rank: language === "en" ? rankWords(rank) : rankName(rank, language),
+    });
   }
   return JSON.stringify(move);
 }

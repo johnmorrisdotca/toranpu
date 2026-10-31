@@ -104,7 +104,10 @@ export function freeCellMoveFor(table: FreeCellTable, from: FreeCellSpot, to: Fr
   const held = freeCellLiftable(table, from);
   if (from.pile === to || held.length === 0) return null;
   // A pile named by its letter: a free cell asked for as a whole is its own empty place, and any free one will do.
-  const target = isCellPile(to) && table.cells[cellAt(to)] !== null ? CELL_PILES.slice(0, table.cells.length).find((cell) => table.cells[cellAt(cell)] === null) : to;
+  const target =
+    isCellPile(to) && table.cells[cellAt(to)] !== null
+      ? CELL_PILES.slice(0, table.cells.length).find((cell) => table.cells[cellAt(cell)] === null)
+      : to;
   if (target === undefined) return null;
   const move: FreeCellMove = { from: from.pile, to: target, count: held.length };
   return playFreeCell(table, move) === null ? null : move;

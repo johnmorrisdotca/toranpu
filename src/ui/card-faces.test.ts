@@ -2,14 +2,25 @@ import { describe, expect, it } from "vitest";
 
 import { FULL_DECK } from "../games/cards.ts";
 import { ENGLISH_PATTERN } from "../designs/english.ts";
-import { CARD_DESIGNS, JOKERS, cardFaceSvg, cardFaceUrl, faceName, isCardFace, loadCardDesign, pipPlaces } from "./card-faces.ts";
+import {
+  CARD_DESIGNS,
+  JOKERS,
+  cardFaceSvg,
+  cardFaceUrl,
+  faceName,
+  isCardFace,
+  loadCardDesign,
+  pipPlaces,
+} from "./card-faces.ts";
 
 const EVERY = [...FULL_DECK, ...JOKERS];
 
 /** Every tag opened is closed, in order. */
 function wellFormed(svg: string): boolean {
   const open: string[] = [];
-  for (const [, closing, name, , selfClosing] of svg.matchAll(/<(\/?)([a-zA-Z]+)((?:\s+[a-zA-Z:-]+="[^"]*")*)\s*(\/?)>/g)) {
+  for (const [, closing, name, , selfClosing] of svg.matchAll(
+    /<(\/?)([a-zA-Z]+)((?:\s+[a-zA-Z:-]+="[^"]*")*)\s*(\/?)>/g,
+  )) {
     if (selfClosing === "/") continue;
     if (closing === "/") {
       if (open.pop() !== name) return false;
@@ -79,8 +90,12 @@ describe("the card faces", () => {
   it("fit the English pattern to the card's box, every card of it with ids of its own", () => {
     expect(Object.keys(ENGLISH_PATTERN.art).sort()).toEqual([...EVERY].sort());
     expect(ENGLISH_PATTERN.box).toEqual([360, 540]);
-    expect(cardFaceSvg("KS", { design: ENGLISH_PATTERN })).toContain('<g transform="translate(3.333 0) scale(0.25926)">');
-    const ids = Object.values(ENGLISH_PATTERN.art).flatMap((art) => [...art.matchAll(/ id="([^"]+)"/g)].map((m) => m[1]));
+    expect(cardFaceSvg("KS", { design: ENGLISH_PATTERN })).toContain(
+      '<g transform="translate(3.333 0) scale(0.25926)">',
+    );
+    const ids = Object.values(ENGLISH_PATTERN.art).flatMap((art) =>
+      [...art.matchAll(/ id="([^"]+)"/g)].map((m) => m[1]),
+    );
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) expect(id).toMatch(/^tp-en-/);
   });
@@ -99,7 +114,8 @@ describe("the card faces", () => {
     // Knoll's own cards from his set; his ace of spades and the courts from Fomin's, through the fallback.
     expect(cardFaceSvg("7H", { design: realistic! })).not.toBe(cardFaceSvg("7H", { design: ENGLISH_PATTERN }));
     expect(cardFaceSvg("7H", { design: realistic! })).not.toBe(cardFaceSvg("7H"));
-    for (const card of ["AS", "KD", "QC", "JH", "RJ"]) expect(cardFaceSvg(card, { design: realistic! }), card).toBe(cardFaceSvg(card, { design: ENGLISH_PATTERN }));
+    for (const card of ["AS", "KD", "QC", "JH", "RJ"])
+      expect(cardFaceSvg(card, { design: realistic! }), card).toBe(cardFaceSvg(card, { design: ENGLISH_PATTERN }));
     expect(await loadCardDesign("plain")).toBeNull();
     expect(await loadCardDesign("nonsense")).toBeNull();
   });

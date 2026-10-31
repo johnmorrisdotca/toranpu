@@ -13,20 +13,46 @@ const GOLD = "#c98b2b";
 
 /** The six places of the invented game: their names in both languages, the ground's colour and the outline of the land. */
 const PLACES = {
-  ridgeway: { en: "Ridgeway", ja: "尾根道", tint: "#d9c7a0", land: "M14 84L26 60L40 68L54 42L70 64L86 56L90 94L60 104L28 98Z" },
-  harbour: { en: "Harbour", ja: "港町", tint: "#b9d3dc", land: "M12 70L30 52L52 58L72 44L88 62L82 88L60 80L50 104L26 96Z" },
-  saltmarsh: { en: "Saltmarsh", ja: "塩沼", tint: "#cfd9b0", land: "M16 60L44 46L64 54L88 50L84 80L90 102L56 96L34 104L18 88Z" },
+  ridgeway: {
+    en: "Ridgeway",
+    ja: "尾根道",
+    tint: "#d9c7a0",
+    land: "M14 84L26 60L40 68L54 42L70 64L86 56L90 94L60 104L28 98Z",
+  },
+  harbour: {
+    en: "Harbour",
+    ja: "港町",
+    tint: "#b9d3dc",
+    land: "M12 70L30 52L52 58L72 44L88 62L82 88L60 80L50 104L26 96Z",
+  },
+  saltmarsh: {
+    en: "Saltmarsh",
+    ja: "塩沼",
+    tint: "#cfd9b0",
+    land: "M16 60L44 46L64 54L88 50L84 80L90 102L56 96L34 104L18 88Z",
+  },
   highfell: { en: "Highfell", ja: "高原", tint: "#e0c9c0", land: "M20 98L14 70L38 50L50 62L66 44L84 66L88 100L54 90Z" },
   oakmere: { en: "Oakmere", ja: "樫の湖", tint: "#bcd8c2", land: "M24 50L58 44L86 58L78 82L88 98L50 104L16 90L28 70Z" },
-  stonebridge: { en: "Stonebridge", ja: "石橋", tint: "#d6d2dc", land: "M12 62L40 48L62 62L90 46L86 78L64 90L72 106L36 98L20 82Z" },
+  stonebridge: {
+    en: "Stonebridge",
+    ja: "石橋",
+    tint: "#d6d2dc",
+    land: "M12 62L40 48L62 62L90 46L86 78L64 90L72 106L36 98L20 82Z",
+  },
 };
-const KIND_WORDS = { soldier: { en: "soldier", ja: "歩兵" }, horse: { en: "horse", ja: "騎兵" }, cannon: { en: "cannon", ja: "大砲" } };
+const KIND_WORDS = {
+  soldier: { en: "soldier", ja: "歩兵" },
+  horse: { en: "horse", ja: "騎兵" },
+  cannon: { en: "cannon", ja: "大砲" },
+};
 
 /** A soldier, a horse and a cannon, each drawn in a box about 24 across with its middle at 0, 0, in one ink. */
 const ICONS = {
-  soldier: (ink) => `<circle cx="0" cy="-7" r="3.4" fill="${ink}"/><path d="M-4 -8.4A4 4 0 0 1 4 -8.4Z" fill="${ink}"/><path d="M-6 9L-5 -1Q0 -3.4 5 -1L6 9Z" fill="${ink}"/><rect x="6" y="-9" width="1.8" height="19" rx=".7" fill="${ink}" transform="rotate(8 7 0)"/>`,
+  soldier: (ink) =>
+    `<circle cx="0" cy="-7" r="3.4" fill="${ink}"/><path d="M-4 -8.4A4 4 0 0 1 4 -8.4Z" fill="${ink}"/><path d="M-6 9L-5 -1Q0 -3.4 5 -1L6 9Z" fill="${ink}"/><rect x="6" y="-9" width="1.8" height="19" rx=".7" fill="${ink}" transform="rotate(8 7 0)"/>`,
   horse: (ink) => `<path d="M-7 9L-6 2C-6 -4 -2 -9 4 -10L3 -6L8 -8C8 -4 7 -1 5 1C7 4 7 6 7 9Z" fill="${ink}"/>`,
-  cannon: (ink) => `<rect x="-10" y="-5.5" width="16" height="6.5" rx="2.4" fill="${ink}" transform="rotate(-18 -2 -2)"/><circle cx="0" cy="4.5" r="5.6" fill="none" stroke="${ink}" stroke-width="1.8"/><path d="M-5.6 4.5H5.6M0 -1.1V10.1" stroke="${ink}" stroke-width="1"/>`,
+  cannon: (ink) =>
+    `<rect x="-10" y="-5.5" width="16" height="6.5" rx="2.4" fill="${ink}" transform="rotate(-18 -2 -2)"/><circle cx="0" cy="4.5" r="5.6" fill="none" stroke="${ink}" stroke-width="1.8"/><path d="M-5.6 4.5H5.6M0 -1.1V10.1" stroke="${ink}" stroke-width="1"/>`,
 };
 const icon = (kind, x, y, scale, ink) => `<g transform="translate(${x} ${y}) scale(${scale})">${ICONS[kind](ink)}</g>`;
 
@@ -60,7 +86,8 @@ function wild(language) {
 function king(suit) {
   const red = suit === "H" || suit === "D";
   const ink = red ? "#a3342e" : "#1b1b1b";
-  const mark = (x, y, size) => `<path d="${SUIT_PATHS[suit]}" fill="${ink}" transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})"/>`;
+  const mark = (x, y, size) =>
+    `<path d="${SUIT_PATHS[suit]}" fill="${ink}" transform="translate(${x - size / 2} ${y - size / 2}) scale(${size / 100})"/>`;
   const corner = `<text x="11" y="22" text-anchor="middle" font-size="16" font-weight="800" font-family="Georgia, serif" fill="${ink}">K</text>${mark(11, 32, 11)}`;
   return [
     `<g>${corner}</g><g transform="rotate(180 50 70)">${corner}</g>`,
@@ -96,7 +123,9 @@ export function register() {
       const found = /^([a-z]+)-(soldier|horse|cannon)$/.exec(card);
       if (found === null || !(found[1] in PLACES)) return null;
       const where = PLACES[found[1]];
-      return language === "ja" ? `${where.ja}（${KIND_WORDS[found[2]].ja}）` : `${where.en} (${KIND_WORDS[found[2]].en})`;
+      return language === "ja"
+        ? `${where.ja}（${KIND_WORDS[found[2]].ja}）`
+        : `${where.en} (${KIND_WORDS[found[2]].en})`;
     },
   });
   registerCardBack("frontier", { base: "classic-blue", colour: GREEN, ink: "#e7d9a8", logo: SHIELD, logoSize: 36 });
@@ -104,7 +133,15 @@ export function register() {
 }
 
 /** The cards a hand of the site's own holds: six territories with a soldier, a horse or a cannon each, and the wild card. */
-export const BRAND_HAND = ["ridgeway-soldier", "harbour-horse", "saltmarsh-cannon", "highfell-soldier", "oakmere-horse", "stonebridge-cannon", "wild"];
+export const BRAND_HAND = [
+  "ridgeway-soldier",
+  "harbour-horse",
+  "saltmarsh-cannon",
+  "highfell-soldier",
+  "oakmere-horse",
+  "stonebridge-cannon",
+  "wild",
+];
 
 /** Wires the panel: the hand of territory cards, the three backs, and the buttons that turn them over. */
 export function wire() {
@@ -114,7 +151,14 @@ export function wire() {
   row.replaceChildren(
     ...BRAND_HAND.map((id) => {
       const card = document.createElement("toranpu-card");
-      for (const [name, value] of Object.entries({ card: id, design: "frontier", back: "frontier", size: "large", sound: "" })) card.setAttribute(name, value);
+      for (const [name, value] of Object.entries({
+        card: id,
+        design: "frontier",
+        back: "frontier",
+        size: "large",
+        sound: "",
+      }))
+        card.setAttribute(name, value);
       card.toggleAttribute("flip", true);
       return card;
     }),
@@ -126,5 +170,6 @@ export function wire() {
     for (const card of document.querySelectorAll("#brand-panel toranpu-card")) card.faceDown = !card.faceDown;
   });
   // A card whose face is worked out from its id, by a function: a pennant with the number on it.
-  $("brand-fn").face = (card, { language }) => `<rect x="14" y="14" width="72" height="112" rx="4" fill="${CREAM}" stroke="${GREEN}" stroke-width="2"/><path d="M26 30H74V74L50 60L26 74Z" fill="${GOLD}"/><text x="50" y="56" text-anchor="middle" font-size="22" font-weight="800" font-family="system-ui, sans-serif" fill="${GREEN}">${card}</text><text x="50" y="104" text-anchor="middle" font-size="${language === "ja" ? 10 : 9}" font-family="system-ui, sans-serif" fill="${GREEN}">${language === "ja" ? "関数で描いた面" : "by a function"}</text>`;
+  $("brand-fn").face = (card, { language }) =>
+    `<rect x="14" y="14" width="72" height="112" rx="4" fill="${CREAM}" stroke="${GREEN}" stroke-width="2"/><path d="M26 30H74V74L50 60L26 74Z" fill="${GOLD}"/><text x="50" y="56" text-anchor="middle" font-size="22" font-weight="800" font-family="system-ui, sans-serif" fill="${GREEN}">${card}</text><text x="50" y="104" text-anchor="middle" font-size="${language === "ja" ? 10 : 9}" font-family="system-ui, sans-serif" fill="${GREEN}">${language === "ja" ? "関数で描いた面" : "by a function"}</text>`;
 }

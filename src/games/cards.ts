@@ -251,7 +251,11 @@ export function mixSeed(seed: number, salt: number): number {
  * console.log(dealRound(FULL_DECK, 4, 5).hands.map((hand) => hand.length));
  * ```
  */
-export function dealRound(deck: readonly CardId[], seats: number, each?: number): { hands: CardId[][]; stock: CardId[] } {
+export function dealRound(
+  deck: readonly CardId[],
+  seats: number,
+  each?: number,
+): { hands: CardId[][]; stock: CardId[] } {
   const hands: CardId[][] = Array.from({ length: seats }, () => []);
   const dealt = each === undefined ? deck.length : Math.min(deck.length, each * seats);
   for (let at = 0; at < dealt; at += 1) hands[at % seats].push(deck[at]);

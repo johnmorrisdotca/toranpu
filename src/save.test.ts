@@ -4,10 +4,22 @@ import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.t
 import type { CardGameKind } from "./games/card-games.constants.ts";
 import { newGame, playComputers, rulesFor } from "./play.ts";
 import type { GameOf } from "./play.ts";
-import { CSV_COLUMNS, SAVE_FORMAT, fromCode, fromJSON, recordOf, savedGame, toCSV, toCode, toJSON, toText } from "./save.ts";
+import {
+  CSV_COLUMNS,
+  SAVE_FORMAT,
+  fromCode,
+  fromJSON,
+  recordOf,
+  savedGame,
+  toCSV,
+  toCode,
+  toJSON,
+  toText,
+} from "./save.ts";
 import { VERSION } from "./version.ts";
 
-const seats = (kind: CardGameKind) => Array.from({ length: CARD_GAME_TABLES[kind].defaultPlayers }, (_, seat) => `P${seat + 1}`);
+const seats = (kind: CardGameKind) =>
+  Array.from({ length: CARD_GAME_TABLES[kind].defaultPlayers }, (_, seat) => `P${seat + 1}`);
 /** A game part played: computers everywhere, stopped after some moves. */
 function partPlayed<K extends CardGameKind>(kind: K, moves: number, seed = 5): GameOf<K> {
   const rules = rulesFor(kind);
@@ -15,14 +27,23 @@ function partPlayed<K extends CardGameKind>(kind: K, moves: number, seed = 5): G
   for (let at = 0; at < moves && !rules.over(game); at += 1) game = rules.play(game, rules.computer(game))!;
   return game;
 }
-const finished = <K extends CardGameKind>(kind: K, seed = 5): GameOf<K> => playComputers(kind, newGame(kind, { players: seats(kind), seed, computers: seats(kind).map(() => true) })!).game;
+const finished = <K extends CardGameKind>(kind: K, seed = 5): GameOf<K> =>
+  playComputers(kind, newGame(kind, { players: seats(kind), seed, computers: seats(kind).map(() => true) })!).game;
 
 describe("JSON", () => {
   it("writes the format first, what wrote it, and the table, the seed and the moves", () => {
     const game = partPlayed("hearts", 6);
     const data = JSON.parse(toJSON("hearts", game));
     expect(Object.keys(data)).toEqual(["format", "generator", "game", "size", "players", "computers", "seed", "moves"]);
-    expect(data).toMatchObject({ format: SAVE_FORMAT, generator: `toranpu ${VERSION}`, game: "hearts", size: 100, players: ["P1", "P2", "P3", "P4"], computers: [true, true, true, true], seed: 5 });
+    expect(data).toMatchObject({
+      format: SAVE_FORMAT,
+      generator: `toranpu ${VERSION}`,
+      game: "hearts",
+      size: 100,
+      players: ["P1", "P2", "P3", "P4"],
+      computers: [true, true, true, true],
+      seed: 5,
+    });
     expect(data.moves).toHaveLength(6);
     expect(toJSON("hearts", game)).toMatch(/^\{\n {2}"format": 1,/);
     expect(toJSON("hearts", game).endsWith("}\n")).toBe(true);
@@ -31,7 +52,16 @@ describe("JSON", () => {
   it("never writes a hand", () => {
     for (const kind of CARD_GAME_LIST) {
       const saved = savedGame(kind, partPlayed(kind, 3));
-      expect(Object.keys(saved)).toEqual(["format", "generator", "game", "size", "players", "computers", "seed", "moves"]);
+      expect(Object.keys(saved)).toEqual([
+        "format",
+        "generator",
+        "game",
+        "size",
+        "players",
+        "computers",
+        "seed",
+        "moves",
+      ]);
     }
   });
 
@@ -70,7 +100,19 @@ describe("JSON", () => {
   });
 
   it("refuses what is not a saved game", () => {
-    for (const text of ["", "not json", "null", "[]", "42", "{}", '{"format":1}', '{"format":1,"game":"poker","size":1,"players":["a","b"],"computers":[false,false],"seed":1,"moves":[]}', '{"game":"hearts","size":100,"players":["a","b","c","d"],"computers":[false,false,false,false],"seed":1,"moves":[]}', '{"v":1,"g":"poker"}', '{"v":2,"g":"hearts","size":100,"players":["a","b","c","d"],"computers":[false,false,false,false],"seed":1,"moves":[]}']) {
+    for (const text of [
+      "",
+      "not json",
+      "null",
+      "[]",
+      "42",
+      "{}",
+      '{"format":1}',
+      '{"format":1,"game":"poker","size":1,"players":["a","b"],"computers":[false,false],"seed":1,"moves":[]}',
+      '{"game":"hearts","size":100,"players":["a","b","c","d"],"computers":[false,false,false,false],"seed":1,"moves":[]}',
+      '{"v":1,"g":"poker"}',
+      '{"v":2,"g":"hearts","size":100,"players":["a","b","c","d"],"computers":[false,false,false,false],"seed":1,"moves":[]}',
+    ]) {
       expect(fromJSON(text), text).toBeNull();
     }
   });
@@ -103,8 +145,12 @@ describe("a record", () => {
 
   it("as text: a heading, a line a move, and how it stands", () => {
     const game = partPlayed("cribbage", 3, 7);
-    expect(toText("cribbage", game)).toBe("Cribbage for 2, seed 7: P1, P2\n1. P2: lays 9♠ K♥ in the crib\n2. P1: lays 8♥ K♠ in the crib\n3. P2: plays 4♥\nNot over. P1 to play.\n");
-    expect(toText("cribbage", game, "ja")).toBe("クリベッジ（2人）、シード 7: P1、P2\n1. P2: 9♠ K♥をクリブに置きました\n2. P1: 8♥ K♠をクリブに置きました\n3. P2: 4♥を出しました\n進行中。次はP1の番です。\n");
+    expect(toText("cribbage", game)).toBe(
+      "Cribbage for 2, seed 7: P1, P2\n1. P2: lays 9♠ K♥ in the crib\n2. P1: lays 8♥ K♠ in the crib\n3. P2: plays 4♥\nNot over. P1 to play.\n",
+    );
+    expect(toText("cribbage", game, "ja")).toBe(
+      "クリベッジ（2人）、シード 7: P1、P2\n1. P2: 9♠ K♥をクリブに置きました\n2. P1: 8♥ K♠をクリブに置きました\n3. P2: 4♥を出しました\n進行中。次はP1の番です。\n",
+    );
     const done = finished("cribbage", 7);
     const lines = toText("cribbage", done).trimEnd().split("\n");
     expect(lines).toHaveLength((done as unknown as { moves: unknown[] }).moves.length + 2);
@@ -114,7 +160,9 @@ describe("a record", () => {
   it("as CSV: a header and a row a move, ended CRLF", () => {
     expect(CSV_COLUMNS).toEqual(["move", "seat", "player", "action", "cards", "detail", "text"]);
     const csv = toCSV("cribbage", partPlayed("cribbage", 3, 7));
-    expect(csv).toBe('move,seat,player,action,cards,detail,text\r\n1,2,P2,crib,9S KH,"{""crib"":[""9S"",""KH""]}",lays 9♠ K♥ in the crib\r\n2,1,P1,crib,8H KS,"{""crib"":[""8H"",""KS""]}",lays 8♥ K♠ in the crib\r\n3,2,P2,play,4H,"{""play"":""4H""}",plays 4♥\r\n');
+    expect(csv).toBe(
+      'move,seat,player,action,cards,detail,text\r\n1,2,P2,crib,9S KH,"{""crib"":[""9S"",""KH""]}",lays 9♠ K♥ in the crib\r\n2,1,P1,crib,8H KS,"{""crib"":[""8H"",""KS""]}",lays 8♥ K♠ in the crib\r\n3,2,P2,play,4H,"{""play"":""4H""}",plays 4♥\r\n',
+    );
     expect(toCSV("hearts", partPlayed("hearts", 0))).toBe("move,seat,player,action,cards,detail,text\r\n");
   });
 
@@ -130,6 +178,7 @@ describe("a record", () => {
   it.each(CARD_GAME_LIST)("%s: every row of the CSV names an action, and the cards a move names", (kind) => {
     const rows = toCSV(kind, finished(kind)).trimEnd().split("\r\n").slice(1);
     expect(rows.length).toBeGreaterThan(10);
-    for (const row of rows) expect(row.split(",")[3], row).toMatch(/^(play|pass|bid|crib|give|draw|discard|knock|order|call|ask|turn)$/);
+    for (const row of rows)
+      expect(row.split(",")[3], row).toMatch(/^(play|pass|bid|crib|give|draw|discard|knock|order|call|ask|turn)$/);
   });
 });

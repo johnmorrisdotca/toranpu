@@ -48,7 +48,10 @@ describe("go fish", () => {
   });
 
   it("lays down four of a rank as a book, and ends when all thirteen are down, the most books winning", () => {
-    const books = [[1, 2, 3, 4, 6, 7], [8, 9, 10, 11, 12, 13]] as GoFishGame["books"];
+    const books = [
+      [1, 2, 3, 4, 6, 7],
+      [8, 9, 10, 11, 12, 13],
+    ] as GoFishGame["books"];
     const game = at([["5C", "5D", "5H"], ["5S"]], [], { books: [...books, []] as GoFishGame["books"] });
     const end = playGoFish({ ...game, hands: [...game.hands, []] }, { ask: 1, rank: 5 })!;
     expect(end.books[0]).toContain(5);
@@ -71,7 +74,15 @@ describe("go fish", () => {
     const memory = goFishMemory(log, 3);
     expect(memory.holds[2].has(9)).toBe(true);
     expect(memory.lacks[1].has(9)).toBe(true);
-    const game = at([["9C", "5D", "5S"], ["KH", "QH"], ["9S", "2D"]], ["3C"], { log });
+    const game = at(
+      [
+        ["9C", "5D", "5S"],
+        ["KH", "QH"],
+        ["9S", "2D"],
+      ],
+      ["3C"],
+      { log },
+    );
     // It holds more fives, but it knows seat 2 has a nine.
     expect(goFishComputer(game)).toEqual({ ask: 2, rank: 9 });
   });

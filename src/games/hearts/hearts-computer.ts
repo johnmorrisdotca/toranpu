@@ -134,8 +134,10 @@ export function choosePass(hand: readonly CardId[]): CardId[] {
     .slice(0, 3);
 }
 
-const highest = (cards: readonly CardId[]) => cards.reduce((best, card) => (heartsHeight(card) > heartsHeight(best) ? card : best));
-const lowest = (cards: readonly CardId[]) => cards.reduce((best, card) => (heartsHeight(card) < heartsHeight(best) ? card : best));
+const highest = (cards: readonly CardId[]) =>
+  cards.reduce((best, card) => (heartsHeight(card) > heartsHeight(best) ? card : best));
+const lowest = (cards: readonly CardId[]) =>
+  cards.reduce((best, card) => (heartsHeight(card) < heartsHeight(best) ? card : best));
 
 function chooseCard(view: HeartsView): CardId {
   const { playable } = view;
@@ -161,7 +163,9 @@ function lead(view: HeartsView, queenOut: boolean): CardId {
     if (suit === "S") {
       if (height > 12 && (queenOut || holdsQueen)) return 90 + height;
       // Flushing her out: lead low spades while she is out and nothing of ours can catch her.
-      return queenOut && !view.hand.some((held) => suitOf(held) === "S" && heartsHeight(held) > 12) ? height - 10 : height;
+      return queenOut && !view.hand.some((held) => suitOf(held) === "S" && heartsHeight(held) > 12)
+        ? height - 10
+        : height;
     }
     return suit === "H" ? height + 4 : height;
   };

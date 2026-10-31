@@ -8,9 +8,24 @@ function started(players = 3, seed = 3): CrazyEightsGame {
   return startCrazyEights(100, new Array<string>(players).fill(""), undefined, seed)!;
 }
 
-function at(hands: string[][], discard: string[], stock: string[], extra: Partial<CrazyEightsGame> = {}): CrazyEightsGame {
+function at(
+  hands: string[][],
+  discard: string[],
+  stock: string[],
+  extra: Partial<CrazyEightsGame> = {},
+): CrazyEightsGame {
   const top = discard[discard.length - 1];
-  return { ...started(hands.length), hands, discard, stock, suit: top[1] as CrazyEightsGame["suit"], toPlay: 0, drawn: null, passes: 0, ...extra };
+  return {
+    ...started(hands.length),
+    hands,
+    discard,
+    stock,
+    suit: top[1] as CrazyEightsGame["suit"],
+    toPlay: 0,
+    drawn: null,
+    passes: 0,
+    ...extra,
+  };
 }
 
 describe("crazy eights", () => {
@@ -29,7 +44,14 @@ describe("crazy eights", () => {
   });
 
   it("an eight names the suit that must follow", () => {
-    const game = at([["8C", "4D"], ["5H", "6S"]], ["9H"], ["2C"]);
+    const game = at(
+      [
+        ["8C", "4D"],
+        ["5H", "6S"],
+      ],
+      ["9H"],
+      ["2C"],
+    );
     expect(crazyEightsMoves(game).filter((move) => "play" in move && move.play === "8C")).toHaveLength(4);
     expect(playCrazyEights(game, { play: "8C" })).toBeNull();
     const after = playCrazyEights(game, { play: "8C", suit: "S" })!;
@@ -80,7 +102,10 @@ describe("crazy eights", () => {
 
   it("the computer saves its eights, and calls the suit it holds most of", () => {
     expect(crazyEightsComputer(at([["8C", "4H", "JH"], ["2D"]], ["9H"], ["2C"]))).toEqual({ play: "JH" });
-    expect(crazyEightsComputer(at([["8C", "4S", "JS", "2D"], ["2D"]], ["9H"], ["2C"]))).toEqual({ play: "8C", suit: "S" });
+    expect(crazyEightsComputer(at([["8C", "4S", "JS", "2D"], ["2D"]], ["9H"], ["2C"]))).toEqual({
+      play: "8C",
+      suit: "S",
+    });
     const drewEight = at([["5C", "6C", "8D"], ["2D"]], ["9H"], [], { drawn: "8D" });
     expect(crazyEightsComputer(drewEight)).toEqual({ pass: true });
   });

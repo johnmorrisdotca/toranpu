@@ -141,7 +141,11 @@ const EXTRAS: readonly string[] = ["RJ", "BJ", "R1", "R2", "BL"];
 /** Whether a hand holds no more extras than one pack has: four jokers, two rules cards, two blanks. */
 function withinLimits(ids: readonly string[]): boolean {
   const count = (test: (id: string) => boolean) => ids.filter(test).length;
-  return count((id) => id === "RJ" || id === "BJ") <= 4 && count((id) => id === "R1" || id === "R2") <= 2 && count((id) => id === "BL") <= 2;
+  return (
+    count((id) => id === "RJ" || id === "BJ") <= 4 &&
+    count((id) => id === "R1" || id === "R2") <= 2 &&
+    count((id) => id === "BL") <= 2
+  );
 }
 
 /**
@@ -162,7 +166,10 @@ function withinLimits(ids: readonly string[]): boolean {
  * ```
  */
 export function readHand(text: string | null | undefined): string[] | null {
-  const originals = String(text ?? "").trim().split(/[\s,;+]+/).filter(Boolean);
+  const originals = String(text ?? "")
+    .trim()
+    .split(/[\s,;+]+/)
+    .filter(Boolean);
   if (originals.length === 0) return [];
   // The extras by their words: each JOKER the next of red and black, each RULES the next rules card, BLANK the blank.
   let jokers = 0;
@@ -387,7 +394,11 @@ export type PartOptions = {
  * console.log(partedHandLayout(3, 1, { gap: 30 }));
  * ```
  */
-export function partedHandLayout(count: number, at: number, options: HandLayoutOptions & PartOptions = {}): CardPlace[] {
+export function partedHandLayout(
+  count: number,
+  at: number,
+  options: HandLayoutOptions & PartOptions = {},
+): CardPlace[] {
   const fan = handLayout(count, { ...options, open: 1 });
   const whole = fan.length;
   if (!Number.isInteger(at) || at < 0 || at >= whole) return fan;

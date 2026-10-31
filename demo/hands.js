@@ -14,8 +14,19 @@ let seed = 2026;
 
 /** The element as written in a page: its cards, the look it wears, how it lies now (face down, squared up), and what else is asked. */
 const tag = (hand, extra = "") => {
-  const worn = ["design", "back", "back-colour", "mark"].filter((name) => hand.hasAttribute(name)).map((name) => ` ${name}="${hand.getAttribute(name)}"`).join("");
-  const lies = ["face-down", "scrunched"].filter((name) => hand.hasAttribute(name)).map((name) => ` ${name}`).join("") + ["order", "turned", "parted", "marked"].filter((name) => hand.hasAttribute(name)).map((name) => ` ${name}="${hand.getAttribute(name)}"`).join("");
+  const worn = ["design", "back", "back-colour", "mark"]
+    .filter((name) => hand.hasAttribute(name))
+    .map((name) => ` ${name}="${hand.getAttribute(name)}"`)
+    .join("");
+  const lies =
+    ["face-down", "scrunched"]
+      .filter((name) => hand.hasAttribute(name))
+      .map((name) => ` ${name}`)
+      .join("") +
+    ["order", "turned", "parted", "marked"]
+      .filter((name) => hand.hasAttribute(name))
+      .map((name) => ` ${name}="${hand.getAttribute(name)}"`)
+      .join("");
   return `<toranpu-hand cards="${hand.getAttribute("cards")}"${worn}${lies}${extra}></toranpu-hand>`;
 };
 
@@ -138,10 +149,14 @@ export function wire() {
       const cards = hidden.cards;
       const out = chosen();
       // The next card of the deck the hand does not hold.
-      const next = shuffledDeck(seed + 7).map(cardId).find((card) => !cards.includes(card));
+      const next = shuffledDeck(seed + 7)
+        .map(cardId)
+        .find((card) => !cards.includes(card));
       if (out === undefined || next === undefined) return Promise.resolve();
       const lands = $("hand-receive").value;
-      said(`${tag(hidden)}\n\nhand.replace("${out}", "${next}");   // receive="${lands}": the new card goes ${lands === "front" ? "to the front" : "to the end"}`);
+      said(
+        `${tag(hidden)}\n\nhand.replace("${out}", "${next}");   // receive="${lands}": the new card goes ${lands === "front" ? "to the front" : "to the end"}`,
+      );
       return hidden.replace(out, next, lands);
     },
     "hand-new": () => {
@@ -157,7 +172,8 @@ export function wire() {
   const slider = $("closed-amount");
   const showClosed = () => {
     closed.setAttribute("closed", slider.value);
-    $("reveal-code").textContent = `${tag(closed, ` closed="${slider.value}" reveal`)}\n\n// or by hand:\nhand.open();\nhand.close(${slider.value});`;
+    $("reveal-code").textContent =
+      `${tag(closed, ` closed="${slider.value}" reveal`)}\n\n// or by hand:\nhand.open();\nhand.close(${slider.value});`;
   };
   slider.addEventListener("input", showClosed);
   deal();

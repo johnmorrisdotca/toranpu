@@ -6,9 +6,11 @@
  */
 
 /** Elements that can run script, embed a page or animate an address into a script, taken out with everything inside them. */
-const DANGEROUS_ELEMENTS = /<\s*(script|foreignObject|iframe|object|embed|audio|video|animate|animateMotion|animateTransform|set|style|link|meta|base)\b[\s\S]*?(?:<\s*\/\s*\1\s*>|$)/gi;
+const DANGEROUS_ELEMENTS =
+  /<\s*(script|foreignObject|iframe|object|embed|audio|video|animate|animateMotion|animateTransform|set|style|link|meta|base)\b[\s\S]*?(?:<\s*\/\s*\1\s*>|$)/gi;
 /** The same elements when they stand alone, with no closing tag. */
-const DANGEROUS_LONE = /<\s*\/?\s*(script|foreignObject|iframe|object|embed|audio|video|animate|animateMotion|animateTransform|set|style|link|meta|base)\b[^>]*>/gi;
+const DANGEROUS_LONE =
+  /<\s*\/?\s*(script|foreignObject|iframe|object|embed|audio|video|animate|animateMotion|animateTransform|set|style|link|meta|base)\b[^>]*>/gi;
 /** An event handler: `onload="…"`, `onclick='…'`, or one with no quotes. */
 const HANDLERS = /\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi;
 /** An address in `href` or `xlink:href`. */

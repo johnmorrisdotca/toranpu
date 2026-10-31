@@ -15,7 +15,8 @@ function draw(lang) {
   const good = cards !== null && cards.length > 0;
   $("embed-cards").setAttribute("aria-invalid", String(!good));
   $("embed-error").textContent = good ? "" : lang().embedBad;
-  for (const button of document.querySelectorAll("[data-embed-size]")) button.setAttribute("aria-pressed", String(button.dataset.embedSize === state.size));
+  for (const button of document.querySelectorAll("[data-embed-size]"))
+    button.setAttribute("aria-pressed", String(button.dataset.embedSize === state.size));
   if (!good) return;
   const query = new URLSearchParams({ hand: cards.join(" "), size: state.size });
   if (look.design !== "plain") query.set("design", look.design);
@@ -27,13 +28,15 @@ function draw(lang) {
   const src = `embed/?${query}`;
   if (frame.getAttribute("src") !== src) frame.setAttribute("src", src);
   frame.height = String(height);
-  $("embed-frame-code").textContent = `<iframe src="${SITE}${src}" title="A hand of cards" width="360" height="${height}" style="border:0;max-width:100%" loading="lazy"></iframe>`;
+  $("embed-frame-code").textContent =
+    `<iframe src="${SITE}${src}" title="A hand of cards" width="360" height="${height}" style="border:0;max-width:100%" loading="lazy"></iframe>`;
   const attributes = [`cards="${cards.join(" ")}"`, `size="${state.size}"`];
   if (look.design !== "plain") attributes.push(`design="${look.design}"`);
   if (look.back !== "classic-red") attributes.push(`back="${look.back}"`);
   if (look.colour !== null) attributes.push(`back-colour="${look.colour}"`);
   if (look.mark.trim() !== "") attributes.push(`mark="${look.mark.trim()}"`);
-  $("embed-tag-code").textContent = `<script type="module" src="${CDN}"></script>\n<toranpu-hand ${attributes.join(" ")}></toranpu-hand>`;
+  $("embed-tag-code").textContent =
+    `<script type="module" src="${CDN}"></script>\n<toranpu-hand ${attributes.join(" ")}></toranpu-hand>`;
 }
 
 /** `words` gives the page's table of words. */

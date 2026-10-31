@@ -5,7 +5,8 @@ import { STRINGS, newGame, playComputers, rulesFor, toCSV, toCode, toJSON, toTex
 import { cardId, shuffledDeck, writeCards } from "../dist/deck.js";
 import { at, open, settled, sound, state, tap } from "./demo.mjs";
 
-const finished = (kind, players, seed) => playComputers(kind, newGame(kind, { players, seed, computers: players.map(() => true) })).game;
+const finished = (kind, players, seed) =>
+  playComputers(kind, newGame(kind, { players, seed, computers: players.map(() => true) })).game;
 
 test("a game is kept four ways", async ({ page }) => {
   const errors = await open(page, "?game=go-fish&seed=2026");
@@ -32,7 +33,13 @@ test("a game pasted in is played through the rules and put on the table", async 
   await page.locator(at("paste")).fill(toCode("euchre", game));
   await tap(page, at("read"));
   let s = await state(page);
-  expect(s).toMatchObject({ game: "euchre", players: 4, seed: 42, error: "", status: "Game over. Won by North, South." });
+  expect(s).toMatchObject({
+    game: "euchre",
+    players: 4,
+    seed: 42,
+    error: "",
+    status: "Game over. Won by North, South.",
+  });
   expect(s.seats.map((seat) => seat.who)).toEqual(["North", "East", "South", "West"]);
   expect(s.kept).toBe(toCode("euchre", game));
   expect(s.log).toHaveLength(game.moves.length + 1);
@@ -40,7 +47,10 @@ test("a game pasted in is played through the rules and put on the table", async 
   // Its JSON reads too, and a game in the middle carries on.
   const rules = rulesFor("crazyEights");
   let going = newGame("crazyEights", { players: ["You", "Aiko"], seed: 3, computers: [false, true] });
-  going = playComputers("crazyEights", rules.play(playComputers("crazyEights", going).game, rules.moves(playComputers("crazyEights", going).game)[0])).game;
+  going = playComputers(
+    "crazyEights",
+    rules.play(playComputers("crazyEights", going).game, rules.moves(playComputers("crazyEights", going).game)[0]),
+  ).game;
   await page.locator(at("paste")).fill(toJSON("crazyEights", going).replaceAll("\n", " "));
   await page.locator(at("paste")).press("Enter");
   await settled(page);
@@ -109,7 +119,13 @@ test("the chooser switches every word, the device remembers, and the address win
 
   await tap(page, '[data-lang="ja"]');
   s = await state(page);
-  expect(s).toMatchObject({ lang: "ja", pitch: STRINGS.ja.pagePitch, unreviewed: true, status: "あなたの番です。", blurb: STRINGS.ja.saysGoFish });
+  expect(s).toMatchObject({
+    lang: "ja",
+    pitch: STRINGS.ja.pagePitch,
+    unreviewed: true,
+    status: "あなたの番です。",
+    blurb: STRINGS.ja.saysGoFish,
+  });
   expect(s.seats[0].who).toBe("あなた");
   expect(s.moves[0]).toBe("Aikoに4を聞く");
   expect(s.moves).toHaveLength(english.length);
@@ -126,7 +142,11 @@ test("the chooser switches every word, the device remembers, and the address win
   s = await state(page);
   expect(s.lang).toBe("en");
   expect(s.address).toBe("?lang=en&game=go-fish&players=3&seed=2026");
-  const empty = await page.evaluate(() => [...document.querySelectorAll("[data-say]")].filter((el) => el.textContent.trim() === "").map((el) => el.dataset.say));
+  const empty = await page.evaluate(() =>
+    [...document.querySelectorAll("[data-say]")]
+      .filter((el) => el.textContent.trim() === "")
+      .map((el) => el.dataset.say),
+  );
   expect(empty).toEqual([]);
 });
 
@@ -147,9 +167,22 @@ test("changing language moves nothing below the header", async ({ page }) => {
   const errors = await open(page, "?game=hearts&seed=2026");
   await settled(page);
   // Where the game picker starts, and how tall the seats over the table are: neither may move with the language.
-  const top = () => page.evaluate(() => [".choose", ".seats"].map((at) => { const box = document.querySelector(at).getBoundingClientRect(); return [Math.round(box.top + window.scrollY), Math.round(box.height)]; }));
+  const top = () =>
+    page.evaluate(() =>
+      [".choose", ".seats"].map((at) => {
+        const box = document.querySelector(at).getBoundingClientRect();
+        return [Math.round(box.top + window.scrollY), Math.round(box.height)];
+      }),
+    );
   // What each language lays out, for the message when they differ: each game button's width, and the line's height.
-  const parts = () => page.evaluate(() => ({ buttons: [...document.querySelectorAll(".games > button")].map((b) => Math.round(b.getBoundingClientRect().width)), line: Math.round(document.querySelector(".blurb").getBoundingClientRect().height), fonts: [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family) }));
+  const parts = () =>
+    page.evaluate(() => ({
+      buttons: [...document.querySelectorAll(".games > button")].map((b) =>
+        Math.round(b.getBoundingClientRect().width),
+      ),
+      line: Math.round(document.querySelector(".blurb").getBoundingClientRect().height),
+      fonts: [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family),
+    }));
   const english = await top();
   const englishParts = await parts();
   await tap(page, '[data-lang="ja"]');
@@ -166,13 +199,17 @@ test("the existing API index keeps every entry and export anchor and leads back 
   await expect(page.locator("#hearts-heartsPoints")).toContainText("a heart one, the queen of spades thirteen");
   await expect(page.locator("#deck-shuffledDeck")).toBeVisible();
   // Namespace pages are member indexes under the unchanged pilot; other exports have summaries.
-  const undocumented = await page.evaluate(() => [...document.querySelectorAll(".api-entry article")]
-    .filter((one) => one.querySelector("p") === null && one.querySelector(".docs-kind")?.textContent !== "namespace")
-    .map((one) => one.id));
+  const undocumented = await page.evaluate(() =>
+    [...document.querySelectorAll(".api-entry article")]
+      .filter((one) => one.querySelector("p") === null && one.querySelector(".docs-kind")?.textContent !== "namespace")
+      .map((one) => one.id),
+  );
   expect(undocumented).toEqual([]);
   await sound(page, errors);
   await page.locator("#main-newGame h3 a").click();
-  await expect(page.locator("pre").filter({ hasText: "function newGame" }).first()).toContainText("options: NewGameOptions");
+  await expect(page.locator("pre").filter({ hasText: "function newGame" }).first()).toContainText(
+    "options: NewGameOptions",
+  );
   await page.locator('header .lang a[data-lang="ja"]').click();
   await expect(page.locator("html")).toHaveAttribute("lang", "ja");
   await expect(page.locator("h1")).toContainText("newGame");

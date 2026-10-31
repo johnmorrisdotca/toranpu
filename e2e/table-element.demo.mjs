@@ -7,7 +7,9 @@ import { at, open, sound } from "./demo.mjs";
 const table = (page) => page.locator(at("table-demo"));
 const inside = (page, id) => table(page).locator(`[data-testid="${id}"]`);
 
-test("a game of Crazy Eights, played: a card picked and laid, or one drawn, and the computers answer", async ({ page }) => {
+test("a game of Crazy Eights, played: a card picked and laid, or one drawn, and the computers answer", async ({
+  page,
+}) => {
   const errors = await open(page, "?seed=1");
   await expect(table(page)).toHaveAttribute("data-game", "crazyEights");
   await expect(inside(page, "table-seat")).toHaveCount(3);
@@ -54,7 +56,9 @@ test("the table wears the cloth of the header's patches, and its piles the messi
   await sound(page, errors);
 });
 
-test("War on the table element: two piles face down, the turn the game is at, and a button that turns the cards over", async ({ page }) => {
+test("War on the table element: two piles face down, the turn the game is at, and a button that turns the cards over", async ({
+  page,
+}) => {
   const errors = await open(page, "?seed=1");
   await page.locator(at("table-game")).selectOption("war");
   await expect(table(page)).toHaveAttribute("data-game", "war");

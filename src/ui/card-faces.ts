@@ -76,7 +76,13 @@ export type CardFaceOptions = {
  * console.log(CARD_FACE_PROPERTIES);
  * ```
  */
-export const CARD_FACE_PROPERTIES = { paper: "--toranpu-card", black: "--toranpu-card-ink", red: "--toranpu-card-red", blue: "--toranpu-card-blue", green: "--toranpu-card-green" } as const;
+export const CARD_FACE_PROPERTIES = {
+  paper: "--toranpu-card",
+  black: "--toranpu-card-ink",
+  red: "--toranpu-card-red",
+  blue: "--toranpu-card-blue",
+  green: "--toranpu-card-green",
+} as const;
 
 /** The faces' own colours.
  *
@@ -86,7 +92,14 @@ export const CARD_FACE_PROPERTIES = { paper: "--toranpu-card", black: "--toranpu
  * console.log(CARD_FACE_COLOURS);
  * ```
  */
-export const CARD_FACE_COLOURS = { paper: "#fffdf8", black: "#1b1b1b", red: "#c2272d", blue: "#1f5fbf", green: "#1f7a3a", edge: "#000" } as const;
+export const CARD_FACE_COLOURS = {
+  paper: "#fffdf8",
+  black: "#1b1b1b",
+  red: "#c2272d",
+  blue: "#1f5fbf",
+  green: "#1f7a3a",
+  edge: "#000",
+} as const;
 
 const RANK_SHOWN: Record<string, string> = { A: "A", T: "10", J: "J", Q: "Q", K: "K" };
 const RED = new Set(["H", "D"]);
@@ -128,7 +141,9 @@ export const EXTRA_LIMITS = { jokers: 4, rules: 2, blanks: 2 } as const;
  * ```
  */
 export function isCardFace(text: unknown): text is string {
-  return typeof text === "string" && (/^[A2-9TJQK][SHDC]$/.test(text) || (EXTRA_CARDS as readonly string[]).includes(text));
+  return (
+    typeof text === "string" && (/^[A2-9TJQK][SHDC]$/.test(text) || (EXTRA_CARDS as readonly string[]).includes(text))
+  );
 }
 
 /** The middles of a number card's pips, in the 100 by 140 box, and whether each is drawn upside down.
@@ -151,15 +166,78 @@ export function pipPlaces(count: number): { x: number; y: number; down: boolean 
   const at = (x: number, y: number) => ({ x, y, down: y > 70 });
   const places: Record<number, [number, number][]> = {
     1: [[M, rows.middle]],
-    2: [[M, rows.top], [M, rows.bottom]],
-    3: [[M, rows.top], [M, rows.middle], [M, rows.bottom]],
-    4: [[L, rows.top], [R, rows.top], [L, rows.bottom], [R, rows.bottom]],
-    5: [[L, rows.top], [R, rows.top], [M, rows.middle], [L, rows.bottom], [R, rows.bottom]],
-    6: [[L, rows.top], [R, rows.top], [L, rows.middle], [R, rows.middle], [L, rows.bottom], [R, rows.bottom]],
-    7: [[L, rows.top], [R, rows.top], [M, 50], [L, rows.middle], [R, rows.middle], [L, rows.bottom], [R, rows.bottom]],
-    8: [[L, rows.top], [R, rows.top], [M, 50], [L, rows.middle], [R, rows.middle], [M, 90], [L, rows.bottom], [R, rows.bottom]],
-    9: [[L, rows.top], [R, rows.top], [L, 57], [R, 57], [M, rows.middle], [L, 83], [R, 83], [L, rows.bottom], [R, rows.bottom]],
-    10: [[L, rows.top], [R, rows.top], [M, 43], [L, 57], [R, 57], [L, 83], [R, 83], [M, 97], [L, rows.bottom], [R, rows.bottom]],
+    2: [
+      [M, rows.top],
+      [M, rows.bottom],
+    ],
+    3: [
+      [M, rows.top],
+      [M, rows.middle],
+      [M, rows.bottom],
+    ],
+    4: [
+      [L, rows.top],
+      [R, rows.top],
+      [L, rows.bottom],
+      [R, rows.bottom],
+    ],
+    5: [
+      [L, rows.top],
+      [R, rows.top],
+      [M, rows.middle],
+      [L, rows.bottom],
+      [R, rows.bottom],
+    ],
+    6: [
+      [L, rows.top],
+      [R, rows.top],
+      [L, rows.middle],
+      [R, rows.middle],
+      [L, rows.bottom],
+      [R, rows.bottom],
+    ],
+    7: [
+      [L, rows.top],
+      [R, rows.top],
+      [M, 50],
+      [L, rows.middle],
+      [R, rows.middle],
+      [L, rows.bottom],
+      [R, rows.bottom],
+    ],
+    8: [
+      [L, rows.top],
+      [R, rows.top],
+      [M, 50],
+      [L, rows.middle],
+      [R, rows.middle],
+      [M, 90],
+      [L, rows.bottom],
+      [R, rows.bottom],
+    ],
+    9: [
+      [L, rows.top],
+      [R, rows.top],
+      [L, 57],
+      [R, 57],
+      [M, rows.middle],
+      [L, 83],
+      [R, 83],
+      [L, rows.bottom],
+      [R, rows.bottom],
+    ],
+    10: [
+      [L, rows.top],
+      [R, rows.top],
+      [M, 43],
+      [L, 57],
+      [R, 57],
+      [L, 83],
+      [R, 83],
+      [M, 97],
+      [L, rows.bottom],
+      [R, rows.bottom],
+    ],
   };
   return (places[count] ?? []).map(([x, y]) => at(x, y));
 }
@@ -170,7 +248,9 @@ const SANS = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 function suitInk(suit: CardSuitLetter, fourColour: boolean): string {
   if (fourColour && suit === "D") return paint("fill", CARD_FACE_PROPERTIES.blue, undefined, CARD_FACE_COLOURS.blue);
   if (fourColour && suit === "C") return paint("fill", CARD_FACE_PROPERTIES.green, undefined, CARD_FACE_COLOURS.green);
-  return RED.has(suit) ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red) : paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black);
+  return RED.has(suit)
+    ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red)
+    : paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black);
 }
 
 /** A corner: the rank over the suit, top left; drawn again turned round, bottom right. */
@@ -197,7 +277,9 @@ function jokerCorners(language: Language, ink: string): string {
 
 /** A jester's cap, our plain joker's picture: three points with a bell on each, over a band. */
 function jesterCap(ink: string, red: boolean): string {
-  const band = red ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red) : paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black);
+  const band = red
+    ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red)
+    : paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black);
   // Drawn a little smaller than the box it was drawn in, so that it stays clear of the corner word.
   return [
     `<path d="M28 84C30 70 26 56 16 46C30 48 40 58 44 70C44 54 48 40 50 30C52 40 56 54 56 70C60 58 70 48 84 46C74 56 70 70 72 84Z"${band}/>`,
@@ -214,7 +296,8 @@ function jesterCap(ink: string, red: boolean): string {
 /** A rules card: the game's name at the head, its suit under it, and the rules in five short lines. */
 function rulesCard(card: "R1" | "R2", language: Language, ink: string): string {
   const words = STRINGS[language];
-  const [title, lines] = card === "R1" ? [words.rulesHeartsTitle, words.rulesHearts] : [words.rulesSpadesTitle, words.rulesSpades];
+  const [title, lines] =
+    card === "R1" ? [words.rulesHeartsTitle, words.rulesHearts] : [words.rulesSpadesTitle, words.rulesSpades];
   const suit: CardSuitLetter = card === "R1" ? "H" : "S";
   const suitInkOf = card === "R1" ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red) : ink;
   return [
@@ -222,7 +305,12 @@ function rulesCard(card: "R1" | "R2", language: Language, ink: string): string {
     `<text x="50" y="25" text-anchor="middle" font-size="11" font-weight="800" letter-spacing=".6" font-family="${SANS}"${ink}>${escapeXml(title)}</text>`,
     suitPath(suit, 50, 38, 12, suitInkOf),
     `<path d="M24 49H76" stroke-width=".7" stroke-opacity=".5"${ink.replace("fill", "stroke")}/>`,
-    ...lines.split("\n").map((line, at) => `<text x="50" y="${61 + at * 13.5}" text-anchor="middle" font-size="${language === "ja" ? 5.6 : 5.4}" font-weight="500" font-family="${SANS}"${ink}>${escapeXml(line)}</text>`),
+    ...lines
+      .split("\n")
+      .map(
+        (line, at) =>
+          `<text x="50" y="${61 + at * 13.5}" text-anchor="middle" font-size="${language === "ja" ? 5.6 : 5.4}" font-weight="500" font-family="${SANS}"${ink}>${escapeXml(line)}</text>`,
+      ),
   ].join("");
 }
 
@@ -233,7 +321,12 @@ function blankCard(ink: string): string {
 
 /** A court card drawn plain: its letter large in a frame, the suit above and below it. */
 function court(rank: string, suit: CardSuitLetter, ink: string): string {
-  const crown = rank === "K" ? "M38 40L41 31L46 37L50 28L54 37L59 31L62 40Z" : rank === "Q" ? "M40 40Q42 33 45 37Q47 30 50 34Q53 30 55 37Q58 33 60 40Z" : "M42 40L44 34H56L58 40Z";
+  const crown =
+    rank === "K"
+      ? "M38 40L41 31L46 37L50 28L54 37L59 31L62 40Z"
+      : rank === "Q"
+        ? "M40 40Q42 33 45 37Q47 30 50 34Q53 30 55 37Q58 33 60 40Z"
+        : "M42 40L44 34H56L58 40Z";
   return [
     `<rect x="22" y="18" width="56" height="104" rx="4" fill="none" stroke-width="1.4"${ink.replace("fill", "stroke")}/>`,
     `<rect x="25" y="21" width="50" height="98" rx="2.5"${ink} fill-opacity=".07"/>`,
@@ -255,7 +348,8 @@ function designed(design: CardDesign, card: string, language: Language): string 
   const kept = registeredDesign(design.name) === design;
   let art: string | null | undefined = Object.hasOwn(design.art, card) ? design.art[card] : undefined;
   if (art === undefined && design.draw !== undefined) art = design.draw(card, { language });
-  if (art === undefined || art === null) return design.fallback === undefined ? null : designed(design.fallback, card, language);
+  if (art === undefined || art === null)
+    return design.fallback === undefined ? null : designed(design.fallback, card, language);
   // A design the page registered is the page's own markup, kept clean; the package's own designs are trusted as they are.
   if (kept) art = cleanMarkup(art);
   const [width, height] = design.box;
@@ -296,16 +390,30 @@ export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string
   const paper = paint("fill", CARD_FACE_PROPERTIES.paper, undefined, CARD_FACE_COLOURS.paper);
   const name = options.title ?? faceName(card, language, typeof design === "object" ? design : undefined);
   const label = name === "" ? ` aria-hidden="true"` : ` role="img" aria-label="${escapeXml(name)}"`;
-  const size = typeof options.width === "number" && options.width > 0 ? ` width="${round(options.width)}" height="${round(options.width * 1.4)}"` : "";
+  const size =
+    typeof options.width === "number" && options.width > 0
+      ? ` width="${round(options.width)}" height="${round(options.width * 1.4)}"`
+      : "";
   const bare = typeof design === "object" && design.frame === "none";
-  const parts = bare ? [] : [`<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="${CARD_FACE_COLOURS.edge}" stroke-opacity=".2" stroke-width=".8"/>`];
+  const parts = bare
+    ? []
+    : [
+        `<rect x=".5" y=".5" width="${width - 1}" height="${height - 1}" rx="${radius}"${paper} stroke="${CARD_FACE_COLOURS.edge}" stroke-opacity=".2" stroke-width=".8"/>`,
+      ];
   const drawn = typeof design === "object" ? designed(design, card, language) : null;
   if (drawn !== null) parts.push(drawn);
   else if (!isCardFace(card)) return null;
-  else if (card === "R1" || card === "R2") parts.push(rulesCard(card, language, paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)));
-  else if (card === "BL") parts.push(blankCard(paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)));
+  else if (card === "R1" || card === "R2")
+    parts.push(
+      rulesCard(card, language, paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)),
+    );
+  else if (card === "BL")
+    parts.push(blankCard(paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black)));
   else if (card === "RJ" || card === "BJ") {
-    const ink = card === "RJ" ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red) : paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black);
+    const ink =
+      card === "RJ"
+        ? paint("fill", CARD_FACE_PROPERTIES.red, undefined, CARD_FACE_COLOURS.red)
+        : paint("fill", CARD_FACE_PROPERTIES.black, undefined, CARD_FACE_COLOURS.black);
     parts.push(jokerCorners(language, ink), jesterCap(ink, card === "RJ"));
   } else {
     const rank = card[0] as string;
@@ -316,7 +424,12 @@ export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string
     else if (rank === "J" || rank === "Q" || rank === "K") parts.push(court(rank, suit, ink));
     else {
       const count = rank === "T" ? 10 : Number(rank);
-      for (const pip of pipPlaces(count)) parts.push(pip.down ? `<g transform="rotate(180 ${pip.x} ${pip.y})">${suitPath(suit, pip.x, pip.y, 17, ink)}</g>` : suitPath(suit, pip.x, pip.y, 17, ink));
+      for (const pip of pipPlaces(count))
+        parts.push(
+          pip.down
+            ? `<g transform="rotate(180 ${pip.x} ${pip.y})">${suitPath(suit, pip.x, pip.y, 17, ink)}</g>`
+            : suitPath(suit, pip.x, pip.y, 17, ink),
+        );
     }
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"${size}${label}${UNSELECTABLE}>${parts.join("")}</svg>`;
@@ -339,10 +452,18 @@ export function cardFaceSvg(card: string, options: CardFaceOptions = {}): string
  * console.log(cardFaceFromArt(`<circle cx="50" cy="70" r="20" fill="#2f5d4a"/>`).slice(0, 160));
  * ```
  */
-export function cardFaceFromArt(art: string, options: Omit<CardFaceOptions, "design"> & { box?: readonly [number, number]; frame?: "paper" | "none" } = {}): string {
+export function cardFaceFromArt(
+  art: string,
+  options: Omit<CardFaceOptions, "design"> & { box?: readonly [number, number]; frame?: "paper" | "none" } = {},
+): string {
   const clean = cleanMarkup(art);
   if (clean.trim().startsWith("<svg")) return clean;
-  const design: CardDesign = { name: "page-art", box: options.box ?? [CARD_BOX.width, CARD_BOX.height], art: { art: clean }, frame: options.frame };
+  const design: CardDesign = {
+    name: "page-art",
+    box: options.box ?? [CARD_BOX.width, CARD_BOX.height],
+    art: { art: clean },
+    frame: options.frame,
+  };
   return cardFaceSvg("art", { ...options, design, title: options.title ?? "" }) ?? "";
 }
 

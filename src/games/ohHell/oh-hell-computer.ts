@@ -55,7 +55,16 @@ export type OhHellView = {
  */
 export function ohHellView(game: OhHellGame): OhHellView {
   const seat = game.toPlay ?? 0;
-  return { seat, hand: game.hands[seat], trump: game.trump, bid: game.bids[seat], took: game.tricks[seat], trick: game.trick, seats: game.players.length, playable: ohHellPlayable(game) };
+  return {
+    seat,
+    hand: game.hands[seat],
+    trump: game.trump,
+    bid: game.bids[seat],
+    took: game.tricks[seat],
+    trick: game.trick,
+    seats: game.players.length,
+    playable: ohHellPlayable(game),
+  };
 }
 
 /** The tricks a hand should take with these trumps, roughly.
@@ -78,7 +87,8 @@ export function ohHellView(game: OhHellGame): OhHellView {
 export function ohHellWorth(hand: readonly CardId[], trump: string, seats: number): number {
   const trumps = hand.filter((card) => suitOf(card) === trump).map(ohHellHeight);
   let worth = 0;
-  for (const height of trumps) worth += height === 14 ? 1 : height === 13 ? 0.85 : height === 12 ? 0.6 : height >= 10 ? 0.4 : 0.25;
+  for (const height of trumps)
+    worth += height === 14 ? 1 : height === 13 ? 0.85 : height === 12 ? 0.6 : height >= 10 ? 0.4 : 0.25;
   // A trump past a third of the hand is a trick at the end.
   worth += Math.max(0, trumps.length - Math.ceil(hand.length / 3)) * 0.4;
   for (const card of hand) {
@@ -125,7 +135,8 @@ export function chooseOhHellBid(worth: number, allowed: readonly number[]): numb
  */
 export function ohHellComputer(game: OhHellGame): OhHellMove {
   const view = ohHellView(game);
-  if (game.phase === "bidding") return { bid: chooseOhHellBid(ohHellWorth(view.hand, view.trump, view.seats), ohHellBids(game)) };
+  if (game.phase === "bidding")
+    return { bid: chooseOhHellBid(ohHellWorth(view.hand, view.trump, view.seats), ohHellBids(game)) };
   return { play: chooseCard(view) };
 }
 

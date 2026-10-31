@@ -6,7 +6,9 @@ import { isColour } from "./svg.ts";
 /** Every tag opened is closed, in order: enough to know the drawing is well formed without a browser. */
 function wellFormed(svg: string): boolean {
   const open: string[] = [];
-  for (const [, closing, name, , selfClosing] of svg.matchAll(/<(\/?)([a-zA-Z]+)((?:\s+[a-zA-Z:-]+="[^"]*")*)\s*(\/?)>/g)) {
+  for (const [, closing, name, , selfClosing] of svg.matchAll(
+    /<(\/?)([a-zA-Z]+)((?:\s+[a-zA-Z:-]+="[^"]*")*)\s*(\/?)>/g,
+  )) {
     if (selfClosing === "/") continue;
     if (closing === "/") {
       if (open.pop() !== name) return false;
@@ -41,15 +43,19 @@ describe("the card backs", () => {
     const sneaky = cardBackSvg("classic-blue", { colour: '"/><script>alert(1)</script>' });
     expect(sneaky).not.toContain("<script");
     expect(sneaky).toContain("var(--toranpu-back,#1f4e8c)");
-    for (const good of ["#abc", "#aabbccdd", "navy", "hsl(10 50% 40%)", "oklch(0.5 0.1 30)"]) expect(isColour(good), good).toBe(true);
-    for (const bad of ["", "url(#x)", "red;fill:blue", "var(--x)", "#12", 7, null]) expect(isColour(bad), String(bad)).toBe(false);
+    for (const good of ["#abc", "#aabbccdd", "navy", "hsl(10 50% 40%)", "oklch(0.5 0.1 30)"])
+      expect(isColour(good), good).toBe(true);
+    for (const bad of ["", "url(#x)", "red;fill:blue", "var(--x)", "#12", 7, null])
+      expect(isColour(bad), String(bad)).toBe(false);
   });
 
   it("give each set of colours its own pattern, so two backs on one page never share one by mistake", () => {
     const id = (svg: string) => /pattern id="([^"]+)"/.exec(svg)?.[1];
     expect(id(cardBackSvg("classic-red"))).toBe(id(cardBackSvg("classic-red")));
     expect(id(cardBackSvg("classic-red"))).not.toBe(id(cardBackSvg("classic-blue")));
-    expect(id(cardBackSvg("ink-dots", { colour: "#8f2826" }))).not.toBe(id(cardBackSvg("ink-dots", { colour: "#3d4d38" })));
+    expect(id(cardBackSvg("ink-dots", { colour: "#8f2826" }))).not.toBe(
+      id(cardBackSvg("ink-dots", { colour: "#3d4d38" })),
+    );
   });
 
   it("put words in the middle, escaped, in place of the ornament", () => {

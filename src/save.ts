@@ -107,7 +107,16 @@ const kept = <K extends CardGameKind>(game: GameOf<K>) => game as unknown as Kep
  */
 export function savedGame<K extends CardGameKind>(kind: K, game: GameOf<K>): SavedGame<K> {
   const { size, players, computers, seed, moves } = kept(game);
-  return { format: SAVE_FORMAT, generator: `toranpu ${VERSION}`, game: kind, size, players: [...players], computers: [...computers], seed, moves: [...moves] };
+  return {
+    format: SAVE_FORMAT,
+    generator: `toranpu ${VERSION}`,
+    game: kind,
+    size,
+    players: [...players],
+    computers: [...computers],
+    seed,
+    moves: [...moves],
+  };
 }
 
 /** A game as JSON, two spaces deep, with the format's number first. `fromJSON` reads it back.
@@ -184,7 +193,8 @@ export function fromJSON(text: string): ReadGame | null {
     return game === null ? null : ({ kind: given.g, game } as ReadGame);
   }
   const { format, game: kind, size, players, computers, seed, moves } = given;
-  if (typeof format !== "number" || !Number.isInteger(format) || format < 1 || format > SAVE_FORMAT || !isKind(kind)) return null;
+  if (typeof format !== "number" || !Number.isInteger(format) || format < 1 || format > SAVE_FORMAT || !isKind(kind))
+    return null;
   const game = CARD_GAME_RULES[kind].decode(JSON.stringify({ v: 1, g: kind, size, players, computers, seed, moves }));
   return game === null ? null : ({ kind, game } as ReadGame);
 }
@@ -260,10 +270,28 @@ export function toText<K extends CardGameKind>(kind: K, game: GameOf<K>, languag
   const rules = rulesFor(kind);
   const t = STRINGS[language];
   const { players, seed } = kept(game);
-  const lines = [fillIn(t.recordHead, { game: gameName(kind, language), n: players.length, seed, players: namesList(players, language) })];
-  (recordOf(kind, game) ?? []).forEach(({ seat, move }, at) => lines.push(`${at + 1}. ${players[seat]}: ${moveText(kind, move, { language, form: "did", players })}`));
+  const lines = [
+    fillIn(t.recordHead, {
+      game: gameName(kind, language),
+      n: players.length,
+      seed,
+      players: namesList(players, language),
+    }),
+  ];
+  (recordOf(kind, game) ?? []).forEach(({ seat, move }, at) =>
+    lines.push(`${at + 1}. ${players[seat]}: ${moveText(kind, move, { language, form: "did", players })}`),
+  );
   const seat = rules.toPlay(game);
-  lines.push(rules.over(game) || seat === null ? fillIn(t.recordOver, { players: namesList(rules.winners(game).map((winner) => players[winner] as string), language) }) : fillIn(t.recordGoing, { player: players[seat] as string }));
+  lines.push(
+    rules.over(game) || seat === null
+      ? fillIn(t.recordOver, {
+          players: namesList(
+            rules.winners(game).map((winner) => players[winner] as string),
+            language,
+          ),
+        })
+      : fillIn(t.recordGoing, { player: players[seat] as string }),
+  );
   return `${lines.join("\n")}\n`;
 }
 
@@ -306,9 +334,24 @@ export function toCSV<K extends CardGameKind>(kind: K, game: GameOf<K>): string 
   const rows = [CSV_COLUMNS.join(",")];
   (recordOf(kind, game) ?? []).forEach(({ seat, move }, at) => {
     const given = move as Record<string, unknown>;
-    const action = ["play", "pass", "bid", "crib", "give", "draw", "discard", "knock", "order", "call", "ask", "turn"].find((key) => key in given) ?? "";
-    const cards = Object.values(given).flatMap((value) => (Array.isArray(value) ? value : [value])).filter((value): value is string => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
-    rows.push([String(at + 1), String(seat + 1), field(players[seat] as string), action, cards.join(" "), field(JSON.stringify(move)), field(moveText(kind, move, { form: "did", players }))].join(","));
+    const action =
+      ["play", "pass", "bid", "crib", "give", "draw", "discard", "knock", "order", "call", "ask", "turn"].find(
+        (key) => key in given,
+      ) ?? "";
+    const cards = Object.values(given)
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .filter((value): value is string => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
+    rows.push(
+      [
+        String(at + 1),
+        String(seat + 1),
+        field(players[seat] as string),
+        action,
+        cards.join(" "),
+        field(JSON.stringify(move)),
+        field(moveText(kind, move, { form: "did", players })),
+      ].join(","),
+    );
   });
   return `${rows.join("\r\n")}\r\n`;
 }

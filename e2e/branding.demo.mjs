@@ -9,7 +9,10 @@ async function bare(page, html, script) {
   page.on("pageerror", (error) => errors.push(String(error)));
   await serve(page);
   await page.route("http://toranpu.test/bare.html", (route) =>
-    route.fulfill({ contentType: "text/html", body: `<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>${html}<script type="module">import { registerCardDesign, registerCardBack } from "./dist/element-define.js"; ${script}; document.body.dataset.ready = "yes";</script></body></html>` }),
+    route.fulfill({
+      contentType: "text/html",
+      body: `<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>${html}<script type="module">import { registerCardDesign, registerCardBack } from "./dist/element-define.js"; ${script}; document.body.dataset.ready = "yes";</script></body></html>`,
+    }),
   );
   await page.goto("http://toranpu.test/bare.html");
   await page.waitForSelector("body[data-ready=yes]");
@@ -19,10 +22,21 @@ async function bare(page, html, script) {
 const REGISTER = `registerCardDesign({ name: "shop", box: [100, 140], art: { KS: '<rect width="100" height="140" fill="#123456"/>' }, draw: (card, { language }) => card === "gold" ? '<circle cx="50" cy="70" r="30" fill="#c98b2b" onclick="alert(1)"/><text x="50" y="76" text-anchor="middle" font-size="14">' + (language === "ja" ? "金" : "gold") + '</text><script>alert(1)<\\/script>' : null, label: (card, language) => card !== "gold" ? null : language === "ja" ? "金のカード" : "the gold card" });
 registerCardBack("shop", { colour: "#224422", logo: '<circle cx="50" cy="50" r="40" fill="gold"/>' });`;
 
-const inside = (page, selector) => page.locator(selector).evaluate((card) => ({ label: card.getAttribute("aria-label"), face: card.shadowRoot.querySelector(".face").innerHTML, back: card.shadowRoot.querySelector(".back").innerHTML }));
+const inside = (page, selector) =>
+  page
+    .locator(selector)
+    .evaluate((card) => ({
+      label: card.getAttribute("aria-label"),
+      face: card.shadowRoot.querySelector(".face").innerHTML,
+      back: card.shadowRoot.querySelector(".back").innerHTML,
+    }));
 
 test("a card of a registered design is drawn, named for a screen reader, and kept clean", async ({ page }) => {
-  const errors = await bare(page, '<toranpu-card id="g" card="gold" design="shop" back="shop" flip></toranpu-card><toranpu-card id="k" card="KS" design="shop"></toranpu-card><toranpu-card id="q" card="QS" design="shop"></toranpu-card><toranpu-card id="n" card="nothing" design="shop"></toranpu-card>', REGISTER);
+  const errors = await bare(
+    page,
+    '<toranpu-card id="g" card="gold" design="shop" back="shop" flip></toranpu-card><toranpu-card id="k" card="KS" design="shop"></toranpu-card><toranpu-card id="q" card="QS" design="shop"></toranpu-card><toranpu-card id="n" card="nothing" design="shop"></toranpu-card>',
+    REGISTER,
+  );
   const gold = await inside(page, "#g");
   expect(gold.label).toBe("the gold card");
   expect(gold.face).toContain(">gold<");
@@ -44,8 +58,14 @@ test("a card of a registered design is drawn, named for a screen reader, and kep
   expect(errors).toEqual([]);
 });
 
-test("a custom card speaks Japanese when the page does, and a hand holds custom and standard cards together", async ({ page }) => {
-  const errors = await bare(page, '<toranpu-card id="g" card="gold" design="shop" lang="ja"></toranpu-card><toranpu-hand id="h" cards="AS gold KS" design="shop" back="shop"></toranpu-hand><toranpu-pile id="p" cards="gold 2C" design="shop"></toranpu-pile>', REGISTER);
+test("a custom card speaks Japanese when the page does, and a hand holds custom and standard cards together", async ({
+  page,
+}) => {
+  const errors = await bare(
+    page,
+    '<toranpu-card id="g" card="gold" design="shop" lang="ja"></toranpu-card><toranpu-hand id="h" cards="AS gold KS" design="shop" back="shop"></toranpu-hand><toranpu-pile id="p" cards="gold 2C" design="shop"></toranpu-pile>',
+    REGISTER,
+  );
   expect((await inside(page, "#g")).label).toBe("金のカード");
   expect((await inside(page, "#g")).face).toContain(">金<");
   await expect(page.locator("#h")).toHaveAttribute("aria-label", "Hand: ace of spades, the gold card, king of spades");
@@ -54,7 +74,9 @@ test("a custom card speaks Japanese when the page does, and a hand holds custom 
   expect(errors).toEqual([]);
 });
 
-test("a face and a back put in as slots replace the card's own, and are in the page only on their own side", async ({ page }) => {
+test("a face and a back put in as slots replace the card's own, and are in the page only on their own side", async ({
+  page,
+}) => {
   const errors = await bare(
     page,
     '<toranpu-card id="s" label="Our card" flip><svg slot="face" viewBox="0 0 10 10" id="f"><rect width="10" height="10" fill="red"/></svg><svg slot="back" viewBox="0 0 10 10" id="b"><rect width="10" height="10" fill="blue"/></svg></toranpu-card><toranpu-card id="r" card="77"></toranpu-card>',
@@ -75,7 +97,9 @@ test("a face and a back put in as slots replace the card's own, and are in the p
   expect(errors).toEqual([]);
 });
 
-test("backs of a page's own by attribute: a picture, a logo, colours and words; and an address that is not a picture is refused", async ({ page }) => {
+test("backs of a page's own by attribute: a picture, a logo, colours and words; and an address that is not a picture is refused", async ({
+  page,
+}) => {
   const errors = await bare(
     page,
     '<toranpu-card id="a" card="2C" face-down back-image="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\'/%3E"></toranpu-card><toranpu-card id="b" card="2C" face-down back-logo="/logo.png" back-colour="#336699"></toranpu-card><toranpu-card id="c" card="2C" face-down back-image="javascript:alert(1)"></toranpu-card>',
@@ -91,7 +115,9 @@ test("backs of a page's own by attribute: a picture, a logo, colours and words; 
   expect(errors).toEqual([]);
 });
 
-test("the demo's branding panel shows territory cards, three kinds of back and a card put in as a slot, in both languages", async ({ page }) => {
+test("the demo's branding panel shows territory cards, three kinds of back and a card put in as a slot, in both languages", async ({
+  page,
+}) => {
   const errors = await open(page, "");
   const row = page.locator('[data-testid="brand-hand"] toranpu-card');
   await expect(row).toHaveCount(7);
@@ -103,6 +129,10 @@ test("the demo's branding panel shows territory cards, three kinds of back and a
   await expect(page.locator("#brand-slot")).toHaveAttribute("aria-label", "a card, face down");
   await tap(page, '[data-testid="brand-turn"]');
   await expect(row.first()).toHaveAttribute("aria-label", "Ridgeway (soldier)");
-  expect(await page.locator("#brand-fn").evaluate((card) => card.shadowRoot.querySelector(".face").innerHTML.includes(">42<"))).toBe(true);
+  expect(
+    await page
+      .locator("#brand-fn")
+      .evaluate((card) => card.shadowRoot.querySelector(".face").innerHTML.includes(">42<")),
+  ).toBe(true);
   expect(errors).toEqual([]);
 });

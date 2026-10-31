@@ -117,7 +117,9 @@ export function partnerOf(seat: number): number {
  */
 export function sortSpades(hand: readonly CardId[]): CardId[] {
   const order = "DCHS";
-  return [...hand].sort((a, b) => order.indexOf(suitOf(a)) - order.indexOf(suitOf(b)) || spadesHeight(a) - spadesHeight(b));
+  return [...hand].sort(
+    (a, b) => order.indexOf(suitOf(a)) - order.indexOf(suitOf(b)) || spadesHeight(a) - spadesHeight(b),
+  );
 }
 
 /** The seat that deals this deal: the first seat, then round to the left.
@@ -137,7 +139,9 @@ export function dealerOf(deal: number): number {
 }
 
 /** A new deal: thirteen each, and the bidding opened by the dealer's left. */
-function dealSpades(game: Omit<SpadesGame, "hands" | "bids" | "trick" | "played" | "toPlay" | "spadesBroken" | "tricks" | "phase">): SpadesGame {
+function dealSpades(
+  game: Omit<SpadesGame, "hands" | "bids" | "trick" | "played" | "toPlay" | "spadesBroken" | "tricks" | "phase">,
+): SpadesGame {
   const { hands } = dealRound(shuffledDeck(game.seed, game.deal), SPADES_SEATS);
   return {
     ...game,
@@ -170,7 +174,13 @@ function dealSpades(game: Omit<SpadesGame, "hands" | "bids" | "trick" | "played"
  * console.log(startSpades(CARD_GAME_TABLES.spades.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startSpades(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): SpadesGame | null {
+export function startSpades(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): SpadesGame | null {
   if (!(SPADES_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== SPADES_SEATS) return null;
   return dealSpades({
@@ -293,7 +303,16 @@ function playCard(game: SpadesGame, seat: number, card: CardId): SpadesGame | nu
   if (trick.length < SPADES_SEATS) return { ...game, hands, trick, spadesBroken, toPlay: nextSeat(seat, SPADES_SEATS) };
   const winner = spadesTrickWinner(trick);
   const tricks = game.tricks.map((had, at) => (at === winner ? had + 1 : had));
-  const after: SpadesGame = { ...game, hands, trick: [], spadesBroken, tricks, played: [...game.played, ...trick.map((play) => play.card)], lastTrick: { plays: trick, winner }, toPlay: winner };
+  const after: SpadesGame = {
+    ...game,
+    hands,
+    trick: [],
+    spadesBroken,
+    tricks,
+    played: [...game.played, ...trick.map((play) => play.card)],
+    lastTrick: { plays: trick, winner },
+    toPlay: winner,
+  };
   return hands[0].length === 0 ? endDeal(after) : after;
 }
 
@@ -314,7 +333,11 @@ function playCard(game: SpadesGame, seat: number, card: CardId): SpadesGame | nu
  * console.log(partnershipScore([3, 4, 3, 3], [4, 3, 3, 3], 0));
  * ```
  */
-export function partnershipScore(bids: readonly number[], tricks: readonly number[], team: 0 | 1): { points: number; bags: number } {
+export function partnershipScore(
+  bids: readonly number[],
+  tricks: readonly number[],
+  team: 0 | 1,
+): { points: number; bags: number } {
   const seats = [team, team + 2];
   let points = 0;
   let bags = 0;
@@ -344,9 +367,15 @@ function endDeal(game: SpadesGame): SpadesGame {
   const made = ([0, 1] as const).map((team) => partnershipScore(bids, game.tricks, team));
   let scores = game.scores.map((score, team) => score + made[team].points) as [number, number];
   let bags = game.bags.map((had, team) => had + made[team].bags) as [number, number];
-  scores = scores.map((score, team) => score - BAG_PENALTY * Math.floor(bags[team] / BAGS_FOR_PENALTY)) as [number, number];
+  scores = scores.map((score, team) => score - BAG_PENALTY * Math.floor(bags[team] / BAGS_FOR_PENALTY)) as [
+    number,
+    number,
+  ];
   bags = bags.map((had) => had % BAGS_FOR_PENALTY) as [number, number];
-  const dealScore: SpadesDealScore = { points: [scores[0] - game.scores[0], scores[1] - game.scores[1]], bags: [made[0].bags, made[1].bags] };
+  const dealScore: SpadesDealScore = {
+    points: [scores[0] - game.scores[0], scores[1] - game.scores[1]],
+    bags: [made[0].bags, made[1].bags],
+  };
   const finished = { ...game, scores, bags, dealScores: [...game.dealScores, dealScore] };
   const reached = scores.some((score) => score >= game.size || score <= -game.size);
   // Level at the end, and the game goes on: a partnership has to be ahead to win.
@@ -373,7 +402,14 @@ function endDeal(game: SpadesGame): SpadesGame {
 export function playSpades(game: SpadesGame, move: SpadesMove): SpadesGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
-  const next = "bid" in move ? (game.phase === "bidding" ? bidTricks(game, seat, move.bid) : null) : game.phase === "playing" ? playCard(game, seat, move.play) : null;
+  const next =
+    "bid" in move
+      ? game.phase === "bidding"
+        ? bidTricks(game, seat, move.bid)
+        : null
+      : game.phase === "playing"
+        ? playCard(game, seat, move.play)
+        : null;
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 

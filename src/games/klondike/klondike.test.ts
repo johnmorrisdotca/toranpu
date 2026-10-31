@@ -1,7 +1,19 @@
 import { describe, expect, it } from "vitest";
 
 import { cardFromId, cardIndex } from "../../cards/deck.ts";
-import { allFaceUp, dealKlondike, dealOfSeed, deckOf, decodeMoves, encodeMoves, fitsColumn, klondikeWon, playKlondike, rankOf, recyclesLeft } from "../../klondike.ts";
+import {
+  allFaceUp,
+  dealKlondike,
+  dealOfSeed,
+  deckOf,
+  decodeMoves,
+  encodeMoves,
+  fitsColumn,
+  klondikeWon,
+  playKlondike,
+  rankOf,
+  recyclesLeft,
+} from "../../klondike.ts";
 import type { KlondikeColumn, KlondikeMove, KlondikeTable } from "../../klondike.ts";
 
 const card = (id: string) => cardIndex(cardFromId(id)!);
@@ -125,7 +137,13 @@ describe("Klondike's moves", () => {
 
 describe("a game written down", () => {
   it("reads its moves back exactly, and refuses one that is not written as a move", () => {
-    const moves: KlondikeMove[] = [{ kind: "draw" }, carry("w", "3"), carry("7", "H"), { kind: "recycle" }, carry("S", "1")];
+    const moves: KlondikeMove[] = [
+      { kind: "draw" },
+      carry("w", "3"),
+      carry("7", "H"),
+      { kind: "recycle" },
+      carry("S", "1"),
+    ];
     expect(encodeMoves(moves)).toBe("dw37Hr" + "S1");
     expect(decodeMoves(encodeMoves(moves))).toEqual(moves);
     expect(decodeMoves("w")).toBeNull();

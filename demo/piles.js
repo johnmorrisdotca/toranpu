@@ -22,7 +22,8 @@ function draw() {
   $("messiness").value = String(look.messiness);
   $("pile-seed").value = String(state.seed);
   $("draw-card").disabled = state.drawn >= deck.length;
-  $("piles-code").textContent = `<toranpu-pile count="${deck.length - state.drawn}" face-down messiness="${look.messiness}" seed="${state.seed}"></toranpu-pile>
+  $("piles-code").textContent =
+    `<toranpu-pile count="${deck.length - state.drawn}" face-down messiness="${look.messiness}" seed="${state.seed}"></toranpu-pile>
 <toranpu-pile cards="${deck.slice(0, state.drawn).join(" ")}" messiness="${look.messiness}" seed="${state.seed}"></toranpu-pile>`;
 }
 

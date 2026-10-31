@@ -1,7 +1,28 @@
 // The Toranpu demo: every game is driven through the same few calls (newGame, rulesFor, and
 // each rule's moves, play and computer), and the page knows nothing of any game's rules.
 // Moves are matched to the cards you pick. Every word comes from the package's own table.
-import { CARD_GAME_LIST, CARD_GAME_TABLES, STRINGS, cardShort, cardText, fillIn, fromJSON, gameName, gameSays, isCard, moveText, namesList, newGame, randomSeed, rulesFor, suitSymbol, toCSV, toCode, toJSON, toText } from "./dist/index.js";
+import {
+  CARD_GAME_LIST,
+  CARD_GAME_TABLES,
+  STRINGS,
+  cardShort,
+  cardText,
+  fillIn,
+  fromJSON,
+  gameName,
+  gameSays,
+  isCard,
+  moveText,
+  namesList,
+  newGame,
+  randomSeed,
+  rulesFor,
+  suitSymbol,
+  toCSV,
+  toCode,
+  toJSON,
+  toText,
+} from "./dist/index.js";
 import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
 import { dealt, moved, table as soundTable, wire as wireSound } from "./sound.js";
 import { wire as wireBacks } from "./backs.js";
@@ -17,18 +38,45 @@ import { look, lookQuery, onLook, wear } from "./look.js";
 const $ = (id) => document.getElementById(id);
 const NAMES = ["You", "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
 const RULES = "https://github.com/johnmorrisdotca/toranpu/blob/main/docs/games.md";
-const ANCHORS = { hearts: "hearts", spades: "spades", euchre: "euchre", cribbage: "cribbage", ohHell: "oh-hell", crazyEights: "crazy-eights", goFish: "go-fish", bigTwo: "big-two", president: "president", ginRummy: "gin-rummy", war: "war" };
+const ANCHORS = {
+  hearts: "hearts",
+  spades: "spades",
+  euchre: "euchre",
+  cribbage: "cribbage",
+  ohHell: "oh-hell",
+  crazyEights: "crazy-eights",
+  goFish: "go-fish",
+  bigTwo: "big-two",
+  president: "president",
+  ginRummy: "gin-rummy",
+  war: "war",
+};
 const SEED_MOST = 2147483647;
 
 // The page's words are the package's own table, under the names the shared header and footer ask for.
-const words = (lang) => ({ ...STRINGS[lang], pageDocs: lang === "ja" ? "ドキュメント" : "Docs", pitch: STRINGS[lang].pagePitch, name: STRINGS[lang].pageName, nameLink: STRINGS[lang].pageNameLink, foot: STRINGS[lang].pageFoot });
+const words = (lang) => ({
+  ...STRINGS[lang],
+  pageDocs: lang === "ja" ? "ドキュメント" : "Docs",
+  pitch: STRINGS[lang].pagePitch,
+  name: STRINGS[lang].pageName,
+  nameLink: STRINGS[lang].pageNameLink,
+  foot: STRINGS[lang].pageFoot,
+});
 /** What else redraws when the language changes: the panels whose drawings carry words. */
 const afterLanguage = [];
-const language = familyLanguage({ id: "toranpu", words: { en: words("en"), ja: words("ja") }, onChange: () => { drawAll(); for (const redraw of afterLanguage) redraw(); } });
+const language = familyLanguage({
+  id: "toranpu",
+  words: { en: words("en"), ja: words("ja") },
+  onChange: () => {
+    drawAll();
+    for (const redraw of afterLanguage) redraw();
+  },
+});
 const t = () => STRINGS[language.lang];
 
 const asked = new URLSearchParams(location.search);
-const whole = (text, least, most) => (/^\d{1,10}$/.test(text ?? "") && Number(text) >= least && Number(text) <= most ? Number(text) : null);
+const whole = (text, least, most) =>
+  /^\d{1,10}$/.test(text ?? "") && Number(text) >= least && Number(text) <= most ? Number(text) : null;
 // An older link carried the game after a hash: #hearts/4/123.
 const [hashKind, hashCount, hashSeed] = location.hash.slice(1).split("/");
 
@@ -64,7 +112,13 @@ const ghost = (text) => el("span", text, { class: "ghost", "aria-hidden": "true"
 const shown = (players) => players.map((name, seat) => (seat === 0 && name === NAMES[0] ? t().pageYou : name));
 
 function cardEl(card, { small = false, button = false } = {}) {
-  const made = el(button ? "button" : "div", "", { class: "card", "data-red": String(card[1] === "H" || card[1] === "D"), "data-small": String(small), "aria-label": cardText(card, language.lang), "data-card": card });
+  const made = el(button ? "button" : "div", "", {
+    class: "card",
+    "data-red": String(card[1] === "H" || card[1] === "D"),
+    "data-small": String(small),
+    "aria-label": cardText(card, language.lang),
+    "data-card": card,
+  });
   if (button) made.type = "button";
   else made.setAttribute("role", "img");
   made.append(el("span", cardShort(card).slice(0, -1)), el("span", suitSymbol(card[1]), { class: "pip" }));
@@ -72,7 +126,8 @@ function cardEl(card, { small = false, button = false } = {}) {
 }
 
 /** Every card a move names, in any field. */
-const cardsOf = (move) => Object.values(move).flatMap((value) => (Array.isArray(value) ? value.filter(isCard) : isCard(value) ? [value] : []));
+const cardsOf = (move) =>
+  Object.values(move).flatMap((value) => (Array.isArray(value) ? value.filter(isCard) : isCard(value) ? [value] : []));
 
 /** The seat whose hand is shown: the person to play, or else the first seat a person holds. */
 function viewer(toPlay, computers) {
@@ -103,7 +158,8 @@ function pile(label, cards, small = true) {
 function heap(label, attributes) {
   const box = el("div", "", { class: "pile" });
   const made = document.createElement("toranpu-pile");
-  for (const [name, value] of Object.entries(attributes)) if (value !== false) made.setAttribute(name, value === true ? "" : String(value));
+  for (const [name, value] of Object.entries(attributes))
+    if (value !== false) made.setAttribute(name, value === true ? "" : String(value));
   made.setAttribute("messiness", String(look.messiness));
   // The table's own seed, so a pile looks the same all game.
   made.setAttribute("seed", String(game.seed));
@@ -122,24 +178,62 @@ function drawPiles(names) {
   const g = game;
   const plays = (list) => list.map((play) => play.card);
   const piles = [];
-  if (g.trick?.length) piles.push(pile(`${t().pageTrick}: ${namesList(g.trick.map((play) => names[play.seat]), language.lang)}`, plays(g.trick), false));
-  else if (g.lastTrick?.plays?.length) piles.push(pile(fillIn(t().pageLastTrick, { player: names[g.lastTrick.winner] }), plays(g.lastTrick.plays)));
+  if (g.trick?.length)
+    piles.push(
+      pile(
+        `${t().pageTrick}: ${namesList(
+          g.trick.map((play) => names[play.seat]),
+          language.lang,
+        )}`,
+        plays(g.trick),
+        false,
+      ),
+    );
+  else if (g.lastTrick?.plays?.length)
+    piles.push(pile(fillIn(t().pageLastTrick, { player: names[g.lastTrick.winner] }), plays(g.lastTrick.plays)));
   if (g.pile?.cards) piles.push(pile(fillIn(t().pageToBeat, { player: names[g.pile.seat] }), g.pile.cards, false));
   if (g.run?.length) piles.push(pile(fillIn(t().pageCount, { n: g.count }), plays(g.run), false));
-  if (g.discard?.length) piles.push(heap(t().pageDiscard, { cards: g.discard.join(" "), "data-testid": "discard-pile" }));
+  if (g.discard?.length)
+    piles.push(heap(t().pageDiscard, { cards: g.discard.join(" "), "data-testid": "discard-pile" }));
   if (g.suit && kind === "crazyEights") piles.push(sign(t().pageSuitToFollow, suitSymbol(g.suit)));
   if (g.upcard && g.phase !== "playing" && g.trump === null) piles.push(pile(t().pageTurnedUp, [g.upcard], false));
   if (g.turned && kind === "ohHell") piles.push(pile(t().pageTurnedUp, [g.turned]));
   if (g.trump) piles.push(sign(t().pageTrump, suitSymbol(g.trump)));
   if (g.starter) piles.push(pile(t().pageStarter, [g.starter], false));
-  if (g.stock) piles.push(heap(fillIn(t().pageStock, { n: g.stock.length }), { count: g.stock.length, "face-down": true, "data-testid": "stock-pile" }));
+  if (g.stock)
+    piles.push(
+      heap(fillIn(t().pageStock, { n: g.stock.length }), {
+        count: g.stock.length,
+        "face-down": true,
+        "data-testid": "stock-pile",
+      }),
+    );
   // War: each player's pile face down, the turn the game is at, and the last turn's cards turned up, with who took them.
   if (kind === "war") {
-    g.hands.forEach((cards, seat) => cards.length > 0 && piles.push(heap(`${names[seat]}: ${cards.length}`, { count: cards.length, "face-down": true, "data-testid": `war-pile-${seat}` })));
+    g.hands.forEach(
+      (cards, seat) =>
+        cards.length > 0 &&
+        piles.push(
+          heap(`${names[seat]}: ${cards.length}`, {
+            count: cards.length,
+            "face-down": true,
+            "data-testid": `war-pile-${seat}`,
+          }),
+        ),
+    );
     piles.push(sign(t().pageWarTurn, `${g.moves.length} / ${g.size}`));
     if (g.last !== null) {
-      const took = g.last.winner === null ? t().pageWarDraw : fillIn(t().pageWarTook, { player: names[g.last.winner], n: g.last.laid.length });
-      piles.push(pile(took + (g.last.wars > 0 ? fillIn(t().pageWarWars, { n: g.last.wars }) : ""), g.last.laid.filter((one) => !one.down).map((one) => one.card), false));
+      const took =
+        g.last.winner === null
+          ? t().pageWarDraw
+          : fillIn(t().pageWarTook, { player: names[g.last.winner], n: g.last.laid.length });
+      piles.push(
+        pile(
+          took + (g.last.wars > 0 ? fillIn(t().pageWarWars, { n: g.last.wars }) : ""),
+          g.last.laid.filter((one) => !one.down).map((one) => one.card),
+          false,
+        ),
+      );
     }
   }
   $("piles").replaceChildren(...piles);
@@ -158,7 +252,9 @@ function drawTable() {
     ...names.map((name, seat) => {
       const box = el("div", "", { class: "seat", "data-turn": String(seat === toPlay) });
       const held = game.hands?.[seat]?.length;
-      const score = (game.scores ?? game.penalties)?.[(game.scores ?? game.penalties).length === 2 && names.length === 4 ? seat % 2 : seat];
+      const score = (game.scores ?? game.penalties)?.[
+        (game.scores ?? game.penalties).length === 2 && names.length === 4 ? seat % 2 : seat
+      ];
       const extra = [
         computers[seat] ? t().pageComputer : "",
         held !== undefined ? fillIn(t().pageCards, { n: held }) : "",
@@ -197,7 +293,12 @@ function drawTable() {
   const fitting = offered.filter((move) => cardsOf(move).length === 0 || same(cardsOf(move), picked));
   $("moves").replaceChildren(
     ...fitting.map((move) => {
-      const button = el("button", moveText(kind, move, { language: language.lang, players: names }), { type: "button", class: "fam-button", "data-testid": "move", "data-move": JSON.stringify(move) });
+      const button = el("button", moveText(kind, move, { language: language.lang, players: names }), {
+        type: "button",
+        class: "fam-button",
+        "data-testid": "move",
+        "data-move": JSON.stringify(move),
+      });
       if (cardsOf(move).length > 0) button.dataset.primary = "true";
       button.addEventListener("click", () => makeMove(move));
       return button;
@@ -205,7 +306,12 @@ function drawTable() {
   );
 
   if (over || toPlay === null) {
-    $("status").textContent = fillIn(t().pageOver, { players: namesList(r.winners(game).map((seat) => names[seat]), language.lang) });
+    $("status").textContent = fillIn(t().pageOver, {
+      players: namesList(
+        r.winners(game).map((seat) => names[seat]),
+        language.lang,
+      ),
+    });
     return;
   }
   if (computers[toPlay]) {
@@ -234,15 +340,28 @@ function drawLog() {
   const seed = game.seed;
   $("log").replaceChildren(
     el("li", fillIn(t().pageLogStart, { game: gameName(kind, language.lang), n: players.length, seed })),
-    ...log.map(({ seat, move, mine }) => el("li", `${names[seat]}: ${moveText(kind, move, { language: language.lang, form: mine ? "did" : "hidden", players: names })}`)),
+    ...log.map(({ seat, move, mine }) =>
+      el(
+        "li",
+        `${names[seat]}: ${moveText(kind, move, { language: language.lang, form: mine ? "did" : "hidden", players: names })}`,
+      ),
+    ),
   );
   $("log").scrollTop = $("log").scrollHeight;
 }
 
 function drawKeep() {
-  for (const tab of document.querySelectorAll("[data-form]")) tab.setAttribute("aria-selected", String(tab.dataset.form === form));
+  for (const tab of document.querySelectorAll("[data-form]"))
+    tab.setAttribute("aria-selected", String(tab.dataset.form === form));
   $("kept").dataset.wrap = String(form === "code");
-  $("kept").textContent = form === "code" ? toCode(kind, game) : form === "json" ? toJSON(kind, game) : form === "text" ? toText(kind, game, language.lang) : toCSV(kind, game).replaceAll("\r\n", "\n");
+  $("kept").textContent =
+    form === "code"
+      ? toCode(kind, game)
+      : form === "json"
+        ? toJSON(kind, game)
+        : form === "text"
+          ? toText(kind, game, language.lang)
+          : toCSV(kind, game).replaceAll("\r\n", "\n");
 }
 
 function drawChooser() {
@@ -250,13 +369,22 @@ function drawChooser() {
   const count = rules().seats(game).players.length;
   $("games").replaceChildren(
     ...CARD_GAME_LIST.map((one) => {
-      const button = el("button", "", { type: "button", class: "fam-button both", "aria-pressed": String(one === kind), "data-testid": `game-${one}` });
+      const button = el("button", "", {
+        type: "button",
+        class: "fam-button both",
+        "aria-pressed": String(one === kind),
+        "data-testid": `game-${one}`,
+      });
       button.append(el("span", gameName(one, language.lang), { lang: language.lang }), ghost(gameName(one, other())));
       button.addEventListener("click", () => deal(one));
       return button;
     }),
   );
-  $("players").replaceChildren(...Array.from({ length: table.mostPlayers - table.fewestPlayers + 1 }, (_, at) => el("option", String(table.fewestPlayers + at), { value: String(table.fewestPlayers + at) })));
+  $("players").replaceChildren(
+    ...Array.from({ length: table.mostPlayers - table.fewestPlayers + 1 }, (_, at) =>
+      el("option", String(table.fewestPlayers + at), { value: String(table.fewestPlayers + at) }),
+    ),
+  );
   $("players").value = String(count);
   $("seed").value = String(game.seed);
   $("blurb").textContent = gameSays(kind, language.lang);
@@ -273,13 +401,23 @@ function drawDeck() {
   const cards = shuffledDeck(deck.seed).map(cardId);
   deck.each = Math.min(deck.each, Math.floor(52 / deck.hands));
   $("deck-seed").value = String(deck.seed);
-  $("deck-hands").replaceChildren(...Array.from({ length: 8 }, (_, at) => el("option", String(at + 1), { value: String(at + 1) })));
+  $("deck-hands").replaceChildren(
+    ...Array.from({ length: 8 }, (_, at) => el("option", String(at + 1), { value: String(at + 1) })),
+  );
   $("deck-hands").value = String(deck.hands);
-  $("deck-each").replaceChildren(...Array.from({ length: Math.floor(52 / deck.hands) }, (_, at) => el("option", String(at + 1), { value: String(at + 1) })));
+  $("deck-each").replaceChildren(
+    ...Array.from({ length: Math.floor(52 / deck.hands) }, (_, at) =>
+      el("option", String(at + 1), { value: String(at + 1) }),
+    ),
+  );
   $("deck-each").value = String(deck.each);
-  $("deck-gap").replaceChildren(...DEAL_GAPS.map((gap) => el("option", fillIn(t().pageMs, { n: gap }), { value: String(gap) })));
+  $("deck-gap").replaceChildren(
+    ...DEAL_GAPS.map((gap) => el("option", fillIn(t().pageMs, { n: gap }), { value: String(gap) })),
+  );
   $("deck-gap").value = String(deck.gap);
-  const hands = Array.from({ length: deck.hands }, (_, seat) => cards.slice(0, deck.hands * deck.each).filter((_, at) => at % deck.hands === seat));
+  const hands = Array.from({ length: deck.hands }, (_, seat) =>
+    cards.slice(0, deck.hands * deck.each).filter((_, at) => at % deck.hands === seat),
+  );
   // Each seat is a <toranpu-hand>, kept from one deal to the next: given new cards, it gathers the old ones in and opens on
   // the new, so a shuffle is seen happening.
   const fans = $("fans");
@@ -288,7 +426,10 @@ function drawDeck() {
     fans.replaceChildren(
       ...hands.map(() => {
         const box = el("div", "", { class: "fan-box" });
-        box.append(el("span", "", { class: "fam-label" }), el("toranpu-hand", "", { "data-testid": "fan", size: "small", closed: "0.55" }));
+        box.append(
+          el("span", "", { class: "fam-label" }),
+          el("toranpu-hand", "", { "data-testid": "fan", size: "small", closed: "0.55" }),
+        );
         return box;
       }),
     );
@@ -309,7 +450,9 @@ function drawDeck() {
 }
 
 function drawAll() {
-  document.querySelector('[data-say="pageDocs"]')?.setAttribute("href", language.lang === "ja" ? "docs/ja/index.html" : "docs/index.html");
+  document
+    .querySelector('[data-say="pageDocs"]')
+    ?.setAttribute("href", language.lang === "ja" ? "docs/ja/index.html" : "docs/index.html");
   drawChooser();
   drawTable();
   drawLog();
@@ -333,7 +476,10 @@ function writeAddress() {
 /** A new game: the kind given (or the one on the table), the players chosen, and the seed typed or a new one. */
 function deal(next = kind, { count, seed } = {}) {
   const table = CARD_GAME_TABLES[next];
-  const chosen = count ?? (next === kind ? whole($("players").value, table.fewestPlayers, table.mostPlayers) : null) ?? table.defaultPlayers;
+  const chosen =
+    count ??
+    (next === kind ? whole($("players").value, table.fewestPlayers, table.mostPlayers) : null) ??
+    table.defaultPlayers;
   const players = NAMES.slice(0, chosen);
   kind = next;
   game = newGame(kind, { players, seed: seed ?? randomSeed(), computers: players.map((_, seat) => seat > 0) });
@@ -346,7 +492,12 @@ function deal(next = kind, { count, seed } = {}) {
 $("deal").addEventListener("click", () => deal());
 wireSound((key) => t()[key]);
 wireBacks((key) => t()[key]);
-afterLanguage.push(wireDesigns((key) => t()[key], () => language.lang));
+afterLanguage.push(
+  wireDesigns(
+    (key) => t()[key],
+    () => language.lang,
+  ),
+);
 afterLanguage.push(wireOneCard(() => language.lang));
 afterLanguage.push(wireHands());
 wirePiles();

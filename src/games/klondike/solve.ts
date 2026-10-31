@@ -90,7 +90,8 @@ function candidates(table: KlondikeTable): KlondikeMove[] {
   if (waste !== undefined && fitsFoundation(waste, table.foundation)) home.push(carry("w", foundationPileOf(waste)));
   table.tableau.forEach((column, index) => {
     const top = column.cards.at(-1);
-    if (top !== undefined && fitsFoundation(top, table.foundation)) home.push(carry(COLUMN_PILES[index], foundationPileOf(top)));
+    if (top !== undefined && fitsFoundation(top, table.foundation))
+      home.push(carry(COLUMN_PILES[index], foundationPileOf(top)));
   });
 
   table.tableau.forEach((column, index) => {
@@ -139,7 +140,8 @@ function candidates(table: KlondikeTable): KlondikeMove[] {
     for (const to of COLUMN_PILES) if (fitsColumn(card, table.tableau[columnAt(to)])) later.push(carry(pile, to));
   });
 
-  const stock: KlondikeMove[] = table.stock.length > 0 ? [{ kind: "draw" }] : table.waste.length > 0 ? [{ kind: "recycle" }] : [];
+  const stock: KlondikeMove[] =
+    table.stock.length > 0 ? [{ kind: "draw" }] : table.waste.length > 0 ? [{ kind: "recycle" }] : [];
   turning.sort((a, b) => b.down - a.down);
   return [...home, ...turning.map((each) => each.move), ...fromWaste, ...later, ...stock];
 }

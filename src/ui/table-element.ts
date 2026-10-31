@@ -3,7 +3,17 @@ import { isCard } from "../games/cards.ts";
 import { newGame, randomSeed, rulesFor } from "../play.ts";
 import { STRINGS, fillIn } from "../strings.ts";
 import { cardText, moveText, namesList, suitSymbol } from "../words.ts";
-import { cardDrawing, designNamed, ElementBase, followLanguage, isOn, languageOf, lessMotion, pageSounds, widthOf } from "./element-kit.ts";
+import {
+  cardDrawing,
+  designNamed,
+  ElementBase,
+  followLanguage,
+  isOn,
+  languageOf,
+  lessMotion,
+  pageSounds,
+  widthOf,
+} from "./element-kit.ts";
 
 /**
  * THE CLOTHS A TABLE MAY BE LAID IN: the same five the whole family offers, and itsutsu.com's boards. Each is the
@@ -37,12 +47,17 @@ export type TableCloth = keyof typeof TABLE_CLOTHS;
 
 /** A game's key as an attribute writes it, in kebab case (`crazy-eights`), or as its key (`crazyEights`). */
 function kindOf(text: string | null): CardGameKind {
-  const found = CARD_GAME_LIST.find((one) => one === text || one.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`) === text);
+  const found = CARD_GAME_LIST.find(
+    (one) => one === text || one.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`) === text,
+  );
   return found ?? "hearts";
 }
 
 /** Every card a move names, in any field. */
-const cardsOf = (move: object): string[] => Object.values(move).flatMap((value) => (Array.isArray(value) ? value.filter((one) => isCard(one)) : isCard(value) ? [value as string] : []));
+const cardsOf = (move: object): string[] =>
+  Object.values(move).flatMap((value) =>
+    Array.isArray(value) ? value.filter((one) => isCard(one)) : isCard(value) ? [value as string] : [],
+  );
 
 /** The game as the table holds it: only the fields a table draws from, read loosely, since every game keeps its own. */
 type Seen = {
@@ -111,7 +126,26 @@ const NAMES = [YOU, "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
  */
 export class ToranpuTable extends ElementBase {
   static get observedAttributes(): readonly string[] {
-    return ["game", "players", "people", "names", "seed", "cloth", "messiness", "delay", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang", "sound"];
+    return [
+      "game",
+      "players",
+      "people",
+      "names",
+      "seed",
+      "cloth",
+      "messiness",
+      "delay",
+      "design",
+      "back",
+      "back-colour",
+      "back-image",
+      "back-logo",
+      "mark",
+      "size",
+      "width",
+      "lang",
+      "sound",
+    ];
   }
 
   #root: ShadowRoot | null = null;
@@ -161,7 +195,10 @@ export class ToranpuTable extends ElementBase {
   }
 
   #names(count: number): string[] {
-    const given = (this.getAttribute("names") ?? "").split(",").map((name) => name.trim()).filter(Boolean);
+    const given = (this.getAttribute("names") ?? "")
+      .split(",")
+      .map((name) => name.trim())
+      .filter(Boolean);
     return Array.from({ length: count }, (_, seat) => given[seat] ?? NAMES[seat] ?? `${seat + 1}`);
   }
 
@@ -169,10 +206,17 @@ export class ToranpuTable extends ElementBase {
     this.#kind = kindOf(this.getAttribute("game"));
     const table = CARD_GAME_TABLES[this.#kind];
     const asked = Number(this.getAttribute("players"));
-    const count = Number.isInteger(asked) && asked >= table.fewestPlayers && asked <= table.mostPlayers ? asked : table.defaultPlayers;
+    const count =
+      Number.isInteger(asked) && asked >= table.fewestPlayers && asked <= table.mostPlayers
+        ? asked
+        : table.defaultPlayers;
     const people = Math.max(1, Math.min(count, Number(this.getAttribute("people")) || 1));
     const players = this.#names(count);
-    this.#game = newGame(this.#kind, { players, seed, computers: players.map((_, seat) => seat >= people) }) as Seen | null;
+    this.#game = newGame(this.#kind, {
+      players,
+      seed,
+      computers: players.map((_, seat) => seat >= people),
+    }) as Seen | null;
     this.#picked = [];
     if (isOn(this, "sound")) pageSounds().play("shuffle");
     this.#draw();
@@ -189,7 +233,13 @@ export class ToranpuTable extends ElementBase {
     this.#picked = [];
     if (isOn(this, "sound")) pageSounds().play(cardsOf(move).length > 0 ? "play" : "deal");
     const over = rules.over(next as never);
-    this.dispatchEvent(new CustomEvent("toranpu-table", { bubbles: true, composed: true, detail: { seat, move, over, winners: over ? rules.winners(next as never) : [] } }));
+    this.dispatchEvent(
+      new CustomEvent("toranpu-table", {
+        bubbles: true,
+        composed: true,
+        detail: { seat, move, over, winners: over ? rules.winners(next as never) : [] },
+      }),
+    );
     this.#draw();
   }
 
@@ -208,10 +258,19 @@ export class ToranpuTable extends ElementBase {
     const toPlay = rules.toPlay(game as never);
     const over = rules.over(game as never);
     // The hand shown: the person to play, or else the first seat a person holds.
-    const me = toPlay !== null && !computers[toPlay] ? toPlay : Math.max(0, computers.findIndex((computer) => !computer));
+    const me =
+      toPlay !== null && !computers[toPlay]
+        ? toPlay
+        : Math.max(
+            0,
+            computers.findIndex((computer) => !computer),
+          );
     const cloth = TABLE_CLOTHS[(this.getAttribute("cloth") ?? "green") as TableCloth] ?? TABLE_CLOTHS.green;
     const messiness = Math.min(1, Math.max(0, Number(this.getAttribute("messiness") ?? 0.3) || 0));
-    const worn = ["design", "back", "back-colour", "back-image", "back-logo", "mark", "lang"].filter((name) => this.hasAttribute(name)).map((name) => ` ${name}="${escape(this.getAttribute(name) ?? "")}"`).join("");
+    const worn = ["design", "back", "back-colour", "back-image", "back-logo", "mark", "lang"]
+      .filter((name) => this.hasAttribute(name))
+      .map((name) => ` ${name}="${escape(this.getAttribute(name) ?? "")}"`)
+      .join("");
     const face = (card: string) => cardDrawing(card, false, this, design, language);
 
     const seats = names
@@ -231,15 +290,30 @@ export class ToranpuTable extends ElementBase {
       })
       .join("");
 
-    const laid = (label: string, cards: readonly string[]) => `<div class="pile"><span class="label">${escape(label)}</span><div class="laid">${cards.map((card) => `<span class="card" data-card="${card}">${face(card)}</span>`).join("")}</div></div>`;
+    const laid = (label: string, cards: readonly string[]) =>
+      `<div class="pile"><span class="label">${escape(label)}</span><div class="laid">${cards.map((card) => `<span class="card" data-card="${card}">${face(card)}</span>`).join("")}</div></div>`;
     const heap = (label: string, attributes: string, id: string) =>
       `<div class="pile"><span class="label">${escape(label)}</span><toranpu-pile ${attributes} messiness="${messiness}" seed="${game.seed % 100000}" depth="6" size="small"${worn} data-testid="${id}"></toranpu-pile></div>`;
-    const sign = (label: string, text: string) => `<div class="pile"><span class="label">${escape(label)}</span><span class="big">${escape(text)}</span></div>`;
+    const sign = (label: string, text: string) =>
+      `<div class="pile"><span class="label">${escape(label)}</span><span class="big">${escape(text)}</span></div>`;
     const plays = (list: readonly { card: string }[]) => list.map((play) => play.card);
     const piles: string[] = [];
-    if (game.trick?.length) piles.push(laid(`${t.pageTrick}: ${namesList(game.trick.map((play) => names[play.seat] ?? ""), language)}`, plays(game.trick)));
-    else if (game.lastTrick?.plays?.length) piles.push(laid(fillIn(t.pageLastTrick, { player: names[game.lastTrick.winner] ?? "" }), plays(game.lastTrick.plays)));
-    if (game.pile?.cards) piles.push(laid(fillIn(t.pageToBeat, { player: names[game.pile.seat] ?? "" }), game.pile.cards));
+    if (game.trick?.length)
+      piles.push(
+        laid(
+          `${t.pageTrick}: ${namesList(
+            game.trick.map((play) => names[play.seat] ?? ""),
+            language,
+          )}`,
+          plays(game.trick),
+        ),
+      );
+    else if (game.lastTrick?.plays?.length)
+      piles.push(
+        laid(fillIn(t.pageLastTrick, { player: names[game.lastTrick.winner] ?? "" }), plays(game.lastTrick.plays)),
+      );
+    if (game.pile?.cards)
+      piles.push(laid(fillIn(t.pageToBeat, { player: names[game.pile.seat] ?? "" }), game.pile.cards));
     if (game.run?.length) piles.push(laid(fillIn(t.pageCount, { n: game.count ?? 0 }), plays(game.run)));
     if (game.discard?.length) piles.push(heap(t.pageDiscard, `cards="${game.discard.join(" ")}"`, "table-discard"));
     if (game.suit && this.#kind === "crazyEights") piles.push(sign(t.pageSuitToFollow, suitSymbol(game.suit as never)));
@@ -247,14 +321,31 @@ export class ToranpuTable extends ElementBase {
     if (game.turned && this.#kind === "ohHell") piles.push(laid(t.pageTurnedUp, [game.turned]));
     if (game.trump) piles.push(sign(t.pageTrump, suitSymbol(game.trump as never)));
     if (game.starter) piles.push(laid(t.pageStarter, [game.starter]));
-    if (game.stock) piles.push(heap(fillIn(t.pageStock, { n: game.stock.length }), `count="${game.stock.length}" face-down`, "table-stock"));
+    if (game.stock)
+      piles.push(
+        heap(fillIn(t.pageStock, { n: game.stock.length }), `count="${game.stock.length}" face-down`, "table-stock"),
+      );
     // War: each player's pile face down, the turn the game is at, and the last turn's cards turned up, with who took them.
     if (this.#kind === "war" && game.hands) {
-      game.hands.forEach((cards, seat) => cards.length > 0 && piles.push(heap(`${names[seat] ?? ""}: ${cards.length}`, `count="${cards.length}" face-down`, `table-war-${seat}`)));
+      game.hands.forEach(
+        (cards, seat) =>
+          cards.length > 0 &&
+          piles.push(
+            heap(`${names[seat] ?? ""}: ${cards.length}`, `count="${cards.length}" face-down`, `table-war-${seat}`),
+          ),
+      );
       piles.push(sign(t.pageWarTurn, `${game.moves?.length ?? 0} / ${game.size ?? 0}`));
       if (game.last !== null && game.last !== undefined) {
-        const took = game.last.winner === null ? t.pageWarDraw : fillIn(t.pageWarTook, { player: names[game.last.winner] ?? "", n: game.last.laid.length });
-        piles.push(laid(took + (game.last.wars > 0 ? fillIn(t.pageWarWars, { n: game.last.wars }) : ""), game.last.laid.filter((one) => !one.down).map((one) => one.card)));
+        const took =
+          game.last.winner === null
+            ? t.pageWarDraw
+            : fillIn(t.pageWarTook, { player: names[game.last.winner] ?? "", n: game.last.laid.length });
+        piles.push(
+          laid(
+            took + (game.last.wars > 0 ? fillIn(t.pageWarWars, { n: game.last.wars }) : ""),
+            game.last.laid.filter((one) => !one.down).map((one) => one.card),
+          ),
+        );
       }
     }
 
@@ -263,16 +354,29 @@ export class ToranpuTable extends ElementBase {
     const usable = new Set(offered.flatMap(cardsOf));
     // At War nobody holds a hand to choose from: each pile is turned a card at a time, and is drawn as a pile above.
     const hand = (this.#kind === "war" ? [] : (game.hands?.[me] ?? []))
-      .map((card) => `<button type="button" class="card" part="card" data-card="${card}" aria-pressed="${this.#picked.includes(card)}"${usable.has(card) ? "" : " disabled"} aria-label="${escape(cardText(card, language))}">${face(card)}</button>`)
+      .map(
+        (card) =>
+          `<button type="button" class="card" part="card" data-card="${card}" aria-pressed="${this.#picked.includes(card)}"${usable.has(card) ? "" : " disabled"} aria-label="${escape(cardText(card, language))}">${face(card)}</button>`,
+      )
       .join("");
-    const same = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((card) => b.includes(card));
+    const same = (a: readonly string[], b: readonly string[]) =>
+      a.length === b.length && a.every((card) => b.includes(card));
     const fitting = offered.filter((move) => cardsOf(move).length === 0 || same(cardsOf(move), this.#picked));
     const moves = fitting
-      .map((move, at) => `<button type="button" class="move" part="move" data-at="${at}"${cardsOf(move).length > 0 ? ' data-primary="true"' : ""} data-testid="table-move">${escape(moveText(this.#kind, move as never, { language, players: names }))}</button>`)
+      .map(
+        (move, at) =>
+          `<button type="button" class="move" part="move" data-at="${at}"${cardsOf(move).length > 0 ? ' data-primary="true"' : ""} data-testid="table-move">${escape(moveText(this.#kind, move as never, { language, players: names }))}</button>`,
+      )
       .join("");
 
     let status: string;
-    if (over || toPlay === null) status = fillIn(t.pageOver, { players: namesList(rules.winners(game as never).map((seat) => names[seat] ?? ""), language) });
+    if (over || toPlay === null)
+      status = fillIn(t.pageOver, {
+        players: namesList(
+          rules.winners(game as never).map((seat) => names[seat] ?? ""),
+          language,
+        ),
+      });
     else if (computers[toPlay]) status = fillIn(t.pageThinking, { player: names[toPlay] ?? "" });
     else {
       const first = (offered[0] ?? {}) as Record<string, unknown>;
@@ -301,20 +405,27 @@ export class ToranpuTable extends ElementBase {
     for (const button of root.querySelectorAll<HTMLButtonElement>(".hand .card")) {
       button.addEventListener("click", () => {
         const card = button.dataset.card as string;
-        this.#picked = this.#picked.includes(card) ? this.#picked.filter((one) => one !== card) : [...this.#picked, card];
+        this.#picked = this.#picked.includes(card)
+          ? this.#picked.filter((one) => one !== card)
+          : [...this.#picked, card];
         this.#draw();
       });
     }
-    for (const button of root.querySelectorAll<HTMLButtonElement>(".moves .move")) button.addEventListener("click", () => this.#play(fitting[Number(button.dataset.at)] as object));
+    for (const button of root.querySelectorAll<HTMLButtonElement>(".moves .move"))
+      button.addEventListener("click", () => this.#play(fitting[Number(button.dataset.at)] as object));
     // A computer to play: after a short pause, as a person would see it think.
     if (!over && toPlay !== null && computers[toPlay]) {
       const delay = Number(this.getAttribute("delay"));
-      this.#timer = setTimeout(() => this.#play(rules.computer(game as never) as object), lessMotion() ? 0 : Number.isFinite(delay) && delay >= 0 ? delay : 550);
+      this.#timer = setTimeout(
+        () => this.#play(rules.computer(game as never) as object),
+        lessMotion() ? 0 : Number.isFinite(delay) && delay >= 0 ? delay : 550,
+      );
     }
   }
 }
 
-const escape = (text: string) => String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const escape = (text: string) =>
+  String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 const TABLE_STYLE = `
 :host { display: block; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }

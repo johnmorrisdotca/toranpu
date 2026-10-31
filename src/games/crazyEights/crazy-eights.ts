@@ -90,7 +90,12 @@ export function sortCrazy(hand: readonly CardId[]): CardId[] {
   return [...hand].sort((a, b) => key(a) - key(b) || a.localeCompare(b));
 }
 
-function dealHand(game: Omit<CrazyEightsGame, "hands" | "stock" | "discard" | "suit" | "toPlay" | "drawn" | "passes" | "turnovers" | "phase">): CrazyEightsGame {
+function dealHand(
+  game: Omit<
+    CrazyEightsGame,
+    "hands" | "stock" | "discard" | "suit" | "toPlay" | "drawn" | "passes" | "turnovers" | "phase"
+  >,
+): CrazyEightsGame {
   const seats = game.players.length;
   const dealt = dealRound(shuffledDeck(game.seed, game.hand), seats, crazyHandSize(seats));
   let stock = dealt.stock;
@@ -129,7 +134,13 @@ function dealHand(game: Omit<CrazyEightsGame, "hands" | "stock" | "discard" | "s
  * console.log(startCrazyEights(CARD_GAME_TABLES.crazyEights.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startCrazyEights(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): CrazyEightsGame | null {
+export function startCrazyEights(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): CrazyEightsGame | null {
   if (!(CRAZY_EIGHTS_SIZES as readonly number[]).includes(size)) return null;
   if (players.length < 2 || players.length > 7) return null;
   return dealHand({
@@ -271,7 +282,11 @@ function play(game: CrazyEightsGame, seat: number, card: CardId, called: CardSui
 
 /** What the hand is worth to its winners: everything the others still hold. */
 function endHand(game: CrazyEightsGame, winners: number[], blocked: boolean): CrazyEightsGame {
-  const points = game.hands.reduce((sum, hand, seat) => (winners.includes(seat) ? sum : sum + hand.reduce((held, card) => held + crazyPoints(card), 0)), 0);
+  const points = game.hands.reduce(
+    (sum, hand, seat) =>
+      winners.includes(seat) ? sum : sum + hand.reduce((held, card) => held + crazyPoints(card), 0),
+    0,
+  );
   const scores = game.scores.map((score, seat) => (winners.includes(seat) ? score + points : score));
   const result: CrazyEightsResult = { winners, points, blocked };
   const finished = { ...game, scores, results: [...game.results, result] };
@@ -287,7 +302,11 @@ function pass(game: CrazyEightsGame, seat: number): CrazyEightsGame | null {
   // Blocked: nobody can play or draw. The least held wins.
   const held = game.hands.map((hand) => hand.reduce((sum, card) => sum + crazyPoints(card), 0));
   const least = Math.min(...held);
-  return endHand(game, held.flatMap((points, at) => (points === least ? [at] : [])), true);
+  return endHand(
+    game,
+    held.flatMap((points, at) => (points === least ? [at] : [])),
+    true,
+  );
 }
 
 /** The game after that move, with the move added to its record, or null for a move the rules refuse.
@@ -311,7 +330,11 @@ export function playCrazyEights(game: CrazyEightsGame, move: CrazyEightsMove): C
   if (game.phase === "over" || seat === null) return null;
   let next: CrazyEightsGame | null;
   if ("play" in move) next = play(game, seat, move.play, move.suit);
-  else if ("draw" in move) next = move.draw === true && game.drawn === null && crazyPlayable(game).length === 0 && canDraw(game) ? draw(game, seat) : null;
+  else if ("draw" in move)
+    next =
+      move.draw === true && game.drawn === null && crazyPlayable(game).length === 0 && canDraw(game)
+        ? draw(game, seat)
+        : null;
   else next = move.pass === true ? pass(game, seat) : null;
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }

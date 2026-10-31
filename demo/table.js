@@ -11,11 +11,28 @@ const kebab = (kind) => kind.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCas
 function draw(lang) {
   const table = $("table-demo");
   const kind = CARD_GAME_LIST.find((one) => kebab(one) === table.getAttribute("game")) ?? "crazyEights";
-  $("table-game").replaceChildren(...CARD_GAME_LIST.map((one) => Object.assign(document.createElement("option"), { value: kebab(one), textContent: gameName(one, lang()), selected: one === kind })));
+  $("table-game").replaceChildren(
+    ...CARD_GAME_LIST.map((one) =>
+      Object.assign(document.createElement("option"), {
+        value: kebab(one),
+        textContent: gameName(one, lang()),
+        selected: one === kind,
+      }),
+    ),
+  );
   const { fewestPlayers, mostPlayers } = CARD_GAME_TABLES[kind];
-  const players = Math.min(mostPlayers, Math.max(fewestPlayers, Number(table.getAttribute("players")) || CARD_GAME_TABLES[kind].defaultPlayers));
+  const players = Math.min(
+    mostPlayers,
+    Math.max(fewestPlayers, Number(table.getAttribute("players")) || CARD_GAME_TABLES[kind].defaultPlayers),
+  );
   $("table-players").replaceChildren(
-    ...Array.from({ length: mostPlayers - fewestPlayers + 1 }, (_, at) => Object.assign(document.createElement("option"), { value: String(fewestPlayers + at), textContent: String(fewestPlayers + at), selected: fewestPlayers + at === players })),
+    ...Array.from({ length: mostPlayers - fewestPlayers + 1 }, (_, at) =>
+      Object.assign(document.createElement("option"), {
+        value: String(fewestPlayers + at),
+        textContent: String(fewestPlayers + at),
+        selected: fewestPlayers + at === players,
+      }),
+    ),
   );
   const cloth = document.documentElement.dataset.cloth ?? "green";
   wear(table);
@@ -24,7 +41,10 @@ function draw(lang) {
   else table.setAttribute("cloth", cloth);
   if (lang() === "ja") table.setAttribute("lang", "ja");
   else table.removeAttribute("lang");
-  const worn = ["cloth", "design", "back", "back-colour", "mark", "messiness"].filter((name) => table.hasAttribute(name)).map((name) => ` ${name}="${table.getAttribute(name)}"`).join("");
+  const worn = ["cloth", "design", "back", "back-colour", "mark", "messiness"]
+    .filter((name) => table.hasAttribute(name))
+    .map((name) => ` ${name}="${table.getAttribute(name)}"`)
+    .join("");
   $("table-code").textContent = `<script type="module" src="${CDN}"></script>
 <toranpu-table game="${kebab(kind)}" players="${players}"${worn}></toranpu-table>`;
 }

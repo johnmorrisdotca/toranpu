@@ -12,26 +12,36 @@ const read = (page, id) =>
     const layers = [...pile.shadowRoot.querySelectorAll(".layer")];
     return {
       label: pile.getAttribute("aria-label"),
-      layers: layers.map((layer) => ({ x: Number(layer.style.getPropertyValue("--x")), y: Number(layer.style.getPropertyValue("--y")), rotate: layer.style.getPropertyValue("--r") })),
+      layers: layers.map((layer) => ({
+        x: Number(layer.style.getPropertyValue("--x")),
+        y: Number(layer.style.getPropertyValue("--y")),
+        rotate: layer.style.getPropertyValue("--r"),
+      })),
       faces: layers.filter((layer) => layer.innerHTML.includes("--toranpu-card")).length,
       width: Math.round(pile.getBoundingClientRect().width),
     };
   });
 
-test("the stock lies face down and the discard face up, each laid out from its seed as messy as asked", async ({ page }) => {
+test("the stock lies face down and the discard face up, each laid out from its seed as messy as asked", async ({
+  page,
+}) => {
   const errors = await open(page, "?seed=1");
   const deck = shuffledDeck(7).map(cardId);
   let stock = await read(page, "stock-demo");
   let discard = await read(page, "discard-demo");
   expect(stock.label).toBe("a pile face down, cards: 49");
   expect(stock.faces).toBe(0);
-  expect(stock.layers.map((layer) => `${layer.rotate}`)).toEqual(pileLayout(49, { messiness: 0.3, seed: 7 }).map((place) => `${place.rotate}deg`));
+  expect(stock.layers.map((layer) => `${layer.rotate}`)).toEqual(
+    pileLayout(49, { messiness: 0.3, seed: 7 }).map((place) => `${place.rotate}deg`),
+  );
   expect(discard.label).toBe(`a pile, ${faceName(deck[2])} on top, cards: 3`);
   expect(discard.layers).toHaveLength(3);
 
   await page.locator(at("messiness")).fill("1");
   stock = await read(page, "stock-demo");
-  expect(stock.layers.map((layer) => layer.rotate)).toEqual(pileLayout(49, { messiness: 1, seed: 7 }).map((place) => `${place.rotate}deg`));
+  expect(stock.layers.map((layer) => layer.rotate)).toEqual(
+    pileLayout(49, { messiness: 1, seed: 7 }).map((place) => `${place.rotate}deg`),
+  );
   expect(new URL(page.url()).search).toContain("mess=1");
   await page.locator(at("messiness")).fill("0");
   for (const layer of (await read(page, "stock-demo")).layers) expect(layer.rotate).toBe("0deg");
@@ -46,7 +56,9 @@ test("the stock lies face down and the discard face up, each laid out from its s
   expect(discard.layers.slice(0, 3).map((layer) => layer.rotate)).toEqual(before.layers.map((layer) => layer.rotate));
   expect(discard.label).toBe(`a pile, ${faceName(deck[3])} on top, cards: 4`);
   await expect(page.locator(at("discard-demo"))).toHaveAttribute("cards", deck.slice(0, 4).join(" "));
-  await expect(page.locator(at("piles-code"))).toContainText(`<toranpu-pile count="48" face-down messiness="0.6" seed="7">`);
+  await expect(page.locator(at("piles-code"))).toContainText(
+    `<toranpu-pile count="48" face-down messiness="0.6" seed="7">`,
+  );
 
   // Another seed is another pile; the same seed again is the same pile.
   await page.locator(at("pile-seed")).fill("8");
@@ -58,11 +70,26 @@ test("the stock lies face down and the discard face up, each laid out from its s
   await sound(page, errors);
 });
 
-test("a pile is one box whatever its messiness: squared up or scattered, the piles and the table round them keep their size", async ({ page }) => {
+test("a pile is one box whatever its messiness: squared up or scattered, the piles and the table round them keep their size", async ({
+  page,
+}) => {
   const errors = await open(page, "?seed=1");
-  const box = (selector) => page.locator(selector).evaluate((element) => { const r = element.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; });
-  const table = () => page.locator(at("stock-demo")).evaluate((pile) => Math.round(pile.parentElement.closest("section, article, div").getBoundingClientRect().height));
-  const sizes = async () => ({ stock: await box(at("stock-demo")), discard: await box(at("discard-demo")), table: await table() });
+  const box = (selector) =>
+    page.locator(selector).evaluate((element) => {
+      const r = element.getBoundingClientRect();
+      return [Math.round(r.width), Math.round(r.height)];
+    });
+  const table = () =>
+    page
+      .locator(at("stock-demo"))
+      .evaluate((pile) =>
+        Math.round(pile.parentElement.closest("section, article, div").getBoundingClientRect().height),
+      );
+  const sizes = async () => ({
+    stock: await box(at("stock-demo")),
+    discard: await box(at("discard-demo")),
+    table: await table(),
+  });
   await page.locator(at("messiness")).fill("0");
   const neat = await sizes();
   for (const messiness of ["0.4", "1", "0"]) {

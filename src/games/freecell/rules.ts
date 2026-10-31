@@ -71,7 +71,11 @@ export const FOUNDATION_PILES = ["S", "H", "D", "C"] as const satisfies readonly
  * console.log(FREECELL_PILES);
  * ```
  */
-export const FREECELL_PILES: ReadonlySet<string> = new Set<string>([...COLUMN_PILES, ...CELL_PILES, ...FOUNDATION_PILES]);
+export const FREECELL_PILES: ReadonlySet<string> = new Set<string>([
+  ...COLUMN_PILES,
+  ...CELL_PILES,
+  ...FOUNDATION_PILES,
+]);
 
 /** A card's suit, 0 to 3 in `SUITS` order.
  *
@@ -289,7 +293,8 @@ export function fitsFoundation(card: number, foundation: readonly number[]): boo
 export function runLength(column: readonly number[]): number {
   if (column.length === 0) return 0;
   let length = 1;
-  while (length < column.length && follows(column[column.length - length - 1], column[column.length - length])) length += 1;
+  while (length < column.length && follows(column[column.length - length - 1], column[column.length - length]))
+    length += 1;
   return length;
 }
 
@@ -469,7 +474,8 @@ export function movesFrom(table: FreeCellTable): FreeCellMove[] {
     for (const to of COLUMN_PILES) {
       if (to === from) continue;
       if (isColumnPile(from)) {
-        const count = countOnto(table, from, to) ?? Math.min(runLength(table.tableau[columnAt(from)]), mostCarried(table, true));
+        const count =
+          countOnto(table, from, to) ?? Math.min(runLength(table.tableau[columnAt(from)]), mostCarried(table, true));
         tryMove({ from, to, count });
       } else tryMove({ from, to, count: 1 });
     }

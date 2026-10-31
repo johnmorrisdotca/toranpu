@@ -5,17 +5,28 @@
 import { takePictures } from "./readme-pictures-lib.mjs";
 
 const STATUS = '[data-testid="status"]';
-const init = () => { window.toranpuDelay = 0; };
-const settled = (page) => page.waitForFunction(() => !/thinking|考えています/.test(document.querySelector('[data-testid="status"]').textContent) && document.querySelector('[data-testid="status"]').textContent !== "");
+const init = () => {
+  window.toranpuDelay = 0;
+};
+const settled = (page) =>
+  page.waitForFunction(
+    () =>
+      !/thinking|考えています/.test(document.querySelector('[data-testid="status"]').textContent) &&
+      document.querySelector('[data-testid="status"]').textContent !== "",
+  );
 
 /** Play `moves` of the game as a person would: tap the cards a move names, then its button, and let the computers answer. */
 async function advance(page, moves) {
-    for (let n = 0; n < moves; n += 1) {
+  for (let n = 0; n < moves; n += 1) {
     await settled(page);
-    const offered = await page.locator('[data-testid="move"]').evaluateAll((buttons) => buttons.map((button) => button.dataset.move));
+    const offered = await page
+      .locator('[data-testid="move"]')
+      .evaluateAll((buttons) => buttons.map((button) => button.dataset.move));
     if (offered.length > 0) {
       const move = JSON.parse(offered[0]);
-      const cards = Object.values(move).flatMap((value) => (Array.isArray(value) ? value : [value])).filter((value) => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
+      const cards = Object.values(move)
+        .flatMap((value) => (Array.isArray(value) ? value : [value]))
+        .filter((value) => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
       for (const card of cards) {
         const one = page.locator(`[data-testid="hand"] [data-card="${card}"]`).first();
         if ((await one.getAttribute("aria-pressed")) !== "true") await one.click();
@@ -31,12 +42,23 @@ async function advance(page, moves) {
   await settled(page);
 }
 
-
 const url = (game, players, lang = "en") => `/?lang=${lang}&game=${game}&players=${players}&seed=2026`;
 /** A game of `game` a few moves in. */
-const played = (moves) => async (page) => { await settled(page); await advance(page, moves); };
+const played = (moves) => async (page) => {
+  await settled(page);
+  await advance(page, moves);
+};
 /** One section of the page, cropped. */
-const section = (subject, target, prepare) => ({ subject, views: ["desk"], scale: 1, url: url("hearts", 4), init, ready: STATUS, target, prepare });
+const section = (subject, target, prepare) => ({
+  subject,
+  views: ["desk"],
+  scale: 1,
+  url: url("hearts", 4),
+  init,
+  ready: STATUS,
+  target,
+  prepare,
+});
 
 await takePictures({
   shots: [
@@ -54,7 +76,9 @@ await takePictures({
           await page.goto(`http://toranpu.test${url("go-fish", 3, "ja")}`);
           await page.waitForSelector(STATUS);
           await played(4)(page);
-          await page.locator('[data-testid="seats"]').evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 16));
+          await page
+            .locator('[data-testid="seats"]')
+            .evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 16));
         } else {
           await played(8)(page);
           await page.evaluate(() => window.scrollTo(0, 0));

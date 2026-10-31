@@ -23,11 +23,30 @@ if (from === undefined) {
   process.exit(2);
 }
 
-const RANKS = { ace: "A", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "T", jack: "J", queen: "Q", king: "K" };
+const RANKS = {
+  ace: "A",
+  2: "2",
+  3: "3",
+  4: "4",
+  5: "5",
+  6: "6",
+  7: "7",
+  8: "8",
+  9: "9",
+  10: "T",
+  jack: "J",
+  queen: "Q",
+  king: "K",
+};
 const SUITS = { spades: "S", hearts: "H", diamonds: "D", clubs: "C" };
 const files = [];
-for (const [suitName, suit] of Object.entries(SUITS)) for (const [rankName, rank] of Object.entries(RANKS)) files.push({ id: `${rank}${suit}`, file: `English_pattern_${rankName}_of_${suitName}.svg` });
-files.push({ id: "RJ", file: "Atlas_deck_joker_red.svg", joker: true }, { id: "BJ", file: "Atlas_deck_joker_black.svg", joker: true });
+for (const [suitName, suit] of Object.entries(SUITS))
+  for (const [rankName, rank] of Object.entries(RANKS))
+    files.push({ id: `${rank}${suit}`, file: `English_pattern_${rankName}_of_${suitName}.svg` });
+files.push(
+  { id: "RJ", file: "Atlas_deck_joker_red.svg", joker: true },
+  { id: "BJ", file: "Atlas_deck_joker_black.svg", joker: true },
+);
 
 /** A card made small, with ids of its own. */
 const small = (svg, id) =>

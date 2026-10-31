@@ -199,7 +199,10 @@ const MADE: Record<CardSoundKind, { ticks: number; over: number; length: number;
  * ```
  */
 export function createCardSounds(options: CardSoundsOptions = {}): CardSounds {
-  const win: CardSoundWindow | undefined = options.window === null ? undefined : (options.window ?? (typeof window === "undefined" ? undefined : (window as unknown as CardSoundWindow)));
+  const win: CardSoundWindow | undefined =
+    options.window === null
+      ? undefined
+      : (options.window ?? (typeof window === "undefined" ? undefined : (window as unknown as CardSoundWindow)));
   const load = options.load ?? ((): Promise<{ CARD_SOUND_DATA: CardSoundData }> => import("../sounds.ts"));
   let muted = options.muted === true;
   let volume = clampVolume(options.volume ?? 0.6);
@@ -225,11 +228,14 @@ export function createCardSounds(options: CardSoundsOptions = {}): CardSounds {
         const atob = win?.atob ?? globalThis.atob;
         const { CARD_SOUND_DATA } = await load();
         const names = Object.keys(CARD_SOUND_DATA).sort();
-        const buffers = await Promise.all(names.map((name) => decode(audio, bytesOf(CARD_SOUND_DATA[name] as string, atob))));
+        const buffers = await Promise.all(
+          names.map((name) => decode(audio, bytesOf(CARD_SOUND_DATA[name] as string, atob))),
+        );
         const made: Loaded = {};
         names.forEach((name, at) => {
           const kind = name.replace(/-\d+$/, "") as CardSoundKind;
-          if ((CARD_SOUND_KINDS as readonly string[]).includes(kind)) (made[kind] ??= []).push(buffers[at] as AudioBuffer);
+          if ((CARD_SOUND_KINDS as readonly string[]).includes(kind))
+            (made[kind] ??= []).push(buffers[at] as AudioBuffer);
         });
         return Object.keys(made).length > 0 ? made : null;
       } catch {

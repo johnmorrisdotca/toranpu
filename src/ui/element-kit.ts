@@ -13,7 +13,8 @@ import { STRINGS, type Language } from "../strings.ts";
 import { readHand } from "./layout.ts";
 
 /** What the elements extend: HTMLElement, or on a server, where there is none, an empty class, so that importing them never throws. */
-export const ElementBase: typeof HTMLElement = typeof HTMLElement === "undefined" ? (class {} as unknown as typeof HTMLElement) : HTMLElement;
+export const ElementBase: typeof HTMLElement =
+  typeof HTMLElement === "undefined" ? (class {} as unknown as typeof HTMLElement) : HTMLElement;
 
 const loadedDesigns = new Map<string, CardDesign | null>();
 const loadingDesigns = new Map<string, Promise<CardDesign | null>>();
@@ -23,20 +24,29 @@ const loadingDesigns = new Map<string, Promise<CardDesign | null>>();
  * page registered at once; a drawn set (`english`, `realistic`) once it has
  * been fetched, and until then `null`, with `ready` settling when it arrives.
  */
-export function designNamed(name: string | null): { design: "plain" | "four-colour" | CardDesign | null; ready: Promise<unknown> | null } {
+export function designNamed(name: string | null): {
+  design: "plain" | "four-colour" | CardDesign | null;
+  ready: Promise<unknown> | null;
+} {
   const own = registeredDesign(name);
   if (own !== undefined) return { design: own, ready: null };
   if (name === "four-colour") return { design: "four-colour", ready: null };
   if (name !== "english" && name !== "realistic") return { design: "plain", ready: null };
   const loaded = loadedDesigns.get(name);
   if (loaded !== undefined && loaded !== null) return { design: loaded, ready: null };
-  if (!loadingDesigns.has(name)) loadingDesigns.set(name, loadCardDesign(name).then((design) => (loadedDesigns.set(name, design), design)));
+  if (!loadingDesigns.has(name))
+    loadingDesigns.set(
+      name,
+      loadCardDesign(name).then((design) => (loadedDesigns.set(name, design), design)),
+    );
   return { design: null, ready: loadingDesigns.get(name) as Promise<CardDesign | null> };
 }
 
 /** The language an element speaks: its own `lang`, or the nearest one above it, or the page's; Japanese for anything that starts `ja`. */
 export function languageOf(element: Element): Language {
-  const tag = element.closest("[lang]")?.getAttribute("lang") ?? (typeof document === "undefined" ? "" : document.documentElement.lang);
+  const tag =
+    element.closest("[lang]")?.getAttribute("lang") ??
+    (typeof document === "undefined" ? "" : document.documentElement.lang);
   return String(tag).toLowerCase().startsWith("ja") ? "ja" : "en";
 }
 
@@ -64,7 +74,13 @@ export function backOptions(element: Element): { name: string; options: CardBack
 }
 
 /** One card's drawing: its face, or its back. A face-down card's face is never in the page. */
-export function cardDrawing(card: string, faceDown: boolean, element: Element, design: "plain" | "four-colour" | CardDesign | null, language: Language): string {
+export function cardDrawing(
+  card: string,
+  faceDown: boolean,
+  element: Element,
+  design: "plain" | "four-colour" | CardDesign | null,
+  language: Language,
+): string {
   if (faceDown) {
     const { name, options } = backOptions(element);
     return cardBackSvg(name, { ...options, title: "" });
@@ -75,8 +91,15 @@ export function cardDrawing(card: string, faceDown: boolean, element: Element, d
 }
 
 /** What a screen reader says for a card: its name, or that it is face down. */
-export function cardLabel(card: string, faceDown: boolean, language: Language, design?: "plain" | "four-colour" | CardDesign | null): string {
-  return faceDown ? STRINGS[language].cardFaceDown : faceName(card, language, typeof design === "object" && design !== null ? design : undefined);
+export function cardLabel(
+  card: string,
+  faceDown: boolean,
+  language: Language,
+  design?: "plain" | "four-colour" | CardDesign | null,
+): string {
+  return faceDown
+    ? STRINGS[language].cardFaceDown
+    : faceName(card, language, typeof design === "object" && design !== null ? design : undefined);
 }
 
 /** The sizes every element takes, as a card's width in pixels.
@@ -185,7 +208,11 @@ export function spinElement(element: HTMLElement, options: SpinOptions = {}, del
   const turns = Math.min(20, Math.max(1, Math.round(Number.isFinite(options.turns) ? (options.turns as number) : 3)));
   const sign = options.direction === "anticlockwise" ? -1 : 1;
   const ms = Number.isFinite(options.ms) && (options.ms as number) > 0 ? (options.ms as number) : 700 + 420 * turns;
-  const run = element.animate([{ transform: "rotate(0deg)" }, { transform: `rotate(${sign * 360 * turns}deg)` }], { duration: ms, delay, easing: "cubic-bezier(.06, .72, .2, 1)" });
+  const run = element.animate([{ transform: "rotate(0deg)" }, { transform: `rotate(${sign * 360 * turns}deg)` }], {
+    duration: ms,
+    delay,
+    easing: "cubic-bezier(.06, .72, .2, 1)",
+  });
   return run.finished.then(
     () => undefined,
     () => undefined,

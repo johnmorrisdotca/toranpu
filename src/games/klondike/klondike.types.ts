@@ -90,4 +90,7 @@ export type KlondikePile = "s" | "w" | "S" | "H" | "D" | "C" | "1" | "2" | "3" |
  * console.log(value.kind);
  * ```
  */
-export type KlondikeMove = { kind: "draw" } | { kind: "recycle" } | { kind: "carry"; from: KlondikePile; to: KlondikePile };
+export type KlondikeMove =
+  | { kind: "draw" }
+  | { kind: "recycle" }
+  | { kind: "carry"; from: KlondikePile; to: KlondikePile };

@@ -9,15 +9,23 @@ async function bare(page, html) {
   const errors = [];
   page.on("pageerror", (error) => errors.push(String(error)));
   await serve(page);
-  await page.route("http://toranpu.test/bare.html", (route) => route.fulfill({ contentType: "text/html", body: `<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>${html}<script type="module" src="dist/table-define.js"></script></body></html>` }));
+  await page.route("http://toranpu.test/bare.html", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: `<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>${html}<script type="module" src="dist/table-define.js"></script></body></html>`,
+    }),
+  );
   await page.goto("http://toranpu.test/bare.html");
   await page.waitForFunction(() => customElements.get("toranpu-table") !== undefined);
   return errors;
 }
 
-const ELEMENTS = '<toranpu-card id="c" card="QS"></toranpu-card><toranpu-hand id="h" cards="AS KH"></toranpu-hand><toranpu-pile id="p" cards="3C 9D"></toranpu-pile><toranpu-table id="t" game="hearts" delay="100000"></toranpu-table>';
+const ELEMENTS =
+  '<toranpu-card id="c" card="QS"></toranpu-card><toranpu-hand id="h" cards="AS KH"></toranpu-hand><toranpu-pile id="p" cards="3C 9D"></toranpu-pile><toranpu-table id="t" game="hearts" delay="100000"></toranpu-table>';
 
-test("assigning an attribute's name sets the attribute, for the ones that are methods or read-only too", async ({ page }) => {
+test("assigning an attribute's name sets the attribute, for the ones that are methods or read-only too", async ({
+  page,
+}) => {
   const errors = await bare(page, ELEMENTS);
   await page.evaluate(() => {
     const [card, hand, pile, table] = ["c", "h", "p", "t"].map((id) => document.getElementById(id));
@@ -53,7 +61,15 @@ test("assigning an attribute's name sets the attribute, for the ones that are me
 
 test("the methods those names also are still work, and so do the readings", async ({ page }) => {
   const errors = await bare(page, ELEMENTS);
-  const kinds = await page.evaluate(() => [["c", "flip"], ["h", "mark"], ["h", "cards"], ["p", "count"], ["t", "game"]].map(([id, name]) => `${id}.${name}:${typeof document.getElementById(id)[name]}`));
+  const kinds = await page.evaluate(() =>
+    [
+      ["c", "flip"],
+      ["h", "mark"],
+      ["h", "cards"],
+      ["p", "count"],
+      ["t", "game"],
+    ].map(([id, name]) => `${id}.${name}:${typeof document.getElementById(id)[name]}`),
+  );
   expect(kinds).toEqual(["c.flip:function", "h.mark:function", "h.cards:object", "p.count:number", "t.game:object"]);
   await page.evaluate(() => document.getElementById("c").flip());
   await expect(page.locator("#c")).toHaveAttribute("aria-label", "a card, face down");

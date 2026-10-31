@@ -1,13 +1,28 @@
 import { describe, expect, it } from "vitest";
 
-import { dealFreeCell, dealOfSeed, deckOf, freeCellFinishingMoves, freeCellLiftable, freeCellMoveFor, freeCellStuck, mostCarried, playFreeCell, runLength } from "../../freecell.ts";
+import {
+  dealFreeCell,
+  dealOfSeed,
+  deckOf,
+  freeCellFinishingMoves,
+  freeCellLiftable,
+  freeCellMoveFor,
+  freeCellStuck,
+  mostCarried,
+  playFreeCell,
+  runLength,
+} from "../../freecell.ts";
 import type { FreeCellTable } from "../../freecell.ts";
 
 /** A card by rank and suit letter, as the rules number it: suit × 13 + rank − 1, spades hearts diamonds clubs. */
 const card = (rank: number, suit: "S" | "H" | "D" | "C") => "SHDC".indexOf(suit) * 13 + rank - 1;
 
 /** A table built by hand: columns bottom up, the cells, and the foundations' counts. */
-function tableOf(columns: number[][], cells: (number | null)[] = [null, null, null, null], foundation = [0, 0, 0, 0]): FreeCellTable {
+function tableOf(
+  columns: number[][],
+  cells: (number | null)[] = [null, null, null, null],
+  foundation = [0, 0, 0, 0],
+): FreeCellTable {
   const tableau = [...columns, ...Array.from({ length: 8 - columns.length }, () => [])];
   return { tableau, cells, foundation };
 }
@@ -54,7 +69,19 @@ describe("freecell's rules", () => {
   it("carries a run only as far as the cells and the empty columns could, a card at a time", () => {
     // A run of four on a black 9, onto a red 10 — with no free cells and no empty column, one card at most.
     const run = [card(9, "S"), card(8, "H"), card(7, "C"), card(6, "D")];
-    const full = tableOf([run, [card(10, "D")], [card(1, "S")], [card(1, "H")], [card(1, "D")], [card(1, "C")], [card(2, "S")], [card(2, "H")]], [card(3, "S"), card(3, "H"), card(3, "D"), card(3, "C")]);
+    const full = tableOf(
+      [
+        run,
+        [card(10, "D")],
+        [card(1, "S")],
+        [card(1, "H")],
+        [card(1, "D")],
+        [card(1, "C")],
+        [card(2, "S")],
+        [card(2, "H")],
+      ],
+      [card(3, "S"), card(3, "H"), card(3, "D"), card(3, "C")],
+    );
     expect(runLength(run)).toBe(4);
     expect(mostCarried(full, false)).toBe(1);
     expect(playFreeCell(full, { from: "1", to: "2", count: 4 })).toBeNull();
@@ -69,7 +96,10 @@ describe("freecell's rules", () => {
 
   it("does not count the column a run is going into as room to carry it", () => {
     const run = [card(9, "S"), card(8, "H"), card(7, "C")];
-    const table = tableOf([run, [card(1, "S")], [card(1, "H")], [card(1, "D")], [card(1, "C")], [card(2, "S")], [card(2, "H")]], [null, card(3, "H"), card(3, "D"), card(3, "C")]);
+    const table = tableOf(
+      [run, [card(1, "S")], [card(1, "H")], [card(1, "D")], [card(1, "C")], [card(2, "S")], [card(2, "H")]],
+      [null, card(3, "H"), card(3, "D"), card(3, "C")],
+    );
     // One free cell and one empty column (the eighth): two cards into it, not four.
     expect(mostCarried(table, true)).toBe(2);
     expect(playFreeCell(table, { from: "1", to: "8", count: 3 })).toBeNull();

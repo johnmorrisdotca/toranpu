@@ -14,7 +14,12 @@ function isCrazyEightsMove(value: unknown): value is CrazyEightsMove {
   return move.draw === true || move.pass === true;
 }
 
-const codec = cardGameCodec<CrazyEightsGame, CrazyEightsMove>("crazyEights", startCrazyEights, playCrazyEights, isCrazyEightsMove);
+const codec = cardGameCodec<CrazyEightsGame, CrazyEightsMove>(
+  "crazyEights",
+  startCrazyEights,
+  playCrazyEights,
+  isCrazyEightsMove,
+);
 /** A game of Crazy Eights as text: its table, its seed and its moves, never a hand.
  *
  * @param game - The current native game; applying a move returns a new state.

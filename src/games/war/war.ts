@@ -65,7 +65,13 @@ export function warRank(card: CardId): number {
  * console.log(startWar(CARD_GAME_TABLES.war.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startWar(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): WarGame | null {
+export function startWar(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): WarGame | null {
   if (!(WAR_ROUNDS as readonly number[]).includes(size)) return null;
   if (players.length !== 2) return null;
   const seed = dealt ?? 1;
@@ -170,7 +176,8 @@ export function playWar(game: WarGame, move: WarMove): WarGame | null {
       winner = level ? null : short.length === 1 ? 1 - (short[0] as number) : hands[0].length > hands[1].length ? 0 : 1;
       break;
     }
-    for (const seat of [0, 1]) for (const card of hands[seat].splice(0, WAR_FACE_DOWN)) laid.push({ seat, card, down: true });
+    for (const seat of [0, 1])
+      for (const card of hands[seat].splice(0, WAR_FACE_DOWN)) laid.push({ seat, card, down: true });
     [x, y] = turnUp();
   }
   if (ended === null) winner = warRank(x) > warRank(y) ? 0 : 1;
@@ -190,7 +197,15 @@ export function playWar(game: WarGame, move: WarMove): WarGame | null {
   if (ended === null && (hands[0].length === 0 || hands[1].length === 0)) ended = "cleared";
   if (ended === null && moves.length >= game.size) ended = "limit";
   const over = ended !== null;
-  const next: WarGame = { ...game, moves, hands, phase: over ? "over" : "playing", ended, last: { laid, wars, winner }, toPlay: null };
+  const next: WarGame = {
+    ...game,
+    moves,
+    hands,
+    phase: over ? "over" : "playing",
+    ended,
+    last: { laid, wars, winner },
+    toPlay: null,
+  };
   return { ...next, toPlay: over ? null : seatToPlay(next) };
 }
 

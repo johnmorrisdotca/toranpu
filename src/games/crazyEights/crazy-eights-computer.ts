@@ -54,7 +54,13 @@ export type CrazyEightsView = {
  */
 export function crazyEightsView(game: CrazyEightsGame): CrazyEightsView {
   const seat = game.toPlay ?? 0;
-  return { seat, hand: game.hands[seat], counts: game.hands.map((hand) => hand.length), drawn: game.drawn, legal: crazyEightsMoves(game) };
+  return {
+    seat,
+    hand: game.hands[seat],
+    counts: game.hands.map((hand) => hand.length),
+    drawn: game.drawn,
+    legal: crazyEightsMoves(game),
+  };
 }
 
 /** The suit this hand holds most of, eights aside; clubs first among equals so the choice is always the same.

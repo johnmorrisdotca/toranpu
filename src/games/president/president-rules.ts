@@ -9,7 +9,10 @@ import type { PresidentGame, PresidentMove } from "./president.types.ts";
 /** President, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 
 function isPresidentMove(value: unknown): value is PresidentMove {
-  return isClimbMove(value) || (typeof value === "object" && value !== null && isCardList((value as Record<string, unknown>).give));
+  return (
+    isClimbMove(value) ||
+    (typeof value === "object" && value !== null && isCardList((value as Record<string, unknown>).give))
+  );
 }
 
 const codec = cardGameCodec<PresidentGame, PresidentMove>("president", startPresident, playPresident, isPresidentMove);

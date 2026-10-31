@@ -61,8 +61,10 @@ export type RegisteredCardBack = CardBackOptions & {
 };
 
 function checkName(kind: string, name: unknown, own: readonly string[]): asserts name is string {
-  if (typeof name !== "string" || !NAME.test(name) || name.length > 40) throw new RangeError(`${kind} names are kebab case, up to 40 characters: ${String(name)}`);
-  if (own.includes(name)) throw new RangeError(`"${name}" is one of Toranpu's own ${kind}s, and cannot be registered over`);
+  if (typeof name !== "string" || !NAME.test(name) || name.length > 40)
+    throw new RangeError(`${kind} names are kebab case, up to 40 characters: ${String(name)}`);
+  if (own.includes(name))
+    throw new RangeError(`"${name}" is one of Toranpu's own ${kind}s, and cannot be registered over`);
 }
 
 /** Keep a design by its name, in place of any earlier one of that name. Throws for a name that is not kebab case or is one of the package's own.
@@ -81,8 +83,14 @@ function checkName(kind: string, name: unknown, own: readonly string[]): asserts
  */
 export function registerDesign(design: CardDesign): void {
   checkName("design", design?.name, OWN_DESIGNS);
-  if (typeof design.art !== "object" || design.art === null) throw new TypeError("a design has an `art` object, empty if every card is drawn by `draw`");
-  if (!Array.isArray(design.box) || design.box.length !== 2 || !design.box.every((side) => Number.isFinite(side) && side > 0)) throw new TypeError("a design's `box` is its [width, height]");
+  if (typeof design.art !== "object" || design.art === null)
+    throw new TypeError("a design has an `art` object, empty if every card is drawn by `draw`");
+  if (
+    !Array.isArray(design.box) ||
+    design.box.length !== 2 ||
+    !design.box.every((side) => Number.isFinite(side) && side > 0)
+  )
+    throw new TypeError("a design's `box` is its [width, height]");
   designs.set(design.name, design);
   changed();
 }

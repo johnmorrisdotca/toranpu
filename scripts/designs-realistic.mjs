@@ -26,7 +26,9 @@ const RANKS = { ace: "A", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8"
 const SUITS = { spades: "S", hearts: "H", diamonds: "D", clubs: "C" };
 const files = [];
 for (const [suitName, suit] of Object.entries(SUITS))
-  for (const [rankName, rank] of Object.entries(RANKS)) if (!(rank === "A" && suit === "S")) files.push({ id: `${rank}${suit}`, file: `${rankName[0].toUpperCase()}${rankName.slice(1)} of ${suitName}.svg` });
+  for (const [rankName, rank] of Object.entries(RANKS))
+    if (!(rank === "A" && suit === "S"))
+      files.push({ id: `${rank}${suit}`, file: `${rankName[0].toUpperCase()}${rankName.slice(1)} of ${suitName}.svg` });
 
 /** How tall a number card's large pips are, as a share of the card's height: a printed deck's proportion. */
 const PIP_SHARE = 0.12;
@@ -56,55 +58,73 @@ for (const { id, file } of files) {
   before += source.length;
   // A number card's pips are resized before the card is made small: the optimiser merges them into one shape.
   const numbered = id[0] !== "A";
-  await page.setContent(`<body style="margin:0">${numbered ? source.replace(/<\?xml[^>]*\?>/, "") : small(source, id)}</body>`);
-  const cleaned = await page.evaluate(({ numbered, PIP_SHARE, PIP_FIELD }) => {
-    const svg = document.querySelector("svg");
-    // Knoll draws his large pips about 22% of the card's height (his diamonds a sixth taller still), where a printed
-    // deck's are about 16%: from the seven up they crowd each other and the corners, and John found the cards
-    // strange (2026-10-01). Each large pip is made PIP_SHARE of the card's height about its own centre, its place on
-    // the card unchanged, so every suit's pips are one size.
-    if (numbered) {
-      for (const pip of svg.querySelectorAll("path")) {
-        const box = pip.getBBox();
-        const local = pip.getCTM();
-        const parent = pip.parentNode.getCTM();
-        if (local === null || parent === null) continue;
-        // A large pip is about 22% of the card's height; the corner pips and the border are far from it.
-        const share = pip.getBoundingClientRect().height / svg.getBoundingClientRect().height;
-        if (share < 0.17 || share > 0.28) continue;
-        const point = svg.createSVGPoint();
-        point.x = box.x + box.width / 2;
-        point.y = box.y + box.height / 2;
-        const centre = point.matrixTransform(parent.inverse().multiply(local));
-        const scale = Math.round((PIP_SHARE / share) * 1000) / 1000;
-        // The card's own middle, where the pip lies: the field of pips is drawn in toward it, clear of the corners.
-        const [vx, vy, vw, vh] = svg.getAttribute("viewBox").split(/[\s,]+/).map(Number);
-        const mid = svg.createSVGPoint();
-        mid.x = vx + vw / 2;
-        mid.y = vy + vh / 2;
-        const middle = mid.matrixTransform(parent.inverse().multiply(svg.getCTM()));
-        const to = { x: middle.x + (centre.x - middle.x) * PIP_FIELD, y: middle.y + (centre.y - middle.y) * PIP_FIELD };
-        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        g.setAttribute("transform", `translate(${to.x} ${to.y}) scale(${scale}) translate(${-centre.x} ${-centre.y})`);
-        pip.replaceWith(g);
-        g.append(pip);
+  await page.setContent(
+    `<body style="margin:0">${numbered ? source.replace(/<\?xml[^>]*\?>/, "") : small(source, id)}</body>`,
+  );
+  const cleaned = await page.evaluate(
+    ({ numbered, PIP_SHARE, PIP_FIELD }) => {
+      const svg = document.querySelector("svg");
+      // Knoll draws his large pips about 22% of the card's height (his diamonds a sixth taller still), where a printed
+      // deck's are about 16%: from the seven up they crowd each other and the corners, and John found the cards
+      // strange (2026-10-01). Each large pip is made PIP_SHARE of the card's height about its own centre, its place on
+      // the card unchanged, so every suit's pips are one size.
+      if (numbered) {
+        for (const pip of svg.querySelectorAll("path")) {
+          const box = pip.getBBox();
+          const local = pip.getCTM();
+          const parent = pip.parentNode.getCTM();
+          if (local === null || parent === null) continue;
+          // A large pip is about 22% of the card's height; the corner pips and the border are far from it.
+          const share = pip.getBoundingClientRect().height / svg.getBoundingClientRect().height;
+          if (share < 0.17 || share > 0.28) continue;
+          const point = svg.createSVGPoint();
+          point.x = box.x + box.width / 2;
+          point.y = box.y + box.height / 2;
+          const centre = point.matrixTransform(parent.inverse().multiply(local));
+          const scale = Math.round((PIP_SHARE / share) * 1000) / 1000;
+          // The card's own middle, where the pip lies: the field of pips is drawn in toward it, clear of the corners.
+          const [vx, vy, vw, vh] = svg
+            .getAttribute("viewBox")
+            .split(/[\s,]+/)
+            .map(Number);
+          const mid = svg.createSVGPoint();
+          mid.x = vx + vw / 2;
+          mid.y = vy + vh / 2;
+          const middle = mid.matrixTransform(parent.inverse().multiply(svg.getCTM()));
+          const to = {
+            x: middle.x + (centre.x - middle.x) * PIP_FIELD,
+            y: middle.y + (centre.y - middle.y) * PIP_FIELD,
+          };
+          const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          g.setAttribute(
+            "transform",
+            `translate(${to.x} ${to.y}) scale(${scale}) translate(${-centre.x} ${-centre.y})`,
+          );
+          pip.replaceWith(g);
+          g.append(pip);
+        }
       }
-    }
-    const [, , width, height] = svg.getAttribute("viewBox").split(/[\s,]+/).map(Number);
-    let outlines = 0;
-    // The card's outline: a shape as big as the card, which cardFaceSvg draws as its paper.
-    for (const shape of svg.querySelectorAll("path, rect")) {
-      const b = shape.getBBox();
-      if (b.width >= width * 0.97 && b.height >= height * 0.97) {
-        shape.remove();
-        outlines += 1;
+      const [, , width, height] = svg
+        .getAttribute("viewBox")
+        .split(/[\s,]+/)
+        .map(Number);
+      let outlines = 0;
+      // The card's outline: a shape as big as the card, which cardFaceSvg draws as its paper.
+      for (const shape of svg.querySelectorAll("path, rect")) {
+        const b = shape.getBBox();
+        if (b.width >= width * 0.97 && b.height >= height * 0.97) {
+          shape.remove();
+          outlines += 1;
+        }
       }
-    }
-    return { svg: svg.outerHTML, outlines, width, height };
-  }, { numbered, PIP_SHARE, PIP_FIELD });
+      return { svg: svg.outerHTML, outlines, width, height };
+    },
+    { numbered, PIP_SHARE, PIP_FIELD },
+  );
   if (cleaned.outlines !== 1) throw new Error(`${file}: ${cleaned.outlines} outlines`);
   box ??= [cleaned.width, cleaned.height];
-  if (Math.abs(box[0] - cleaned.width) > 0.1 || Math.abs(box[1] - cleaned.height) > 0.1) throw new Error(`${file}: another size`);
+  if (Math.abs(box[0] - cleaned.width) > 0.1 || Math.abs(box[1] - cleaned.height) > 0.1)
+    throw new Error(`${file}: another size`);
   art[id] = inside(small(cleaned.svg, id));
 }
 await browser.close();

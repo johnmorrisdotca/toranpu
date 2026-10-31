@@ -12,9 +12,12 @@ import { cardFaceSvg } from "./card-faces.ts";
 describe("a card's letters cannot be selected", () => {
   it("in every face, of every design, and every back", () => {
     for (const design of ["plain", "four-colour", ENGLISH_PATTERN] as const) {
-      for (const id of ["AS", "KH", "QD", "JC", "TS", "2H", "RJ", "BJ"]) expect(cardFaceSvg(id, { design }), `${typeof design === "string" ? design : "english"} ${id}`).toMatch(/^<svg [^>]*style="user-select:none;-webkit-user-select:none"/);
+      for (const id of ["AS", "KH", "QD", "JC", "TS", "2H", "RJ", "BJ"])
+        expect(cardFaceSvg(id, { design }), `${typeof design === "string" ? design : "english"} ${id}`).toMatch(
+          /^<svg [^>]*style="user-select:none;-webkit-user-select:none"/,
+        );
     }
-    for (const back of CARD_BACKS) expect(cardBackSvg(back)).toMatch(/^<svg [^>]*style="user-select:none;-webkit-user-select:none"/);
+    for (const back of CARD_BACKS)
+      expect(cardBackSvg(back)).toMatch(/^<svg [^>]*style="user-select:none;-webkit-user-select:none"/);
   });
-
 });

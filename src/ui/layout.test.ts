@@ -28,7 +28,11 @@ describe("a hand's layout", () => {
     const big = handLayout(20);
     expect(big[0]?.rotate).toBe(-20);
     expect(big[19]?.rotate).toBe(20);
-    expect(handLayout(3, { step: 1, turn: 0 }).map((place) => [place.x, place.rotate])).toEqual([[0, 0], [1, 0], [2, 0]]);
+    expect(handLayout(3, { step: 1, turn: 0 }).map((place) => [place.x, place.rotate])).toEqual([
+      [0, 0],
+      [1, 0],
+      [2, 0],
+    ]);
   });
 
   it("lays out nothing for no cards, one card flat, and refuses nonsense quietly", () => {
@@ -53,7 +57,8 @@ describe("a pile's layout", () => {
   });
 
   it("gets messier as asked, never turning a card more than fourteen degrees", () => {
-    const spread = (mess: number) => Math.max(...pileLayout(30, { messiness: mess, seed: 3, depth: 30 }).map((place) => Math.abs(place.rotate)));
+    const spread = (mess: number) =>
+      Math.max(...pileLayout(30, { messiness: mess, seed: 3, depth: 30 }).map((place) => Math.abs(place.rotate)));
     expect(spread(0.2)).toBeLessThan(spread(0.6));
     expect(spread(0.6)).toBeLessThan(spread(1));
     expect(spread(1)).toBeLessThanOrEqual(14);

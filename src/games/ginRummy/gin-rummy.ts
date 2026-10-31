@@ -226,9 +226,21 @@ export function deadwoodIn(hand: readonly CardId[]): number {
 }
 
 /** A new hand: ten each, the stock's top card turned up, and the first player alternating hand by hand. */
-function dealGin(game: Omit<GinGame, "hands" | "stock" | "discard" | "taken" | "toPlay" | "phase" | "picked" | "throws">): GinGame {
+function dealGin(
+  game: Omit<GinGame, "hands" | "stock" | "discard" | "taken" | "toPlay" | "phase" | "picked" | "throws">,
+): GinGame {
   const { hands, stock } = dealRound(shuffledDeck(game.seed, game.hand), GIN_SEATS, DEALT);
-  return { ...game, phase: "draw", hands: hands.map(sortGin), stock: stock.slice(1), discard: [stock[0]], taken: null, picked: [[], []], throws: 0, toPlay: game.hand % GIN_SEATS };
+  return {
+    ...game,
+    phase: "draw",
+    hands: hands.map(sortGin),
+    stock: stock.slice(1),
+    discard: [stock[0]],
+    taken: null,
+    picked: [[], []],
+    throws: 0,
+    toPlay: game.hand % GIN_SEATS,
+  };
 }
 
 /** A new game of Gin Rummy for these players (one name a seat) at this size, dealt from the seed `dealt`, or null for a table Gin Rummy is not offered for. `computers` says, one a seat, which seats a computer plays; the third argument is unused.
@@ -249,10 +261,25 @@ function dealGin(game: Omit<GinGame, "hands" | "stock" | "discard" | "taken" | "
  * console.log(startGin(CARD_GAME_TABLES.ginRummy.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startGin(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): GinGame | null {
+export function startGin(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): GinGame | null {
   if (!(GIN_SIZES as readonly number[]).includes(size)) return null;
   if (players.length !== GIN_SEATS) return null;
-  return dealGin({ size, players: [...players], computers: computerSeats(players.length, computers), seed: dealt ?? 1, moves: [], hand: 0, scores: [0, 0], results: [] });
+  return dealGin({
+    size,
+    players: [...players],
+    computers: computerSeats(players.length, computers),
+    seed: dealt ?? 1,
+    moves: [],
+    hand: 0,
+    scores: [0, 0],
+    results: [],
+  });
 }
 
 /** Whether throwing this card, from a hand of eleven, leaves little enough deadwood to knock with.
@@ -290,11 +317,15 @@ export function canKnockWith(hand: readonly CardId[], card: CardId): boolean {
  */
 export function ginMoves(game: GinGame): GinMove[] {
   if (game.toPlay === null) return [];
-  if (game.phase === "draw") return game.discard.length > 0 ? [{ draw: "stock" }, { draw: "discard" }] : [{ draw: "stock" }];
+  if (game.phase === "draw")
+    return game.discard.length > 0 ? [{ draw: "stock" }, { draw: "discard" }] : [{ draw: "stock" }];
   if (game.phase !== "discard") return [];
   const hand = game.hands[game.toPlay];
   const throwable = hand.filter((card) => card !== game.taken);
-  return [...throwable.map((card): GinMove => ({ discard: card })), ...throwable.filter((card) => canKnockWith(hand, card)).map((card): GinMove => ({ knock: card }))];
+  return [
+    ...throwable.map((card): GinMove => ({ discard: card })),
+    ...throwable.filter((card) => canKnockWith(hand, card)).map((card): GinMove => ({ knock: card })),
+  ];
 }
 
 /** Whether a card can be laid off onto a meld: the fourth of a set, or the next card at either end of a run. */
@@ -318,7 +349,10 @@ function fits(meld: readonly CardId[], card: CardId): boolean {
  * console.log(layOff(["6H", "AS"], [["3H", "4H", "5H"]]));
  * ```
  */
-export function layOff(defender: readonly CardId[], knockerMelds: readonly GinMeld[]): { layout: GinLayout; laidOff: CardId[]; melds: GinMeld[] } {
+export function layOff(
+  defender: readonly CardId[],
+  knockerMelds: readonly GinMeld[],
+): { layout: GinLayout; laidOff: CardId[]; melds: GinMeld[] } {
   const layout = bestLayout(defender);
   const melds = knockerMelds.map((meld) => [...meld]);
   let deadwood = [...layout.deadwood];
@@ -354,13 +388,28 @@ function knock(game: GinGame, knocker: number, hands: CardId[][]): GinResult {
     const theirs = bestLayout(hands[defender]);
     const layouts = [mine, theirs];
     if (knocker === 1) layouts.reverse();
-    return { knocker, winner: knocker, points: GIN_BONUS + deadwoodOf(theirs.deadwood), kind: "gin", layouts, laidOff: [] };
+    return {
+      knocker,
+      winner: knocker,
+      points: GIN_BONUS + deadwoodOf(theirs.deadwood),
+      kind: "gin",
+      layouts,
+      laidOff: [],
+    };
   }
   const { layout, laidOff, melds } = layOff(hands[defender], mine.melds);
   const theirDead = deadwoodOf(layout.deadwood);
   const knocked: GinLayout = { melds, deadwood: mine.deadwood };
   const layouts = knocker === 0 ? [knocked, layout] : [layout, knocked];
-  if (theirDead <= mineDead) return { knocker, winner: defender, points: mineDead - theirDead + UNDERCUT_BONUS, kind: "undercut", layouts, laidOff };
+  if (theirDead <= mineDead)
+    return {
+      knocker,
+      winner: defender,
+      points: mineDead - theirDead + UNDERCUT_BONUS,
+      kind: "undercut",
+      layouts,
+      laidOff,
+    };
   return { knocker, winner: knocker, points: theirDead - mineDead, kind: "knock", layouts, laidOff };
 }
 
@@ -384,7 +433,14 @@ function throwCard(game: GinGame, seat: number, card: CardId, knocking: boolean)
   if (knocking && deadwoodIn(left) > KNOCK_MOST) return null;
   const hands = game.hands.map((hand, at) => (at === seat ? left : hand));
   const picked = game.picked.map((cards, at) => (at === seat ? cards.filter((held) => held !== card) : cards));
-  const thrown: GinGame = { ...game, hands, discard: [...game.discard, card], taken: null, picked, throws: game.throws + 1 };
+  const thrown: GinGame = {
+    ...game,
+    hands,
+    discard: [...game.discard, card],
+    taken: null,
+    picked,
+    throws: game.throws + 1,
+  };
   if (knocking) return endHand(thrown, knock(thrown, seat, hands));
   if (thrown.stock.length <= STOCK_LEFT) {
     const layouts = hands.map(bestLayout);
@@ -413,7 +469,9 @@ export function playGin(game: GinGame, move: GinMove): GinGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
   let next: GinGame | null = null;
-  if ("draw" in move) next = game.phase === "draw" && (move.draw === "stock" || move.draw === "discard") ? draw(game, seat, move.draw) : null;
+  if ("draw" in move)
+    next =
+      game.phase === "draw" && (move.draw === "stock" || move.draw === "discard") ? draw(game, seat, move.draw) : null;
   else if ("discard" in move) next = game.phase === "discard" ? throwCard(game, seat, move.discard, false) : null;
   else if ("knock" in move) next = game.phase === "discard" ? throwCard(game, seat, move.knock, true) : null;
   return next === null ? null : { ...next, moves: [...game.moves, move] };

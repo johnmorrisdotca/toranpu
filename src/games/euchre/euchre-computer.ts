@@ -1,7 +1,17 @@
 import type { CardId, CardSuit } from "../card-games.types.ts";
 import { rankOf, suitOf } from "../cards.ts";
 
-import { EUCHRE_SEATS, dealerOf, euchreHeight, euchreMoves, euchrePlayable, euchreTrickWinner, partnerOf, suitIn, teamOf } from "./euchre.ts";
+import {
+  EUCHRE_SEATS,
+  dealerOf,
+  euchreHeight,
+  euchreMoves,
+  euchrePlayable,
+  euchreTrickWinner,
+  partnerOf,
+  suitIn,
+  teamOf,
+} from "./euchre.ts";
 import type { EuchreGame, EuchreMove, EuchrePlay } from "./euchre.types.ts";
 
 /**
@@ -203,7 +213,10 @@ function chooseCard(view: EuchreView): CardId {
   const winning = euchreTrickWinner(view.trick, t);
   const last = view.trick.length === EUCHRE_SEATS - 1;
   const partnerCard = view.trick.find((play) => play.seat === winning)?.card;
-  const partnerSafe = winning === partnerOf(seat) && partnerCard !== undefined && (last || height(partnerCard) >= 114 || (suitIn(partnerCard, t) !== t && rankOf(partnerCard) === 1));
+  const partnerSafe =
+    winning === partnerOf(seat) &&
+    partnerCard !== undefined &&
+    (last || height(partnerCard) >= 114 || (suitIn(partnerCard, t) !== t && rankOf(partnerCard) === 1));
   if (partnerSafe || winners.length === 0) return lowest(playable);
   // Last to play, or not: take it with the least that wins when last, the most when others are still to come.
   return last ? lowest(winners) : highest(winners);

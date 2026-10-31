@@ -1,4 +1,22 @@
-import { writeElementAttribute, elementTheme, followLanguage, cardDrawing, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./element-kit.ts";
+import {
+  writeElementAttribute,
+  elementTheme,
+  followLanguage,
+  cardDrawing,
+  cardLabel,
+  designNamed,
+  ElementBase,
+  isOn,
+  languageOf,
+  lessMotion,
+  markerHtml,
+  MARKER_STYLE,
+  pageSounds,
+  reflectMethod,
+  spinElement,
+  widthOf,
+  type SpinOptions,
+} from "./element-kit.ts";
 import { STRINGS, fillIn, type Language } from "../strings.ts";
 import { cardFaceFromArt, isCardFace } from "./card-faces.ts";
 import type { CardDesign } from "./card-faces.types.ts";
@@ -65,41 +83,122 @@ export type CardFaceRenderer = (card: string, context: CardFaceContext) => strin
  * ```
  */
 export class ToranpuCard extends ElementBase {
-  get card(): string | null { return this.getAttribute("card"); }
-  set card(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "card", value); }
-  get design(): string | null { return this.getAttribute("design"); }
-  set design(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "design", value); }
-  get back(): string | null { return this.getAttribute("back"); }
-  set back(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back", value); }
-  get backColour(): string | null { return this.getAttribute("back-colour"); }
-  set backColour(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
-  get ["back-colour"](): string | null { return this.getAttribute("back-colour"); }
-  set ["back-colour"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
-  get backImage(): string | null { return this.getAttribute("back-image"); }
-  set backImage(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
-  get ["back-image"](): string | null { return this.getAttribute("back-image"); }
-  set ["back-image"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
-  get backLogo(): string | null { return this.getAttribute("back-logo"); }
-  set backLogo(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
-  get ["back-logo"](): string | null { return this.getAttribute("back-logo"); }
-  set ["back-logo"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
-  get mark(): string | null { return this.getAttribute("mark"); }
-  set mark(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "mark", value); }
-  get label(): string | null { return this.getAttribute("label"); }
-  set label(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "label", value); }
-  get marked(): boolean { return isOn(this, "marked"); }
-  set marked(value: boolean | string | null | undefined) { writeElementAttribute(this, "marked", value, true); }
-  get size(): string | null { return this.getAttribute("size"); }
-  set size(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "size", value); }
-  get width(): string | null { return this.getAttribute("width"); }
-  set width(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "width", value); }
-  get theme(): string | null { return this.getAttribute("theme"); }
-  set theme(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "theme", value); }
+  get card(): string | null {
+    return this.getAttribute("card");
+  }
+  set card(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "card", value);
+  }
+  get design(): string | null {
+    return this.getAttribute("design");
+  }
+  set design(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "design", value);
+  }
+  get back(): string | null {
+    return this.getAttribute("back");
+  }
+  set back(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back", value);
+  }
+  get backColour(): string | null {
+    return this.getAttribute("back-colour");
+  }
+  set backColour(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-colour", value);
+  }
+  get ["back-colour"](): string | null {
+    return this.getAttribute("back-colour");
+  }
+  set ["back-colour"](value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-colour", value);
+  }
+  get backImage(): string | null {
+    return this.getAttribute("back-image");
+  }
+  set backImage(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-image", value);
+  }
+  get ["back-image"](): string | null {
+    return this.getAttribute("back-image");
+  }
+  set ["back-image"](value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-image", value);
+  }
+  get backLogo(): string | null {
+    return this.getAttribute("back-logo");
+  }
+  set backLogo(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-logo", value);
+  }
+  get ["back-logo"](): string | null {
+    return this.getAttribute("back-logo");
+  }
+  set ["back-logo"](value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-logo", value);
+  }
+  get mark(): string | null {
+    return this.getAttribute("mark");
+  }
+  set mark(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "mark", value);
+  }
+  get label(): string | null {
+    return this.getAttribute("label");
+  }
+  set label(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "label", value);
+  }
+  get marked(): boolean {
+    return isOn(this, "marked");
+  }
+  set marked(value: boolean | string | null | undefined) {
+    writeElementAttribute(this, "marked", value, true);
+  }
+  get size(): string | null {
+    return this.getAttribute("size");
+  }
+  set size(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "size", value);
+  }
+  get width(): string | null {
+    return this.getAttribute("width");
+  }
+  set width(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "width", value);
+  }
+  get theme(): string | null {
+    return this.getAttribute("theme");
+  }
+  set theme(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "theme", value);
+  }
 
-  get sound(): boolean { return isOn(this, "sound"); }
-  set sound(value: boolean | string | null | undefined) { writeElementAttribute(this, "sound", value, true); }
+  get sound(): boolean {
+    return isOn(this, "sound");
+  }
+  set sound(value: boolean | string | null | undefined) {
+    writeElementAttribute(this, "sound", value, true);
+  }
   static get observedAttributes(): readonly string[] {
-    return ["card", "design", "back", "back-colour", "back-image", "back-logo", "mark", "label", "face-down", "flip", "marked", "size", "width", "lang", "theme", "sound"];
+    return [
+      "card",
+      "design",
+      "back",
+      "back-colour",
+      "back-image",
+      "back-logo",
+      "mark",
+      "label",
+      "face-down",
+      "flip",
+      "marked",
+      "size",
+      "width",
+      "lang",
+      "theme",
+      "sound",
+    ];
   }
 
   #root: ShadowRoot | null = null;
@@ -133,7 +232,9 @@ export class ToranpuCard extends ElementBase {
     this.#turning = !lessMotion();
     this.faceDown = !this.faceDown;
     if (isOn(this, "sound")) pageSounds().play("flip");
-    this.dispatchEvent(new CustomEvent("toranpu-flip", { bubbles: true, composed: true, detail: { card, faceDown: this.faceDown } }));
+    this.dispatchEvent(
+      new CustomEvent("toranpu-flip", { bubbles: true, composed: true, detail: { card, faceDown: this.faceDown } }),
+    );
   }
 
   /** Spin the card where it lies, as a flick sets a card turning on a table: fast, then slowing to a stop as it was (`SpinOptions`). */
@@ -206,7 +307,10 @@ export class ToranpuCard extends ElementBase {
     const marked = known && isOn(this, "marked");
     const given = this.getAttribute("label");
     const name = !down && given !== null && given !== "" ? given : cardLabel(card, down, language, design);
-    this.setAttribute("aria-label", known ? (marked ? fillIn(STRINGS[language].cardMarked, { card: name }) : name) : "");
+    this.setAttribute(
+      "aria-label",
+      known ? (marked ? fillIn(STRINGS[language].cardMarked, { card: name }) : name) : "",
+    );
     // The side not shown is drawn only for the length of a turn, so the face of a card lying face down is not in the page.
     const showFace = known && (!down || turning);
     const showBack = known && (down || turning);
@@ -221,9 +325,14 @@ export class ToranpuCard extends ElementBase {
     else if (faceNode !== null) customFace = true;
     else if (showFace) face = cardDrawing(card, false, this, design, language);
     const customBack = showBack && this.#slotted("back");
-    const back = customBack ? '<slot name="back"></slot>' : showBack ? cardDrawing(card, true, this, design, language) : "";
+    const back = customBack
+      ? '<slot name="back"></slot>'
+      : showBack
+        ? cardDrawing(card, true, this, design, language)
+        : "";
     root.innerHTML = `<style>${CARD_STYLE}</style><div class="spin"><div class="card" part="card" data-down="${down}"${turning ? ' data-turning="true"' : ""}><div class="side face" part="face"${customFace ? ' data-custom="true"' : ""}>${face}</div><div class="side back" part="back"${customBack ? ' data-custom="true"' : ""}>${back}</div></div>${markerHtml(marked)}</div>`;
-    if (faceNode !== null) root.querySelector(".side.face")?.append(faceNode instanceof Element ? cleanElement(faceNode) : faceNode);
+    if (faceNode !== null)
+      root.querySelector(".side.face")?.append(faceNode instanceof Element ? cleanElement(faceNode) : faceNode);
     this.style.setProperty("--toranpu-w", widthOf(this));
     if (turning) {
       const inner = root.querySelector(".card") as HTMLElement;
@@ -246,7 +355,8 @@ export class ToranpuCard extends ElementBase {
 
 /** An element a page's function made, with scripts and handlers taken off it: it goes in as it is, for the page's own use. */
 function cleanElement<T extends Element>(element: T): T {
-  for (const attribute of [...element.attributes]) if (/^on/i.test(attribute.name)) element.removeAttribute(attribute.name);
+  for (const attribute of [...element.attributes])
+    if (/^on/i.test(attribute.name)) element.removeAttribute(attribute.name);
   return element;
 }
 

@@ -9,12 +9,27 @@ async function bare(page, html, { lang = "en" } = {}) {
   const errors = [];
   page.on("pageerror", (error) => errors.push(String(error)));
   await serve(page);
-  await page.route("http://toranpu.test/bare.html", (route) => route.fulfill({ contentType: "text/html", body: `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>${html}<script type="module" src="dist/element-define.js"></script></body></html>` }));
+  await page.route("http://toranpu.test/bare.html", (route) =>
+    route.fulfill({
+      contentType: "text/html",
+      body: `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>${html}<script type="module" src="dist/element-define.js"></script></body></html>`,
+    }),
+  );
   await page.goto("http://toranpu.test/bare.html");
   await page.waitForFunction(() => customElements.get("toranpu-card") !== undefined);
   return errors;
 }
-const inside = (page, selector) => page.locator(selector).evaluate((card) => ({ label: card.getAttribute("aria-label"), role: card.getAttribute("role"), down: card.hasAttribute("face-down"), face: card.shadowRoot.querySelector(".face").innerHTML, back: card.shadowRoot.querySelector(".back").innerHTML, width: Math.round(card.getBoundingClientRect().width) }));
+const inside = (page, selector) =>
+  page
+    .locator(selector)
+    .evaluate((card) => ({
+      label: card.getAttribute("aria-label"),
+      role: card.getAttribute("role"),
+      down: card.hasAttribute("face-down"),
+      face: card.shadowRoot.querySelector(".face").innerHTML,
+      back: card.shadowRoot.querySelector(".back").innerHTML,
+      width: Math.round(card.getBoundingClientRect().width),
+    }));
 
 test("a tap turns the card over and back; while it is down its face is not in the page", async ({ page }) => {
   const errors = await bare(page, '<toranpu-card id="c" card="QS" flip></toranpu-card>');
@@ -40,11 +55,17 @@ test("a tap turns the card over and back; while it is down its face is not in th
   await expect(page.locator("#c")).toHaveAttribute("aria-label", "queen of spades");
   await page.keyboard.press(" ");
   await expect(page.locator("#c")).toHaveAttribute("aria-label", "a card, face down");
-  expect(turns).toEqual([{ card: "QS", faceDown: true }, { card: "QS", faceDown: false }, { card: "QS", faceDown: true }]);
+  expect(turns).toEqual([
+    { card: "QS", faceDown: true },
+    { card: "QS", faceDown: false },
+    { card: "QS", faceDown: true },
+  ]);
   expect(errors).toEqual([]);
 });
 
-test("without flip a card is a picture: a tap does nothing; it takes a size, a width, a back and Japanese", async ({ page }) => {
+test("without flip a card is a picture: a tap does nothing; it takes a size, a width, a back and Japanese", async ({
+  page,
+}) => {
   const errors = await bare(
     page,
     '<toranpu-card id="a" card="TD"></toranpu-card><toranpu-card id="b" card="RJ" size="small"></toranpu-card><toranpu-card id="c" card="2C" width="150" face-down back="ink-dots" mark="五つ"></toranpu-card><toranpu-card id="d" card="KS" lang="ja"></toranpu-card><toranpu-card id="e" card="ZZ"></toranpu-card>',
@@ -67,19 +88,25 @@ test("the English pattern is fetched the first time a card asks for it, and draw
   expect(errors).toEqual([]);
 });
 
-test("on the demo: the card takes the look chosen above, turns on a tap, and its picture is on the site", async ({ page }) => {
+test("on the demo: the card takes the look chosen above, turns on a tap, and its picture is on the site", async ({
+  page,
+}) => {
   const errors = await open(page, "?seed=1&design=four-colour&back=classic-blue");
   await page.locator(at("one-card-pick")).selectOption("JD");
   await expect(page.locator(at("one-card"))).toHaveAttribute("card", "JD");
   await expect(page.locator(at("one-card"))).toHaveAttribute("design", "four-colour");
   await expect(page.locator(at("one-card"))).toHaveAttribute("back", "classic-blue");
-  await expect(page.locator(at("one-card-code"))).toContainText('<toranpu-card card="JD" design="four-colour" back="classic-blue" flip>');
+  await expect(page.locator(at("one-card-code"))).toContainText(
+    '<toranpu-card card="JD" design="four-colour" back="classic-blue" flip>',
+  );
   await tap(page, at("one-card"));
   await expect(page.locator(at("one-card"))).toHaveAttribute("face-down", "");
   expect((await inside(page, at("one-card"))).back).toContain("#1f4e8c");
   await expect(page.locator(at("one-card-img"))).toHaveAttribute("src", "cards/four-colour/JD.svg");
   await expect.poll(() => page.locator(at("one-card-img")).evaluate((image) => image.naturalWidth)).toBeGreaterThan(0);
-  await expect(page.locator(at("one-card-url"))).toContainText("https://johnmorrisdotca.github.io/toranpu/cards/four-colour/JD.svg");
+  await expect(page.locator(at("one-card-url"))).toContainText(
+    "https://johnmorrisdotca.github.io/toranpu/cards/four-colour/JD.svg",
+  );
   await sound(page, errors);
 
   await tap(page, '[data-lang="ja"]');

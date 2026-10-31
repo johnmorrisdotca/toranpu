@@ -57,7 +57,14 @@ export type GoFishView = {
  */
 export function goFishView(game: GoFishGame): GoFishView {
   const seat = game.toPlay ?? 0;
-  return { seat, hand: game.hands[seat], targets: goFishTargets(game), ranks: goFishRanks(game), counts: game.hands.map((hand) => hand.length), log: game.log };
+  return {
+    seat,
+    hand: game.hands[seat],
+    targets: goFishTargets(game),
+    ranks: goFishRanks(game),
+    counts: game.hands.map((hand) => hand.length),
+    log: game.log,
+  };
 }
 
 /** What the table has said about each seat's hand: for each seat, the ranks it is known to hold and known to be without.

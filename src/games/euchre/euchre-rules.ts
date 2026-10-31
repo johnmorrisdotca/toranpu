@@ -10,7 +10,13 @@ import type { EuchreGame, EuchreMove } from "./euchre.types.ts";
 function isEuchreMove(value: unknown): value is EuchreMove {
   if (typeof value !== "object" || value === null) return false;
   const move = value as Record<string, unknown>;
-  return move.order === true || move.pass === true || typeof move.call === "string" || typeof move.discard === "string" || typeof move.play === "string";
+  return (
+    move.order === true ||
+    move.pass === true ||
+    typeof move.call === "string" ||
+    typeof move.discard === "string" ||
+    typeof move.play === "string"
+  );
 }
 
 const codec = cardGameCodec<EuchreGame, EuchreMove>("euchre", startEuchre, playEuchre, isEuchreMove);

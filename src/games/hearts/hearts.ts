@@ -120,11 +120,18 @@ export function passOffset(deal: number, seats: number): number {
  */
 export function sortHearts(hand: readonly CardId[]): CardId[] {
   const order = "CDSH";
-  return [...hand].sort((a, b) => order.indexOf(suitOf(a)) - order.indexOf(suitOf(b)) || heartsHeight(a) - heartsHeight(b));
+  return [...hand].sort(
+    (a, b) => order.indexOf(suitOf(a)) - order.indexOf(suitOf(b)) || heartsHeight(a) - heartsHeight(b),
+  );
 }
 
 /** A new deal: the cards shuffled from the game's seed and this deal's number, and passing begun (or play, on a held deal). */
-function dealHearts(game: Omit<HeartsGame, "hands" | "passing" | "received" | "trick" | "played" | "toPlay" | "heartsBroken" | "points" | "phase">): HeartsGame {
+function dealHearts(
+  game: Omit<
+    HeartsGame,
+    "hands" | "passing" | "received" | "trick" | "played" | "toPlay" | "heartsBroken" | "points" | "phase"
+  >,
+): HeartsGame {
   const seats = game.players.length;
   const { hands } = dealRound(shuffledDeck(game.seed, game.deal, leftOut(seats)), seats);
   const dealt: HeartsGame = {
@@ -166,7 +173,13 @@ function beginPlay(game: HeartsGame): HeartsGame {
  * console.log(startHearts(CARD_GAME_TABLES.hearts.defaultSize, names, undefined, 42)?.phase);
  * ```
  */
-export function startHearts(size: number, players: readonly string[], _language?: unknown, dealt?: number, computers?: readonly boolean[]): HeartsGame | null {
+export function startHearts(
+  size: number,
+  players: readonly string[],
+  _language?: unknown,
+  dealt?: number,
+  computers?: readonly boolean[],
+): HeartsGame | null {
   if (size !== HEARTS_SIZES.short && size !== HEARTS_SIZES.full) return null;
   if (players.length < 3 || players.length > 4) return null;
   return dealHearts({
@@ -241,7 +254,8 @@ export function heartsPlayable(game: HeartsGame): CardId[] {
 export function trickWinner(trick: readonly HeartsPlay[]): number {
   const led = suitOf(trick[0].card);
   let best = trick[0];
-  for (const play of trick) if (suitOf(play.card) === led && heartsHeight(play.card) > heartsHeight(best.card)) best = play;
+  for (const play of trick)
+    if (suitOf(play.card) === led && heartsHeight(play.card) > heartsHeight(best.card)) best = play;
   return best.seat;
 }
 
@@ -261,7 +275,8 @@ export function trickWinner(trick: readonly HeartsPlay[]): number {
  * ```
  */
 export function heartsMoves(game: HeartsGame): HeartsMove[] {
-  if (game.phase === "passing" && game.toPlay !== null) return choices(game.hands[game.toPlay], PASSED).map((pass) => ({ pass }));
+  if (game.phase === "passing" && game.toPlay !== null)
+    return choices(game.hands[game.toPlay], PASSED).map((pass) => ({ pass }));
   return heartsPlayable(game).map((play) => ({ play }));
 }
 
@@ -274,7 +289,9 @@ function passCards(game: HeartsGame, seat: number, cards: readonly CardId[]): He
   const seats = game.players.length;
   const offset = passOffset(game.deal, seats);
   const received = passing.map((_, seat) => passing[(seat - offset + seats) % seats] as CardId[]);
-  const hands = game.hands.map((hand, seat) => sortHearts([...(without(hand, passing[seat] as CardId[]) as CardId[]), ...received[seat]]));
+  const hands = game.hands.map((hand, seat) =>
+    sortHearts([...(without(hand, passing[seat] as CardId[]) as CardId[]), ...received[seat]]),
+  );
   return beginPlay({ ...game, passing, received, hands });
 }
 
@@ -283,11 +300,21 @@ function playCard(game: HeartsGame, seat: number, card: CardId): HeartsGame | nu
   const hands = game.hands.map((hand, at) => (at === seat ? hand.filter((held) => held !== card) : hand));
   const trick = [...game.trick, { seat, card }];
   const heartsBroken = game.heartsBroken || suitOf(card) === "H";
-  if (trick.length < game.players.length) return { ...game, hands, trick, heartsBroken, toPlay: nextSeat(seat, game.players.length) };
+  if (trick.length < game.players.length)
+    return { ...game, hands, trick, heartsBroken, toPlay: nextSeat(seat, game.players.length) };
   const winner = trickWinner(trick);
   const taken = trick.reduce((sum, play) => sum + heartsPoints(play.card), 0);
   const points = game.points.map((had, at) => (at === winner ? had + taken : had));
-  const after: HeartsGame = { ...game, hands, trick: [], heartsBroken, points, played: [...game.played, ...trick.map((play) => play.card)], lastTrick: { plays: trick, winner }, toPlay: winner };
+  const after: HeartsGame = {
+    ...game,
+    hands,
+    trick: [],
+    heartsBroken,
+    points,
+    played: [...game.played, ...trick.map((play) => play.card)],
+    lastTrick: { plays: trick, winner },
+    toPlay: winner,
+  };
   return hands[0].length === 0 ? endDeal(after) : after;
 }
 
@@ -320,7 +347,14 @@ function endDeal(game: HeartsGame): HeartsGame {
 export function playHearts(game: HeartsGame, move: HeartsMove): HeartsGame | null {
   if (game.toPlay === null) return null;
   const seat = game.toPlay;
-  const next = "pass" in move ? (game.phase === "passing" ? passCards(game, seat, move.pass) : null) : game.phase === "playing" ? playCard(game, seat, move.play) : null;
+  const next =
+    "pass" in move
+      ? game.phase === "passing"
+        ? passCards(game, seat, move.pass)
+        : null
+      : game.phase === "playing"
+        ? playCard(game, seat, move.play)
+        : null;
   return next === null ? null : { ...next, moves: [...game.moves, move] };
 }
 

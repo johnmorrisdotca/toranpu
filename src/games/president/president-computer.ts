@@ -54,7 +54,13 @@ export type PresidentView = {
  */
 export function presidentView(game: PresidentGame): PresidentView {
   const seat = game.toPlay ?? 0;
-  return { seat, hand: game.hands[seat], pile: game.pile, counts: game.hands.map((hand) => hand.length), legal: presidentMoves(game) };
+  return {
+    seat,
+    hand: game.hands[seat],
+    pile: game.pile,
+    counts: game.hands.map((hand) => hand.length),
+    legal: presidentMoves(game),
+  };
 }
 
 const heldOf = (hand: readonly CardId[], rank: number) => hand.filter((card) => presidentRank(card) === rank).length;

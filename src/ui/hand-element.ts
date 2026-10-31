@@ -1,8 +1,40 @@
 import { STRINGS, fillIn } from "../strings.ts";
 import { namesList } from "../words.ts";
 import { faceName } from "./card-faces.ts";
-import { writeElementAttribute, elementTheme, attributeText, followLanguage, cardDrawing, cardIds, cardLabel, designNamed, ElementBase, isOn, languageOf, lessMotion, markedCards, markerHtml, MARKER_STYLE, pageSounds, reflectMethod, spinElement, widthOf, type SpinOptions } from "./element-kit.ts";
-import { arrangeCards, handLayout, mixCards, partedHandLayout, readHand, replaceCard, tossCard, type CardLands, type CardOrder, type CardPlace } from "./layout.ts";
+import {
+  writeElementAttribute,
+  elementTheme,
+  attributeText,
+  followLanguage,
+  cardDrawing,
+  cardIds,
+  cardLabel,
+  designNamed,
+  ElementBase,
+  isOn,
+  languageOf,
+  lessMotion,
+  markedCards,
+  markerHtml,
+  MARKER_STYLE,
+  pageSounds,
+  reflectMethod,
+  spinElement,
+  widthOf,
+  type SpinOptions,
+} from "./element-kit.ts";
+import {
+  arrangeCards,
+  handLayout,
+  mixCards,
+  partedHandLayout,
+  readHand,
+  replaceCard,
+  tossCard,
+  type CardLands,
+  type CardOrder,
+  type CardPlace,
+} from "./layout.ts";
 
 /** How a hand's cards are turned face down or face up.
  *
@@ -84,59 +116,183 @@ const sameState = (a: HandState, b: HandState) => JSON.stringify(a) === JSON.str
  * ```
  */
 export class ToranpuHand extends ElementBase {
-  get order(): string | null { return this.getAttribute("order"); }
-  set order(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "order", value); }
-  get receive(): string | null { return this.getAttribute("receive"); }
-  set receive(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "receive", value); }
-  get dealAfter(): string | null { return this.getAttribute("deal-after"); }
-  set dealAfter(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "deal-after", value); }
-  get ["deal-after"](): string | null { return this.getAttribute("deal-after"); }
-  set ["deal-after"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "deal-after", value); }
-  get faceDown(): boolean { return isOn(this, "face-down"); }
-  set faceDown(value: boolean | string | null | undefined) { writeElementAttribute(this, "face-down", value, true); }
-  get ["face-down"](): boolean { return isOn(this, "face-down"); }
-  set ["face-down"](value: boolean | string | null | undefined) { writeElementAttribute(this, "face-down", value, true); }
-  get turned(): string | null { return this.getAttribute("turned"); }
-  set turned(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "turned", value); }
-  get scrunched(): boolean { return isOn(this, "scrunched"); }
-  set scrunched(value: boolean | string | null | undefined) { writeElementAttribute(this, "scrunched", value, true); }
-  get parted(): string | null { return this.getAttribute("parted"); }
-  set parted(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "parted", value); }
-  get marked(): string | null { return this.getAttribute("marked"); }
-  set marked(value: string | readonly string[] | null | undefined) { writeElementAttribute(this, "marked", value); }
-  get closed(): string | null { return this.getAttribute("closed"); }
-  set closed(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "closed", value); }
-  get reveal(): boolean { return isOn(this, "reveal"); }
-  set reveal(value: boolean | string | null | undefined) { writeElementAttribute(this, "reveal", value, true); }
-  get design(): string | null { return this.getAttribute("design"); }
-  set design(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "design", value); }
-  get back(): string | null { return this.getAttribute("back"); }
-  set back(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back", value); }
-  get backColour(): string | null { return this.getAttribute("back-colour"); }
-  set backColour(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
-  get ["back-colour"](): string | null { return this.getAttribute("back-colour"); }
-  set ["back-colour"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-colour", value); }
-  get backImage(): string | null { return this.getAttribute("back-image"); }
-  set backImage(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
-  get ["back-image"](): string | null { return this.getAttribute("back-image"); }
-  set ["back-image"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-image", value); }
-  get backLogo(): string | null { return this.getAttribute("back-logo"); }
-  set backLogo(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
-  get ["back-logo"](): string | null { return this.getAttribute("back-logo"); }
-  set ["back-logo"](value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "back-logo", value); }
-  get size(): string | null { return this.getAttribute("size"); }
-  set size(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "size", value); }
-  get width(): string | null { return this.getAttribute("width"); }
-  set width(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "width", value); }
-  get theme(): string | null { return this.getAttribute("theme"); }
-  set theme(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "theme", value); }
-  get label(): string | null { return this.getAttribute("label"); }
-  set label(value: string | number | readonly string[] | null | undefined) { writeElementAttribute(this, "label", value); }
+  get order(): string | null {
+    return this.getAttribute("order");
+  }
+  set order(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "order", value);
+  }
+  get receive(): string | null {
+    return this.getAttribute("receive");
+  }
+  set receive(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "receive", value);
+  }
+  get dealAfter(): string | null {
+    return this.getAttribute("deal-after");
+  }
+  set dealAfter(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "deal-after", value);
+  }
+  get ["deal-after"](): string | null {
+    return this.getAttribute("deal-after");
+  }
+  set ["deal-after"](value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "deal-after", value);
+  }
+  get faceDown(): boolean {
+    return isOn(this, "face-down");
+  }
+  set faceDown(value: boolean | string | null | undefined) {
+    writeElementAttribute(this, "face-down", value, true);
+  }
+  get ["face-down"](): boolean {
+    return isOn(this, "face-down");
+  }
+  set ["face-down"](value: boolean | string | null | undefined) {
+    writeElementAttribute(this, "face-down", value, true);
+  }
+  get turned(): string | null {
+    return this.getAttribute("turned");
+  }
+  set turned(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "turned", value);
+  }
+  get scrunched(): boolean {
+    return isOn(this, "scrunched");
+  }
+  set scrunched(value: boolean | string | null | undefined) {
+    writeElementAttribute(this, "scrunched", value, true);
+  }
+  get parted(): string | null {
+    return this.getAttribute("parted");
+  }
+  set parted(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "parted", value);
+  }
+  get marked(): string | null {
+    return this.getAttribute("marked");
+  }
+  set marked(value: string | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "marked", value);
+  }
+  get closed(): string | null {
+    return this.getAttribute("closed");
+  }
+  set closed(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "closed", value);
+  }
+  get reveal(): boolean {
+    return isOn(this, "reveal");
+  }
+  set reveal(value: boolean | string | null | undefined) {
+    writeElementAttribute(this, "reveal", value, true);
+  }
+  get design(): string | null {
+    return this.getAttribute("design");
+  }
+  set design(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "design", value);
+  }
+  get back(): string | null {
+    return this.getAttribute("back");
+  }
+  set back(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back", value);
+  }
+  get backColour(): string | null {
+    return this.getAttribute("back-colour");
+  }
+  set backColour(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-colour", value);
+  }
+  get ["back-colour"](): string | null {
+    return this.getAttribute("back-colour");
+  }
+  set ["back-colour"](value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-colour", value);
+  }
+  get backImage(): string | null {
+    return this.getAttribute("back-image");
+  }
+  set backImage(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-image", value);
+  }
+  get ["back-image"](): string | null {
+    return this.getAttribute("back-image");
+  }
+  set ["back-image"](value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-image", value);
+  }
+  get backLogo(): string | null {
+    return this.getAttribute("back-logo");
+  }
+  set backLogo(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-logo", value);
+  }
+  get ["back-logo"](): string | null {
+    return this.getAttribute("back-logo");
+  }
+  set ["back-logo"](value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "back-logo", value);
+  }
+  get size(): string | null {
+    return this.getAttribute("size");
+  }
+  set size(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "size", value);
+  }
+  get width(): string | null {
+    return this.getAttribute("width");
+  }
+  set width(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "width", value);
+  }
+  get theme(): string | null {
+    return this.getAttribute("theme");
+  }
+  set theme(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "theme", value);
+  }
+  get label(): string | null {
+    return this.getAttribute("label");
+  }
+  set label(value: string | number | readonly string[] | null | undefined) {
+    writeElementAttribute(this, "label", value);
+  }
 
-  get sound(): boolean { return isOn(this, "sound"); }
-  set sound(value: boolean | string | null | undefined) { writeElementAttribute(this, "sound", value, true); }
+  get sound(): boolean {
+    return isOn(this, "sound");
+  }
+  set sound(value: boolean | string | null | undefined) {
+    writeElementAttribute(this, "sound", value, true);
+  }
   static get observedAttributes(): readonly string[] {
-    return ["cards", "order", "receive", "deal-after", "face-down", "turned", "scrunched", "parted", "marked", "closed", "reveal", "design", "back", "back-colour", "back-image", "back-logo", "mark", "size", "width", "lang", "theme", "label", "sound"];
+    return [
+      "cards",
+      "order",
+      "receive",
+      "deal-after",
+      "face-down",
+      "turned",
+      "scrunched",
+      "parted",
+      "marked",
+      "closed",
+      "reveal",
+      "design",
+      "back",
+      "back-colour",
+      "back-image",
+      "back-logo",
+      "mark",
+      "size",
+      "width",
+      "lang",
+      "theme",
+      "label",
+      "sound",
+    ];
   }
 
   #root: ShadowRoot | null = null;
@@ -163,18 +319,26 @@ export class ToranpuHand extends ElementBase {
 
   /** Turn every card face down where it lies: all at once, or one after another. */
   hide(options: HandTurnOptions = {}): Promise<void> {
-    return this.#change(() => {
-      this.toggleAttribute("face-down", true);
-      this.removeAttribute("turned");
-    }, options, "flip");
+    return this.#change(
+      () => {
+        this.toggleAttribute("face-down", true);
+        this.removeAttribute("turned");
+      },
+      options,
+      "flip",
+    );
   }
 
   /** Turn every card face up again. */
   show(options: HandTurnOptions = {}): Promise<void> {
-    return this.#change(() => {
-      this.toggleAttribute("face-down", false);
-      this.removeAttribute("turned");
-    }, options, "flip");
+    return this.#change(
+      () => {
+        this.toggleAttribute("face-down", false);
+        this.removeAttribute("turned");
+      },
+      options,
+      "flip",
+    );
   }
 
   /**
@@ -187,19 +351,23 @@ export class ToranpuHand extends ElementBase {
     const hand = this.cards;
     const named = cards === undefined ? hand : cardIds(cards).filter((card) => hand.includes(card));
     if (named.length === 0) return Promise.resolve();
-    return this.#change(() => {
-      const turned = new Set(this.#state().turned);
-      for (const card of new Set(named)) {
-        if (turned.has(card)) turned.delete(card);
-        else turned.add(card);
-      }
-      // Every card turned the other way is the whole hand turned: it is written as the hand's own side.
-      if (hand.every((card) => turned.has(card))) {
-        this.toggleAttribute("face-down", !isOn(this, "face-down"));
-        this.removeAttribute("turned");
-      } else if (turned.size === 0) this.removeAttribute("turned");
-      else this.setAttribute("turned", [...turned].join(" "));
-    }, options, "flip");
+    return this.#change(
+      () => {
+        const turned = new Set(this.#state().turned);
+        for (const card of new Set(named)) {
+          if (turned.has(card)) turned.delete(card);
+          else turned.add(card);
+        }
+        // Every card turned the other way is the whole hand turned: it is written as the hand's own side.
+        if (hand.every((card) => turned.has(card))) {
+          this.toggleAttribute("face-down", !isOn(this, "face-down"));
+          this.removeAttribute("turned");
+        } else if (turned.size === 0) this.removeAttribute("turned");
+        else this.setAttribute("turned", [...turned].join(" "));
+      },
+      options,
+      "flip",
+    );
   }
 
   /**
@@ -227,7 +395,11 @@ export class ToranpuHand extends ElementBase {
   partAt(card: string | null): Promise<void> {
     const id = card === null ? null : (cardIds(card)[0] ?? null);
     if (id !== null && !this.cards.includes(id)) return Promise.resolve();
-    return this.#change(() => (id === null ? this.removeAttribute("parted") : this.setAttribute("parted", id)), {}, "fan");
+    return this.#change(
+      () => (id === null ? this.removeAttribute("parted") : this.setAttribute("parted", id)),
+      {},
+      "fan",
+    );
   }
 
   /** Close a parted hand up again into its fan. */
@@ -307,10 +479,15 @@ export class ToranpuHand extends ElementBase {
   /** Mix the hand up: the same cards in another order, each sliding to its new place. A sorted hand is unsorted first. */
   mixUp(): Promise<void> {
     if (new Set(this.cards).size < 2) return Promise.resolve();
-    return this.#change(() => {
-      this.removeAttribute("order");
-      this.setAttribute("cards", mixCards(this.cards).join(" "));
-    }, {}, "gather", true);
+    return this.#change(
+      () => {
+        this.removeAttribute("order");
+        this.setAttribute("cards", mixCards(this.cards).join(" "));
+      },
+      {},
+      "gather",
+      true,
+    );
   }
 
   /** Toss a card out of the hand: it lifts away, and the rest close up. Nothing happens for a card the hand does not hold. */
@@ -354,7 +531,12 @@ export class ToranpuHand extends ElementBase {
     return this.#change(() => this.setAttribute("closed", String(closed)), {}, "gather");
   }
 
-  #change(apply: () => void, options: HandTurnOptions, sound: "flip" | "gather" | "fan" | "play", always = false): Promise<void> {
+  #change(
+    apply: () => void,
+    options: HandTurnOptions,
+    sound: "flip" | "gather" | "fan" | "play",
+    always = false,
+  ): Promise<void> {
     const before = this.#state();
     this.#stagger = options.oneByOne === true ? Math.max(0, options.gap ?? 110) : 0;
     this.#moving = !lessMotion();
@@ -369,7 +551,8 @@ export class ToranpuHand extends ElementBase {
       if (this.#batched && this.#root !== null) this.#draw();
       const after = this.#state();
       const count = this.cards.length;
-      if (isOn(this, "sound") && (always || !sameState(before, after))) pageSounds().play(sound, sound === "flip" ? { count, gap: this.#stagger || 25 } : {});
+      if (isOn(this, "sound") && (always || !sameState(before, after)))
+        pageSounds().play(sound, sound === "flip" ? { count, gap: this.#stagger || 25 } : {});
       // A change that changed nothing settles at once.
       if (!always && sameState(before, after)) this.#finish();
     });
@@ -379,7 +562,13 @@ export class ToranpuHand extends ElementBase {
     const closed = Number(this.getAttribute("closed"));
     const turned = [...new Set(readHand(this.getAttribute("turned")) ?? [])].sort();
     const parted = readHand(this.getAttribute("parted"))?.[0] ?? null;
-    return { down: isOn(this, "face-down"), scrunched: isOn(this, "scrunched"), open: Number.isFinite(closed) ? 1 - Math.min(1, Math.max(0, closed)) : 1, turned, parted };
+    return {
+      down: isOn(this, "face-down"),
+      scrunched: isOn(this, "scrunched"),
+      open: Number.isFinite(closed) ? 1 - Math.min(1, Math.max(0, closed)) : 1,
+      turned,
+      parted,
+    };
   }
 
   connectedCallback(): void {
@@ -450,7 +639,16 @@ export class ToranpuHand extends ElementBase {
     const old = readHand(before) ?? [];
     const next = readHand(after) ?? [];
     const now = this.#state();
-    if (this.#shown === null || old.length === 0 || next.length === 0 || old.join(" ") === next.join(" ") || now.scrunched || lessMotion() || !this.isConnected) return false;
+    if (
+      this.#shown === null ||
+      old.length === 0 ||
+      next.length === 0 ||
+      old.join(" ") === next.join(" ") ||
+      now.scrunched ||
+      lessMotion() ||
+      !this.isConnected
+    )
+      return false;
     // A new deal starts afresh: no card turned the other way, and the hand not parted.
     this.#batching = true;
     this.removeAttribute("turned");
@@ -495,7 +693,10 @@ export class ToranpuHand extends ElementBase {
     elementTheme(this);
     const root = this.#root as ShadowRoot;
     const order = this.getAttribute("order");
-    const cards = arrangeCards(this.#dealing?.cards ?? this.cards, order === "rank" || order === "suit" || order === "face" ? order : "dealt");
+    const cards = arrangeCards(
+      this.#dealing?.cards ?? this.cards,
+      order === "rank" || order === "suit" || order === "face" ? order : "dealt",
+    );
     const language = languageOf(this);
     const { design, ready } = designNamed(this.getAttribute("design"));
     if (ready !== null) void ready.then(() => this.#draw());
@@ -512,13 +713,22 @@ export class ToranpuHand extends ElementBase {
     const words = STRINGS[language];
     const top = cards[cards.length - 1];
     const marked = markedCards(this);
-    const downIn = (card: string, state: HandState) => (card !== "" && state.turned.includes(card) ? !state.down : state.down);
+    const downIn = (card: string, state: HandState) =>
+      card !== "" && state.turned.includes(card) ? !state.down : state.down;
     const named = (card: string) => {
       const name = cardLabel(card, downIn(card, target), language, design);
       return marked.has(card) ? fillIn(words.cardMarked, { card: name }) : name;
     };
     const allDown = cards.every((card) => downIn(card, target));
-    const label = target.scrunched ? (downIn(top ?? "", target) || top === undefined ? words.handScrunched : fillIn(words.handSquared, { card: faceName(top, language, typeof design === "object" && design !== null ? design : undefined) })) : allDown && marked.size === 0 ? fillIn(words.handFaceDown, { n: cards.length }) : fillIn(words.handLabel, { cards: namesList(cards.map(named), language) });
+    const label = target.scrunched
+      ? downIn(top ?? "", target) || top === undefined
+        ? words.handScrunched
+        : fillIn(words.handSquared, {
+            card: faceName(top, language, typeof design === "object" && design !== null ? design : undefined),
+          })
+      : allDown && marked.size === 0
+        ? fillIn(words.handFaceDown, { n: cards.length })
+        : fillIn(words.handLabel, { cards: namesList(cards.map(named), language) });
     this.setAttribute("aria-label", this.getAttribute("label") ?? label);
     const reveals = isOn(this, "reveal") && !target.scrunched;
     this.setAttribute("role", reveals ? "button" : "group");
@@ -535,7 +745,10 @@ export class ToranpuHand extends ElementBase {
     const count = bundle ? BUNDLE_BACKS : cards.length;
     // A bundle face up shows its top card: the hand's last, on top, with the cards before it under it (the earliest
     // repeated where the hand is shorter than the bundle), so it still says nothing of how many there are.
-    const bundleCards = Array.from({ length: BUNDLE_BACKS }, (_, at) => cards[Math.max(0, cards.length - BUNDLE_BACKS + at)] ?? "");
+    const bundleCards = Array.from(
+      { length: BUNDLE_BACKS },
+      (_, at) => cards[Math.max(0, cards.length - BUNDLE_BACKS + at)] ?? "",
+    );
     // ONE FRAME FOR EVERY STATE: the hand keeps the room its whole fan takes, open or closed, face up or
     // squared into a bundle, and each state lies in the middle of it. So closing gathers the cards to
     // where the hand lies and opening spreads them from there, and the hand never changes size when an
@@ -544,7 +757,8 @@ export class ToranpuHand extends ElementBase {
     const widest = (places: CardPlace[]) => Math.max(0, ...places.map((spot) => spot.x));
     const listed = bundle ? bundleCards : cards;
     const frame = Math.max(widest(fan), widest(this.#places(listed, from)), widest(this.#places(listed, target)));
-    const centred = (places: CardPlace[]) => places.map((spot) => ({ ...spot, x: Math.round((spot.x + (frame - widest(places)) / 2) * 1000) / 1000 }));
+    const centred = (places: CardPlace[]) =>
+      places.map((spot) => ({ ...spot, x: Math.round((spot.x + (frame - widest(places)) / 2) * 1000) / 1000 }));
     const endPlaces = centred(this.#places(listed, target));
     // The same cards moved about (sorted, mixed up), or a card tossed out or given: each card that was on the table
     // starts from the place it lay in, so it is seen to slide to its new one, and a card given drops in from above.
@@ -622,7 +836,12 @@ export class ToranpuHand extends ElementBase {
   /** Where each of these cards lies for a state: squared up into a bundle when scrunched, parted at a card, or fanned as open as asked. */
   #places(cards: readonly string[], state: { open: number; scrunched: boolean; parted: string | null }): CardPlace[] {
     const count = cards.length;
-    if (state.scrunched) return Array.from({ length: count }, (_, at) => ({ x: Math.min(at, BUNDLE_BACKS - 1) * 0.025, y: Math.min(at, BUNDLE_BACKS - 1) * 0.02, rotate: (Math.min(at, BUNDLE_BACKS - 1) - 1) * 1.5 }));
+    if (state.scrunched)
+      return Array.from({ length: count }, (_, at) => ({
+        x: Math.min(at, BUNDLE_BACKS - 1) * 0.025,
+        y: Math.min(at, BUNDLE_BACKS - 1) * 0.02,
+        rotate: (Math.min(at, BUNDLE_BACKS - 1) - 1) * 1.5,
+      }));
     const parted = state.parted === null ? -1 : cards.indexOf(state.parted);
     if (parted !== -1) return partedHandLayout(count, parted);
     return handLayout(count, { open: state.open });
@@ -637,7 +856,19 @@ export class ToranpuHand extends ElementBase {
     if (now === this.#told) return;
     this.#told = now;
     if (first) return;
-    this.dispatchEvent(new CustomEvent("toranpu-hand", { bubbles: true, composed: true, detail: { faceDown: state.down, scrunched: state.scrunched, open: state.open, turned: state.turned, parted: state.parted } }));
+    this.dispatchEvent(
+      new CustomEvent("toranpu-hand", {
+        bubbles: true,
+        composed: true,
+        detail: {
+          faceDown: state.down,
+          scrunched: state.scrunched,
+          open: state.open,
+          turned: state.turned,
+          parted: state.parted,
+        },
+      }),
+    );
   }
 }
 
