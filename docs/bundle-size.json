@@ -2,20 +2,20 @@
   "measured": "esbuild 0.28.2, bundled, minified, ES2020, gzip level 9",
   "entries": {
     ".": {
-      "minified": 117197,
-      "gzip": 36134
+      "minified": 117179,
+      "gzip": 36237
     },
     "./deck": {
-      "minified": 3121,
-      "gzip": 1455
+      "minified": 3123,
+      "gzip": 1457
     },
     "./react": {
-      "minified": 85896,
-      "gzip": 27342
+      "minified": 85886,
+      "gzip": 27332
     },
     "./card-sounds": {
-      "minified": 71208,
-      "gzip": 42939
+      "minified": 71233,
+      "gzip": 42950
     },
     "./sounds": {
       "minified": 67860,
@@ -26,8 +26,8 @@
       "gzip": 3492
     },
     "./card-faces": {
-      "minified": 835770,
-      "gzip": 187433
+      "minified": 835760,
+      "gzip": 187426
     },
     "./card-faces/english": {
       "minified": 694426,
@@ -38,24 +38,24 @@
       "gzip": 169740
     },
     "./element": {
-      "minified": 945023,
-      "gzip": 242781
+      "minified": 944936,
+      "gzip": 242489
     },
     "./element/define": {
-      "minified": 945028,
-      "gzip": 242785
+      "minified": 944941,
+      "gzip": 242491
     },
     "./table": {
-      "minified": 1010122,
-      "gzip": 263435
+      "minified": 1010027,
+      "gzip": 263226
     },
     "./table/define": {
-      "minified": 1010127,
-      "gzip": 263441
+      "minified": 1010032,
+      "gzip": 263230
     },
     "./hearts": {
-      "minified": 8862,
-      "gzip": 3570
+      "minified": 8844,
+      "gzip": 3561
     },
     "./spades": {
       "minified": 9588,
@@ -83,7 +83,7 @@
     },
     "./big-two": {
       "minified": 9400,
-      "gzip": 3854
+      "gzip": 3847
     },
     "./president": {
       "minified": 8643,
@@ -94,20 +94,20 @@
       "gzip": 3833
     },
     "./war": {
-      "minified": 5270,
-      "gzip": 2320
+      "minified": 5278,
+      "gzip": 2322
     },
     "./klondike": {
-      "minified": 9923,
-      "gzip": 3892
+      "minified": 10099,
+      "gzip": 4005
     },
     "./freecell": {
-      "minified": 9372,
-      "gzip": 3731
+      "minified": 9550,
+      "gzip": 3836
     },
     "./spider": {
-      "minified": 8300,
-      "gzip": 3447
+      "minified": 8479,
+      "gzip": 3540
     }
   }
 }
