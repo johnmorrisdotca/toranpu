@@ -14,28 +14,28 @@
  *   and Japanese (`gameName`, `cardText`, `moveText`, `STRINGS`).
  * - The command line as a function: `runCli`.
  */
-export * from "./play.ts";
+
+export * as bigTwo from "./big-two.ts";
+export { type CliResult, type CliSurroundings, cliLanguage, runCli } from "./cli.ts";
+export * as crazyEights from "./crazy-eights.ts";
+export * as cribbage from "./cribbage.ts";
+export * as euchre from "./euchre.ts";
+export * from "./games/card-game-codec.ts";
 export * from "./games/card-game-rules.ts";
 export * from "./games/card-games.constants.ts";
 export type * from "./games/card-games.types.ts";
-export * from "./games/card-game-codec.ts";
 export * from "./games/cards.ts";
-export { seededRandom, shuffled } from "./random.ts";
-export type { Random } from "./random.ts";
-export * from "./save.ts";
-export * from "./words.ts";
-export * from "./strings.ts";
-export { runCli, cliLanguage, type CliResult, type CliSurroundings } from "./cli.ts";
-export { VERSION } from "./version.ts";
-
-export * as hearts from "./hearts.ts";
-export * as spades from "./spades.ts";
-export * as euchre from "./euchre.ts";
-export * as cribbage from "./cribbage.ts";
-export * as ohHell from "./oh-hell.ts";
-export * as crazyEights from "./crazy-eights.ts";
-export * as goFish from "./go-fish.ts";
-export * as bigTwo from "./big-two.ts";
-export * as president from "./president.ts";
 export * as ginRummy from "./gin-rummy.ts";
+export * as goFish from "./go-fish.ts";
+export * as hearts from "./hearts.ts";
+export * as ohHell from "./oh-hell.ts";
+export * from "./play.ts";
+export * as president from "./president.ts";
+export type { Random } from "./random.ts";
+export { seededRandom, shuffled } from "./random.ts";
+export * from "./save.ts";
+export * as spades from "./spades.ts";
+export * from "./strings.ts";
+export { VERSION } from "./version.ts";
 export * as war from "./war.ts";
+export * from "./words.ts";

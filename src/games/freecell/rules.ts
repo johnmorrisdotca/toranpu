@@ -240,7 +240,9 @@ export function dealFreeCell(deck: readonly number[], cells: number): FreeCellTa
   if (deck.length !== 4 * RANKS_A_SUIT) throw new Error("a FreeCell deal needs the whole deck");
   if (cells < 1 || cells > CELL_PILES.length) throw new Error(`a FreeCell table has one to four cells, not ${cells}`);
   const tableau: number[][] = Array.from({ length: COLUMNS }, () => []);
-  deck.forEach((card, at) => tableau[at % COLUMNS].push(card));
+  deck.forEach((card, at) => {
+    tableau[at % COLUMNS].push(card);
+  });
   return { tableau, cells: Array.from({ length: cells }, () => null), foundation: [0, 0, 0, 0] };
 }
 

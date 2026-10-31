@@ -1,7 +1,7 @@
 import type { CardId, CardSuit } from "../card-games.types.ts";
 import { rankOf, suitOf } from "../cards.ts";
 
-import { EIGHT, crazyEightsMoves, crazyPoints } from "./crazy-eights.ts";
+import { crazyEightsMoves, crazyPoints, EIGHT } from "./crazy-eights.ts";
 import type { CrazyEightsGame, CrazyEightsMove } from "./crazy-eights.types.ts";
 
 /**

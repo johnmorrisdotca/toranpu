@@ -4,9 +4,8 @@
 import { expect, test } from "@playwright/test";
 
 import { CARD_SOUND_KINDS } from "../dist/card-sounds.js";
-import { STRINGS } from "../dist/index.js";
+import { newGame, playComputers, rulesFor, STRINGS } from "../dist/index.js";
 import { at, make, open, settled, sound, tap } from "./demo.mjs";
-import { newGame, playComputers, rulesFor } from "../dist/index.js";
 
 /** Count every audio context made, every sound started and every recording decoded. */
 async function listen(page) {

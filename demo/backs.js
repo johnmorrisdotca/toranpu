@@ -1,6 +1,6 @@
 // The card backs panel: choose one of the three, give it a colour or words in its middle, and see
 // the code that draws it. The choice is the demo's look, kept in the address.
-import { CARD_BACKS, CARD_BACK_LOOK, cardBackSvg, cardBackUrl } from "./dist/card-backs.js";
+import { CARD_BACK_LOOK, CARD_BACKS, cardBackSvg, cardBackUrl } from "./dist/card-backs.js";
 import { backOptions, look, onLook, setLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);

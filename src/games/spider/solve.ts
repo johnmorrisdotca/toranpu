@@ -1,7 +1,6 @@
 import { bestFirst } from "../solitaire/best-first.ts";
-
-import type { SpiderMove, SpiderTable } from "./spider.types.ts";
 import { COLUMNS, canDeal, countOnto, playSpider, rankOf, runLength, spiderWon, suitOf } from "./rules.ts";
+import type { SpiderMove, SpiderTable } from "./spider.types.ts";
 
 /**
  * A SPIDER SOLVER, in the browser: best first (`bestFirst`), giving up after

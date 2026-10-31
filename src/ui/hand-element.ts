@@ -1,39 +1,39 @@
-import { STRINGS, fillIn } from "../strings.ts";
+import { fillIn, STRINGS } from "../strings.ts";
 import { namesList } from "../words.ts";
 import { faceName } from "./card-faces.ts";
 import {
-  writeElementAttribute,
-  elementTheme,
   attributeText,
-  followLanguage,
   cardDrawing,
   cardIds,
   cardLabel,
   designNamed,
   ElementBase,
+  elementTheme,
+  followLanguage,
   isOn,
   languageOf,
   lessMotion,
+  MARKER_STYLE,
   markedCards,
   markerHtml,
-  MARKER_STYLE,
   pageSounds,
   reflectMethod,
+  type SpinOptions,
   spinElement,
   widthOf,
-  type SpinOptions,
+  writeElementAttribute,
 } from "./element-kit.ts";
 import {
   arrangeCards,
+  type CardLands,
+  type CardOrder,
+  type CardPlace,
   handLayout,
   mixCards,
   partedHandLayout,
   readHand,
   replaceCard,
   tossCard,
-  type CardLands,
-  type CardOrder,
-  type CardPlace,
 } from "./layout.ts";
 
 /** How a hand's cards are turned face down or face up.
@@ -134,10 +134,10 @@ export class ToranpuHand extends ElementBase {
   set dealAfter(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "deal-after", value);
   }
-  get ["deal-after"](): string | null {
+  get "deal-after"(): string | null {
     return this.getAttribute("deal-after");
   }
-  set ["deal-after"](value: string | number | readonly string[] | null | undefined) {
+  set "deal-after"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "deal-after", value);
   }
   get faceDown(): boolean {
@@ -146,10 +146,10 @@ export class ToranpuHand extends ElementBase {
   set faceDown(value: boolean | string | null | undefined) {
     writeElementAttribute(this, "face-down", value, true);
   }
-  get ["face-down"](): boolean {
+  get "face-down"(): boolean {
     return isOn(this, "face-down");
   }
-  set ["face-down"](value: boolean | string | null | undefined) {
+  set "face-down"(value: boolean | string | null | undefined) {
     writeElementAttribute(this, "face-down", value, true);
   }
   get turned(): string | null {
@@ -206,10 +206,10 @@ export class ToranpuHand extends ElementBase {
   set backColour(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-colour", value);
   }
-  get ["back-colour"](): string | null {
+  get "back-colour"(): string | null {
     return this.getAttribute("back-colour");
   }
-  set ["back-colour"](value: string | number | readonly string[] | null | undefined) {
+  set "back-colour"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-colour", value);
   }
   get backImage(): string | null {
@@ -218,10 +218,10 @@ export class ToranpuHand extends ElementBase {
   set backImage(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-image", value);
   }
-  get ["back-image"](): string | null {
+  get "back-image"(): string | null {
     return this.getAttribute("back-image");
   }
-  set ["back-image"](value: string | number | readonly string[] | null | undefined) {
+  set "back-image"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-image", value);
   }
   get backLogo(): string | null {
@@ -230,10 +230,10 @@ export class ToranpuHand extends ElementBase {
   set backLogo(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-logo", value);
   }
-  get ["back-logo"](): string | null {
+  get "back-logo"(): string | null {
     return this.getAttribute("back-logo");
   }
-  set ["back-logo"](value: string | number | readonly string[] | null | undefined) {
+  set "back-logo"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-logo", value);
   }
   get size(): string | null {
@@ -810,7 +810,9 @@ export class ToranpuHand extends ElementBase {
       slot.style.setProperty("--r", `${spot.rotate}deg`);
       slot.dataset.down = String(down);
     };
-    all.forEach((slot, at) => place(slot, (moving ? startPlaces : endPlaces)[at], moving ? from : target, at));
+    all.forEach((slot, at) => {
+      place(slot, (moving ? startPlaces : endPlaces)[at], moving ? from : target, at);
+    });
     this.#shown = target;
     if (!moving) {
       this.#announce(target);

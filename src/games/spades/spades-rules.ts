@@ -2,8 +2,8 @@ import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { playSpades, spadesMoves, spadesWinners, startSpades } from "./spades.ts";
-import { spadesComputer } from "./spades-computer.ts";
 import type { SpadesGame, SpadesMove } from "./spades.types.ts";
+import { spadesComputer } from "./spades-computer.ts";
 
 /** Spades, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

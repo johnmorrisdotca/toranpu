@@ -2,8 +2,8 @@ import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { crazyEightsMoves, crazyEightsWinners, playCrazyEights, startCrazyEights } from "./crazy-eights.ts";
-import { crazyEightsComputer } from "./crazy-eights-computer.ts";
 import type { CrazyEightsGame, CrazyEightsMove } from "./crazy-eights.types.ts";
+import { crazyEightsComputer } from "./crazy-eights-computer.ts";
 
 /** Crazy Eights, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

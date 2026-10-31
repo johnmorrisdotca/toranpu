@@ -35,7 +35,8 @@ const ADDRESSES = /(\s(?:xlink:)?href\s*=\s*)(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g
 export function safeImageUrl(url: unknown): string | null {
   if (typeof url !== "string") return null;
   const text = url.trim();
-  // eslint-disable-next-line no-control-regex
+  // A picture address may not contain a quote, a bracket or a control character.
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: the range is the control characters being rejected
   if (text === "" || text.length > 600_000 || /["<>\u0000-\u001f]/.test(text)) return null;
   if (/^data:image\/(png|jpe?g|gif|webp|avif|svg\+xml)[;,]/i.test(text)) return text;
   if (/\s/.test(text)) return null;

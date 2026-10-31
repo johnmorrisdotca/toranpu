@@ -2,8 +2,8 @@ import type { CardId } from "../card-games.types.ts";
 import type { ClimbMove, ClimbPlay } from "../climbing/climbing.types.ts";
 
 import { bigTwoMoves } from "./big-two.ts";
-import { bigTwoRank, bigTwoValue } from "./big-two-hands.ts";
 import type { BigTwoGame } from "./big-two.types.ts";
+import { bigTwoRank, bigTwoValue } from "./big-two-hands.ts";
 
 /**
  * A COMPUTER AT THE BIG TWO TABLE, playing as a sensible player does: lead

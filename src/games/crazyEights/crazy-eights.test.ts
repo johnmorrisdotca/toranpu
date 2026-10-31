@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { crazyEightsMoves, crazyMatches, crazyPoints, playCrazyEights, startCrazyEights } from "./crazy-eights.ts";
-import { crazyEightsComputer } from "./crazy-eights-computer.ts";
 import type { CrazyEightsGame } from "./crazy-eights.types.ts";
+import { crazyEightsComputer } from "./crazy-eights-computer.ts";
 
 function started(players = 3, seed = 3): CrazyEightsGame {
   return startCrazyEights(100, new Array<string>(players).fill(""), undefined, seed)!;

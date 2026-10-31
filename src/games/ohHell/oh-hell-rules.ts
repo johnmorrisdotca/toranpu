@@ -2,8 +2,8 @@ import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { ohHellMoves, ohHellWinners, playOhHell, startOhHell } from "./oh-hell.ts";
-import { ohHellComputer } from "./oh-hell-computer.ts";
 import type { OhHellGame, OhHellMove } from "./oh-hell.types.ts";
+import { ohHellComputer } from "./oh-hell-computer.ts";
 
 /** Oh Hell, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

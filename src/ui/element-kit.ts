@@ -4,13 +4,14 @@
  * the first time one asks), the language an element speaks, one set of
  * sounds for the page, and the drawing of one card face up or face down.
  */
-import { cardBackNames, cardBackSvg, type CardBackOptions } from "./card-backs.ts";
-import { createCardSounds, type CardSounds } from "./card-sounds.ts";
+
+import { type Language, STRINGS } from "../strings.ts";
+import { type CardBackOptions, cardBackNames, cardBackSvg } from "./card-backs.ts";
 import { cardFaceSvg, faceName, loadCardDesign } from "./card-faces.ts";
 import type { CardDesign } from "./card-faces.types.ts";
-import { onBrandChange, registeredDesign } from "./registry.ts";
-import { STRINGS, type Language } from "../strings.ts";
+import { type CardSounds, createCardSounds } from "./card-sounds.ts";
 import { readHand } from "./layout.ts";
+import { onBrandChange, registeredDesign } from "./registry.ts";
 
 /** What the elements extend: HTMLElement, or on a server, where there is none, an empty class, so that importing them never throws. */
 export const ElementBase: typeof HTMLElement =
@@ -37,7 +38,10 @@ export function designNamed(name: string | null): {
   if (!loadingDesigns.has(name))
     loadingDesigns.set(
       name,
-      loadCardDesign(name).then((design) => (loadedDesigns.set(name, design), design)),
+      loadCardDesign(name).then((design) => {
+        loadedDesigns.set(name, design);
+        return design;
+      }),
     );
   return { design: null, ready: loadingDesigns.get(name) as Promise<CardDesign | null> };
 }

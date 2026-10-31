@@ -1,25 +1,25 @@
+import { fillIn, type Language, STRINGS } from "../strings.ts";
+import { cardFaceFromArt, isCardFace } from "./card-faces.ts";
+import type { CardDesign } from "./card-faces.types.ts";
 import {
-  writeElementAttribute,
-  elementTheme,
-  followLanguage,
   cardDrawing,
   cardLabel,
   designNamed,
   ElementBase,
+  elementTheme,
+  followLanguage,
   isOn,
   languageOf,
   lessMotion,
-  markerHtml,
   MARKER_STYLE,
+  markerHtml,
   pageSounds,
   reflectMethod,
+  type SpinOptions,
   spinElement,
   widthOf,
-  type SpinOptions,
+  writeElementAttribute,
 } from "./element-kit.ts";
-import { STRINGS, fillIn, type Language } from "../strings.ts";
-import { cardFaceFromArt, isCardFace } from "./card-faces.ts";
-import type { CardDesign } from "./card-faces.types.ts";
 import { designDraws } from "./registry.ts";
 
 /** What a card's `face` function is told: the language the card speaks, and the design it names.
@@ -107,10 +107,10 @@ export class ToranpuCard extends ElementBase {
   set backColour(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-colour", value);
   }
-  get ["back-colour"](): string | null {
+  get "back-colour"(): string | null {
     return this.getAttribute("back-colour");
   }
-  set ["back-colour"](value: string | number | readonly string[] | null | undefined) {
+  set "back-colour"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-colour", value);
   }
   get backImage(): string | null {
@@ -119,10 +119,10 @@ export class ToranpuCard extends ElementBase {
   set backImage(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-image", value);
   }
-  get ["back-image"](): string | null {
+  get "back-image"(): string | null {
     return this.getAttribute("back-image");
   }
-  set ["back-image"](value: string | number | readonly string[] | null | undefined) {
+  set "back-image"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-image", value);
   }
   get backLogo(): string | null {
@@ -131,10 +131,10 @@ export class ToranpuCard extends ElementBase {
   set backLogo(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-logo", value);
   }
-  get ["back-logo"](): string | null {
+  get "back-logo"(): string | null {
     return this.getAttribute("back-logo");
   }
-  set ["back-logo"](value: string | number | readonly string[] | null | undefined) {
+  set "back-logo"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-logo", value);
   }
   get mark(): string | null {
@@ -301,7 +301,7 @@ export class ToranpuCard extends ElementBase {
     this.#turning = false;
     const flips = isOn(this, "flip");
     this.setAttribute("role", flips ? "button" : "img");
-    if (flips) this.tabIndex = this.tabIndex < 0 ? 0 : this.tabIndex;
+    if (flips) this.tabIndex = Math.max(this.tabIndex, 0);
     else this.removeAttribute("tabindex");
     // Marked: the attribute is all it takes on one card.
     const marked = known && isOn(this, "marked");

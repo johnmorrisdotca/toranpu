@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { seededRandom } from "../random.ts";
 
 import { CARD_GAME_RULES } from "./card-game-rules.ts";
-import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./card-games.constants.ts";
 import type { CardGameKind } from "./card-games.constants.ts";
+import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./card-games.constants.ts";
 import type { CardGameRules } from "./card-games.types.ts";
 
 /**
@@ -80,7 +80,9 @@ describe("the card games, played out", () => {
             new Array<boolean>(count).fill(false),
           );
           expect(winners.length).toBeGreaterThan(0);
-          winners.forEach((seat) => won.add(seat));
+          winners.forEach((seat) => {
+            won.add(seat);
+          });
         }
         expect(won.size, `${kind} ${size} for ${count}: a seat never won`).toBe(count);
       }

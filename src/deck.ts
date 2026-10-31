@@ -6,5 +6,5 @@
 export * from "./cards/cards.constants.ts";
 export type * from "./cards/cards.types.ts";
 export * from "./cards/deck.ts";
-export { seededRandom, shuffled } from "./random.ts";
 export type { Random } from "./random.ts";
+export { seededRandom, shuffled } from "./random.ts";

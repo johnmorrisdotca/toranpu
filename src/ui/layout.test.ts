@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
-
-import { FULL_DECK } from "../games/cards.ts";
-import { writeCards, freshDeck } from "../cards/deck.ts";
+import { freshDeck, writeCards } from "../cards/deck.ts";
 import { defineToranpuElements, ToranpuCard } from "../element.ts";
+import { FULL_DECK } from "../games/cards.ts";
 import { handLayout, pileLayout, readHand } from "./layout.ts";
 
 describe("a hand's layout", () => {

@@ -1,8 +1,8 @@
 import {
   COLUMN_PILES,
-  FOUNDATION_PILES,
   carriedFrom,
   columnAt,
+  FOUNDATION_PILES,
   fitsColumn,
   fitsFoundation,
   foundationPileOf,

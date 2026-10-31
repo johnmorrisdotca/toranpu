@@ -67,7 +67,9 @@ function readWav(path) {
 
 function writeWav(path, samples, rate) {
   const data = Buffer.alloc(samples.length * 2);
-  samples.forEach((value, i) => data.writeInt16LE(Math.max(-32768, Math.min(32767, Math.round(value * 32767))), i * 2));
+  samples.forEach((value, i) => {
+    data.writeInt16LE(Math.max(-32768, Math.min(32767, Math.round(value * 32767))), i * 2);
+  });
   const head = Buffer.alloc(44);
   head.write("RIFF", 0, "latin1");
   head.writeUInt32LE(36 + data.length, 4);

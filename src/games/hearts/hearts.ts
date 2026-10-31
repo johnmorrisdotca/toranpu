@@ -283,7 +283,7 @@ export function heartsMoves(game: HeartsGame): HeartsMove[] {
 function passCards(game: HeartsGame, seat: number, cards: readonly CardId[]): HeartsGame | null {
   if (cards.length !== PASSED || !allDifferent(cards) || without(game.hands[seat], cards) === null) return null;
   const passing = game.passing.map((chosen, at) => (at === seat ? [...cards] : chosen));
-  const waiting = passing.findIndex((chosen) => chosen === null);
+  const waiting = passing.indexOf(null);
   if (waiting >= 0) return { ...game, passing, toPlay: waiting };
   // Everybody has chosen: the cards change hands all at once, as at a table.
   const seats = game.players.length;
@@ -320,7 +320,7 @@ function playCard(game: HeartsGame, seat: number, card: CardId): HeartsGame | nu
 
 /** The deal is played out: the points go on the scores (or the moon is shot), and the game ends or the next deal is dealt. */
 function endDeal(game: HeartsGame): HeartsGame {
-  const moon = game.points.findIndex((points) => points === HEARTS_ALL_POINTS);
+  const moon = game.points.indexOf(HEARTS_ALL_POINTS);
   const dealt = moon >= 0 ? game.points.map((_, seat) => (seat === moon ? 0 : HEARTS_ALL_POINTS)) : game.points;
   const scores = game.scores.map((score, seat) => score + dealt[seat]);
   const finished = { ...game, scores, dealScores: [...game.dealScores, dealt], moon: moon >= 0 ? moon : null };

@@ -12,9 +12,9 @@ import {
   startEuchre,
   suitIn,
 } from "./euchre.ts";
+import type { EuchreGame } from "./euchre.types.ts";
 import { euchreComputer, throwAway, trumpWorth } from "./euchre-computer.ts";
 import { decodeEuchre, encodeEuchre } from "./euchre-rules.ts";
-import type { EuchreGame } from "./euchre.types.ts";
 
 const FOUR = ["Ann", "Ben", "Cy", "Di"];
 

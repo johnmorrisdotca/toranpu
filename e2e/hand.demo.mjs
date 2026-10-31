@@ -1,9 +1,8 @@
 // <toranpu-hand>, by real taps on the demo: turned face down all at once and one by one, face up
 // again, scrunched into a bundle that shows nothing, spread out, and a closed hand opened by a tap.
 import { expect, test } from "@playwright/test";
-
-import { STRINGS } from "../dist/index.js";
 import { arrangeCards, handLayout } from "../dist/element.js";
+import { STRINGS } from "../dist/index.js";
 import { at, open, sound, tap } from "./demo.mjs";
 
 /** The hand as the page holds it: what it says, and what is drawn in it. */

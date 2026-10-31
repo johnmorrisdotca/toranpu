@@ -23,13 +23,11 @@ const REGISTER = `registerCardDesign({ name: "shop", box: [100, 140], art: { KS:
 registerCardBack("shop", { colour: "#224422", logo: '<circle cx="50" cy="50" r="40" fill="gold"/>' });`;
 
 const inside = (page, selector) =>
-  page
-    .locator(selector)
-    .evaluate((card) => ({
-      label: card.getAttribute("aria-label"),
-      face: card.shadowRoot.querySelector(".face").innerHTML,
-      back: card.shadowRoot.querySelector(".back").innerHTML,
-    }));
+  page.locator(selector).evaluate((card) => ({
+    label: card.getAttribute("aria-label"),
+    face: card.shadowRoot.querySelector(".face").innerHTML,
+    back: card.shadowRoot.querySelector(".back").innerHTML,
+  }));
 
 test("a card of a registered design is drawn, named for a screen reader, and kept clean", async ({ page }) => {
   const errors = await bare(

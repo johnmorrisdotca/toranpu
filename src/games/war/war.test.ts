@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { FULL_DECK } from "../cards.ts";
 
-import { isWarMove, playWar, startWar, warMoves, warRank, warWinners, WAR_FACE_DOWN } from "./war.ts";
+import { isWarMove, playWar, startWar, WAR_FACE_DOWN, warMoves, warRank, warWinners } from "./war.ts";
+import type { WarGame } from "./war.types.ts";
 import { warComputer } from "./war-computer.ts";
 import { decodeWar, encodeWar, WAR_RULES } from "./war-rules.ts";
-import type { WarGame } from "./war.types.ts";
 
 const started = (size = 100, seed = 7, computers: boolean[] = [false, true]) =>
   startWar(size, ["Ann", "Ben"], undefined, seed, computers) as WarGame;
@@ -251,7 +251,11 @@ describe("war, played out", () => {
 
   it("gives each seat some of the wins", () => {
     const won = new Set<number>();
-    for (let seed = 1; seed <= 30; seed += 1) warWinners(playOut(50, seed).game).forEach((seat) => won.add(seat));
+    for (let seed = 1; seed <= 30; seed += 1) {
+      warWinners(playOut(50, seed).game).forEach((seat) => {
+        won.add(seat);
+      });
+    }
     expect(won).toEqual(new Set([0, 1]));
   });
 });

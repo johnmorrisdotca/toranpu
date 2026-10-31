@@ -2,8 +2,8 @@ import { cardGameCodec, isCardList } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { heartsMoves, heartsWinners, playHearts, startHearts } from "./hearts.ts";
-import { heartsComputer } from "./hearts-computer.ts";
 import type { HeartsGame, HeartsMove } from "./hearts.types.ts";
+import { heartsComputer } from "./hearts-computer.ts";
 
 /** Hearts, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

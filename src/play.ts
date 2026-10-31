@@ -1,7 +1,7 @@
-import { CARD_GAME_RULES } from "./games/card-game-rules.ts";
 import type { CardGamePlays } from "./games/card-game-rules.ts";
-import { CARD_GAME_TABLES } from "./games/card-games.constants.ts";
+import { CARD_GAME_RULES } from "./games/card-game-rules.ts";
 import type { CardGameKind } from "./games/card-games.constants.ts";
+import { CARD_GAME_TABLES } from "./games/card-games.constants.ts";
 import type { CardGameRules } from "./games/card-games.types.ts";
 
 /**

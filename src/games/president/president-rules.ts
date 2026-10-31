@@ -3,8 +3,8 @@ import type { CardGameRules } from "../card-games.types.ts";
 import { isClimbMove } from "../climbing/climbing.ts";
 
 import { playPresident, presidentMoves, presidentWinners, startPresident } from "./president.ts";
-import { presidentComputer } from "./president-computer.ts";
 import type { PresidentGame, PresidentMove } from "./president.types.ts";
+import { presidentComputer } from "./president-computer.ts";
 
 /** President, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

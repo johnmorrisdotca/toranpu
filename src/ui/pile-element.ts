@@ -1,16 +1,16 @@
-import { STRINGS, fillIn } from "../strings.ts";
+import { fillIn, STRINGS } from "../strings.ts";
 import { faceName } from "./card-faces.ts";
 import {
-  writeElementAttribute,
-  elementTheme,
-  isOn,
   attributeText,
-  followLanguage,
   cardDrawing,
   designNamed,
   ElementBase,
+  elementTheme,
+  followLanguage,
+  isOn,
   languageOf,
   widthOf,
+  writeElementAttribute,
 } from "./element-kit.ts";
 import { pileLayout, readHand } from "./layout.ts";
 
@@ -49,10 +49,10 @@ export class ToranpuPile extends ElementBase {
   set faceDown(value: boolean | string | null | undefined) {
     writeElementAttribute(this, "face-down", value, true);
   }
-  get ["face-down"](): boolean {
+  get "face-down"(): boolean {
     return isOn(this, "face-down");
   }
-  set ["face-down"](value: boolean | string | null | undefined) {
+  set "face-down"(value: boolean | string | null | undefined) {
     writeElementAttribute(this, "face-down", value, true);
   }
   get messiness(): string | null {
@@ -91,10 +91,10 @@ export class ToranpuPile extends ElementBase {
   set backColour(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-colour", value);
   }
-  get ["back-colour"](): string | null {
+  get "back-colour"(): string | null {
     return this.getAttribute("back-colour");
   }
-  set ["back-colour"](value: string | number | readonly string[] | null | undefined) {
+  set "back-colour"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-colour", value);
   }
   get backImage(): string | null {
@@ -103,10 +103,10 @@ export class ToranpuPile extends ElementBase {
   set backImage(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-image", value);
   }
-  get ["back-image"](): string | null {
+  get "back-image"(): string | null {
     return this.getAttribute("back-image");
   }
-  set ["back-image"](value: string | number | readonly string[] | null | undefined) {
+  set "back-image"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-image", value);
   }
   get backLogo(): string | null {
@@ -115,10 +115,10 @@ export class ToranpuPile extends ElementBase {
   set backLogo(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-logo", value);
   }
-  get ["back-logo"](): string | null {
+  get "back-logo"(): string | null {
     return this.getAttribute("back-logo");
   }
-  set ["back-logo"](value: string | number | readonly string[] | null | undefined) {
+  set "back-logo"(value: string | number | readonly string[] | null | undefined) {
     writeElementAttribute(this, "back-logo", value);
   }
   get mark(): string | null {

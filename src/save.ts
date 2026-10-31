@@ -1,10 +1,10 @@
-import { CARD_GAME_RULES } from "./games/card-game-rules.ts";
-import { CARD_GAME_LIST } from "./games/card-games.constants.ts";
-import type { CardGameKind } from "./games/card-games.constants.ts";
 import type { KeptCardGame } from "./games/card-game-codec.ts";
-import { rulesFor } from "./play.ts";
+import { CARD_GAME_RULES } from "./games/card-game-rules.ts";
+import type { CardGameKind } from "./games/card-games.constants.ts";
+import { CARD_GAME_LIST } from "./games/card-games.constants.ts";
 import type { GameOf, MoveOf } from "./play.ts";
-import { STRINGS, fillIn, type Language } from "./strings.ts";
+import { rulesFor } from "./play.ts";
+import { fillIn, type Language, STRINGS } from "./strings.ts";
 import { VERSION } from "./version.ts";
 import { gameName, moveText, namesList } from "./words.ts";
 
@@ -278,9 +278,9 @@ export function toText<K extends CardGameKind>(kind: K, game: GameOf<K>, languag
       players: namesList(players, language),
     }),
   ];
-  (recordOf(kind, game) ?? []).forEach(({ seat, move }, at) =>
-    lines.push(`${at + 1}. ${players[seat]}: ${moveText(kind, move, { language, form: "did", players })}`),
-  );
+  (recordOf(kind, game) ?? []).forEach(({ seat, move }, at) => {
+    lines.push(`${at + 1}. ${players[seat]}: ${moveText(kind, move, { language, form: "did", players })}`);
+  });
   const seat = rules.toPlay(game);
   lines.push(
     rules.over(game) || seat === null

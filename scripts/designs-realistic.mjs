@@ -9,7 +9,7 @@
 // jacks (traced from a printed pack) are not taken: the design draws those from Fomin's CC0 English
 // pattern (`fallback`). Each card is made smaller with svgo, its outline taken off (the card's paper
 // is drawn by cardFaceSvg), and its ids given the card's own prefix. Nothing here runs in CI.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
 

@@ -79,7 +79,11 @@ describe("the shuffle", () => {
 
   it("moves every card somewhere over many seeds, so no place is stuck", () => {
     const seen = Array.from({ length: DECK_SIZE }, () => new Set<number>());
-    for (let seed = 1; seed <= 400; seed += 1) shuffledDeck(seed).forEach((card, at) => seen[at].add(cardIndex(card)));
+    for (let seed = 1; seed <= 400; seed += 1) {
+      shuffledDeck(seed).forEach((card, at) => {
+        seen[at].add(cardIndex(card));
+      });
+    }
     for (const place of seen) expect(place.size).toBeGreaterThan(40);
   });
 });

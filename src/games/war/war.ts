@@ -94,7 +94,7 @@ export function startWar(
 /** The seat the table waits on: the first person's, or seat 0 when computers hold both. */
 function seatToPlay(game: Pick<WarGame, "computers">): number {
   const person = game.computers.findIndex((computer) => !computer);
-  return person < 0 ? 0 : person;
+  return Math.max(person, 0);
 }
 
 /** Every move the table may make now: turning the cards over, until the game is over.
@@ -161,7 +161,9 @@ export function playWar(game: WarGame, move: WarMove): WarGame | null {
   let ended: WarEnd | null = null;
   const turnUp = (): [CardId, CardId] => {
     const cards = [0, 1].map((seat) => hands[seat].shift() as CardId) as [CardId, CardId];
-    cards.forEach((card, seat) => laid.push({ seat, card, down: false }));
+    cards.forEach((card, seat) => {
+      laid.push({ seat, card, down: false });
+    });
     return cards;
   };
   let [x, y] = turnUp();

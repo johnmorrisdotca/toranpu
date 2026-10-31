@@ -7,7 +7,7 @@
  * queens and jacks, is its own entry point because of its size (see
  * `designs/english.ts`), and is handed in as a design.
  */
-import { STRINGS, type Language } from "../strings.ts";
+import { type Language, STRINGS } from "../strings.ts";
 import { cardText } from "../words.ts";
 import type { CardDesign } from "./card-faces.types.ts";
 import { cleanMarkup } from "./markup.ts";

@@ -3,7 +3,7 @@ import type { CardGameKind } from "./games/card-games.constants.ts";
 import type { CardId, CardRank, CardSuit } from "./games/card-games.types.ts";
 import { cardOfId, isCard, rankOf, rankWords, suitOf } from "./games/cards.ts";
 import type { MoveOf } from "./play.ts";
-import { STRINGS, fillIn, type Language, type ToranpuStrings } from "./strings.ts";
+import { fillIn, type Language, STRINGS, type ToranpuStrings } from "./strings.ts";
 
 /**
  * THE GAMES, THE CARDS AND THE MOVES IN WORDS, in English or Japanese: what a

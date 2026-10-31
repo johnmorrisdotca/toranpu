@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { CardGameKind } from "./games/card-games.constants.ts";
-import { newGame, rulesFor } from "./play.ts";
 import type { GameOf, MoveOf, NewGameOptions } from "./play.ts";
+import { newGame, rulesFor } from "./play.ts";
 
 /**
  * A card game in React state: the game, the moves the person to play may

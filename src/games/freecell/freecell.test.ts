@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-
+import type { FreeCellTable } from "../../freecell.ts";
 import {
   dealFreeCell,
   dealOfSeed,
@@ -12,7 +12,6 @@ import {
   playFreeCell,
   runLength,
 } from "../../freecell.ts";
-import type { FreeCellTable } from "../../freecell.ts";
 
 /** A card by rank and suit letter, as the rules number it: suit × 13 + rank − 1, spades hearts diamonds clubs. */
 const card = (rank: number, suit: "S" | "H" | "D" | "C") => "SHDC".indexOf(suit) * 13 + rank - 1;

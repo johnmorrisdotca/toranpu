@@ -11,8 +11,8 @@ import {
   playKlondike,
   RANKS_A_SUIT,
 } from "./klondike.ts";
-import { solveKlondike } from "./solve.ts";
 import type { KlondikeMove, KlondikePile, KlondikeTable } from "./klondike.types.ts";
+import { solveKlondike } from "./solve.ts";
 
 /**
  * WHAT A PERSON MEANT, read against the rules: the card they took hold of or

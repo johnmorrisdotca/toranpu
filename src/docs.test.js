@@ -1,22 +1,21 @@
-import { FAMILY, familyRepo } from "../scripts/family-template.mjs";
 // The documents that are made from the source, or that quote it, checked against it.
 // Plain JavaScript, so that reading files needs no Node types. `pnpm docs:make` rewrites what is made.
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import process from "node:process";
-
 import { describe, expect, it } from "vitest";
+import { FAMILY, familyRepo } from "../scripts/family-template.mjs";
 
 import * as cardBacks from "./card-backs.ts";
 import * as cardFaces from "./card-faces.ts";
+import * as cardSounds from "./card-sounds.ts";
+import * as deck from "./deck.ts";
 import * as english from "./designs/english.ts";
 import * as realistic from "./designs/realistic.ts";
 import * as element from "./element.ts";
-import * as tableEntry from "./table.ts";
-import * as cardSounds from "./card-sounds.ts";
-import * as deck from "./deck.ts";
 import * as toranpu from "./index.ts";
 import * as soundData from "./sounds.ts";
+import * as tableEntry from "./table.ts";
 
 /** The entry points that are not a game: the front door, the deck, the hook, and what a table looks and sounds like. */
 const TABLE_ENTRIES = {
@@ -621,7 +620,7 @@ describe("the README's tables", () => {
     const everything = new Set([
       ...Object.keys(toranpu),
       ...Object.values(TABLE_ENTRIES).flatMap((module) => Object.keys(module)),
-      ...CARD_GAME_LIST.flatMap((kind) => Object.keys(toranpu[kind])),
+      ...CARD_GAME_LIST.flatMap((kind) => Object.keys({ ...toranpu }[kind])),
       ...types,
       "useCardGame",
     ]);
@@ -887,7 +886,11 @@ describe("docs/games.md", () => {
     ).game;
     expect(played.rounds).toHaveLength(3);
     const points = [0, 0, 0, 0];
-    for (const order of played.rounds) order.forEach((seat, place) => (points[seat] += 3 - place));
+    for (const order of played.rounds) {
+      order.forEach((seat, place) => {
+        points[seat] += 3 - place;
+      });
+    }
     expect(played.scores).toEqual(points);
   });
 
@@ -948,7 +951,7 @@ describe("package.json", () => {
 });
 
 describe("docs/strings-ja.md", () => {
-  const escape = (text) => text.replaceAll("|", "\\|").replaceAll("\n", "<br>");
+  const escapeCell = (text) => text.replaceAll("|", "\\|").replaceAll("\n", "<br>");
   const made = [
     "# Toranpu's words, in English and Japanese",
     "",
@@ -965,7 +968,7 @@ describe("docs/strings-ja.md", () => {
     "| --- | --- | --- |",
     ...Object.keys(STRINGS.en)
       .filter((key) => key !== "cliUsage")
-      .map((key) => `| \`${key}\` | ${escape(STRINGS.en[key])} | ${escape(STRINGS.ja[key])} |`),
+      .map((key) => `| \`${key}\` | ${escapeCell(STRINGS.en[key])} | ${escapeCell(STRINGS.ja[key])} |`),
     "",
     "## The command line's help",
     "",
@@ -1184,7 +1187,7 @@ describe("the README's promises", () => {
       "CUSTOM_CARD_ID",
       "cardBackNames",
     ]) {
-      expect(typeof (cardFaces[name] ?? cardBacks[name]), name).not.toBe("undefined");
+      expect(typeof { ...cardBacks, ...cardFaces }[name], name).not.toBe("undefined");
     }
     expect(typeof element.registerCardDesign).toBe("function");
     expect(typeof element.registerCardBack).toBe("function");

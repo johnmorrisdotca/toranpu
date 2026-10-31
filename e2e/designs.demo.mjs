@@ -2,19 +2,17 @@
 // chosen and not before, the way back to plain, and the jokers' words in Japanese.
 import { expect, test } from "@playwright/test";
 
-import { JOKERS, cardFaceSvg } from "../dist/card-faces.js";
-import { FULL_DECK } from "../dist/index.js";
+import { cardFaceSvg, JOKERS } from "../dist/card-faces.js";
 import { ENGLISH_PATTERN } from "../dist/designs/english.js";
+import { FULL_DECK } from "../dist/index.js";
 import { at, open, sound, tap } from "./demo.mjs";
 
 const spread = (page) =>
-  page
-    .locator(at("design-spread"))
-    .evaluate((box) => ({
-      design: box.dataset.design,
-      cards: [...box.querySelectorAll(".face")].map((face) => face.dataset.card),
-      labels: [...box.querySelectorAll("svg")].map((svg) => svg.getAttribute("aria-label")),
-    }));
+  page.locator(at("design-spread")).evaluate((box) => ({
+    design: box.dataset.design,
+    cards: [...box.querySelectorAll(".face")].map((face) => face.dataset.card),
+    labels: [...box.querySelectorAll("svg")].map((svg) => svg.getAttribute("aria-label")),
+  }));
 
 test("every face of every design is SVG a browser reads without complaint", async ({ page }) => {
   await open(page, "?seed=1");

@@ -20,16 +20,14 @@ async function bare(page, html, { lang = "en" } = {}) {
   return errors;
 }
 const inside = (page, selector) =>
-  page
-    .locator(selector)
-    .evaluate((card) => ({
-      label: card.getAttribute("aria-label"),
-      role: card.getAttribute("role"),
-      down: card.hasAttribute("face-down"),
-      face: card.shadowRoot.querySelector(".face").innerHTML,
-      back: card.shadowRoot.querySelector(".back").innerHTML,
-      width: Math.round(card.getBoundingClientRect().width),
-    }));
+  page.locator(selector).evaluate((card) => ({
+    label: card.getAttribute("aria-label"),
+    role: card.getAttribute("role"),
+    down: card.hasAttribute("face-down"),
+    face: card.shadowRoot.querySelector(".face").innerHTML,
+    back: card.shadowRoot.querySelector(".back").innerHTML,
+    width: Math.round(card.getBoundingClientRect().width),
+  }));
 
 test("a tap turns the card over and back; while it is down its face is not in the page", async ({ page }) => {
   const errors = await bare(page, '<toranpu-card id="c" card="QS" flip></toranpu-card>');

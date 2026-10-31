@@ -1,6 +1,6 @@
 import { seededRandom, shuffled } from "../random.ts";
 
-import { CARD_ALPHABET, DECK_SIZE, RANKS, RANK_DISPLAY, SUITS, SUIT_DISPLAY } from "./cards.constants.ts";
+import { CARD_ALPHABET, DECK_SIZE, RANK_DISPLAY, RANKS, SUIT_DISPLAY, SUITS } from "./cards.constants.ts";
 import type { Card, CardCode, Rank, Suit, SuitColour } from "./cards.types.ts";
 
 /**
@@ -338,7 +338,9 @@ export function dealRound(deck: readonly Card[], hands: number, each: number): {
 export function dealAll(deck: readonly Card[], hands: number): Card[][] {
   if (hands < 1) throw new Error("a deal needs a hand");
   const dealt: Card[][] = Array.from({ length: hands }, () => []);
-  deck.forEach((card, at) => dealt[at % hands].push(card));
+  deck.forEach((card, at) => {
+    dealt[at % hands].push(card);
+  });
   return dealt;
 }
 

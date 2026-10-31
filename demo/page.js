@@ -1,10 +1,14 @@
 // The Toranpu demo: every game is driven through the same few calls (newGame, rulesFor, and
 // each rule's moves, play and computer), and the page knows nothing of any game's rules.
 // Moves are matched to the cards you pick. Every word comes from the package's own table.
+
+import { wire as wireBacks } from "./backs.js";
+import { wire as wireBranding } from "./branding.js";
+import { wire as wireDesigns } from "./designs.js";
+import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
 import {
   CARD_GAME_LIST,
   CARD_GAME_TABLES,
-  STRINGS,
   cardShort,
   cardText,
   fillIn,
@@ -17,23 +21,20 @@ import {
   newGame,
   randomSeed,
   rulesFor,
+  STRINGS,
   suitSymbol,
-  toCSV,
   toCode,
+  toCSV,
   toJSON,
   toText,
 } from "./dist/index.js";
-import { cardId, shuffledDeck, writeCards } from "./dist/deck.js";
-import { dealt, moved, table as soundTable, wire as wireSound } from "./sound.js";
-import { wire as wireBacks } from "./backs.js";
-import { wire as wireDesigns } from "./designs.js";
-import { wire as wireBranding } from "./branding.js";
-import { wire as wireOneCard } from "./onecard.js";
-import { wire as wireHands } from "./hands.js";
-import { wire as wirePiles } from "./piles.js";
-import { wire as wireTable } from "./table.js";
 import { wire as wireEmbeds } from "./embeds.js";
+import { wire as wireHands } from "./hands.js";
 import { look, lookQuery, onLook, wear } from "./look.js";
+import { wire as wireOneCard } from "./onecard.js";
+import { wire as wirePiles } from "./piles.js";
+import { dealt, moved, table as soundTable, wire as wireSound } from "./sound.js";
+import { wire as wireTable } from "./table.js";
 
 const $ = (id) => document.getElementById(id);
 const NAMES = ["You", "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
@@ -133,7 +134,7 @@ const cardsOf = (move) =>
 function viewer(toPlay, computers) {
   if (toPlay !== null && !computers[toPlay]) return toPlay;
   const person = computers.findIndex((computer) => !computer);
-  return person < 0 ? 0 : person;
+  return Math.max(person, 0);
 }
 
 function makeMove(move) {
@@ -210,17 +211,17 @@ function drawPiles(names) {
     );
   // War: each player's pile face down, the turn the game is at, and the last turn's cards turned up, with who took them.
   if (kind === "war") {
-    g.hands.forEach(
-      (cards, seat) =>
-        cards.length > 0 &&
+    g.hands.forEach((cards, seat) => {
+      if (cards.length > 0) {
         piles.push(
           heap(`${names[seat]}: ${cards.length}`, {
             count: cards.length,
             "face-down": true,
             "data-testid": `war-pile-${seat}`,
           }),
-        ),
-    );
+        );
+      }
+    });
     piles.push(sign(t().pageWarTurn, `${g.moves.length} / ${g.size}`));
     if (g.last !== null) {
       const took =

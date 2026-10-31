@@ -1,8 +1,7 @@
 import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
-
-import { ginMoves, ginWinners, playGin, startGin } from "./gin-rummy.ts";
 import { ginComputer, ginSensible } from "./gin-computer.ts";
+import { ginMoves, ginWinners, playGin, startGin } from "./gin-rummy.ts";
 import type { GinGame, GinMove } from "./gin-rummy.types.ts";
 
 /** Gin Rummy, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */

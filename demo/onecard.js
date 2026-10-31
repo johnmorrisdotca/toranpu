@@ -1,8 +1,8 @@
 // One card on any page: a <toranpu-card> in the design and back chosen above, turned over by a tap,
 // and the same card as a picture by its address on this site, with the code for each.
 import "./dist/element-define.js";
+import { faceName, JOKERS } from "./dist/card-faces.js";
 import { FULL_DECK } from "./dist/index.js";
-import { JOKERS, faceName } from "./dist/card-faces.js";
 import { look, onLook } from "./look.js";
 
 const $ = (id) => document.getElementById(id);

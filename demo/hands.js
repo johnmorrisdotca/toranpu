@@ -2,10 +2,11 @@
 // it, ordering it, changing a card, marking and spinning), a row for each kind, acting on the card
 // chosen; and a closed hand that opens on a tap, as closed as the slider says.
 // Both are drawn in the look chosen above, and each shows the code that does what was last pressed.
-import { cardId, shuffledDeck } from "./dist/deck.js";
-import { randomSeed } from "./dist/index.js";
+
 import { faceName } from "./dist/card-faces.js";
+import { cardId, shuffledDeck } from "./dist/deck.js";
 import { arrangeCards } from "./dist/element.js";
+import { randomSeed } from "./dist/index.js";
 import { onLook, wear } from "./look.js";
 
 const $ = (id) => document.getElementById(id);

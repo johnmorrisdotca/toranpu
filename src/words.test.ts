@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.ts";
-import { FULL_DECK, cardWords } from "./games/cards.ts";
+import { cardWords, FULL_DECK } from "./games/cards.ts";
 import { newGame, playComputers } from "./play.ts";
-import { STRINGS, fillIn, languageOf } from "./strings.ts";
+import { fillIn, languageOf, STRINGS } from "./strings.ts";
 import {
   cardShort,
-  cardText,
   cardsShort,
+  cardText,
   gameName,
   gameSays,
   moveText,

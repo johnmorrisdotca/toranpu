@@ -10,7 +10,7 @@
 // cards can share a page. The jokers' corner lettering, the Russian word джокер, is taken off: it
 // is the shapes lying wholly in the side strips, measured in a browser; cardFaceSvg draws the
 // word JOKER in its place. Nothing here runs in CI or is published.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
 

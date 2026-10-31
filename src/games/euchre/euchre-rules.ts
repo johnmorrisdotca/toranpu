@@ -2,8 +2,8 @@ import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { euchreMoves, euchreWinners, playEuchre, startEuchre } from "./euchre.ts";
-import { euchreComputer } from "./euchre-computer.ts";
 import type { EuchreGame, EuchreMove } from "./euchre.types.ts";
+import { euchreComputer } from "./euchre-computer.ts";
 
 /** Euchre, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

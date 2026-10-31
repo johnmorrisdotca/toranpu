@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { bigTwoCharge, bigTwoMayPlay, bigTwoMoves, playBigTwo, startBigTwo } from "./big-two.ts";
+import type { BigTwoGame } from "./big-two.types.ts";
 import { bigTwoComputer } from "./big-two-computer.ts";
 import { bigTwoBeats, bigTwoCard, bigTwoPlays, bigTwoValue } from "./big-two-hands.ts";
-import type { BigTwoGame } from "./big-two.types.ts";
 
 const value = (cards: string[]) => bigTwoValue(cards)!;
 

@@ -1,7 +1,7 @@
 import { CARD_GAME_LIST, CARD_GAME_TABLES, type CardGameKind } from "../games/card-games.constants.ts";
 import { isCard } from "../games/cards.ts";
 import { newGame, randomSeed, rulesFor } from "../play.ts";
-import { STRINGS, fillIn } from "../strings.ts";
+import { fillIn, STRINGS } from "../strings.ts";
 import { cardText, moveText, namesList, suitSymbol } from "../words.ts";
 import {
   cardDrawing,
@@ -269,7 +269,7 @@ export class ToranpuTable extends ElementBase {
     const messiness = Math.min(1, Math.max(0, Number(this.getAttribute("messiness") ?? 0.3) || 0));
     const worn = ["design", "back", "back-colour", "back-image", "back-logo", "mark", "lang"]
       .filter((name) => this.hasAttribute(name))
-      .map((name) => ` ${name}="${escape(this.getAttribute(name) ?? "")}"`)
+      .map((name) => ` ${name}="${escapeHtml(this.getAttribute(name) ?? "")}"`)
       .join("");
     const face = (card: string) => cardDrawing(card, false, this, design, language);
 
@@ -286,16 +286,16 @@ export class ToranpuTable extends ElementBase {
           game.tricks && game.phase === "playing" ? fillIn(t.pageTricks, { n: game.tricks[seat] as number }) : "",
           game.books ? fillIn(t.pageBooks, { n: (game.books[seat] ?? []).length }) : "",
         ].filter(Boolean);
-        return `<div class="seat" part="seat" data-turn="${seat === toPlay}" data-testid="table-seat"><div class="who">${escape(name)}</div><div class="meta">${escape(meta.join(" · "))}</div></div>`;
+        return `<div class="seat" part="seat" data-turn="${seat === toPlay}" data-testid="table-seat"><div class="who">${escapeHtml(name)}</div><div class="meta">${escapeHtml(meta.join(" · "))}</div></div>`;
       })
       .join("");
 
     const laid = (label: string, cards: readonly string[]) =>
-      `<div class="pile"><span class="label">${escape(label)}</span><div class="laid">${cards.map((card) => `<span class="card" data-card="${card}">${face(card)}</span>`).join("")}</div></div>`;
+      `<div class="pile"><span class="label">${escapeHtml(label)}</span><div class="laid">${cards.map((card) => `<span class="card" data-card="${card}">${face(card)}</span>`).join("")}</div></div>`;
     const heap = (label: string, attributes: string, id: string) =>
-      `<div class="pile"><span class="label">${escape(label)}</span><toranpu-pile ${attributes} messiness="${messiness}" seed="${game.seed % 100000}" depth="6" size="small"${worn} data-testid="${id}"></toranpu-pile></div>`;
+      `<div class="pile"><span class="label">${escapeHtml(label)}</span><toranpu-pile ${attributes} messiness="${messiness}" seed="${game.seed % 100000}" depth="6" size="small"${worn} data-testid="${id}"></toranpu-pile></div>`;
     const sign = (label: string, text: string) =>
-      `<div class="pile"><span class="label">${escape(label)}</span><span class="big">${escape(text)}</span></div>`;
+      `<div class="pile"><span class="label">${escapeHtml(label)}</span><span class="big">${escapeHtml(text)}</span></div>`;
     const plays = (list: readonly { card: string }[]) => list.map((play) => play.card);
     const piles: string[] = [];
     if (game.trick?.length)
@@ -327,13 +327,13 @@ export class ToranpuTable extends ElementBase {
       );
     // War: each player's pile face down, the turn the game is at, and the last turn's cards turned up, with who took them.
     if (this.#kind === "war" && game.hands) {
-      game.hands.forEach(
-        (cards, seat) =>
-          cards.length > 0 &&
+      game.hands.forEach((cards, seat) => {
+        if (cards.length > 0) {
           piles.push(
             heap(`${names[seat] ?? ""}: ${cards.length}`, `count="${cards.length}" face-down`, `table-war-${seat}`),
-          ),
-      );
+          );
+        }
+      });
       piles.push(sign(t.pageWarTurn, `${game.moves?.length ?? 0} / ${game.size ?? 0}`));
       if (game.last !== null && game.last !== undefined) {
         const took =
@@ -356,7 +356,7 @@ export class ToranpuTable extends ElementBase {
     const hand = (this.#kind === "war" ? [] : (game.hands?.[me] ?? []))
       .map(
         (card) =>
-          `<button type="button" class="card" part="card" data-card="${card}" aria-pressed="${this.#picked.includes(card)}"${usable.has(card) ? "" : " disabled"} aria-label="${escape(cardText(card, language))}">${face(card)}</button>`,
+          `<button type="button" class="card" part="card" data-card="${card}" aria-pressed="${this.#picked.includes(card)}"${usable.has(card) ? "" : " disabled"} aria-label="${escapeHtml(cardText(card, language))}">${face(card)}</button>`,
       )
       .join("");
     const same = (a: readonly string[], b: readonly string[]) =>
@@ -365,7 +365,7 @@ export class ToranpuTable extends ElementBase {
     const moves = fitting
       .map(
         (move, at) =>
-          `<button type="button" class="move" part="move" data-at="${at}"${cardsOf(move).length > 0 ? ' data-primary="true"' : ""} data-testid="table-move">${escape(moveText(this.#kind, move as never, { language, players: names }))}</button>`,
+          `<button type="button" class="move" part="move" data-at="${at}"${cardsOf(move).length > 0 ? ' data-primary="true"' : ""} data-testid="table-move">${escapeHtml(moveText(this.#kind, move as never, { language, players: names }))}</button>`,
       )
       .join("");
 
@@ -394,10 +394,10 @@ export class ToranpuTable extends ElementBase {
                 : t.pageYourTurn);
     }
 
-    root.innerHTML = `<style>${TABLE_STYLE}</style><div class="felt" part="felt" data-cloth="${escape(this.getAttribute("cloth") ?? "green")}" style="--felt:${cloth.felt};--felt-deep:${cloth.deep};--felt-ink:${cloth.ink};--toranpu-w:${widthOf(this)}">
+    root.innerHTML = `<style>${TABLE_STYLE}</style><div class="felt" part="felt" data-cloth="${escapeHtml(this.getAttribute("cloth") ?? "green")}" style="--felt:${cloth.felt};--felt-deep:${cloth.deep};--felt-ink:${cloth.ink};--toranpu-w:${widthOf(this)}">
 <div class="seats">${seats}</div>
 <div class="piles" data-testid="table-piles">${piles.join("")}</div>
-<p class="status" aria-live="polite" data-testid="table-status">${escape(status)}</p>
+<p class="status" aria-live="polite" data-testid="table-status">${escapeHtml(status)}</p>
 <div class="hand" data-testid="table-hand">${hand}</div>
 <div class="moves">${moves}</div>
 </div>`;
@@ -424,7 +424,7 @@ export class ToranpuTable extends ElementBase {
   }
 }
 
-const escape = (text: string) =>
+const escapeHtml = (text: string) =>
   String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 const TABLE_STYLE = `

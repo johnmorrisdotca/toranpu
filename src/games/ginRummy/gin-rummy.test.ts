@@ -2,19 +2,19 @@ import { describe, expect, it } from "vitest";
 
 import { chooseThrow, ginComputer, ginSensible, ginView, wanted } from "./gin-computer.ts";
 import {
-  GIN_BONUS,
-  UNDERCUT_BONUS,
   bestLayout,
   deadwoodIn,
+  GIN_BONUS,
   ginMoves,
   isMeld,
   layOff,
   meldsIn,
   playGin,
   startGin,
+  UNDERCUT_BONUS,
 } from "./gin-rummy.ts";
-import { decodeGin, encodeGin } from "./gin-rummy-rules.ts";
 import type { GinGame } from "./gin-rummy.types.ts";
+import { decodeGin, encodeGin } from "./gin-rummy-rules.ts";
 
 function started(seed = 7, size = 100): GinGame {
   const game = startGin(size, ["Ann", "Ben"], undefined, seed);

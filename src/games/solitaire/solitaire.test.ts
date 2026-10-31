@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
-
-import { dealOfSeed, deckOf, encodeMoves as klondikeCode, replay } from "../klondike/code.ts";
-import { dealKlondike, klondikeWon } from "../klondike/klondike.ts";
-import { solveKlondike } from "../klondike/solve.ts";
 import { encodeMoves as freeCellCode, replayFreeCell } from "../freecell/code.ts";
 import { dealFreeCell, freeCellWon } from "../freecell/rules.ts";
 import { solveFreeCell } from "../freecell/solve.ts";
-import { encodeMoves as spiderCode, replaySpider, spiderDealOfSeed, spiderDeckOf } from "../spider/code.ts";
+import { dealOfSeed, deckOf, encodeMoves as klondikeCode, replay } from "../klondike/code.ts";
+import { dealKlondike, klondikeWon } from "../klondike/klondike.ts";
+import { solveKlondike } from "../klondike/solve.ts";
+import { replaySpider, encodeMoves as spiderCode, spiderDealOfSeed, spiderDeckOf } from "../spider/code.ts";
 import { dealSpider, spiderWon } from "../spider/rules.ts";
 import { solveSpider } from "../spider/solve.ts";
 import fixture from "./solitaire.fixture.json" with { type: "json" };

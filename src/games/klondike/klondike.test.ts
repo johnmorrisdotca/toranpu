@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { cardFromId, cardIndex } from "../../cards/deck.ts";
+import type { KlondikeColumn, KlondikeMove, KlondikeTable } from "../../klondike.ts";
 import {
   allFaceUp,
   dealKlondike,
@@ -14,7 +15,6 @@ import {
   rankOf,
   recyclesLeft,
 } from "../../klondike.ts";
-import type { KlondikeColumn, KlondikeMove, KlondikeTable } from "../../klondike.ts";
 
 const card = (id: string) => cardIndex(cardFromId(id)!);
 const column = (down: number, ...ids: string[]): KlondikeColumn => ({ down, cards: ids.map(card) });

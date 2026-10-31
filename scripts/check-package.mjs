@@ -91,9 +91,9 @@ const players = ["a", "b", "c", "d"];
 const played = playComputers("euchre", newGame("euchre", { players, seed: 42, computers: [true, true, true, true] }));
 if (played.moves.length !== 330 || rulesFor("euchre").winners(played.game).join() !== "0,2") throw new Error("seed 42 of Euchre played out differently");
 if (fromJSON(toJSON("euchre", played.game)).game.moves.length !== 330) throw new Error("the saved game did not read back");
-const deck = all[names.indexOf(${JSON.stringify(pkg.name + "/deck")})];
+const deck = all[names.indexOf(${JSON.stringify(`${pkg.name}/deck`)})];
 if (deck.cardName(deck.shuffledDeck(42)[0]) !== "three of clubs") throw new Error("seed 42 shuffled differently");
-for (const kind of m0.CARD_GAME_LIST) if (!names.includes(${JSON.stringify(pkg.name + "/")} + kind.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase()))) throw new Error(kind + " has no entry point (its key in kebab case)");
+for (const kind of m0.CARD_GAME_LIST) if (!names.includes(${JSON.stringify(`${pkg.name}/`)} + kind.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase()))) throw new Error(kind + " has no entry point (its key in kebab case)");
 if (VERSION !== ${JSON.stringify(pkg.version)}) throw new Error("VERSION is " + VERSION);
 console.log(names.join(" "));
 `,

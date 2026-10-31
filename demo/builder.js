@@ -1,9 +1,9 @@
-import { VERSION } from "./dist/index.js";
-import { ToranpuCard, ToranpuHand, ToranpuPile, readHand } from "./dist/element.js";
-import { CARD_DESIGNS, faceName, isCardFace } from "./dist/card-faces.js";
 import { CARD_BACKS } from "./dist/card-backs.js";
+import { CARD_DESIGNS, faceName, isCardFace } from "./dist/card-faces.js";
+import { readHand, ToranpuCard, ToranpuHand, ToranpuPile } from "./dist/element.js";
+import { VERSION } from "./dist/index.js";
 import "./dist/element-define.js";
-import { familyEmbedBuilder, FAMILY_EMBED_BUILDER_WORDS } from "./family-embed-builder.js";
+import { FAMILY_EMBED_BUILDER_WORDS, familyEmbedBuilder } from "./family-embed-builder.js";
 
 const words = {
   en: {
@@ -318,7 +318,7 @@ const builder = familyEmbedBuilder({
     )
       return null;
     if (maker === "card" && format === "image") {
-      const escape = (value) =>
+      const escapeHtml = (value) =>
         String(value)
           .replaceAll("&", "&amp;")
           .replaceAll('"', "&quot;")
@@ -331,7 +331,7 @@ const builder = familyEmbedBuilder({
             ? "裏向きのカード"
             : "A face-down card"
           : faceName(settings.card ?? "AS", settings.lang ?? page.lang));
-      return `<img src="${escape(spec.image(settings))}" alt="${escape(alt)}" />`;
+      return `<img src="${escapeHtml(spec.image(settings))}" alt="${escapeHtml(alt)}" />`;
     }
     if ((format === "iframe" || format === "url") && settings.lang === undefined)
       return builder.codeFor(maker, format, options, { ...settings, lang: page.lang });

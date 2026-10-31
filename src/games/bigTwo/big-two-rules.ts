@@ -4,8 +4,8 @@ import { isClimbMove } from "../climbing/climbing.ts";
 import type { ClimbMove } from "../climbing/climbing.types.ts";
 
 import { bigTwoMoves, bigTwoWinners, playBigTwo, startBigTwo } from "./big-two.ts";
-import { bigTwoComputer } from "./big-two-computer.ts";
 import type { BigTwoGame } from "./big-two.types.ts";
+import { bigTwoComputer } from "./big-two-computer.ts";
 
 /** Big Two, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

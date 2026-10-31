@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { goFishMoves, goFishWinners, playGoFish, startGoFish } from "./go-fish.ts";
-import { goFishComputer, goFishMemory } from "./go-fish-computer.ts";
 import type { GoFishGame } from "./go-fish.types.ts";
+import { goFishComputer, goFishMemory } from "./go-fish-computer.ts";
 
 function started(players = 3, seed = 3): GoFishGame {
   return startGoFish(1, new Array<string>(players).fill(""), undefined, seed)!;

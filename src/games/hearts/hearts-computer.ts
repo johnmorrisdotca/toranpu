@@ -1,7 +1,7 @@
 import type { CardId } from "../card-games.types.ts";
 import { suitOf } from "../cards.ts";
 
-import { QUEEN_OF_SPADES, heartsHeight, heartsMoves, heartsPlayable, heartsPoints, trickWinner } from "./hearts.ts";
+import { heartsHeight, heartsMoves, heartsPlayable, heartsPoints, QUEEN_OF_SPADES, trickWinner } from "./hearts.ts";
 import type { HeartsGame, HeartsMove, HeartsPlay } from "./hearts.types.ts";
 
 /**

@@ -27,14 +27,20 @@ import { ToranpuCard } from "./ui/card-element.ts";
 import { ToranpuHand } from "./ui/hand-element.ts";
 import { ToranpuPile } from "./ui/pile-element.ts";
 
-export { ToranpuCard } from "./ui/card-element.ts";
 export type { CardFaceContext, CardFaceRenderer } from "./ui/card-element.ts";
-export { registerDesign as registerCardDesign, registerBack as registerCardBack } from "./ui/registry.ts";
-export { BUNDLE_BACKS, ToranpuHand } from "./ui/hand-element.ts";
-export type { HandTurnOptions } from "./ui/hand-element.ts";
-export { ToranpuPile } from "./ui/pile-element.ts";
-export { ELEMENT_SIZES } from "./ui/element-kit.ts";
+export { ToranpuCard } from "./ui/card-element.ts";
 export type { SpinOptions } from "./ui/element-kit.ts";
+export { ELEMENT_SIZES } from "./ui/element-kit.ts";
+export type { HandTurnOptions } from "./ui/hand-element.ts";
+export { BUNDLE_BACKS, ToranpuHand } from "./ui/hand-element.ts";
+export type {
+  CardLands,
+  CardOrder,
+  CardPlace,
+  HandLayoutOptions,
+  PartOptions,
+  PileLayoutOptions,
+} from "./ui/layout.ts";
 export {
   arrangeCards,
   handLayout,
@@ -45,14 +51,8 @@ export {
   replaceCard,
   tossCard,
 } from "./ui/layout.ts";
-export type {
-  CardLands,
-  CardOrder,
-  CardPlace,
-  HandLayoutOptions,
-  PartOptions,
-  PileLayoutOptions,
-} from "./ui/layout.ts";
+export { ToranpuPile } from "./ui/pile-element.ts";
+export { registerBack as registerCardBack, registerDesign as registerCardDesign } from "./ui/registry.ts";
 
 /** The elements' tags.
  * @example

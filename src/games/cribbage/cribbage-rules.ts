@@ -2,8 +2,8 @@ import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { cribbageMoves, cribbageWinners, playCribbage, startCribbage } from "./cribbage.ts";
-import { cribbageComputer } from "./cribbage-computer.ts";
 import type { CribbageGame, CribbageMove } from "./cribbage.types.ts";
+import { cribbageComputer } from "./cribbage-computer.ts";
 
 /** Cribbage, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

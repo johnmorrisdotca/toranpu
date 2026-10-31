@@ -146,7 +146,9 @@ export function spiderDeck(suits: number): number[] {
 export function dealSpider(deck: readonly number[]): SpiderTable {
   if (deck.length !== DECK_SIZE) throw new Error("a Spider deal needs two whole decks");
   const columns: number[][] = Array.from({ length: COLUMNS }, () => []);
-  deck.slice(0, DEALT).forEach((card, at) => columns[at % COLUMNS].push(card));
+  deck.slice(0, DEALT).forEach((card, at) => {
+    columns[at % COLUMNS].push(card);
+  });
   return { tableau: columns.map((cards) => ({ down: cards.length - 1, cards })), stock: deck.slice(DEALT), done: [] };
 }
 

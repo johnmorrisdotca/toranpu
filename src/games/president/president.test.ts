@@ -8,8 +8,8 @@ import {
   presidentTitle,
   startPresident,
 } from "./president.ts";
-import { presidentComputer } from "./president-computer.ts";
 import type { PresidentGame } from "./president.types.ts";
+import { presidentComputer } from "./president-computer.ts";
 
 function started(players = 4, seed = 3): PresidentGame {
   return startPresident(3, new Array<string>(players).fill(""), undefined, seed)!;

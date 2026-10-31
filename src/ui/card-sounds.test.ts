@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import { CARD_SOUND_DATA } from "../sounds.ts";
 import {
   CARD_SOUND_KINDS,
-  MOST_SOUNDS_AT_ONCE,
-  createCardSounds,
-  soundTimes,
   type CardSoundData,
+  createCardSounds,
+  MOST_SOUNDS_AT_ONCE,
+  soundTimes,
 } from "./card-sounds.ts";
 
 /** Enough of the Web Audio API to see what a table asks of it. */

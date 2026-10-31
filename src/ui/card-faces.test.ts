@@ -1,14 +1,13 @@
 import { describe, expect, it } from "vitest";
-
-import { FULL_DECK } from "../games/cards.ts";
 import { ENGLISH_PATTERN } from "../designs/english.ts";
+import { FULL_DECK } from "../games/cards.ts";
 import {
   CARD_DESIGNS,
-  JOKERS,
   cardFaceSvg,
   cardFaceUrl,
   faceName,
   isCardFace,
+  JOKERS,
   loadCardDesign,
   pipPlaces,
 } from "./card-faces.ts";

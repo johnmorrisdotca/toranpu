@@ -4,9 +4,8 @@ import type { CardId } from "../card-games.types.ts";
 import { dealRound, shuffledDeck } from "../cards.ts";
 import { afterTurn, freshTrick, laid, passedOn } from "../climbing/climbing.ts";
 import type { ClimbMove } from "../climbing/climbing.types.ts";
-
-import { bigTwoBeats, bigTwoPlays, bigTwoValue, sortBigTwo } from "./big-two-hands.ts";
 import type { BigTwoGame } from "./big-two.types.ts";
+import { bigTwoBeats, bigTwoPlays, bigTwoValue, sortBigTwo } from "./big-two-hands.ts";
 
 /**
  * BIG TWO: the rules, and nothing else.

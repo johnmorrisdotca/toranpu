@@ -2,7 +2,7 @@
 // Everything here is invented for the demo: a game of territories, each with a place and a soldier, a horse or a cannon.
 // The pictures are ours, drawn for this page; nothing in them is anybody's mark or artwork.
 import "./dist/element-define.js";
-import { SUIT_PATHS, registerCardBack } from "./dist/card-backs.js";
+import { registerCardBack, SUIT_PATHS } from "./dist/card-backs.js";
 import { registerCardDesign } from "./dist/card-faces.js";
 
 const $ = (id) => document.getElementById(id);

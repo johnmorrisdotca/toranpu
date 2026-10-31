@@ -1,9 +1,8 @@
 // <toranpu-pile>, by real taps on the demo: a stock and a discard pile as messy as the slider says,
 // laid out from their seed, and a card drawn from one onto the other; and the table's own piles.
 import { expect, test } from "@playwright/test";
-
-import { cardId, shuffledDeck } from "../dist/deck.js";
 import { faceName } from "../dist/card-faces.js";
+import { cardId, shuffledDeck } from "../dist/deck.js";
 import { pileLayout } from "../dist/element.js";
 import { at, open, sound, tap } from "./demo.mjs";
 

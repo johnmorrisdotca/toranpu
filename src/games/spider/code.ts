@@ -1,8 +1,7 @@
 import { cardAt, cardIndex, readCards, writeCards } from "../../cards/deck.ts";
 import { seededRandom, shuffled } from "../../random.ts";
-
-import type { SpiderMove, SpiderTable } from "./spider.types.ts";
 import { COLUMNS, dealSpider, playSpider, spiderDeck } from "./rules.ts";
+import type { SpiderMove, SpiderTable } from "./spider.types.ts";
 
 /**
  * A SPIDER GAME WRITTEN DOWN: the deal and the moves, as Solitaire's are

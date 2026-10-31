@@ -1,8 +1,7 @@
 // Keeping a game and reading one back, the deck on its own, the two languages, and the API page.
 import { expect, test } from "@playwright/test";
-
-import { STRINGS, newGame, playComputers, rulesFor, toCSV, toCode, toJSON, toText } from "../dist/index.js";
 import { cardId, shuffledDeck, writeCards } from "../dist/deck.js";
+import { newGame, playComputers, rulesFor, STRINGS, toCode, toCSV, toJSON, toText } from "../dist/index.js";
 import { at, open, settled, sound, state, tap } from "./demo.mjs";
 
 const finished = (kind, players, seed) =>

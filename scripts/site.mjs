@@ -1,12 +1,12 @@
 // Builds the static demo for GitHub Pages into ./site: the table's page and the API reference,
 // each put together from the family's shared header and footer and this package's own body,
 // the two stylesheets, and the compiled library.
-import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
 import { apiBody } from "./api.mjs";
 import {
-  FAMILY_SCRIPT,
   FAMILY_EMBED_BUILDER_WORDS,
+  FAMILY_SCRIPT,
   familyEmbedBuilder,
   familyFooter,
   familyHead,

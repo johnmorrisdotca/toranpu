@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
-
-import { cliLanguage, runCli } from "./cli.ts";
 import { cardId, shuffledDeck } from "./cards/deck.ts";
+import { cliLanguage, runCli } from "./cli.ts";
 import { CARD_GAME_LIST, CARD_GAME_TABLES } from "./games/card-games.constants.ts";
 import { newGame, playComputers, rulesFor } from "./play.ts";
-import { fromJSON, toCSV, toCode, toJSON, toText } from "./save.ts";
+import { fromJSON, toCode, toCSV, toJSON, toText } from "./save.ts";
 import { STRINGS } from "./strings.ts";
 import { VERSION } from "./version.ts";
 import { cardsShort } from "./words.ts";
@@ -330,10 +329,10 @@ describe("the language and the colour", () => {
   });
 
   it("is bold only on a terminal that shows colour", () => {
-    const escape = String.fromCharCode(27);
-    expect(run("deal -s 1", { colour: true }).out).toContain(`${escape}[1mSeat 1${escape}[0m`);
-    expect(run("deal -s 1").out).not.toContain(escape);
-    expect(run("deal -s 1 --no-color", { colour: true }).out).not.toContain(escape);
-    expect(run("deal -s 1", { colour: true, env: { NO_COLOR: "1" } }).out).not.toContain(escape);
+    const ansi = String.fromCharCode(27);
+    expect(run("deal -s 1", { colour: true }).out).toContain(`${ansi}[1mSeat 1${ansi}[0m`);
+    expect(run("deal -s 1").out).not.toContain(ansi);
+    expect(run("deal -s 1 --no-color", { colour: true }).out).not.toContain(ansi);
+    expect(run("deal -s 1", { colour: true, env: { NO_COLOR: "1" } }).out).not.toContain(ansi);
   });
 });

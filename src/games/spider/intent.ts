@@ -1,6 +1,6 @@
-import type { SpiderMove, SpiderTable } from "./spider.types.ts";
 import { allShowing, canDeal, movesFrom, playSpider, runLength, spiderWon } from "./rules.ts";
 import { solveSpider } from "./solve.ts";
+import type { SpiderMove, SpiderTable } from "./spider.types.ts";
 
 /**
  * WHAT A PERSON MEANT, read against Spider's rules, as Solitaire's

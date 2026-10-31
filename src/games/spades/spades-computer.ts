@@ -3,8 +3,8 @@ import { suitOf } from "../cards.ts";
 
 import {
   NIL,
-  SPADES_SEATS,
   partnerOf,
+  SPADES_SEATS,
   spadesHeight,
   spadesMoves,
   spadesPlayable,

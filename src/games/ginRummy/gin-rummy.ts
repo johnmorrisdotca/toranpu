@@ -380,7 +380,7 @@ function endHand(game: GinGame, result: GinResult): GinGame {
 }
 
 /** A knock, with this hand of ten left after the card thrown: every hand laid out and scored. */
-function knock(game: GinGame, knocker: number, hands: CardId[][]): GinResult {
+function knock(_game: GinGame, knocker: number, hands: CardId[][]): GinResult {
   const defender = 1 - knocker;
   const mine = bestLayout(hands[knocker]);
   const mineDead = deadwoodOf(mine.deadwood);

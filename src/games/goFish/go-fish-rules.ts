@@ -2,8 +2,8 @@ import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { goFishMoves, goFishWinners, playGoFish, startGoFish } from "./go-fish.ts";
-import { goFishComputer } from "./go-fish-computer.ts";
 import type { GoFishGame, GoFishMove } from "./go-fish.types.ts";
+import { goFishComputer } from "./go-fish-computer.ts";
 
 /** Go Fish, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

@@ -11,9 +11,9 @@ import {
   playOhHell,
   startOhHell,
 } from "./oh-hell.ts";
+import type { OhHellGame } from "./oh-hell.types.ts";
 import { chooseOhHellBid, ohHellComputer, ohHellWorth } from "./oh-hell-computer.ts";
 import { decodeOhHell, encodeOhHell } from "./oh-hell-rules.ts";
-import type { OhHellGame } from "./oh-hell.types.ts";
 
 const FOUR = ["Ann", "Ben", "Cy", "Di"];
 

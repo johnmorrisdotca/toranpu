@@ -2,8 +2,8 @@ import type { CardId, CardSuit } from "../card-games.types.ts";
 import { rankOf, suitOf } from "../cards.ts";
 
 import {
-  EUCHRE_SEATS,
   dealerOf,
+  EUCHRE_SEATS,
   euchreHeight,
   euchreMoves,
   euchrePlayable,

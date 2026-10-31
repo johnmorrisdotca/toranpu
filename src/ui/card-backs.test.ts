@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { CARD_BACKS, CARD_BACK_LOOK, cardBackSvg, cardBackUrl } from "./card-backs.ts";
+import { CARD_BACK_LOOK, CARD_BACKS, cardBackSvg, cardBackUrl } from "./card-backs.ts";
 import { isColour } from "./svg.ts";
 
 /** Every tag opened is closed, in order: enough to know the drawing is well formed without a browser. */

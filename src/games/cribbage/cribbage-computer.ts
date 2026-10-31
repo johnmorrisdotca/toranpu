@@ -1,7 +1,7 @@
 import type { CardId } from "../card-games.types.ts";
 import { FULL_DECK, rankOf } from "../cards.ts";
 
-import { cardValue, cribPairs, cribbageMoves, cribbagePlayable, dealerOf, pegPoints, showCount } from "./cribbage.ts";
+import { cardValue, cribbageMoves, cribbagePlayable, cribPairs, dealerOf, pegPoints, showCount } from "./cribbage.ts";
 import type { CribbageGame, CribbageMove } from "./cribbage.types.ts";
 
 /**

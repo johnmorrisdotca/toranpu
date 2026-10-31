@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
-
-import { CARD_BACKS, cardBackSvg } from "./card-backs.ts";
 import { ENGLISH_PATTERN } from "../designs/english.ts";
+import { CARD_BACKS, cardBackSvg } from "./card-backs.ts";
 import { cardFaceSvg } from "./card-faces.ts";
 
 /**

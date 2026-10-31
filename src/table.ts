@@ -14,8 +14,8 @@
 import { defineToranpuElements } from "./element.ts";
 import { ToranpuTable } from "./ui/table-element.ts";
 
-export { TABLE_CLOTHS, ToranpuTable } from "./ui/table-element.ts";
 export type { TableCloth } from "./ui/table-element.ts";
+export { TABLE_CLOTHS, ToranpuTable } from "./ui/table-element.ts";
 
 /** Registers `<toranpu-table>`, and the card, hand and pile elements, once. Nothing happens where there is no browser.
  *

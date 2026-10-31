@@ -34,7 +34,10 @@ describe("arrangeCards", () => {
 describe("mixCards, tossCard and replaceCard", () => {
   it("mixes into another order of the same cards, never the one given, and leaves alone a hand that cannot change", () => {
     let seed = 1;
-    const random = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    const random = () => {
+      seed = (seed * 16807) % 2147483647;
+      return (seed - 1) / 2147483646;
+    };
     const hand = ["AS", "KH", "QD", "JC", "TS"];
     for (let round = 0; round < 50; round++) {
       const mixed = mixCards(hand, random);

@@ -2,8 +2,8 @@ import { cardGameCodec } from "../card-game-codec.ts";
 import type { CardGameRules } from "../card-games.types.ts";
 
 import { isWarMove, playWar, startWar, warMoves, warWinners } from "./war.ts";
-import { warComputer } from "./war-computer.ts";
 import type { WarGame, WarMove } from "./war.types.ts";
+import { warComputer } from "./war-computer.ts";
 
 /** War, kept as its table, seed and moves (`cardGameCodec`), and everything a table asks of its rules. */
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-
+import type { SpiderColumn, SpiderTable } from "../../spider.ts";
 import {
   canDeal,
   dealSpider,
@@ -13,7 +13,6 @@ import {
   spiderMoveFor,
   spiderWon,
 } from "../../spider.ts";
-import type { SpiderColumn, SpiderTable } from "../../spider.ts";
 
 /** A card by rank and suit letter, as the rules number it: suit × 13 + rank − 1, spades hearts diamonds clubs. */
 const card = (rank: number, suit: "S" | "H" | "D" | "C") => "SHDC".indexOf(suit) * 13 + rank - 1;
