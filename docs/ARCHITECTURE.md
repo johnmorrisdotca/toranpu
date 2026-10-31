@@ -129,6 +129,7 @@ src/
 ├── sounds.ts
 ├── spades.ts
 ├── spider.ts
+├── strings.data.ts
 ├── strings.ts
 ├── table-define.ts
 ├── table.ts
@@ -139,6 +140,8 @@ src/
 │   ├── card-faces.types.ts
 │   ├── card-sounds.ts
 │   ├── element-kit.ts
+│   ├── hand-attributes.ts
+│   ├── hand-draw.ts
 │   ├── hand-element.ts
 │   ├── layout.ts
 │   ├── markup.ts

@@ -130,11 +130,11 @@ holds each file to that page. Nothing GPL or LGPL.
   `CARD_GAME_TABLES` and the entry points, and passes the simulation in
   `cardGames.simulation.test.ts`: computers alone finish every table, every
   seat can win, the computer beats random play, and a save reads back. It
-  also needs its name and its line in `src/strings.ts`, its moves in
+  also needs its name and its line in `src/strings.data.ts`, its moves in
   `moveText`, and its section in `docs/games.md`.
 - **Nothing played for stakes.** No bets, chips or payouts: children use the
   site this was built for.
-- **Words go in `src/strings.ts`**, in English and Japanese, then
+- **Words go in `src/strings.data.ts`**, in English and Japanese, then
   `pnpm docs:make` to bring `docs/strings-ja.md` up to date. Japanese is plain
   and polite, and uses the words Japanese card players use: トリック, 切り札,
   ビッド, 手札, 山札, 捨て札.

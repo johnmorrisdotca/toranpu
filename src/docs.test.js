@@ -955,7 +955,7 @@ describe("docs/strings-ja.md", () => {
   const made = [
     "# Toranpu's words, in English and Japanese",
     "",
-    "Made from `src/strings.ts` by `pnpm docs:make`; a test fails if the two differ, so this list is never out of date.",
+    "Made from `src/strings.data.ts` by `pnpm docs:make`; a test fails if the two differ, so this list is never out of date.",
     "",
     "**The Japanese has not yet been reviewed by a native reader.** If a line reads wrongly or unnaturally, please",
     "open a *Fix a translation* issue with the string's name. `{n}` and the other braces are filled in when shown.",

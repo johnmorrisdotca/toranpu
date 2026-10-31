@@ -7,13 +7,11 @@ import {
   cardIds,
   cardLabel,
   designNamed,
-  ElementBase,
   elementTheme,
   followLanguage,
   isOn,
   languageOf,
   lessMotion,
-  MARKER_STYLE,
   markedCards,
   markerHtml,
   pageSounds,
@@ -21,16 +19,18 @@ import {
   type SpinOptions,
   spinElement,
   widthOf,
-  writeElementAttribute,
 } from "./element-kit.ts";
+import { HandAttributes } from "./hand-attributes.ts";
+import { BUNDLE_BACKS, DEAL_GATHER_MS, HAND_STYLE, handPlaces, TOSS_MS } from "./hand-draw.ts";
+
+export { BUNDLE_BACKS };
+
 import {
   arrangeCards,
   type CardLands,
   type CardOrder,
   type CardPlace,
-  handLayout,
   mixCards,
-  partedHandLayout,
   readHand,
   replaceCard,
   tossCard,
@@ -52,16 +52,6 @@ export type HandTurnOptions = {
   /** Milliseconds between one card and the next, one by one. Unless said, 110. */
   gap?: number;
 };
-
-/** How many backs a squared-up bundle shows, whatever the hand: a bundle never tells how many cards are in it.
- *
- * @example
- * ```ts
- * import { BUNDLE_BACKS } from "@johnmorrisdotca/toranpu/element";
- * console.log(BUNDLE_BACKS);
- * ```
- */
-export const BUNDLE_BACKS = 3;
 
 /** How a hand lies: face down or up, squared into a bundle, how open, which cards are turned the other way, and the card it is parted at. */
 type HandState = { down: boolean; scrunched: boolean; open: number; turned: string[]; parted: string | null };
@@ -115,186 +105,7 @@ const sameState = (a: HandState, b: HandState) => JSON.stringify(a) === JSON.str
  * console.log(ToranpuHand.observedAttributes.includes("lang")); // true
  * ```
  */
-export class ToranpuHand extends ElementBase {
-  get order(): string | null {
-    return this.getAttribute("order");
-  }
-  set order(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "order", value);
-  }
-  get receive(): string | null {
-    return this.getAttribute("receive");
-  }
-  set receive(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "receive", value);
-  }
-  get dealAfter(): string | null {
-    return this.getAttribute("deal-after");
-  }
-  set dealAfter(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "deal-after", value);
-  }
-  get "deal-after"(): string | null {
-    return this.getAttribute("deal-after");
-  }
-  set "deal-after"(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "deal-after", value);
-  }
-  get faceDown(): boolean {
-    return isOn(this, "face-down");
-  }
-  set faceDown(value: boolean | string | null | undefined) {
-    writeElementAttribute(this, "face-down", value, true);
-  }
-  get "face-down"(): boolean {
-    return isOn(this, "face-down");
-  }
-  set "face-down"(value: boolean | string | null | undefined) {
-    writeElementAttribute(this, "face-down", value, true);
-  }
-  get turned(): string | null {
-    return this.getAttribute("turned");
-  }
-  set turned(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "turned", value);
-  }
-  get scrunched(): boolean {
-    return isOn(this, "scrunched");
-  }
-  set scrunched(value: boolean | string | null | undefined) {
-    writeElementAttribute(this, "scrunched", value, true);
-  }
-  get parted(): string | null {
-    return this.getAttribute("parted");
-  }
-  set parted(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "parted", value);
-  }
-  get marked(): string | null {
-    return this.getAttribute("marked");
-  }
-  set marked(value: string | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "marked", value);
-  }
-  get closed(): string | null {
-    return this.getAttribute("closed");
-  }
-  set closed(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "closed", value);
-  }
-  get reveal(): boolean {
-    return isOn(this, "reveal");
-  }
-  set reveal(value: boolean | string | null | undefined) {
-    writeElementAttribute(this, "reveal", value, true);
-  }
-  get design(): string | null {
-    return this.getAttribute("design");
-  }
-  set design(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "design", value);
-  }
-  get back(): string | null {
-    return this.getAttribute("back");
-  }
-  set back(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "back", value);
-  }
-  get backColour(): string | null {
-    return this.getAttribute("back-colour");
-  }
-  set backColour(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "back-colour", value);
-  }
-  get "back-colour"(): string | null {
-    return this.getAttribute("back-colour");
-  }
-  set "back-colour"(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "back-colour", value);
-  }
-  get backImage(): string | null {
-    return this.getAttribute("back-image");
-  }
-  set backImage(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "back-image", value);
-  }
-  get "back-image"(): string | null {
-    return this.getAttribute("back-image");
-  }
-  set "back-image"(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "back-image", value);
-  }
-  get backLogo(): string | null {
-    return this.getAttribute("back-logo");
-  }
-  set backLogo(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "back-logo", value);
-  }
-  get "back-logo"(): string | null {
-    return this.getAttribute("back-logo");
-  }
-  set "back-logo"(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "back-logo", value);
-  }
-  get size(): string | null {
-    return this.getAttribute("size");
-  }
-  set size(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "size", value);
-  }
-  get width(): string | null {
-    return this.getAttribute("width");
-  }
-  set width(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "width", value);
-  }
-  get theme(): string | null {
-    return this.getAttribute("theme");
-  }
-  set theme(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "theme", value);
-  }
-  get label(): string | null {
-    return this.getAttribute("label");
-  }
-  set label(value: string | number | readonly string[] | null | undefined) {
-    writeElementAttribute(this, "label", value);
-  }
-
-  get sound(): boolean {
-    return isOn(this, "sound");
-  }
-  set sound(value: boolean | string | null | undefined) {
-    writeElementAttribute(this, "sound", value, true);
-  }
-  static get observedAttributes(): readonly string[] {
-    return [
-      "cards",
-      "order",
-      "receive",
-      "deal-after",
-      "face-down",
-      "turned",
-      "scrunched",
-      "parted",
-      "marked",
-      "closed",
-      "reveal",
-      "design",
-      "back",
-      "back-colour",
-      "back-image",
-      "back-logo",
-      "mark",
-      "size",
-      "width",
-      "lang",
-      "theme",
-      "label",
-      "sound",
-    ];
-  }
-
+export class ToranpuHand extends HandAttributes {
   #root: ShadowRoot | null = null;
   #forget: (() => void) | null = null;
   /** How the cards are turned over next: one by one with this gap, or all at once (0). */
@@ -753,20 +564,20 @@ export class ToranpuHand extends ElementBase {
     // squared into a bundle, and each state lies in the middle of it. So closing gathers the cards to
     // where the hand lies and opening spreads them from there, and the hand never changes size when an
     // effect ends: a hand drawn smaller once still would slide across the page (a centred one most).
-    const fan = this.#places(cards, { open: 1, scrunched: false, parted: null });
+    const fan = handPlaces(cards, { open: 1, scrunched: false, parted: null });
     const widest = (places: CardPlace[]) => Math.max(0, ...places.map((spot) => spot.x));
     const listed = bundle ? bundleCards : cards;
-    const frame = Math.max(widest(fan), widest(this.#places(listed, from)), widest(this.#places(listed, target)));
+    const frame = Math.max(widest(fan), widest(handPlaces(listed, from)), widest(handPlaces(listed, target)));
     const centred = (places: CardPlace[]) =>
       places.map((spot) => ({ ...spot, x: Math.round((spot.x + (frame - widest(places)) / 2) * 1000) / 1000 }));
-    const endPlaces = centred(this.#places(listed, target));
+    const endPlaces = centred(handPlaces(listed, target));
     // The same cards moved about (sorted, mixed up), or a card tossed out or given: each card that was on the table
     // starts from the place it lay in, so it is seen to slide to its new one, and a card given drops in from above.
     // Cards that have nothing to do with the ones before (a new deal) are simply laid where they go.
-    const startAt = centred(this.#places(listed, from));
+    const startAt = centred(handPlaces(listed, from));
     const before = [...this.#onScreen];
     const related = !bundle && before.length > 0 && cards.some((card) => before.includes(card));
-    const prior = related ? centred(this.#places(before, from)) : startAt;
+    const prior = related ? centred(handPlaces(before, from)) : startAt;
     const startPlaces = related
       ? cards.map((card, at) => {
           const was = before.indexOf(card);
@@ -835,20 +646,6 @@ export class ToranpuHand extends ElementBase {
     }, length + 40);
   }
 
-  /** Where each of these cards lies for a state: squared up into a bundle when scrunched, parted at a card, or fanned as open as asked. */
-  #places(cards: readonly string[], state: { open: number; scrunched: boolean; parted: string | null }): CardPlace[] {
-    const count = cards.length;
-    if (state.scrunched)
-      return Array.from({ length: count }, (_, at) => ({
-        x: Math.min(at, BUNDLE_BACKS - 1) * 0.025,
-        y: Math.min(at, BUNDLE_BACKS - 1) * 0.02,
-        rotate: (Math.min(at, BUNDLE_BACKS - 1) - 1) * 1.5,
-      }));
-    const parted = state.parted === null ? -1 : cards.indexOf(state.parted);
-    if (parted !== -1) return partedHandLayout(count, parted);
-    return handLayout(count, { open: state.open });
-  }
-
   /** The state last told to the page, so each change is told once, and the first drawing not at all. */
   #told: string | null = null;
 
@@ -873,29 +670,5 @@ export class ToranpuHand extends ElementBase {
     );
   }
 }
-
-/** How long a tossed card takes to lift away, before the hand closes up after it. */
-const TOSS_MS = 300;
-
-/** How long the old cards of a new deal take to gather in, before the new ones open: the cards' move (.45 s) and a breath. */
-const DEAL_GATHER_MS = 470;
-
-const HAND_STYLE = `
-:host { display: inline-block; user-select: none; -webkit-user-select: none; vertical-align: middle; -webkit-tap-highlight-color: transparent; max-width: 100%; width: calc(var(--toranpu-w, 70px) * var(--toranpu-across, 1)); container-type: inline-size; }
-:host([reveal]) { cursor: pointer; }
-:host(:focus-visible) { outline: 3px solid var(--toranpu-focus, #b5452c); outline-offset: 4px; border-radius: 8px; }
-.hand { --cw: min(var(--toranpu-w, 70px), calc(100cqw / var(--across))); position: relative; width: 100%; height: calc(var(--cw) * (1.4 + var(--drop) + .14 + var(--side) * .45)); }
-.slot { position: absolute; left: calc(var(--cw) * (var(--x) + var(--side) + .06)); top: calc(var(--cw) * (var(--y) + .05)); width: var(--cw); aspect-ratio: 5 / 7; transform: rotate(var(--r)); transform-origin: 50% 120%; perspective: 800px; }
-.spin { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
-.turn { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
-.slot[data-down="true"] .turn { transform: rotateY(180deg); }
-.side { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.back { transform: rotateY(180deg); }
-.side svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 1px 2px rgba(0,0,0,.28)); }
-.hand[data-moving="true"] .slot { transition: left .45s cubic-bezier(.3,.7,.3,1), top .45s cubic-bezier(.3,.7,.3,1), transform .45s cubic-bezier(.3,.7,.3,1); }
-.hand[data-moving="true"] .turn { transition: transform var(--toranpu-flip-ms, 450ms) cubic-bezier(.3,.7,.3,1) var(--delay, 0ms); }
-@media (prefers-reduced-motion: reduce) { .hand[data-moving="true"] .slot, .hand[data-moving="true"] .turn { transition: none; } }
-${MARKER_STYLE}
-`;
 
 reflectMethod(ToranpuHand, "mark");
