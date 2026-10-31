@@ -1116,7 +1116,7 @@ Please follow the [code of conduct](./CODE_OF_CONDUCT.md).
 
 See [CHANGELOG.md](./CHANGELOG.md).
 
-The latest release is 2.15.0: the shared embed builder and the standard attributes of the card, hand and pile elements, and the documentation site with a checked example for every export.
+The latest release, 2.15.1, changes nothing a player sees.
 
 ## Licence
 
