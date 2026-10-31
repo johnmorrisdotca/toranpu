@@ -6,6 +6,11 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Biome replaces ESLint as the formatter and linter, with the family's shared settings in `scripts/biome-family.json`; `pnpm lint` checks formatting too, and `pnpm format` applies it. The code is formatted once to 120 columns. Nothing a user of the package sees has changed.
+- TypeScript targets ES2022 and refuses switch fallthrough and unmarked overrides.
+
 ## [2.15.0] - 2026-10-14
 
 The hand, card and pile elements take the family's standard embed attributes and have a shared builder, and the package has an English and Japanese documentation site with a checked example for every export. The rules, deals, saved games and the 2.x entry points are unchanged.
