@@ -6,6 +6,10 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The demo keeps the table and its controls in place when the language changes, and the Builder's code is tested against its options.
+
 ## [2.15.1] - 2026-10-31
 
 ### Changed
