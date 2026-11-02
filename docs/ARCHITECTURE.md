@@ -153,6 +153,7 @@ src/
 │   ├── markup.ts
 │   ├── pile-element.ts
 │   ├── registry.ts
+│   ├── stack-up-design.ts
 │   ├── svg.ts
 │   ├── svg.types.ts
 │   └── table-element.ts

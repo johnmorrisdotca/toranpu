@@ -23,6 +23,18 @@ a game; `cli` is the command line; `page` is the demo.
 | `gameGinRummy` | Gin Rummy | ジン・ラミー |
 | `gameWar` | War | 戦争 |
 | `gameStackUp` | Stack Up | 段積み |
+| `offerStackUpPlay` | Play {card} from {from} on pile {pile} | {from}の{card}を山{pile}に出す |
+| `offerStackUpPut` | Put {card} on your discard pile {pile} | {card}を捨て札{pile}に置く |
+| `didStackUpPlay` | plays {card} from {from} on pile {pile} | {from}の{card}を山{pile}に出しました |
+| `didStackUpPut` | puts {card} on discard pile {pile} | {card}を捨て札{pile}に置きました |
+| `stackUpFromHand` | your hand | 手札 |
+| `stackUpFromStock` | your stock | ストック |
+| `stackUpFromDiscard` | discard pile {n} | 捨て札{n} |
+| `pageStackUpPile` | Pile {n} | 山{n} |
+| `pageStackUpDiscards` | Your discards | あなたの捨て札 |
+| `pageStackUpStock` | stock: {n} | ストック {n}枚 |
+| `pageStackUpDraw` | To draw: {n} | 引く札 {n}枚 |
+| `cardStackUpWild` | Wild | ワイルド |
 | `saysHearts` | Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins. | ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。 |
 | `saysSpades` | Partners across the table bid tricks together. Spades are always trumps. | 向かい合ったパートナーと組んで、取るトリック数をビッドします。切り札はいつもスペードです。 |
 | `saysEuchre` | Five cards, four players in partnerships, and the jacks of trumps' colour on top. | 手札は5枚。4人が2組に分かれ、切り札と同じ色のジャック2枚がいちばん強い札になります。 |

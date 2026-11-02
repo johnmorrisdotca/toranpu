@@ -2,8 +2,8 @@
   "measured": "esbuild 0.28.2, bundled, minified, ES2020, gzip level 9",
   "entries": {
     ".": {
-      "minified": 122767,
-      "gzip": 37996
+      "minified": 124291,
+      "gzip": 38371
     },
     "./deck": {
       "minified": 3123,
@@ -26,8 +26,8 @@
       "gzip": 3492
     },
     "./card-faces": {
-      "minified": 836351,
-      "gzip": 187575
+      "minified": 837498,
+      "gzip": 187821
     },
     "./card-faces/english": {
       "minified": 694426,
@@ -38,20 +38,20 @@
       "gzip": 169740
     },
     "./element": {
-      "minified": 945527,
-      "gzip": 242641
+      "minified": 946674,
+      "gzip": 242882
     },
     "./element/define": {
-      "minified": 945532,
-      "gzip": 242643
+      "minified": 946679,
+      "gzip": 242883
     },
     "./table": {
-      "minified": 1015144,
-      "gzip": 264754
+      "minified": 1018588,
+      "gzip": 265878
     },
     "./table/define": {
-      "minified": 1015149,
-      "gzip": 264756
+      "minified": 1018593,
+      "gzip": 265863
     },
     "./hearts": {
       "minified": 8967,
