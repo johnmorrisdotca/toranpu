@@ -1,7 +1,7 @@
 /* Toranpu's own: the card table, the cards, the deck and the API reference. Everything shared is in family.css, loaded before this. */
 :root {
-  --intro-room: 9.5rem;
-  --intro-room-wide: 5.5rem;
+  --intro-room: 11.5rem;
+  --intro-room-wide: 7rem;
   --card: #fffdf8;
   --card-ink: #1b1b1b;
   --card-red: #c2272d;
@@ -10,6 +10,39 @@
   --card-w: 58px;
   --card-h: 84px;
 }
+/* Room kept for the longer of the two languages, so that switching moves nothing below: one line height for both alphabets, and the header's pills and the game's line their tallest wrap. */
+body {
+  line-height: 1.35;
+}
+nav {
+  min-height: 104px;
+  align-content: flex-start;
+}
+@media (max-width: 480px) {
+  nav {
+    min-height: 210px;
+  }
+}
+@media (min-width: 1200px) {
+  nav {
+    min-height: 50px;
+  }
+}
+#blurb {
+  display: block;
+  min-height: 4.05em;
+}
+@media (max-width: 480px) {
+  .blurb {
+    min-height: 6.2rem;
+  }
+}
+@media (min-width: 900px) {
+  #blurb {
+    min-height: 2.7em;
+  }
+}
+
 @media (max-width: 600px) {
   :root {
     --card-w: 46px;

@@ -910,7 +910,7 @@ Every colour and size in both is a CSS custom property on `:root`:
 | `--font`, `--mono` | the type: the system's own, and its monospace | | |
 | `--card`, `--card-ink`, `--card-red` | a card's face, its black suits and its red | `#fffdf8`, `#1b1b1b`, `#c2272d` | the same |
 | `--card-w`, `--card-h` | a card's size (46px by 68px on a phone) | `58px`, `84px` | |
-| `--intro-room`, `--intro-room-wide` | room kept for the header's words, so that changing language moves nothing | `9.5rem`, `5.5rem` | |
+| `--intro-room`, `--intro-room-wide` | room kept for the header's words, so that changing language moves nothing | `11.5rem`, `7rem` | |
 
 The page follows the device's light or dark setting; `data-theme="light"` or
 `"dark"` on `<html>` forces one. To give a copy of the table another look, set
