@@ -31,6 +31,7 @@ describe("the games in words", () => {
       "President",
       "Gin Rummy",
       "War",
+      "Stack Up",
     ]);
     expect(CARD_GAME_LIST.map((kind) => gameName(kind, "ja"))).toEqual([
       "ハーツ",
@@ -44,6 +45,7 @@ describe("the games in words", () => {
       "大富豪",
       "ジン・ラミー",
       "戦争",
+      "段積み",
     ]);
     for (const kind of CARD_GAME_LIST)
       for (const language of ["en", "ja"] as const) expect(gameSays(kind, language).length).toBeGreaterThan(20);

@@ -4,7 +4,7 @@ The file-by-file tree of Toranpu's source, from [the README's Architecture secti
 
 Each game is a folder of its own under `src/games/`: its rules as pure
 functions, its types, its computer player, and the code that keeps a table as
-text. The eleven card games and three solitaires share the deck, the saving and
+text. The twelve card games and three solitaires share the deck, the saving and
 the words. Drawing sits apart under `ui/`, so the rules run with no DOM, and
 every game and every browser part is an entry point of its own, so a page
 loads only what it uses.
@@ -110,6 +110,11 @@ src/
 │   │   ├── rules.ts
 │   │   ├── solve.ts
 │   │   └── spider.types.ts
+│   ├── stackUp/
+│   │   ├── stack-up-computer.ts
+│   │   ├── stack-up-rules.ts
+│   │   ├── stack-up.ts
+│   │   └── stack-up.types.ts
 │   └── war/
 │       ├── war-computer.ts
 │       ├── war-rules.ts
@@ -129,6 +134,7 @@ src/
 ├── sounds.ts
 ├── spades.ts
 ├── spider.ts
+├── stack-up.ts
 ├── strings.data.ts
 ├── strings.ts
 ├── table-define.ts

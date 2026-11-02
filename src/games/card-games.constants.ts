@@ -60,7 +60,8 @@ export type CardGameKind =
   | "euchre"
   | "cribbage"
   | "ohHell"
-  | "war";
+  | "war"
+  | "stackUp";
 
 /** The eleven kinds by name, for code that would rather not type a string twice.
  *
@@ -82,6 +83,7 @@ export const CARD_GAME_KINDS = {
   cribbage: "cribbage",
   ohHell: "ohHell",
   war: "war",
+  stackUp: "stackUp",
 } as const satisfies Record<CardGameKind, CardGameKind>;
 
 /** Every card game.
@@ -104,6 +106,7 @@ export const CARD_GAME_LIST: readonly CardGameKind[] = [
   CARD_GAME_KINDS.president,
   CARD_GAME_KINDS.ginRummy,
   CARD_GAME_KINDS.war,
+  CARD_GAME_KINDS.stackUp,
 ];
 
 /** How long each game lasts, in its own terms (see above).
@@ -206,6 +209,16 @@ export const OH_HELL_DEALS = [7, 13] as const;
  */
 export const WAR_ROUNDS = [25, 50, 100, 200, 1000] as const;
 
+/** The cards in each player's stock pile at a game of Stack Up: the longer, the longer the game.
+ *
+ * @example
+ * ```ts
+ * import { STACK_UP_SIZES } from "@johnmorrisdotca/toranpu";
+ * console.log(STACK_UP_SIZES);
+ * ```
+ */
+export const STACK_UP_SIZES = [10, 15, 20] as const;
+
 /** Every game's table: the fewest, the most and the usual number of players, the lengths of game offered and the usual one.
  *
  * @example
@@ -232,4 +245,5 @@ export const CARD_GAME_TABLES: Record<CardGameKind, CardGameTable> = {
   cribbage: { fewestPlayers: 2, mostPlayers: 2, defaultPlayers: 2, sizes: CRIBBAGE_SIZES, defaultSize: 121 },
   ohHell: { fewestPlayers: 3, mostPlayers: 4, defaultPlayers: 4, sizes: OH_HELL_DEALS, defaultSize: 13 },
   war: { fewestPlayers: 2, mostPlayers: 2, defaultPlayers: 2, sizes: WAR_ROUNDS, defaultSize: 100 },
+  stackUp: { fewestPlayers: 2, mostPlayers: 6, defaultPlayers: 4, sizes: STACK_UP_SIZES, defaultSize: 15 },
 };

@@ -21,6 +21,8 @@ import type { PresidentGame, PresidentMove } from "./president/president.types.t
 import { PRESIDENT_RULES } from "./president/president-rules.ts";
 import type { SpadesGame, SpadesMove } from "./spades/spades.types.ts";
 import { SPADES_RULES } from "./spades/spades-rules.ts";
+import type { StackUpGame, StackUpMove } from "./stackUp/stack-up.types.ts";
+import { STACK_UP_RULES } from "./stackUp/stack-up-rules.ts";
 import type { WarGame, WarMove } from "./war/war.types.ts";
 import { WAR_RULES } from "./war/war-rules.ts";
 
@@ -47,6 +49,7 @@ export type CardGamePlays = {
   cribbage: { game: CribbageGame; move: CribbageMove };
   ohHell: { game: OhHellGame; move: OhHellMove };
   war: { game: WarGame; move: WarMove };
+  stackUp: { game: StackUpGame; move: StackUpMove };
 };
 
 /**
@@ -74,4 +77,5 @@ export const CARD_GAME_RULES: {
   cribbage: CRIBBAGE_RULES,
   ohHell: OH_HELL_RULES,
   war: WAR_RULES,
+  stackUp: STACK_UP_RULES,
 };

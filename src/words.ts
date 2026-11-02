@@ -23,6 +23,7 @@ const NAME_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
   president: "gamePresident",
   ginRummy: "gameGinRummy",
   war: "gameWar",
+  stackUp: "gameStackUp",
 };
 
 const SAYS_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
@@ -37,6 +38,7 @@ const SAYS_KEYS: Record<CardGameKind, keyof ToranpuStrings> = {
   president: "saysPresident",
   ginRummy: "saysGinRummy",
   war: "saysWar",
+  stackUp: "saysStackUp",
 };
 
 const SUIT_KEYS: Record<CardSuit, keyof ToranpuStrings> = { S: "suitS", H: "suitH", D: "suitD", C: "suitC" };
@@ -228,14 +230,14 @@ export type MoveTextOptions = {
 };
 
 /**
- * A move in words, for any of the eleven games: `moveText("hearts", { play: "QS" })`
+ * A move in words, for any of the twelve games: `moveText("hearts", { play: "QS" })`
  * is "Play Q♠", and with `{ form: "did" }` it is "plays Q♠". `kind` is needed
  * because a bid of nought is "nil" in Spades and "0" in Oh Hell.
  *
  * @param kind - The named card game or sound kind.
  * @param move - The native move to validate or apply.
  * @param options - Options for this call; omitted fields retain their documented defaults.
- * @returns A move in words, for any of the eleven games: `moveText("hearts", { play: "QS" })` is "Play Q♠", and with `{ form: "did" }` it is "plays Q♠". `kind` is needed because a bid of nought is "nil" in Spades and "0" in Oh Hell.
+ * @returns A move in words, for any of the twelve games: `moveText("hearts", { play: "QS" })` is "Play Q♠", and with `{ form: "did" }` it is "plays Q♠". `kind` is needed because a bid of nought is "nil" in Spades and "0" in Oh Hell.
  *
  * @example
  * ```ts
@@ -256,6 +258,19 @@ export function moveText<K extends CardGameKind>(kind: K, move: MoveOf<K>, optio
   const given = move as Record<string, unknown>;
   const cards = (value: unknown): CardId[] =>
     Array.isArray(value) ? value.filter(isCard) : isCard(value) ? [value] : [];
+  if (kind === "stackUp") {
+    const cardWord = (id: unknown) =>
+      id === "nw" ? t.cardStackUpWild : String(Number.parseInt(String(id).slice(1), 10));
+    if ("pass" in given) return say("Pass");
+    if ("discard" in given) return say("StackUpPut", { card: cardWord(given.discard), pile: (given.to as number) + 1 });
+    const from =
+      given.from === "hand"
+        ? t.stackUpFromHand
+        : given.from === "stock"
+          ? t.stackUpFromStock
+          : fillIn(t.stackUpFromDiscard, { n: (given.pile as number) + 1 });
+    return say("StackUpPlay", { card: cardWord(given.play), from, pile: (given.to as number) + 1 });
+  }
   if (Array.isArray(given.pass)) return hid("PassCards", cards(given.pass));
   if ("crib" in given) return hid("Crib", cards(given.crib));
   if ("give" in given) return hid("Give", cards(given.give));

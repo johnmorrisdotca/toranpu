@@ -1,7 +1,7 @@
 {
   "name": "@johnmorrisdotca/toranpu",
   "version": "2.15.1",
-  "description": "Toranpu \u30c8\u30e9\u30f3\u30d7 \u2014 Playing cards, card games and solitaire: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War; solitaires, seeded deals and computers. Zero dependencies.",
+  "description": "Toranpu \u30c8\u30e9\u30f3\u30d7 \u2014 Playing cards, card games and solitaire: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy, War and Stack Up; solitaires, seeded deals and computers. Zero dependencies.",
   "keywords": [
     "52-cards",
     "angular",
@@ -101,6 +101,7 @@
     "vue",
     "war",
     "war-card-game",
+    "stack-up-card-game",
     "web-audio",
     "web-component",
     "white-label",
@@ -241,6 +242,11 @@
       "types": "./dist/war.d.ts",
       "import": "./dist/war.js",
       "default": "./dist/war.js"
+    },
+    "./stack-up": {
+      "types": "./dist/stack-up.d.ts",
+      "import": "./dist/stack-up.js",
+      "default": "./dist/stack-up.js"
     },
     "./klondike": {
       "types": "./dist/klondike.d.ts",

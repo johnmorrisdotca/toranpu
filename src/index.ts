@@ -1,5 +1,5 @@
 /**
- * Toranpu トランプ: a deck of playing cards and eleven card games to play with
+ * Toranpu トランプ: a deck of playing cards and twelve card games to play with
  * it, each with a computer player.
  *
  * - Every game by name: `newGame`, `rulesFor`, `playComputers`, and every
@@ -35,6 +35,7 @@ export type { Random } from "./random.ts";
 export { seededRandom, shuffled } from "./random.ts";
 export * from "./save.ts";
 export * as spades from "./spades.ts";
+export * as stackUp from "./stack-up.ts";
 export * from "./strings.ts";
 export { VERSION } from "./version.ts";
 export * as war from "./war.ts";

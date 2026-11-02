@@ -112,7 +112,25 @@ const ghost = (text) => el("span", text, { class: "ghost", "aria-hidden": "true"
 /** The names as the table shows them: a person's first seat is "You" in the page's language. */
 const shown = (players) => players.map((name, seat) => (seat === 0 && name === NAMES[0] ? t().pageYou : name));
 
+/** A card of Stack Up's own deck: a number 1 to 12 on a field coloured by its third, or the wild. */
+const isStackUpCard = (card) => /^n(0[1-9]|1[0-2]|w)$/.test(card);
+
 function cardEl(card, { small = false, button = false } = {}) {
+  if (isStackUpCard(card)) {
+    const number = card === "nw" ? "★" : String(Number(card.slice(1)));
+    const made = el(button ? "button" : "div", number, {
+      class: "card",
+      "data-red": "false",
+      "data-small": String(small),
+      "data-stack-up":
+        card === "nw" ? "wild" : Number(card.slice(1)) <= 4 ? "low" : Number(card.slice(1)) <= 8 ? "mid" : "high",
+      "aria-label": card === "nw" ? t().cardStackUpWild : number,
+      "data-card": card,
+    });
+    if (button) made.type = "button";
+    else made.setAttribute("role", "img");
+    return made;
+  }
   const made = el(button ? "button" : "div", "", {
     class: "card",
     "data-red": String(card[1] === "H" || card[1] === "D"),
@@ -127,8 +145,13 @@ function cardEl(card, { small = false, button = false } = {}) {
 }
 
 /** Every card a move names, in any field. */
+const tableCard = (value) => isCard(value) || (typeof value === "string" && isStackUpCard(value));
 const cardsOf = (move) =>
-  Object.values(move).flatMap((value) => (Array.isArray(value) ? value.filter(isCard) : isCard(value) ? [value] : []));
+  move.from !== undefined && move.from !== "hand"
+    ? []
+    : Object.values(move).flatMap((value) =>
+        Array.isArray(value) ? value.filter(tableCard) : tableCard(value) ? [value] : [],
+      );
 
 /** The seat whose hand is shown: the person to play, or else the first seat a person holds. */
 function viewer(toPlay, computers) {
@@ -237,6 +260,22 @@ function drawPiles(names) {
       );
     }
   }
+  if (kind === "stackUp" && g.building) {
+    const { computers } = rules().seats(game);
+    const me = viewer(rules().toPlay(game), computers);
+    const top = (cards) => cards[cards.length - 1];
+    g.building.forEach((cards, at) => {
+      const label = `${fillIn(t().pageStackUpPile, { n: at + 1 })} · ${cards.length}`;
+      piles.push(cards.length === 0 ? sign(label, "–") : pile(label, [top(cards)], false));
+    });
+    piles.push(sign(fillIn(t().pageStackUpDraw, { n: g.draw.length }), ""));
+    (g.discards[me] ?? []).forEach((cards, at) => {
+      const label = `${t().pageStackUpDiscards} ${at + 1} · ${cards.length}`;
+      piles.push(cards.length === 0 ? sign(label, "–") : pile(label, [top(cards)], false));
+    });
+    const stock = g.stocks[me] ?? [];
+    if (stock.length > 0) piles.push(pile(fillIn(t().pageStackUpStock, { n: stock.length }), [top(stock)], false));
+  }
   $("piles").replaceChildren(...piles);
 }
 
@@ -259,6 +298,7 @@ function drawTable() {
       const extra = [
         computers[seat] ? t().pageComputer : "",
         held !== undefined ? fillIn(t().pageCards, { n: held }) : "",
+        game.stocks?.[seat] ? fillIn(t().pageStackUpStock, { n: game.stocks[seat].length }) : "",
         score !== undefined ? fillIn(t().pageScore, { n: score }) : "",
         game.bids?.[seat] != null ? fillIn(t().pageBid, { n: game.bids[seat] }) : "",
         game.tricks && game.phase === "playing" ? fillIn(t().pageTricks, { n: game.tricks[seat] }) : "",

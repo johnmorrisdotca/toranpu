@@ -7,7 +7,7 @@ description: Deal, play and solve Klondike, FreeCell and Spider with their own e
 
 ## Use the named engine
 
-Klondike, FreeCell and Spider each have a table, legal-move helpers, immutable play, deal codes, replay and a solver. They use packed card numbers rather than the eleven games’ string ids. Generate their decks through their native deal readers.
+Klondike, FreeCell and Spider each have a table, legal-move helpers, immutable play, deal codes, replay and a solver. They use packed card numbers rather than the twelve games’ string ids. Generate their decks through their native deal readers.
 
 ```ts
 import { dealKlondike, dealOfSeed, deckOf, movesFrom, playKlondike } from "@johnmorrisdotca/toranpu/klondike";

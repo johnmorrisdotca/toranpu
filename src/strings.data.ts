@@ -21,6 +21,19 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     gamePresident: "President",
     gameGinRummy: "Gin Rummy",
     gameWar: "War",
+    gameStackUp: "Stack Up",
+    offerStackUpPlay: "Play {card} from {from} on pile {pile}",
+    offerStackUpPut: "Put {card} on your discard pile {pile}",
+    didStackUpPlay: "plays {card} from {from} on pile {pile}",
+    didStackUpPut: "puts {card} on discard pile {pile}",
+    stackUpFromHand: "your hand",
+    stackUpFromStock: "your stock",
+    stackUpFromDiscard: "discard pile {n}",
+    pageStackUpPile: "Pile {n}",
+    pageStackUpDiscards: "Your discards",
+    pageStackUpStock: "stock: {n}",
+    pageStackUpDraw: "To draw: {n}",
+    cardStackUpWild: "Wild",
     saysHearts: "Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins.",
     saysSpades: "Partners across the table bid tricks together. Spades are always trumps.",
     saysEuchre: "Five cards, four players in partnerships, and the jacks of trumps' colour on top.",
@@ -34,6 +47,8 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     saysGinRummy: "Draw and discard to make sets and runs, then knock when your deadwood is low.",
     saysWar:
       "Both turn the top card and the higher takes both. A tie is war: three face down, one up. Win every card, or hold the most when the turns run out.",
+    saysStackUp:
+      "Lay cards 1 to 12 in order on four shared piles, from your hand, your stock and your discards. Play your whole stock pile first to win.",
     suitS: "spades",
     suitH: "hearts",
     suitD: "diamonds",
@@ -85,9 +100,9 @@ export const STRINGS: Record<Language, ToranpuStrings> = {
     seatName: "Seat {n}",
     cliUsage: `Usage: toranpu <command> [options]
 
-A deck of playing cards and eleven card games, dealt from a seed.
+A deck of playing cards and twelve card games, dealt from a seed.
 
-  toranpu games                     the eleven games, and their tables
+  toranpu games                     the twelve games, and their tables
   toranpu deal --seed 42            four hands of thirteen from a seeded shuffle
   toranpu deal -n 2 -e 5 -s 42      two hands of five, and what is left
   toranpu deal hearts --seed 42     a game's own first deal, seat by seat
@@ -137,7 +152,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cliPlayed: "{game} for {n}, seed {seed}: {moves} moves. Won by {players}.",
     cliScores: "Scores: {scores}",
     pagePitch:
-      "A deck of playing cards and eleven card games, each with a computer player. Pick a game and play a hand.",
+      "A deck of playing cards and twelve card games, each with a computer player. Pick a game and play a hand.",
     pageName: "Toranpu is the everyday Japanese word for a deck of playing cards.",
     pageNameLink: "About the name",
     pageFoot: "Every deal here comes from its seed, so a seed can be shared. Nothing leaves this device.",
@@ -343,6 +358,19 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     gamePresident: "大富豪",
     gameGinRummy: "ジン・ラミー",
     gameWar: "戦争",
+    gameStackUp: "段積み",
+    offerStackUpPlay: "{from}の{card}を山{pile}に出す",
+    offerStackUpPut: "{card}を捨て札{pile}に置く",
+    didStackUpPlay: "{from}の{card}を山{pile}に出しました",
+    didStackUpPut: "{card}を捨て札{pile}に置きました",
+    stackUpFromHand: "手札",
+    stackUpFromStock: "ストック",
+    stackUpFromDiscard: "捨て札{n}",
+    pageStackUpPile: "山{n}",
+    pageStackUpDiscards: "あなたの捨て札",
+    pageStackUpStock: "ストック {n}枚",
+    pageStackUpDraw: "引く札 {n}枚",
+    cardStackUpWild: "ワイルド",
     saysHearts:
       "ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。",
     saysSpades: "向かい合ったパートナーと組んで、取るトリック数をビッドします。切り札はいつもスペードです。",
@@ -358,6 +386,8 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     saysGinRummy: "引いて捨てながらセットとランを作り、デッドウッドが少なくなったらノックします。",
     saysWar:
       "同時に上の札をめくり、大きいほうが2枚とも取ります。同じ数なら「戦争」で、3枚を伏せて4枚目をめくります。全部の札を取るか、ターン数が尽きたとき枚数が多い人の勝ちです。",
+    saysStackUp:
+      "手札、ストック、捨て札を使って、共通の4つの山に1から12まで順に札を積みます。自分のストックの山を最初に出しきった人の勝ちです。",
     suitS: "スペード",
     suitH: "ハート",
     suitD: "ダイヤ",

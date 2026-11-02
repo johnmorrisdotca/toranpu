@@ -12,9 +12,9 @@ The tables of exports of every entry point, from [Toranpu's README](../README.md
 | `randomSeed()` | A fresh seed, 1 to 2³¹ − 1 |
 | `CARD_GAME_RULES` | Every game's rules, by kind |
 | `CARD_GAME_TABLES` | Every game's table: fewest, most and usual players, the sizes offered and the usual one |
-| `CARD_GAME_LIST`, `CARD_GAME_KINDS` | The eleven kinds |
-| `HEARTS_SIZES`, `SPADES_SIZES`, `EUCHRE_SIZES`, `CRIBBAGE_SIZES`, `OH_HELL_DEALS`, `CRAZY_EIGHTS_SIZES`, `GO_FISH_SIZES`, `BIG_TWO_DEALS`, `PRESIDENT_ROUNDS`, `GIN_SIZES`, `WAR_ROUNDS` | The sizes each game offers |
-| `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`, `goFish`, `bigTwo`, `president`, `ginRummy`, `war` | Each game's own exports, as a namespace |
+| `CARD_GAME_LIST`, `CARD_GAME_KINDS` | The twelve kinds |
+| `HEARTS_SIZES`, `SPADES_SIZES`, `EUCHRE_SIZES`, `CRIBBAGE_SIZES`, `OH_HELL_DEALS`, `CRAZY_EIGHTS_SIZES`, `GO_FISH_SIZES`, `BIG_TWO_DEALS`, `PRESIDENT_ROUNDS`, `GIN_SIZES`, `WAR_ROUNDS`, `STACK_UP_SIZES` | The sizes each game offers |
+| `hearts`, `spades`, `euchre`, `cribbage`, `ohHell`, `crazyEights`, `goFish`, `bigTwo`, `president`, `ginRummy`, `war`, `stackUp` | Each game's own exports, as a namespace |
 | `toJSON`, `fromJSON`, `toCode`, `fromCode`, `toText`, `toCSV`, `savedGame`, `recordOf`, `SAVE_FORMAT`, `CSV_COLUMNS` | A game written out and read back: see [Export and import](#export-and-import) |
 | `gameName`, `gameSays`, `cardText`, `cardShort`, `cardsShort`, `suitName`, `suitSymbol`, `rankName`, `namesList`, `moveText` | The games, the cards and the moves in words: see [Words](#words) |
 | `STRINGS`, `fillIn`, `languageOf` | Every string in English and Japanese, and the two helpers that read it |
@@ -47,7 +47,7 @@ one game. They follow one naming pattern (shown for Hearts):
 
 Entry points, each a game's name in kebab case: `hearts`, `spades`, `euchre`,
 `cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`,
-`gin-rummy`, `war`. A game's key in a saved game stays as it was (`ohHell`), so a game
+`gin-rummy`, `war`, `stack-up`. A game's key in a saved game stays as it was (`ohHell`), so a game
 saved before 2.0 still reads.
 
 The solitaires, Klondike, FreeCell and Spider, are entry points too (by those names in lower case),

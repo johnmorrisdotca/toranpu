@@ -14,6 +14,7 @@ import {
   pageSounds,
   widthOf,
 } from "./element-kit.ts";
+import { STACK_UP_DESIGN } from "./stack-up-design.ts";
 
 /**
  * THE CLOTHS A TABLE MAY BE LAID IN: the same five the whole family offers, and itsutsu.com's boards. Each is the
@@ -54,15 +55,23 @@ function kindOf(text: string | null): CardGameKind {
 }
 
 /** Every card a move names, in any field. */
+const isTableCard = (value: unknown): boolean =>
+  isCard(value) || (typeof value === "string" && /^n(0[1-9]|1[0-2]|w)$/.test(value));
 const cardsOf = (move: object): string[] =>
-  Object.values(move).flatMap((value) =>
-    Array.isArray(value) ? value.filter((one) => isCard(one)) : isCard(value) ? [value as string] : [],
-  );
+  "from" in move && move.from !== "hand"
+    ? []
+    : Object.values(move).flatMap((value) =>
+        Array.isArray(value) ? value.filter(isTableCard) : isTableCard(value) ? [value as string] : [],
+      );
 
 /** The game as the table holds it: only the fields a table draws from, read loosely, since every game keeps its own. */
 type Seen = {
   seed: number;
   hands?: string[][];
+  stocks?: string[][];
+  building?: string[][];
+  discards?: string[][][];
+  draw?: string[];
   scores?: number[];
   penalties?: number[];
   bids?: (number | null)[];
@@ -251,7 +260,10 @@ export class ToranpuTable extends ElementBase {
     const rules = rulesFor(this.#kind);
     const language = languageOf(this);
     const t = STRINGS[language];
-    const { design, ready } = designNamed(this.getAttribute("design"));
+    const named = designNamed(this.getAttribute("design"));
+    const { ready } = named;
+    // Stack Up has a deck of its own, which only its own design can draw.
+    const design = this.#kind === "stackUp" ? STACK_UP_DESIGN : named.design;
     if (ready !== null) void ready.then(() => this.#draw());
     const { players, computers } = rules.seats(game as never);
     const names = players.map((name, seat) => (name === YOU && seat === 0 ? t.pageYou : name));
@@ -281,6 +293,7 @@ export class ToranpuTable extends ElementBase {
         const meta = [
           computers[seat] ? t.pageComputer : "",
           held !== undefined ? fillIn(t.pageCards, { n: held }) : "",
+          game.stocks?.[seat] ? fillIn(t.pageStackUpStock, { n: game.stocks[seat].length }) : "",
           score !== undefined ? fillIn(t.pageScore, { n: score }) : "",
           game.bids?.[seat] != null ? fillIn(t.pageBid, { n: game.bids[seat] as number }) : "",
           game.tricks && game.phase === "playing" ? fillIn(t.pageTricks, { n: game.tricks[seat] as number }) : "",
@@ -347,6 +360,24 @@ export class ToranpuTable extends ElementBase {
           ),
         );
       }
+    }
+
+    // Stack Up: the four building piles with the card on top of each, the draw pile, and the discard piles of the seat shown.
+    if (this.#kind === "stackUp" && game.building) {
+      game.building.forEach((cards, at) => {
+        const top = cards[cards.length - 1];
+        const label = `${fillIn(t.pageStackUpPile, { n: at + 1 })} · ${cards.length}`;
+        piles.push(top === undefined ? sign(label, "–") : laid(label, [top]));
+      });
+      piles.push(sign(fillIn(t.pageStackUpDraw, { n: game.draw?.length ?? 0 }), ""));
+      (game.discards?.[me] ?? []).forEach((cards, at) => {
+        const top = cards[cards.length - 1];
+        const label = `${t.pageStackUpDiscards} ${at + 1} · ${cards.length}`;
+        piles.push(top === undefined ? sign(label, "–") : laid(label, [top]));
+      });
+      const stock = game.stocks?.[me] ?? [];
+      if (stock.length > 0)
+        piles.push(laid(fillIn(t.pageStackUpStock, { n: stock.length }), [stock[stock.length - 1] as string]));
     }
 
     const mine = !over && toPlay !== null && !computers[toPlay];

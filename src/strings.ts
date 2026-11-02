@@ -42,6 +42,19 @@ export type ToranpuStrings = {
   gamePresident: string;
   gameGinRummy: string;
   gameWar: string;
+  gameStackUp: string;
+  offerStackUpPlay: string;
+  offerStackUpPut: string;
+  didStackUpPlay: string;
+  didStackUpPut: string;
+  stackUpFromHand: string;
+  stackUpFromStock: string;
+  stackUpFromDiscard: string;
+  pageStackUpPile: string;
+  pageStackUpDiscards: string;
+  pageStackUpStock: string;
+  pageStackUpDraw: string;
+  cardStackUpWild: string;
   saysHearts: string;
   saysSpades: string;
   saysEuchre: string;
@@ -53,6 +66,7 @@ export type ToranpuStrings = {
   saysPresident: string;
   saysGinRummy: string;
   saysWar: string;
+  saysStackUp: string;
   suitS: string;
   suitH: string;
   suitD: string;

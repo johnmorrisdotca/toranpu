@@ -22,6 +22,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `gamePresident` | President | 大富豪 |
 | `gameGinRummy` | Gin Rummy | ジン・ラミー |
 | `gameWar` | War | 戦争 |
+| `gameStackUp` | Stack Up | 段積み |
 | `saysHearts` | Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins. | ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。 |
 | `saysSpades` | Partners across the table bid tricks together. Spades are always trumps. | 向かい合ったパートナーと組んで、取るトリック数をビッドします。切り札はいつもスペードです。 |
 | `saysEuchre` | Five cards, four players in partnerships, and the jacks of trumps' colour on top. | 手札は5枚。4人が2組に分かれ、切り札と同じ色のジャック2枚がいちばん強い札になります。 |
@@ -33,6 +34,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `saysPresident` | Shed your cards first to become President. The last out hands over their best cards. | 最初に手札をなくした人が大富豪です。最後になった人は、いちばん強い札を渡します。 |
 | `saysGinRummy` | Draw and discard to make sets and runs, then knock when your deadwood is low. | 引いて捨てながらセットとランを作り、デッドウッドが少なくなったらノックします。 |
 | `saysWar` | Both turn the top card and the higher takes both. A tie is war: three face down, one up. Win every card, or hold the most when the turns run out. | 同時に上の札をめくり、大きいほうが2枚とも取ります。同じ数なら「戦争」で、3枚を伏せて4枚目をめくります。全部の札を取るか、ターン数が尽きたとき枚数が多い人の勝ちです。 |
+| `saysStackUp` | Lay cards 1 to 12 in order on four shared piles, from your hand, your stock and your discards. Play your whole stock pile first to win. | 手札、ストック、捨て札を使って、共通の4つの山に1から12まで順に札を積みます。自分のストックの山を最初に出しきった人の勝ちです。 |
 | `suitS` | spades | スペード |
 | `suitH` | hearts | ハート |
 | `suitD` | diamonds | ダイヤ |
@@ -104,7 +106,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `cliSavedGoing` | {game} for {n}, seed {seed}, {moves} moves. Not over: {player} to play. | {game}（{n}人）、シード {seed}、{moves}手。進行中: 次は{player}の番です |
 | `cliPlayed` | {game} for {n}, seed {seed}: {moves} moves. Won by {players}. | {game}（{n}人）、シード {seed}: {moves}手。勝者は{players} |
 | `cliScores` | Scores: {scores} | 得点: {scores} |
-| `pagePitch` | A deck of playing cards and eleven card games, each with a computer player. Pick a game and play a hand. | トランプ1組と、コンピュータと遊べる11種類のカードゲームです。ゲームを選んで、1回遊んでみてください。 |
+| `pagePitch` | A deck of playing cards and twelve card games, each with a computer player. Pick a game and play a hand. | トランプ1組と、コンピュータと遊べる11種類のカードゲームです。ゲームを選んで、1回遊んでみてください。 |
 | `pageName` | Toranpu is the everyday Japanese word for a deck of playing cards. | 「トランプ」は、プレイングカードを指すふだんの日本語です。 |
 | `pageNameLink` | About the name | 名前について（英語） |
 | `pageFoot` | Every deal here comes from its seed, so a seed can be shared. Nothing leaves this device. | 配り方はすべてシードで決まるので、シードを伝えれば同じ配り方になります。データはこの端末の外に出ません。 |
@@ -289,9 +291,9 @@ a game; `cli` is the command line; `page` is the demo.
 ```
 Usage: toranpu <command> [options]
 
-A deck of playing cards and eleven card games, dealt from a seed.
+A deck of playing cards and twelve card games, dealt from a seed.
 
-  toranpu games                     the eleven games, and their tables
+  toranpu games                     the twelve games, and their tables
   toranpu deal --seed 42            four hands of thirteen from a seeded shuffle
   toranpu deal -n 2 -e 5 -s 42      two hands of five, and what is left
   toranpu deal hearts --seed 42     a game's own first deal, seat by seat

@@ -2,16 +2,16 @@
   "measured": "esbuild 0.28.2, bundled, minified, ES2020, gzip level 9",
   "entries": {
     ".": {
-      "minified": 117179,
-      "gzip": 36237
+      "minified": 122767,
+      "gzip": 37996
     },
     "./deck": {
       "minified": 3123,
       "gzip": 1457
     },
     "./react": {
-      "minified": 85886,
-      "gzip": 27332
+      "minified": 90411,
+      "gzip": 28754
     },
     "./card-sounds": {
       "minified": 71233,
@@ -26,8 +26,8 @@
       "gzip": 3492
     },
     "./card-faces": {
-      "minified": 835760,
-      "gzip": 187426
+      "minified": 836351,
+      "gzip": 187575
     },
     "./card-faces/english": {
       "minified": 694426,
@@ -38,64 +38,68 @@
       "gzip": 169740
     },
     "./element": {
-      "minified": 944936,
-      "gzip": 242489
+      "minified": 945527,
+      "gzip": 242641
     },
     "./element/define": {
-      "minified": 944941,
-      "gzip": 242491
+      "minified": 945532,
+      "gzip": 242643
     },
     "./table": {
-      "minified": 1010027,
-      "gzip": 263226
+      "minified": 1015144,
+      "gzip": 264754
     },
     "./table/define": {
-      "minified": 1010032,
-      "gzip": 263230
+      "minified": 1015149,
+      "gzip": 264756
     },
     "./hearts": {
-      "minified": 8844,
-      "gzip": 3561
+      "minified": 8967,
+      "gzip": 3599
     },
     "./spades": {
-      "minified": 9588,
-      "gzip": 3839
+      "minified": 9711,
+      "gzip": 3875
     },
     "./euchre": {
-      "minified": 9514,
-      "gzip": 3819
+      "minified": 9637,
+      "gzip": 3851
     },
     "./cribbage": {
-      "minified": 8722,
-      "gzip": 3746
+      "minified": 8845,
+      "gzip": 3781
     },
     "./oh-hell": {
-      "minified": 7687,
-      "gzip": 3158
+      "minified": 7810,
+      "gzip": 3190
     },
     "./crazy-eights": {
-      "minified": 7449,
-      "gzip": 3093
+      "minified": 7572,
+      "gzip": 3128
     },
     "./go-fish": {
-      "minified": 7184,
-      "gzip": 2886
+      "minified": 7306,
+      "gzip": 2924
     },
     "./big-two": {
-      "minified": 9400,
-      "gzip": 3847
+      "minified": 9523,
+      "gzip": 3879
     },
     "./president": {
-      "minified": 8643,
-      "gzip": 3521
+      "minified": 8766,
+      "gzip": 3557
     },
     "./gin-rummy": {
-      "minified": 9324,
-      "gzip": 3833
+      "minified": 9447,
+      "gzip": 3871
     },
     "./war": {
-      "minified": 5278,
-      "gzip": 2322
+      "minified": 5400,
+      "gzip": 2356
+    },
+    "./stack-up": {
+      "minified": 7633,
+      "gzip": 3131
     },
     "./klondike": {
       "minified": 10099,

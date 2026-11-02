@@ -106,6 +106,10 @@
       "en": "War",
       "ja": "ウォー"
     },
+    "./stack-up": {
+      "en": "Stack Up",
+      "ja": "段積み"
+    },
     "./klondike": {
       "en": "Klondike",
       "ja": "クロンダイク"

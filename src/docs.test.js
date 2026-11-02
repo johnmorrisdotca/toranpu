@@ -571,6 +571,7 @@ describe("the README's tables", () => {
       "President",
       "Gin Rummy",
       "War",
+      "Stack Up",
     ]);
     const kinds = [
       "hearts",
@@ -584,6 +585,7 @@ describe("the README's tables", () => {
       "president",
       "ginRummy",
       "war",
+      "stackUp",
     ];
     rows.forEach((row, at) => {
       const named = new Set([...row[1].matchAll(/\{ (\w+):/g)].map((m) => m[1]));
@@ -711,8 +713,8 @@ describe("the README's tables", () => {
 describe("docs/games.md", () => {
   it("has a section and a source for every game, in the order the package lists them", () => {
     const headings = [...games.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
-    expect(headings.slice(0, 11)).toEqual(CARD_GAME_LIST.map((kind) => gameName(kind)));
-    for (const name of headings.slice(0, 11)) {
+    expect(headings.slice(0, 12)).toEqual(CARD_GAME_LIST.map((kind) => gameName(kind)));
+    for (const name of headings.slice(0, 12)) {
       const section = games.slice(
         games.indexOf(`## ${name}\n`),
         games.indexOf("\n## ", games.indexOf(`## ${name}\n`) + 4),

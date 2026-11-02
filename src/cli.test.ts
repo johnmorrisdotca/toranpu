@@ -55,9 +55,9 @@ describe("the help and the version", () => {
 });
 
 describe("games", () => {
-  it("lists the eleven, with their tables", () => {
+  it("lists the twelve, with their tables", () => {
     const out = lines(run("games").out);
-    expect(out).toHaveLength(11);
+    expect(out).toHaveLength(12);
     expect(out[0]).toBe(
       "hearts       Hearts (3–4 players; 50 / 100): Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins.",
     );
@@ -81,7 +81,7 @@ describe("games", () => {
     const csv = run("games --csv").out.split("\r\n");
     expect(csv[0]).toBe("game,name,nameJa,fewestPlayers,mostPlayers,defaultPlayers,sizes,defaultSize");
     expect(csv[1]).toBe("hearts,Hearts,ハーツ,3,4,4,50 100,100");
-    expect(csv).toHaveLength(13);
+    expect(csv).toHaveLength(14);
   });
 });
 

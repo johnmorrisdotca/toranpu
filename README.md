@@ -1,7 +1,7 @@
 <h1 align="center">Toranpu <sub>トランプ</sub> — Playing cards, card games and solitaire</h1>
 
-<p align="center"><strong>A deck of playing cards and eleven card games, each with a computer player.</strong><br>
-Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War: the rules as pure functions, seeded deals, saved games, and a table that runs anywhere, in your own card backs and faces if you like.</p>
+<p align="center"><strong>A deck of playing cards and twelve card games, each with a computer player.</strong><br>
+Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy, War and Stack Up: the rules as pure functions, seeded deals, saved games, and a table that runs anywhere, in your own card backs and faces if you like.</p>
 
 <p align="center">
   <a href="https://github.com/johnmorrisdotca/toranpu/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/johnmorrisdotca/toranpu/actions/workflows/ci.yml/badge.svg"></a>
@@ -9,7 +9,7 @@ Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, Presi
   <a href="./LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-2f5d4a"></a>
   <img alt="No dependencies" src="https://img.shields.io/badge/dependencies-0-2f5d4a">
   <img alt="TypeScript" src="https://img.shields.io/badge/types-TypeScript-3178c6">
-  <a href="https://johnmorrisdotca.github.io/toranpu/docs/api/main/index.html"><img alt="36.2 kB minified and gzipped" src="https://img.shields.io/badge/min%2Bgzip-36.2%20kB-2f5d4a"></a>
+  <a href="https://johnmorrisdotca.github.io/toranpu/docs/api/main/index.html"><img alt="38.0 kB minified and gzipped" src="https://img.shields.io/badge/min%2Bgzip-38.0%20kB-2f5d4a"></a>
   <a href="https://www.npmjs.com/package/@johnmorrisdotca/toranpu#provenance"><img alt="Published with npm provenance" src="https://img.shields.io/badge/npm-provenance-2f5d4a"></a>
 </p>
 
@@ -35,12 +35,12 @@ Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, Presi
 </table>
 
 A playing card library and a card game engine for JavaScript and TypeScript:
-a standard 52-card deck with a seeded shuffle, and the full rules of eleven
+a standard 52-card deck with a seeded shuffle, and the full rules of twelve
 classic card games, each with a computer opponent (a bot) for every seat.
 
 - **What is different.** The games are complete, down to the rules a table
   argues about, and every one answers the same few questions, so one table
-  plays all eleven. The computers see only what their seat could see. A game is
+  plays all twelve. The computers see only what their seat could see. A game is
   its seed and its moves, so it can be saved, shared, replayed and checked.
 - **What it costs a project.** Nothing: no dependencies, and one import. One
   game on its own is about 8 kB.
@@ -76,7 +76,7 @@ Or with nothing to install, [play a hand in the demo](https://johnmorrisdotca.gi
 
 - **Anybody building a card table.** The rules, the deal, the turn order, the
   scoring and the computer players are done. You draw the cards.
-- **Games sites and apps.** Eleven games behind one interface, playable by
+- **Games sites and apps.** Twelve games behind one interface, playable by
   people, computers or any mix, with saves that cannot be tampered with.
 - **Bots and research.** Pure functions over plain data: play a million games
   in a loop, or replay any game from its seed.
@@ -90,11 +90,11 @@ with or endorsed by any publisher of an edition of them.
 
 ## Features
 
-- **Eleven games, complete.** Every rule a table argues about is in: Hearts'
+- **Twelve games, complete.** Every rule a table argues about is in: Hearts'
   pass and shooting the moon, Spades' nil and bags, Euchre's bowers and stick
   the dealer, Cribbage's pegging and the show, Oh Hell's hook on the dealer's
   bid, Gin Rummy's layoffs and undercuts, President's card swaps, Big Two's
-  five-card hands, and War down to the wars inside wars. [The eleven
+  five-card hands, and War down to the wars inside wars. [The twelve
   games](./docs/games.md) says which rules are played, with a source for each.
 - **A computer for every seat.** Each game has its own player, which sees
   only what its seat could see: its hand, the table and everything said
@@ -215,7 +215,7 @@ Each picture is a part of [the demo](https://johnmorrisdotca.github.io/toranpu/)
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/whole-table-desk-dark.webp">
 <img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/whole-table-desk-light.webp" alt="The whole table panel: a game of Crazy Eights for three in one tag, its seats, the pile, the stock and the hand of whoever is to play." width="400">
 </picture>
-<br><em><strong>A whole table</strong>: any of the eleven games in one tag.</em>
+<br><em><strong>A whole table</strong>: any of the twelve games in one tag.</em>
 </td>
 <td align="center" valign="top" width="33%">
 <picture>
@@ -450,7 +450,7 @@ reaches has to be the game the seed and those taps must give.
   `sideEffects: false`, so a bundler drops what you do not import.
 - **Sizes.** The deck alone is about 3 kB minified (1.4 kB gzipped). One game
   from its own entry point is 7 to 12 kB (Hearts is 9 kB, 3.5 kB gzipped).
-  All eleven, with the words in two languages and the command line, are about
+  All twelve, with the words in two languages and the command line, are about
   95 kB (30 kB gzipped). What is drawn is apart from the games: the backs
   alone are about 2 kB gzipped, the three elements with the plain faces and
   the backs about 68 kB (21 kB gzipped), and the English pattern (166 kB
@@ -582,7 +582,7 @@ Seat 2: 9♣ K♥ 9♦ J♣ 5♣
 Left: J♥ 3♠ A♥ 4♥ 2♣ Q♣ …
 ```
 
-The listing of what is left is trimmed with `…`. `toranpu games` lists the eleven games, `toranpu play hearts --seed 42` lets the computers play one through, and `toranpu check` checks a saved game; all are under [The command line](#the-command-line).
+The listing of what is left is trimmed with `…`. `toranpu games` lists the twelve games, `toranpu play hearts --seed 42` lets the computers play one through, and `toranpu check` checks a saved game; all are under [The command line](#the-command-line).
 
 ### A hand on any page
 
@@ -634,9 +634,11 @@ words, with a source. In short:
 | **President** | 3–8 | 3, 5 or 7 rounds, most points wins | Hands back its lowest cards, leads low, keeps its twos and aces back |
 | **Gin Rummy** | 2 | 50, 100 or 150 to win | Takes the discard only into a meld, throws the card that leaves least deadwood, never feeds the other player's melds, knocks as soon as it may |
 | **War** | 2 | 25, 50, 100, 200 or 1000 turns, the most cards winning when they run out | Turns the cards over: there is nothing else to do, so a table of computers plays itself |
+| **Stack Up** | 2–6 | A stock pile of 10, 15 or 20 cards: the first to play it all wins | Plays the stock card whenever it can, builds towards it, spends a wild only when it must, and discards downwards so the piles run in order |
 
 Cards are two-letter ids in play: rank `A 2 3 4 5 6 7 8 9 T J Q K`, then suit
-`S H D C`. `"QS"` is the queen of spades and `"TD"` the ten of diamonds.
+`S H D C`. `"QS"` is the queen of spades and `"TD"` the ten of diamonds. Stack
+Up has a deck of its own: `"n01"` to `"n12"` and the wild `"nw"`.
 
 Moves are small objects, one shape per kind of action:
 
@@ -653,6 +655,7 @@ Moves are small objects, one shape per kind of action:
 | President | `{ give: cards }`, `{ play: cards }`, `{ pass: true }` |
 | Gin Rummy | `{ draw: "stock" }`, `{ draw: "discard" }`, `{ discard: card }`, `{ knock: card }` |
 | War | `{ turn: true }` |
+| Stack Up | `{ play: card, from: "hand" \| "stock", to: pile }`, `{ play: card, from: "discard", pile, to: pile }`, `{ discard: card, to: pile }`, `{ pass: true }` |
 
 `rules.moves(game)` always lists every move the player to move may make, so a
 table never needs to know the rules to offer them.
@@ -743,7 +746,7 @@ The options, the attributes, every example and the tables are in [docs/ELEMENTS.
 
 ## A whole table on a page
 
-Any of the eleven games, ready to play, in one tag (`<toranpu-table>`): the seats round the felt, what lies on the table, the hand of whoever is to play and the moves they may make, with computers in the other seats.
+Any of the twelve games, ready to play, in one tag (`<toranpu-table>`): the seats round the felt, what lies on the table, the hand of whoever is to play and the moves they may make, with computers in the other seats.
 
 The options, the attributes, every example and the tables are in [docs/ELEMENTS.md](docs/ELEMENTS.md#a-whole-table-on-a-page).
 
@@ -784,9 +787,9 @@ npm install -g @johnmorrisdotca/toranpu    # then `toranpu`, or use npx with not
 ```text
 Usage: toranpu <command> [options]
 
-A deck of playing cards and eleven card games, dealt from a seed.
+A deck of playing cards and twelve card games, dealt from a seed.
 
-  toranpu games                     the eleven games, and their tables
+  toranpu games                     the twelve games, and their tables
   toranpu deal --seed 42            four hands of thirteen from a seeded shuffle
   toranpu deal -n 2 -e 5 -s 42      two hands of five, and what is left
   toranpu deal hearts --seed 42     a game's own first deal, seat by seat
@@ -852,8 +855,8 @@ is kept as an index of the existing anchors. The [documentation](https://johnmor
 
 | Entry point | What it holds |
 | --- | --- |
-| `@johnmorrisdotca/toranpu` | The eleven games, their rules and computers, saving and export, words, and the command line as a function |
-| `@johnmorrisdotca/toranpu/<game>` | One game on its own: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy and War, and the solitaires Klondike, FreeCell and Spider |
+| `@johnmorrisdotca/toranpu` | The twelve games, their rules and computers, saving and export, words, and the command line as a function |
+| `@johnmorrisdotca/toranpu/<game>` | One game on its own: Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy, War and Stack Up, and the solitaires Klondike, FreeCell and Spider |
 | `@johnmorrisdotca/toranpu/deck` | Fifty-two cards, a seeded shuffle, dealing, one-letter codes and names |
 | `@johnmorrisdotca/toranpu/react` | `useCardGame`, a hook over one game |
 | `@johnmorrisdotca/toranpu/card-sounds`, `/sounds` | The recorded card sounds, and their data |
@@ -866,7 +869,7 @@ is kept as an index of the existing anchors. The [documentation](https://johnmor
 
 | Call | What it does |
 | --- | --- |
-| `newGame(kind, { players, seed, computers })` | A new game of any of the eleven, dealt from a seed |
+| `newGame(kind, { players, seed, computers })` | A new game of any of the twelve, dealt from a seed |
 | `rulesFor(kind)` | The game's rules: `moves`, `play`, `toPlay`, `over`, `winners`, and a computer's move |
 | `playComputers(kind, game)` | Let the computers play until a person is to move, or the game is over |
 | `moveText(kind, move, options?)`, `cardText(card, language?)`, `gameName(kind, language?)` | The words, in English or Japanese |
@@ -996,7 +999,7 @@ Ideas and requests are welcome in the
 
 Each game is a folder of its own under `src/games/`: its rules as pure
 functions, its types, its computer player, and the code that keeps a table as
-text. The eleven card games and three solitaires share the deck, the saving and
+text. The twelve card games and three solitaires share the deck, the saving and
 the words. Drawing sits apart under `ui/`, so the rules run with no DOM, and
 every game and every browser part is an entry point of its own, so a page
 loads only what it uses.

@@ -274,7 +274,7 @@ the iframe as it will be framed.
 
 ## A whole table on a page
 
-Any of the eleven games, ready to play, in one tag: the seats round the felt,
+Any of the twelve games, ready to play, in one tag: the seats round the felt,
 what lies on the table (the trick, the pile to beat, the stock and the
 discard), the hand of whoever is to play and the moves they may make, with
 computers in the other seats, playing after a short pause.
@@ -286,7 +286,7 @@ computers in the other seats, playing after a short pause.
 
 | Attribute of `<toranpu-table>` | What it does |
 | --- | --- |
-| `game` | any of the eleven, by its key or in kebab case: `hearts` (unless said), `spades`, `euchre`, `cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`, `gin-rummy`, `war` |
+| `game` | any of the twelve, by its key or in kebab case: `hearts` (unless said), `spades`, `euchre`, `cribbage`, `oh-hell`, `crazy-eights`, `go-fish`, `big-two`, `president`, `gin-rummy`, `war` |
 | `players` | how many sit at the table, within the game's own range (its usual number unless said) |
 | `people` | how many seats, the first ones, are people's; the rest are computers (1 unless said) |
 | `names` | the seats' names, separated by commas; the first is "You" unless said |
@@ -300,7 +300,7 @@ computers in the other seats, playing after a short pause.
   in the game's own form (`toCode` and the rest save it).
 - Each move is a `toranpu-table` event that bubbles, its `detail`
   `{ seat, move, over, winners }`.
-- The table carries the rules of all eleven games, so it is an entry point of
+- The table carries the rules of all twelve games, so it is an entry point of
   its own: a page that wants only a card or a hand imports `element`.
 
 

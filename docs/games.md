@@ -1,4 +1,4 @@
-# The eleven games, as Toranpu plays them
+# The twelve games, as Toranpu plays them
 
 Every card game is played a little differently from one table to the next.
 This page says which rules Toranpu plays, in our own words, so that you know
@@ -360,6 +360,37 @@ go back in. Toranpu plays the plain game, and the turn limit is its own, so
 that a game can end.
 
 Source: [pagat.com/war/war.html](https://www.pagat.com/war/war.html)
+
+## Stack Up
+
+**Two to six players. Size: the cards in each stock pile, 10, 15 or 20.**
+
+- **The deck.** Its own: 162 cards, twelve of each number from 1 to 12 and
+  eighteen wilds (`n01` to `n12`, and `nw`). It is not the standard deck.
+- **The deal.** Each player gets a stock pile of the size chosen, face down
+  but for the top card. What is left is the draw pile.
+- **The building piles.** Four piles in the middle start empty and are built
+  up one card at a time, 1, 2, 3 and so on to 12. A wild stands for whatever
+  number the pile wants next. A pile that reaches 12 is set aside, and the set
+  aside piles are shuffled back in when the draw pile runs out.
+- **A turn.** Draw up to five cards. Then lay cards on the building piles as
+  you like: from your hand, from the top of your stock, or from the top of any
+  of your four discard piles. If you lay the last card of your hand, draw five
+  more at once and go on.
+- **Ending the turn.** Put one card from your hand on one of your own four
+  discard piles. Those piles are yours alone, and only their top cards may be
+  played. The next player draws up and goes.
+- **The end.** The first player to play the last card of their stock pile wins.
+  If no card can be drawn and nobody has played anything for a whole round, the
+  game ends there and the player with the fewest stock cards left wins; equal
+  counts share the win.
+
+**Tables differ** on the size of the stock pile (many use 30), on whether the
+deck holds twelve or more wilds, and on whether a player may look through their
+discard piles. Toranpu plays the plain game with its own deck, and the stalemate
+ending is its own, so that a game can end.
+
+Source: [pagat.com/patience/spite.html](https://www.pagat.com/patience/spite.html), the game this one is a kind of.
 
 ## Trademarks
 

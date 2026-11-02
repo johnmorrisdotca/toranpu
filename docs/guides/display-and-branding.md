@@ -21,7 +21,7 @@ unregisterCardBack("club-back");
 
 ## Register your own design
 
-A `CardDesign` supplies a name, box dimensions and artwork keyed by card id, optionally a draw function, labels and fallback. Custom ids can be drawn without becoming cards accepted by the eleven game engines. The native markup and image-URL helpers sanitize supplied artwork; use their existing contract rather than inserting raw markup yourself.
+A `CardDesign` supplies a name, box dimensions and artwork keyed by card id, optionally a draw function, labels and fallback. Custom ids can be drawn without becoming cards accepted by the twelve game engines. The native markup and image-URL helpers sanitize supplied artwork; use their existing contract rather than inserting raw markup yourself.
 
 ## Put it in an element
 

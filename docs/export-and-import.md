@@ -52,7 +52,7 @@ The JSON:
 | --- | --- |
 | `format` | 1. It goes up only when a reader of the old shape would be wrong about the new one |
 | `generator` | what wrote it, for people |
-| `game` | which of the eleven |
+| `game` | which of the twelve |
 | `size` | how long the game lasts, in its own terms |
 | `players` | one name a seat |
 | `computers` | one a seat: `true` where a computer plays |

@@ -6,6 +6,10 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Stack Up, the twelfth game**, for two to six players: lay the numbers 1 to 12 in order on four shared building piles, from your hand, the top of your stock pile or the top of one of your own four discard piles, and end each turn by putting a card on a discard pile; the first to play their whole stock wins. Its own deck of 162 cards (`n01` to `n12`, twelve of each, and eighteen wilds `nw`), stock piles of 10, 15 or 20, a computer player that plays its stock card whenever it can, saved games, and the words in English and Japanese. `@johnmorrisdotca/toranpu/stack-up`, `newGame("stackUp", …)` and `CARD_GAME_TABLES.stackUp`. The table element does not draw it yet: the rules, the computer and the saved game are what ships.
+
 ## [2.15.1] - 2026-10-31
 
 ### Changed

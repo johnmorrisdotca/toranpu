@@ -7,7 +7,7 @@ description: Know the three ways a card is written, and keep layout and spoken n
 
 ## Three representations
 
-The deck entry uses `{ suit, rank }` objects: named suits and ranks 1–13. The eleven games use short card ids such as `AS`, `KH` and `TD`. Solitaires use numbers 0–51 in suit/rank order; Spider repeats the selected suits in its 104-card deck. Use native conversion helpers when crossing boundaries.
+The deck entry uses `{ suit, rank }` objects: named suits and ranks 1–13. The twelve games use short card ids such as `AS`, `KH` and `TD`. Solitaires use numbers 0–51 in suit/rank order; Spider repeats the selected suits in its 104-card deck. Use native conversion helpers when crossing boundaries.
 
 ```ts
 import { cardFromId, cardId, cardIndex, dealRound, shuffledDeck } from "@johnmorrisdotca/toranpu/deck";

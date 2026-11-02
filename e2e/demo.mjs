@@ -64,9 +64,13 @@ export async function settled(page) {
 
 /** Make a move as a person does: tap the cards it names, then the button that says it. */
 export async function make(page, move) {
-  const cards = Object.values(move)
-    .flatMap((value) => (Array.isArray(value) ? value : [value]))
-    .filter((value) => typeof value === "string" && /^[A2-9TJQK][SHDC]$/.test(value));
+  // Stack Up plays from its stock and discard piles without picking a card from the hand.
+  const cards =
+    move.from === "stock" || move.from === "discard"
+      ? []
+      : Object.values(move)
+          .flatMap((value) => (Array.isArray(value) ? value : [value]))
+          .filter((value) => typeof value === "string" && /^([A2-9TJQK][SHDC]|n(0[1-9]|1[0-2]|w))$/.test(value));
   for (const card of cards) await tap(page, `${at("hand")} [data-card="${card}"]`);
   await tap(page, `${at("move")}[data-move='${JSON.stringify(move)}']`);
   await settled(page);

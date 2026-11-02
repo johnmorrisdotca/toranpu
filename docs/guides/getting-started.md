@@ -32,7 +32,7 @@ A move may be a pass, a bid or a discard before ordinary card play begins. Ask t
 
 ## Pick an entry
 
-The [main entry](entry:main) offers eleven games by key, shared words and exports. Each game also has its own named entry and a root namespace such as `hearts`. The [deck entry](entry:deck) offers card objects for games of your own. Solitaires have separate entries.
+The [main entry](entry:main) offers twelve games by key, shared words and exports. Each game also has its own named entry and a root namespace such as `hearts`. The [deck entry](entry:deck) offers card objects for games of your own. Solitaires have separate entries.
 
 ## Next steps
 

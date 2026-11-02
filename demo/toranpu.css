@@ -202,6 +202,29 @@ select.fam-field {
 .card[data-small="true"] .pip {
   font-size: 0.95rem;
 }
+/* Stack Up's own deck: a number on a field coloured by its third, and the gold wild. */
+.card[data-stack-up] {
+  align-items: center;
+  justify-content: center;
+  color: #fbf8ee;
+  font-size: 1.7rem;
+  border-color: #f4f0e6;
+}
+.card[data-stack-up="low"] {
+  background: #2b5f9e;
+}
+.card[data-stack-up="mid"] {
+  background: #2f7d4f;
+}
+.card[data-stack-up="high"] {
+  background: #b23a3a;
+}
+.card[data-stack-up="wild"] {
+  background: #b88a1a;
+}
+.card[data-stack-up][data-small="true"] {
+  font-size: 1.1rem;
+}
 button.card {
   font-family: inherit;
 }
