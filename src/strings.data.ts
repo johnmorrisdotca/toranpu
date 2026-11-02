@@ -358,7 +358,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     gamePresident: "大富豪",
     gameGinRummy: "ジン・ラミー",
     gameWar: "戦争",
-    gameStackUp: "段積み",
+    gameStackUp: "積み上げ",
     offerStackUpPlay: "{from}の{card}を山{pile}に出す",
     offerStackUpPut: "{card}を捨て札{pile}に置く",
     didStackUpPlay: "{from}の{card}を山{pile}に出しました",

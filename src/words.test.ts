@@ -45,7 +45,7 @@ describe("the games in words", () => {
       "大富豪",
       "ジン・ラミー",
       "戦争",
-      "段積み",
+      "積み上げ",
     ]);
     for (const kind of CARD_GAME_LIST)
       for (const language of ["en", "ja"] as const) expect(gameSays(kind, language).length).toBeGreaterThan(20);

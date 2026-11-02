@@ -108,7 +108,7 @@ const NAMES = [YOU, "Aiko", "Ben", "Chloé", "Dev", "Emi", "Finn", "Grace"];
  *   <toranpu-table game="crazy-eights" players="3" cloth="blue" messiness="0.4"></toranpu-table>
  *
  * Attributes:
- *   game        any of the eleven, by its key or in kebab case: hearts (unless said), spades, euchre, cribbage,
+ *   game        any of the twelve, by its key or in kebab case: hearts (unless said), spades, euchre, cribbage,
  *               oh-hell, crazy-eights, go-fish, big-two, president, gin-rummy, war
  *   players     how many sit at the table, within the game's own range (its usual number unless said)
  *   people      how many of the seats are people's, the first ones; the rest are computers (1 unless said)

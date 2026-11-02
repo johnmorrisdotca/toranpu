@@ -63,7 +63,7 @@ export type CardGameKind =
   | "war"
   | "stackUp";
 
-/** The eleven kinds by name, for code that would rather not type a string twice.
+/** The twelve kinds by name, for code that would rather not type a string twice.
  *
  * @example
  * ```ts

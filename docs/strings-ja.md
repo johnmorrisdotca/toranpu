@@ -22,7 +22,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `gamePresident` | President | 大富豪 |
 | `gameGinRummy` | Gin Rummy | ジン・ラミー |
 | `gameWar` | War | 戦争 |
-| `gameStackUp` | Stack Up | 段積み |
+| `gameStackUp` | Stack Up | 積み上げ |
 | `offerStackUpPlay` | Play {card} from {from} on pile {pile} | {from}の{card}を山{pile}に出す |
 | `offerStackUpPut` | Put {card} on your discard pile {pile} | {card}を捨て札{pile}に置く |
 | `didStackUpPlay` | plays {card} from {from} on pile {pile} | {from}の{card}を山{pile}に出しました |

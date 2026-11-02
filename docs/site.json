@@ -1,7 +1,7 @@
 {
   "job": "Playing cards, card games and solitaire",
   "pitch": {
-    "en": "Use a deck, play eleven games with computers, solve a solitaire, or display cards in your own design.",
+    "en": "Use a deck, play twelve games with computers, solve a solitaire, or display cards in your own design.",
     "ja": "デッキを使い、12種類のゲームでコンピューターと対戦し、ソリティアを解いたり、独自の絵柄でカードを表示したりできます。"
   },
   "name": {
@@ -108,7 +108,7 @@
     },
     "./stack-up": {
       "en": "Stack Up",
-      "ja": "段積み"
+      "ja": "積み上げ"
     },
     "./klondike": {
       "en": "Klondike",
