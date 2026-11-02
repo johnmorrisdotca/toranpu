@@ -75,8 +75,8 @@ export async function takePictures({ shots, root = join(dirname(fileURLToPath(im
           const page = await context.newPage();
           await page.route(`${host}/**`, (route) => {
             const { pathname } = new URL(route.request().url());
-            let file = join(siteDir, pathname === "/" ? "index.html" : decodeURIComponent(pathname).slice(1));
-            if (existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");   // a folder is its index page, as a server has it
+            const asked = join(siteDir, pathname === "/" ? "index.html" : decodeURIComponent(pathname).slice(1));
+            const file = existsSync(asked) && statSync(asked).isDirectory() ? join(asked, "index.html") : asked;
             if (!existsSync(file)) return route.fulfill({ status: 404, body: "" });
             return route.fulfill({ body: readFileSync(file), contentType: TYPES[extname(file)] ?? "application/octet-stream" });
           });
