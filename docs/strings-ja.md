@@ -33,7 +33,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `pageStackUpPile` | Pile {n} | 山{n} |
 | `pageStackUpDiscards` | Your discards | あなたの捨て札 |
 | `pageStackUpStock` | stock: {n} | ストック {n}枚 |
-| `pageStackUpDraw` | To draw: {n} | 引く札 {n}枚 |
+| `pageStackUpDraw` | To draw: {n} | 山札 {n}枚 |
 | `cardStackUpWild` | Wild | ワイルド |
 | `saysHearts` | Avoid hearts and the queen of spades. Pass three cards, follow suit, lowest score wins. | ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。 |
 | `saysSpades` | Partners across the table bid tricks together. Spades are always trumps. | 向かい合ったパートナーと組んで、取るトリック数をビッドします。切り札はいつもスペードです。 |
@@ -118,7 +118,7 @@ a game; `cli` is the command line; `page` is the demo.
 | `cliSavedGoing` | {game} for {n}, seed {seed}, {moves} moves. Not over: {player} to play. | {game}（{n}人）、シード {seed}、{moves}手。進行中: 次は{player}の番です |
 | `cliPlayed` | {game} for {n}, seed {seed}: {moves} moves. Won by {players}. | {game}（{n}人）、シード {seed}: {moves}手。勝者は{players} |
 | `cliScores` | Scores: {scores} | 得点: {scores} |
-| `pagePitch` | A deck of playing cards and twelve card games, each with a computer player. Pick a game and play a hand. | トランプ1組と、コンピュータと遊べる11種類のカードゲームです。ゲームを選んで、1回遊んでみてください。 |
+| `pagePitch` | A deck of playing cards and twelve card games, each with a computer player. Pick a game and play a hand. | トランプ1組と、コンピュータと遊べる12種類のカードゲームです。ゲームを選んで、1回遊んでみてください。 |
 | `pageName` | Toranpu is the everyday Japanese word for a deck of playing cards. | 「トランプ」は、プレイングカードを指すふだんの日本語です。 |
 | `pageNameLink` | About the name | 名前について（英語） |
 | `pageFoot` | Every deal here comes from its seed, so a seed can be shared. Nothing leaves this device. | 配り方はすべてシードで決まるので、シードを伝えれば同じ配り方になります。データはこの端末の外に出ません。 |
@@ -338,9 +338,9 @@ and in Japanese:
 ```
 使い方: toranpu <コマンド> [オプション]
 
-トランプ1組と11種類のカードゲームです。配り方はシードで決まります。
+トランプ1組と12種類のカードゲームです。配り方はシードで決まります。
 
-  toranpu games                     11種類のゲームと、遊べる人数
+  toranpu games                     12種類のゲームと、遊べる人数
   toranpu deal --seed 42            シードでシャッフルして13枚ずつ4人に配ります
   toranpu deal -n 2 -e 5 -s 42      5枚ずつ2人に配り、残りも表示します
   toranpu deal hearts --seed 42     そのゲームの最初の配り方を席ごとに表示します

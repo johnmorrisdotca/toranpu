@@ -369,7 +369,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     pageStackUpPile: "山{n}",
     pageStackUpDiscards: "あなたの捨て札",
     pageStackUpStock: "ストック {n}枚",
-    pageStackUpDraw: "引く札 {n}枚",
+    pageStackUpDraw: "山札 {n}枚",
     cardStackUpWild: "ワイルド",
     saysHearts:
       "ハートとスペードのクイーンを取らないようにします。3枚を渡し、マストフォローで進め、点の少ない人が勝ちです。",
@@ -439,9 +439,9 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     seatName: "席{n}",
     cliUsage: `使い方: toranpu <コマンド> [オプション]
 
-トランプ1組と11種類のカードゲームです。配り方はシードで決まります。
+トランプ1組と12種類のカードゲームです。配り方はシードで決まります。
 
-  toranpu games                     11種類のゲームと、遊べる人数
+  toranpu games                     12種類のゲームと、遊べる人数
   toranpu deal --seed 42            シードでシャッフルして13枚ずつ4人に配ります
   toranpu deal -n 2 -e 5 -s 42      5枚ずつ2人に配り、残りも表示します
   toranpu deal hearts --seed 42     そのゲームの最初の配り方を席ごとに表示します
@@ -490,7 +490,7 @@ be repeated. Exit codes: 0 done, 1 what was asked for could not be done
     cliSavedGoing: "{game}（{n}人）、シード {seed}、{moves}手。進行中: 次は{player}の番です",
     cliPlayed: "{game}（{n}人）、シード {seed}: {moves}手。勝者は{players}",
     cliScores: "得点: {scores}",
-    pagePitch: "トランプ1組と、コンピュータと遊べる11種類のカードゲームです。ゲームを選んで、1回遊んでみてください。",
+    pagePitch: "トランプ1組と、コンピュータと遊べる12種類のカードゲームです。ゲームを選んで、1回遊んでみてください。",
     pageName: "「トランプ」は、プレイングカードを指すふだんの日本語です。",
     pageNameLink: "名前について（英語）",
     pageFoot:
