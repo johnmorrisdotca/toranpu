@@ -3,7 +3,7 @@
   "entries": {
     ".": {
       "minified": 124291,
-      "gzip": 38371
+      "gzip": 38359
     },
     "./deck": {
       "minified": 3123,
@@ -27,7 +27,7 @@
     },
     "./card-faces": {
       "minified": 837498,
-      "gzip": 187821
+      "gzip": 187808
     },
     "./card-faces/english": {
       "minified": 694426,
@@ -39,19 +39,19 @@
     },
     "./element": {
       "minified": 946674,
-      "gzip": 242882
+      "gzip": 242869
     },
     "./element/define": {
       "minified": 946679,
-      "gzip": 242883
+      "gzip": 242869
     },
     "./table": {
       "minified": 1018588,
-      "gzip": 265878
+      "gzip": 265864
     },
     "./table/define": {
       "minified": 1018593,
-      "gzip": 265863
+      "gzip": 265850
     },
     "./hearts": {
       "minified": 8967,

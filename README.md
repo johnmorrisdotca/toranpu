@@ -1119,7 +1119,7 @@ Please follow the [code of conduct](./CODE_OF_CONDUCT.md).
 
 See [CHANGELOG.md](./CHANGELOG.md).
 
-The latest release, 2.15.1, changes nothing a player sees.
+The latest release, 2.16.0, adds Stack Up as the twelfth game, and keeps the table and its controls in place when the language changes.
 
 ## Licence
 

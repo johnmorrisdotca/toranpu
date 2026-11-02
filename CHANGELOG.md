@@ -6,6 +6,8 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.16.0] - 2026-11-02
+
 ### Added
 
 - **Stack Up, the twelfth game**, for two to six players: lay the numbers 1 to 12 in order on four shared building piles, from your hand, the top of your stock pile or the top of one of your own four discard piles, and end each turn by putting a card on a discard pile; the first to play their whole stock wins. Its own deck of 162 cards (`n01` to `n12`, twelve of each, and eighteen wilds `nw`), stock piles of 10, 15 or 20, a computer player that plays its stock card whenever it can, saved games, and the words in English and Japanese. `@johnmorrisdotca/toranpu/stack-up`, `newGame("stackUp", …)` and `CARD_GAME_TABLES.stackUp`. The table element does not draw it yet: the rules, the computer and the saved game are what ships.
@@ -572,7 +574,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.15.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.16.0...HEAD
+[2.16.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.15.1...v2.16.0
 [2.15.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.2...v2.15.0
 [2.14.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.0...v2.14.1
 [2.12.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.12.0...v2.12.1
