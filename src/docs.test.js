@@ -62,6 +62,7 @@ const moved = [
   "docs/API.md",
   "docs/export-and-import.md",
   "docs/theming.md",
+  "docs/limits.md",
 ]
   .map((file) => readFileSync(file, "utf8"))
   .join("\n");

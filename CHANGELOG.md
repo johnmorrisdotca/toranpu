@@ -9,6 +9,11 @@ All notable changes to this project are written here. The format follows
 ### Added
 
 - The README opens with the package's thumbnail, and the demo carries it as its link preview (og:image) and publishes the card, a dark card and an icon on Pages at `thumbnail.png`, `thumbnail-dark.png` and `icon.png`.
+- The README's gallery shows Stack Up (`pnpm screenshots:readme` takes its picture, in light and dark).
+
+### Changed
+
+- Docs: the README's table of the demo's colours and sizes moved to `docs/theming.md`, and its table of limits to `docs/limits.md`, to leave the README room under npm's 64,000 characters; the README keeps a summary and a link to each.
 
 ## [2.16.0] - 2026-11-02
 

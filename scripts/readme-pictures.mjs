@@ -88,6 +88,7 @@ await takePictures({
     section("hearts", ".fam-felt.table", played(8)),
     { ...section("go-fish", ".fam-felt.table", played(4)), url: url("go-fish", 3) },
     { ...section("crazy-eights", ".fam-felt.table", played(6)), url: url("crazy-eights", 3) },
+    { ...section("stack-up", ".fam-felt.table", played(16)), url: url("stack-up", 3) },
     section("designs", "#designs"),
     section("backs", "#backs"),
     section("branding", "#brand-panel"),

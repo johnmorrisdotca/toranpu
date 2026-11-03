@@ -168,6 +168,13 @@ Each picture is a part of [the demo](https://johnmorrisdotca.github.io/toranpu/)
 <tr>
 <td align="center" valign="top" width="33%">
 <picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/stack-up-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/stack-up-desk-light.webp" alt="A game of Stack Up for three at a green table: four shared piles built up in numbers, the player's discard piles, the stock of fifteen with its top card, the player's hand with a wild card, and a button for each pile a picked card may go on." width="400">
+</picture>
+<br><em><strong>Stack Up</strong>: build the piles in order, play your stock first.</em>
+</td>
+<td align="center" valign="top" width="33%">
+<picture>
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/designs-desk-dark.webp">
 <img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/designs-desk-light.webp" alt="The card designs panel: buttons for Plain, Four colour, English pattern and Realistic, a spread of cards in the chosen design, and the code that draws them." width="400">
 </picture>
@@ -180,6 +187,8 @@ Each picture is a part of [the demo](https://johnmorrisdotca.github.io/toranpu/)
 </picture>
 <br><em><strong>Card backs</strong>: three of them, recoloured or marked.</em>
 </td>
+</tr>
+<tr>
 <td align="center" valign="top" width="33%">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/branding-desk-dark.webp">
@@ -187,8 +196,6 @@ Each picture is a part of [the demo](https://johnmorrisdotca.github.io/toranpu/)
 </picture>
 <br><em><strong>Your own branding</strong>: backs, faces and wholly new cards.</em>
 </td>
-</tr>
-<tr>
 <td align="center" valign="top" width="33%">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/one-card-desk-dark.webp">
@@ -203,6 +210,8 @@ Each picture is a part of [the demo](https://johnmorrisdotca.github.io/toranpu/)
 </picture>
 <br><em><strong>A hand</strong>: <code>&lt;toranpu-hand&gt;</code> and what a person does with one.</em>
 </td>
+</tr>
+<tr>
 <td align="center" valign="top" width="33%">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/messy-piles-desk-dark.webp">
@@ -210,8 +219,6 @@ Each picture is a part of [the demo](https://johnmorrisdotca.github.io/toranpu/)
 </picture>
 <br><em><strong>Messy piles</strong>: stock and discard, neat to very messy.</em>
 </td>
-</tr>
-<tr>
 <td align="center" valign="top" width="33%">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/whole-table-desk-dark.webp">
@@ -890,37 +897,7 @@ The games draw nothing: the table looks however you draw it. What Toranpu
 does draw, the card backs, takes the custom properties under
 [The drawings](#the-drawings) below.
 
-The demo's table is themed, and is the worked example. It wears the family's
-one stylesheet, [`demo/family.css`](./demo/family.css), which is the same file
-byte for byte on every sibling's site (a test holds it to its hash), and one
-of its own for the cards and the table, [`demo/toranpu.css`](./demo/toranpu.css).
-Every colour and size in both is a CSS custom property on `:root`:
-
-| Property | What it colours or sizes | Light | Dark |
-| --- | --- | --- | --- |
-| `--page` | the page behind everything | `#f4efe4` | `#141614` |
-| `--ink` | text, and a pressed button | `#1f2320` | `#ece8dc` |
-| `--muted` | notes and labels | `#6b6f68` | `#a09d93` |
-| `--rule` | borders and rules | `#ddd6c6` | `#3a3d38` |
-| `--surface` | panels, fields and buttons | `#fbf8f1` | `#1d201e` |
-| `--felt`, `--felt-deep` | the table | `#2f5d4a`, `#1f4135` | `#214337`, `#152c24` |
-| `--felt-ink` | text on the table | `#f3efe4` | the same |
-| `--accent`, `--accent-ink` | the selected tab, the focus ring | `#b5452c`, `#fff` | the same |
-| `--good`, `--bad` | a refusal | `#2f7a4f`, `#b5452c` | the same |
-| `--gold`, `--gold-ink` | the seat to play, a picked card | `#e0b43b`, `#1f2320` | the same |
-| `--radius` | the corners of panels | `16px` | |
-| `--font`, `--mono` | the type: the system's own, and its monospace | | |
-| `--card`, `--card-ink`, `--card-red` | a card's face, its black suits and its red | `#fffdf8`, `#1b1b1b`, `#c2272d` | the same |
-| `--card-w`, `--card-h` | a card's size (46px by 68px on a phone) | `58px`, `84px` | |
-| `--intro-room`, `--intro-room-wide` | room kept for the header's words, so that changing language moves nothing | `11.5rem`, `7rem` | |
-
-The page follows the device's light or dark setting; `data-theme="light"` or
-`"dark"` on `<html>` forces one. To give a copy of the table another look, set
-the properties after the two stylesheets:
-
-```css
-:root { --felt: #23405a; --felt-deep: #162a3c; --card-red: #b00020; --card-w: 64px; --card-h: 92px; }
-```
+The demo's table is themed, and is the worked example: it wears the family's one stylesheet, [`demo/family.css`](./demo/family.css), and one of its own, [`demo/toranpu.css`](./demo/toranpu.css), and every colour and size in both is a CSS custom property on `:root`. [The demo's table](docs/theming.md#the-demos-table) lists each one with its light and dark value, and shows how to give a copy of the table another look.
 
 ### The drawings
 
@@ -928,18 +905,7 @@ The backs and the plain and four-colour faces take custom properties when they a
 
 ## Limits
 
-| Limit | Value | Where |
-| --- | --- | --- |
-| Players | each game's own, from 2 to 8 | `CARD_GAME_TABLES` |
-| A game's length | one of the sizes its table offers | `CARD_GAME_TABLES` |
-| A seed | a whole number; the games draw 1 to 2,147,483,647 | `randomSeed` |
-| The deck the games deal | fifty-two cards, no jokers (the faces draw two) | `DECK_SIZE` |
-| A saved game's format | 1 | `SAVE_FORMAT` |
-| The id of a card of your own | letters, digits, `-`, `_`, `.` or `:`, up to 40 | `CUSTOM_CARD_ID` |
-| The name of a design or a back you register | kebab case, up to 40 characters, never one of the package's own | `registerCardDesign`, `registerCardBack` |
-| Words in the middle of a back | twelve characters | `mark` |
-| A picture or logo for a back | a `data:image/`, `https:` or same-site address; as an image of its own only `data:image/` loads | `safeImageUrl` |
-| Languages | English and Japanese | `STRINGS` |
+Players, game lengths, seeds, the deck, a save's format, the names and ids you register, and the addresses a back's picture may use each have a limit, and the constant that holds it. [docs/limits.md](docs/limits.md) lists all ten.
 
 A very long game is a long save: a game of Hearts to 100 is about six hundred
 moves and nine thousand characters of code.
