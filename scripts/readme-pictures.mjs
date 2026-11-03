@@ -97,4 +97,42 @@ await takePictures({
     section("whole-table", "#table-panel"),
     section("card-sounds", "#sounds"),
   ],
+  // The family's thumbnail, dark thumbnail and icon (scripts/family-thumbnail.mjs): a fanned hand of the package's own
+  // plain cards from the site (a red back, then ten of clubs to the ace of spades); the icon is the ace of spades.
+  thumbnail: {
+    url: url("hearts", 4),
+    init,
+    ready: STATUS,
+    target: "#thumbnail-fan",
+    icon: { target: "#thumbnail-ace" },
+    label: "Toranpu トランプ",
+    async prepare(page) {
+      await page.evaluate(async () => {
+        const files = [
+          "backs/classic-red",
+          "cards/plain/TC",
+          "cards/plain/JD",
+          "cards/plain/QH",
+          "cards/plain/KS",
+          "cards/plain/AS",
+        ];
+        const card = (file, style) =>
+          `<img src="${file}.svg" alt="" style="position:absolute;width:200px;height:280px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.28));${style}">`;
+        const turn = (index) => (index - (files.length - 1) / 2) * 11;
+        const fan = files
+          .map((file, index) =>
+            card(
+              file,
+              `left:${310 + index * 52}px;top:40px;transform:rotate(${turn(index)}deg);transform-origin:50% 135%`,
+            ),
+          )
+          .join("");
+        const stage = `<div id="thumbnail-fan" style="position:relative;width:1000px;height:400px">${fan}</div>`;
+        const ace = `<div id="thumbnail-ace" style="padding:12px;width:max-content">${card("cards/plain/AS", "position:static;width:300px;height:420px;display:block")}</div>`;
+        document.body.replaceChildren();
+        document.body.insertAdjacentHTML("beforeend", stage + ace);
+        await Promise.all([...document.images].map((image) => image.decode()));
+      });
+    },
+  },
 });

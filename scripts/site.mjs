@@ -13,14 +13,16 @@ import {
   familyHeader,
   familyUnreviewed,
 } from "./family-template.mjs";
+import { publishThumbnails, thumbnailHead } from "./family-thumbnail.mjs";
 
 const id = "toranpu";
+const ALT = "Toranpu: a fanned hand of the package's own playing cards, from a red back to the ace of spades.";
 const icon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='14' y='6' width='72' height='88' rx='12' fill='%23fffdf8' stroke='%232f5d4a' stroke-width='8'/%3E%3Cpath d='M50 26 C 66 44, 74 52, 74 62 C 74 74, 58 76, 54 66 L 58 80 L 42 80 L 46 66 C 42 76, 26 74, 26 62 C 26 52, 34 44, 50 26 Z' fill='%231f2320'/%3E%3C/svg%3E`;
-const frame = ({ title, description, links, body, scripts }) => `<!doctype html>
+const frame = ({ title, description, links, body, scripts, head = "" }) => `<!doctype html>
 <html lang="en">
   <head>
     ${familyHead({ id, title, description, ogTitle: "Toranpu トランプ — Playing cards, card games and solitaire", ogDescription: "A deck of playing cards and eleven card games, each with a computer player." })}
-    <link rel="icon" href="${icon}" />
+    ${head}<link rel="icon" href="${icon}" />
     <link rel="stylesheet" href="family.css" />
     <link rel="stylesheet" href="toranpu.css" />
   </head>
@@ -49,6 +51,7 @@ writeFileSync(
   "site/index.html",
   frame({
     title: "Toranpu トランプ — Playing cards, card games and solitaire",
+    head: `${thumbnailHead(JSON.parse(readFileSync("package.json", "utf8")), { alt: ALT })}\n    `,
     description:
       "Play a hand of Hearts, Spades, Euchre, Cribbage, Oh Hell, Crazy Eights, Go Fish, Big Two, President, Gin Rummy or War against computer players, all run by the Toranpu TypeScript package. Free and open source.",
     links: [
@@ -100,6 +103,8 @@ console.log(
 );
 
 cpSync("demo/embed", "site/embed", { recursive: true });
+// The family's card, dark card and icon, at <site>/thumbnail.png, thumbnail-dark.png and icon.png.
+publishThumbnails(".", "site");
 for (const file of ["builder.js", "builder.css"]) cpSync(`demo/${file}`, `site/${file}`);
 writeFileSync(
   "site/family-embed-builder.js",

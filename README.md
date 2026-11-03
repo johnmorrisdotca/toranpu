@@ -1,3 +1,5 @@
+<p align="center"><a href="https://johnmorrisdotca.github.io/toranpu/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/thumbnail-dark.png"><img src="https://raw.githubusercontent.com/johnmorrisdotca/toranpu/main/docs/images/thumbnail.png" alt="Toranpu: a fanned hand of the package's own playing cards, from a red back to the ace of spades." width="1200"></picture></a></p>
+
 <h1 align="center">Toranpu <sub>トランプ</sub> — Playing cards, card games and solitaire</h1>
 
 <p align="center"><strong>A deck of playing cards and twelve card games, each with a computer player.</strong><br>
@@ -1002,9 +1004,8 @@ functions, its types, its computer player, and the code that keeps a table as
 text. The twelve card games and three solitaires share the deck, the saving and
 the words. Drawing sits apart under `ui/`, so the rules run with no DOM, and
 every game and every browser part is an entry point of its own, so a page
-loads only what it uses.
-
-The file-by-file tree, with a line on each source file, is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Tests sit beside the code they test (`*.test.ts`). `bin/` hands the command line the real process, `scripts/` builds the demo, the sounds and the card designs and checks the package as npm packs it, `sounds/` holds the recorded sources, `demo/` is the page on GitHub Pages and `e2e/` taps it in real browsers.
+loads only what it uses. The file-by-file tree, with where the tests, scripts,
+sounds and demo sit, is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## The name
 
