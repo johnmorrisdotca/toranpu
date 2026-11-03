@@ -6,6 +6,8 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [2.17.0] - 2026-11-03
+
 ### Added
 
 - The README opens with the package's thumbnail, and the demo carries it as its link preview (og:image) and publishes the card, a dark card and an icon on Pages at `thumbnail.png`, `thumbnail-dark.png` and `icon.png`.
@@ -583,7 +585,8 @@ as it did, and a game saved by 1.1.0 is read by 1.2.0.
 - A demo where a hand of any game can be played against the computer,
   published to GitHub Pages.
 
-[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.16.0...HEAD
+[Unreleased]: https://github.com/johnmorrisdotca/toranpu/compare/v2.17.0...HEAD
+[2.17.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.16.0...v2.17.0
 [2.16.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.15.1...v2.16.0
 [2.15.0]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.2...v2.15.0
 [2.14.1]: https://github.com/johnmorrisdotca/toranpu/compare/v2.14.0...v2.14.1
